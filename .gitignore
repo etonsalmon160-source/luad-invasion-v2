@@ -1,0 +1,26 @@
+# 大文件 / 数据：不入库（用软链或 DVC）
+data/
+data_links/
+results/**/*.rds
+results/**/*.h5*
+results/**/*.mtx*
+results/**/*.tar
+results/**/*.gz
+*.rds
+*.h5ad
+*.h5
+*.tar
+*.tar.gz
+*.zip
+*.loom
+
+# 运行日志/缓存
+logs/
+__pycache__/
+*.pyc
+.Rhistory
+.RData
+.DS_Store
+
+# 环境（大）
+env/
