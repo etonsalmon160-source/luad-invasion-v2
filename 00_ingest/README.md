@@ -24,5 +24,22 @@
 - [`hra001130_interface.py`](hra001130_interface.py) —— HRA001130 预留接口
 
 ## 待办（下一步）
-- [ ] 写 `01_load_cohorts.py`：按 registry 纳入三 scRNA 队列（GEO 真值分期 + 分层），输出冻结的 per-cell 表 + 校验报告（细胞数/分期分布/哈希）。
-- [ ] `GSE308103` 按 snRNA 口径纳入（含 QC，组件见 tools/）。
+- [x] `fetch_geo_metadata.py`：拉取并冻结 GEO 逐样本权威元数据（`geo_metadata/`）—— 提供 `patient id` / histology / origin。
+- [x] `01_load_cohorts.py`：按 registry 纳入三 scRNA 队列（GEO 真值分期 + 分层），
+      输出冻结的 per-cell 表 + 校验报告（细胞数/分期分布/哈希）。→ **M0 已过门**（见 `PLAN_AND_CHECKPOINTS.md` 过门证据）。
+- [ ] `GSE308103` 按 snRNA 口径纳入（含 QC，组件见 tools/）—— 属 **M4**。
+
+## 患者身份口径（重要）
+- **GSE131907**：`patient_id` 取自 GEO `patient id`（权威；44 患者，形如 `P0001/P1006/P2001/P3002`）。
+  **禁止**按样本名尾号推断——`LUNG_N06`(P0006) / `EBUS_06`(P1006) / `LN_06`(P2006) / `NS_06`(P3006) 是**四个不同患者**（同尾号陷阱）。
+- **GSE189357 / GSE148071**：GEO 无 `patient id` 字段，按 **1 样本 = 1 患者** 显式假设（`frozen_samples.csv` 有 `patient_rule`/`patient_confidence` 标注）。
+
+## 文件（本步产出，`results/00_ingest/`）
+| 文件 | 内容 |
+| :--- | :--- |
+| `frozen_per_cell.csv.gz` | per-cell 表（cell_barcode / patient_id / sample_id / stage / dataset / raw_barcode） |
+| `frozen_samples.csv` | 样本表（+ modality / patient_rule / patient_confidence） |
+| `frozen_patients.csv` | 患者表（样本数 / 细胞数 / 涉及阶段） |
+| `frozen_source_files.csv` | 源文件清单（路径 / 大小 / mtime / SHA-256） |
+| `frozen_manifest.json` | 冻结清单（各产物哈希 + 计数 + 过门结果） |
+| `M0_validation_report.md` | 人读校验报告（逐条过门 + OPEN ISSUE） |
