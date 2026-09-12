@@ -24,3 +24,6 @@ __pycache__/
 
 # 环境（大）
 env/
+
+# 第三方工具源码（可随时重新克隆，见 tools/README.md）
+tools/
