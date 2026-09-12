@@ -1,0 +1,71 @@
+{
+  "counts": {
+    "cells_by_dataset": {
+      "GSE131907": 208506,
+      "GSE148071": 89887,
+      "GSE189357": 122373
+    },
+    "cells_by_stage": {
+      "AIS": 38107,
+      "Adv_NSCLC": 89887,
+      "Brain_Met": 29060,
+      "IAC": 108075,
+      "LNM": 21479,
+      "MIA": 33413,
+      "Normal": 42995,
+      "Normal_LN": 37446,
+      "Pleural_Effusion": 20304
+    },
+    "n_patients": 95,
+    "n_samples": 109
+  },
+  "created_utc": "2026-09-12T06:13:07Z",
+  "datasets": [
+    "GSE131907",
+    "GSE148071",
+    "GSE189357"
+  ],
+  "gate_pass": true,
+  "geo_metadata": {
+    "GSE131907": {
+      "file": "GSE131907_gsm.txt",
+      "sha256": "8d94dcc62bd31ba6e351ffb184fc869986ae1c587f4ffa9f022fe424a1ecce3b",
+      "size_bytes": 284762
+    },
+    "GSE148071": {
+      "file": "GSE148071_gsm.txt",
+      "sha256": "45d2fa96262eafc2433048c9f97adb0c37b1bda84e89f2759498a4f7534c4cfb",
+      "size_bytes": 99330
+    },
+    "GSE189357": {
+      "file": "GSE189357_gsm.txt",
+      "sha256": "0f2ac9213286f0fecaf7bbff2c29f3098bc1180245a3fd773cfe80e2fbc9809a",
+      "size_bytes": 30550
+    }
+  },
+  "patients_table": {
+    "n_rows": 95,
+    "path": "frozen_patients.csv",
+    "sha256": "6945e2b71f72fcd19547e30edea118fd241bf7e8480c5f9d1b2fb9fc21a2f13a"
+  },
+  "per_cell_table": {
+    "n_rows": 420766,
+    "path": "frozen_per_cell.csv.gz",
+    "sha256": "703c5f03562d031a6aea96a68dea28f312733330db76fa0f0ed361a61657f7d2"
+  },
+  "raw_root": "/home/eto/luad_invasion/data",
+  "registry_file": "00_ingest/cohort_registry.py",
+  "registry_sha256": "7ad44013fd013dedeb80e77be23838b03d9a22cfab1c6d7860743ebf8d37b4cb",
+  "samples_table": {
+    "n_rows": 109,
+    "path": "frozen_samples.csv",
+    "sha256": "4696a88b9c69a85d93eae742547cc3537e4328e1b7cf0c0bbe2cc690e10d980a"
+  },
+  "schema_version": "M0-frozen-1",
+  "self_audit_forbidden_patterns": [],
+  "source_files_table": {
+    "n_rows": 72,
+    "path": "frozen_source_files.csv",
+    "sha256": "ed834ed6618289772573a38f22b01f11f3c59f68571ed48e2ac603955ae6a284"
+  }
+}
