@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-09-12T12:56:59Z",
+  "gate_pass": true,
+  "n_paired": 9,
+  "n_patients": 25,
+  "n_samples": 94,
+  "raw_root": "/home/eto/luad_invasion/data",
+  "registry_sha256": "6843e4e86cdaef11323663c428a7c49bfb86b518edf1d4c926db7ef983fce5f6",
+  "schema": "M0-paired-1",
+  "tables": {
+    "patients": "c9a0fc156365e49a598ac75d10b2f47be3272557e3e2bf6c14c97f85a47f0403",
+    "samples": "db5dcf7f4750aa2381dba7fd9cd21063734fd098da907d23e5feaecf03aabe3a",
+    "source_files": "e4d7722a155857fa6199fbda24513b3647b7bfea3cf34f91ef83ba18d657ed25"
+  }
+}
