@@ -1,45 +1,38 @@
-# 00_ingest —— 权威输入层（第一步）
+# 00_ingest —— 权威输入层
 
-> 目标：把"用哪些数据集、每个样本属哪个阶段、什么模态"**按权威口径冻结**，供下游一致引用。
+> **范围（2026-09-12 收窄）**：仅**两个配对数据集**——`GSE308103`(snRNA) + `GSE307534`(Visium 空间)。
+> 三个 scRNA 队列（GSE131907/189357/148071）已移出范围，存档于 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
+
+## 为什么是这两个
+
+同一研究、**同一批患者**（9 例配对：P3/P4/P10/P13/P15/P18/P21/P22/P25）、**相邻切片**，且
+**模态匹配**（空间是 FFPE，参考也是 FFPE 的 snRNA）——这使空间解卷积的参考最可信，
+并支撑跨模态一致性判据（AAH vs 同患者 Normal/AIS）。
+
+| 数据集 | 模态 | 角色 | 分期 |
+| :--- | :--- | :--- | :--- |
+| **GSE308103** | **snRNA**（细胞核；FFPE） | 单细胞**参考**；**唯一含 AAH** 的单细胞资源 | Normal / AAH / AIS / MIA / IAC |
+| **GSE307534** | **Visium spot**（FFPE CytAssist；55 µm，**非单细胞**） | **空间图谱**（原位坐标）；**解卷积对象** | Normal / AAH / AIS / MIA / IAC |
+
+> ⚠️ **Visium spot 是多细胞混合** → 必须用单细胞参考**解卷积**才能得到每个 spot 的细胞组成。
+> "配对"指**同患者/同病灶**，不是"同一细胞测了两遍"；它让参考匹配，但不取消解卷积这一步。
 
 ## 铁律
-1. 数据身份以 **GEO/GSA 为准**；分期**无静默默认**。
-2. `patient_id`（真患者）与 `sample_id`（组织/切片）**分层**。
-3. 数据未到位 → **如实报缺**，不造数据。
-
-## 单细胞队列（scRNA，**均无 AAH**）
-| 数据集 | 模态 | 阶段 |
-| :--- | :--- | :--- |
-| GSE131907 | scRNA | 按 `Sample_Origin`：`nLung=Normal`、`tLung/tL/B=IAC`、`mLN=LNM`、**`nLN=正常淋巴结(非LNM)`**、`mBrain=脑转移`、`PE=胸腔积液` |
-| GSE189357 | scRNA | `TD1/2/9=IAC`、`TD3/4/6=MIA`、`TD5/7/8=AIS`（**无 AAH**） |
-| GSE148071 | scRNA | **Advanced NSCLC** |
-
-## AAH 单细胞（决策）
-- **暂用**：`GSE308103`（snRNA）→ 经 **SCMG zero-shot 跨平台并入**；
-- **预留接口**：`HRA001130`（全细胞 scRNA，GSA-Human **受控，待申请**）→ 见 [`hra001130_interface.py`](hra001130_interface.py)；
-- **跨模态五判据**（缺一不可，见白皮书 §3.1）：① 各阶段**可分辨** ② 重叠阶段 sn↔sc **一致** ③ 平台偏移 **δ(stage) 稳定** ④ **sn 内部配对**同向 ⑤ AAH 身份 **CNV/标记**证真。
+1. 分期**无静默默认**（[`cohort_registry.py`](cohort_registry.py) 的 `resolve_stage` 未知 token 一律 raise）；
+2. `patient_id`（患者）与 `sample_id`（切片/样本）分层；
+3. **snRNA 的 QC 阈值不得照搬整细胞 scRNA**（核的 nCount 更低、mt% 更低）——先测后定；
+4. 数据未到位 → 如实报缺，不造数据。
 
 ## 文件
-- [`cohort_registry.py`](cohort_registry.py) —— 权威队列登记表（single source of truth）
-- [`hra001130_interface.py`](hra001130_interface.py) —— HRA001130 预留接口
+- [`cohort_registry.py`](cohort_registry.py) —— 权威登记表（配对患者 / 分期 token / P0 禁用法）
 
-## 待办（下一步）
-- [x] `fetch_geo_metadata.py`：拉取并冻结 GEO 逐样本权威元数据（`geo_metadata/`）—— 提供 `patient id` / histology / origin。
-- [x] `01_load_cohorts.py`：按 registry 纳入三 scRNA 队列（GEO 真值分期 + 分层），
-      输出冻结的 per-cell 表 + 校验报告（细胞数/分期分布/哈希）。→ **M0 已过门**（见 `PLAN_AND_CHECKPOINTS.md` 过门证据）。
-- [ ] `GSE308103` 按 snRNA 口径纳入（含 QC，组件见 tools/）—— 属 **M4**。
+> HRA001130（受控库）预留接口已移出范围 → `/home/eto/luad_invasion/luad_v2_out_of_scope/00_ingest/`。
 
-## 患者身份口径（重要）
-- **GSE131907**：`patient_id` 取自 GEO `patient id`（权威；44 患者，形如 `P0001/P1006/P2001/P3002`）。
-  **禁止**按样本名尾号推断——`LUNG_N06`(P0006) / `EBUS_06`(P1006) / `LN_06`(P2006) / `NS_06`(P3006) 是**四个不同患者**（同尾号陷阱）。
-- **GSE189357 / GSE148071**：GEO 无 `patient id` 字段，按 **1 样本 = 1 患者** 显式假设（`frozen_samples.csv` 有 `patient_rule`/`patient_confidence` 标注）。
+## 关键事实（已核实）
+- GSE308103：**79.8 万核 / 75 样本**（实测），median nCount 1,516、median pct_mt 0.6%；
+- GSE307534：GEO 56 样本 / 25 患者；**本地已解压 19 张切片，完整覆盖 9 例配对患者**；
+- LNM 空转暂缺（见 registry `LNM_STATUS`）；`GSE190811` 经核实为**乳腺癌**，已废。
 
-## 文件（本步产出，`results/00_ingest/`）
-| 文件 | 内容 |
-| :--- | :--- |
-| `frozen_per_cell.csv.gz` | per-cell 表（cell_barcode / patient_id / sample_id / stage / dataset / raw_barcode） |
-| `frozen_samples.csv` | 样本表（+ modality / patient_rule / patient_confidence） |
-| `frozen_patients.csv` | 患者表（样本数 / 细胞数 / 涉及阶段） |
-| `frozen_source_files.csv` | 源文件清单（路径 / 大小 / mtime / SHA-256） |
-| `frozen_manifest.json` | 冻结清单（各产物哈希 + 计数 + 过门结果） |
-| `M0_validation_report.md` | 人读校验报告（逐条过门 + OPEN ISSUE） |
+## 下一步
+- [x] `01_qc/00_metrics_gse308103.R`：先算指标、据实定阈值（核数据）
+- [ ] `01_qc/01_qc_doublets_gse308103.R`：MAD 离群 + scDblFinder 逐样本（运行中）

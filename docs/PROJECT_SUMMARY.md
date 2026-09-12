@@ -1,108 +1,103 @@
-# LUAD 多组学课题 · 最新总纲 (PROJECT_SUMMARY)
+# 项目事实总纲 (PROJECT_SUMMARY)
 
-> **本文件定位**：全项目**唯一的最新事实总纲（authoritative facts ledger）**。
-> 旧的报告式总结（`MASTER_SCIENTIFIC_REPORT.md` 等）已因内容与查实事实冲突而隔离至
-> [`archive/legacy_docs/`](archive/legacy_docs/)。
-> **叙事型白皮书**仍是 [`LUAD_SPATIOTEMPORAL_INVASION_ARCHITECTURE_AND_PROGRESS.md`](LUAD_SPATIOTEMPORAL_INVASION_ARCHITECTURE_AND_PROGRESS.md)（本总纲不替代它，仅记录已核验事实与整改状态）。
-> **更新日期**：2026-09-12
-
----
-
-## 0. 阅读顺序
-1. 白皮书 = 研究设计与叙事；2. 本总纲 = 已核验事实 / 真值口径 / 整改状态；3. `PIPELINE_MANIFEST.md` = 脚本清单；4. `FINAL_RIGOROUS_AUDIT_VERDICT.md` = 前任终审裁决（历史）。
+> **定位**：本项目**唯一的最新事实总纲**（authoritative facts ledger）。
+> **范围**：仅**两个配对数据集**——`GSE308103`(snRNA) + `GSE307534`(Visium 空间)。
+> **更新日期**：2026-09-12（v2，随范围收窄重写）
+> 配套：[`WHITEPAPER.md`](WHITEPAPER.md)（技术路线）· [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md)（检查点）
 
 ---
 
-## 1. 数据底座（GEO 权威核实）
+## 1. 数据底座（GEO 逐样本核实）
 
-| 数据集 | 真实身份（GEO） | 用途 | 核实结论 |
+| 数据集 | 真实身份 | 角色 | 实测规模 |
 | :--- | :--- | :--- | :--- |
-| **GSE131907** | "Single cell RNA sequencing of lung adenocarcinoma"（Kim et al., 208,506 细胞 / 58 样本 / 44 患者；含 原发/正常肺/正常淋巴结/转移淋巴结/脑转移/胸腔积液） | 单细胞基座（Normal/IAC/LNM） | ✅ 身份正确 |
-| **GSE189357** | "Spatiotemporal transcriptional atlas of LUAD from AIS to IAC [scRNA-seq]"，**9 样本 = 3 AIS + 3 MIA + 3 IAC，无 AAH** | 单细胞基座（早期） | ⚠️ 项目旧标注有误（见 §3） |
-| **GSE148071** | "Comprehensive Profiling of Cancer Cells and Their Microenvironment in **Advanced NSCLC**"，42 样本 | 独立验证队列 | ⚠️ 实为**晚期 NSCLC**，非"早期 LUAD" |
-| **GSE307534** | 空间转录组（Visium CytAssist FFPE，19+ 患者；每患者含 AAH/AIS/MIA/LUAD 切片） | 空间主队列 | ✅ 切片身份正确 |
-| **GSE308103** | snRNA-seq（FFPE 卷片，与 GSE307534 同研究；含 normal/AAH/AIS/MIA/LUAD，75 样本） | **真 AAH 单细胞来源** | ✅ 已下载并 QC（见 §3.4） |
+| **GSE308103** | snRNA-seq（FFPE fixed RNA） | 单细胞**参考**；**唯一含 AAH** 的单细胞资源 | **75 样本 / 798,100 核**（实测） |
+| **GSE307534** | Visium CytAssist FFPE 空间 | **空间图谱**（原位坐标）；解卷积对象 | GEO 56 样本/25 患者；**本地 19 张切片** |
+
+**配对（9 例）**：`P3 P4 P10 P13 P15 P18 P21 P22 P25` —— 两模态均有切片；本地空间切片**完整覆盖**这 9 例。
+分期（两模态一致）：**Normal / AAH / AIS / MIA / IAC**。
+
+**LNM**：空转淋巴结转移**无合法 LUAD 数据**。`GSE190811` 经 GEO 核实系列标题为
+*"…paired metastatic lymph node tumors in **breast cancer** patients"*（**乳腺癌**），
+且白皮书 v1 所锁 GSM5732148 在该库**不存在**（真实为 GSM5732357–5732360）→ **该切片作废**，禁止用于任何 LUAD 产物。
+
+**已移出范围**：GSE131907 / GSE189357 / GSE148071（三个 scRNA 队列）→ 存档 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
 
 ---
 
-## 2. 双分支架构（关键）
-- **传统分支（阶段 1–5）**：scanpy/Seurat、RCTD、PLIP、SpaGCN/Squidpy、CellRank/PAGA/DPT 等**传统算法**。
-- **SCMG 分支（阶段 6，正交）**：仅用 **SCMG 官方神经网络**（`CellEmbedder` 编码 → 条件扩散模型 `generate_transition_cells` → `CausalGenePredictor` 因果基因），**不得掺入任何传统算法**，作为对传统结果的**独立正交对照**。
-- 两分支最后做**互证/分歧**报告。
+## 2. 实测数据特征（2026-09-12）
+
+**GSE308103（snRNA，细胞核）** — 全队列分位数（1/5/25/50/75/95/99%）：
+
+| 指标 | 1% | 5% | 25% | 50% | 75% | 95% | 99% |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| nCount | 500 | 561 | 902 | **1,516** | 2,970 | 11,296 | 31,807 |
+| nFeature | 367 | 452 | 697 | **1,082** | 1,786 | 4,234 | 7,085 |
+| pct_mt | 0 | 0 | 0.26 | **0.6** | 1.24 | 3.13 | 6.44 |
+
+> ⚠️ **核数据**（低 nCount、低 mt%）→ **不得照搬整细胞 scRNA 阈值**（`nCount≥1000` 会砍掉约 30% 的核；
+> `mt<10%` 几乎不筛）。QC 用**逐样本 MAD 离群** + `pct_mt < 5`。
+
+**GSE307534（空间）** — 本地 19 张切片，阶段覆盖：
+
+```
+Normal : P4_Normal
+AAH    : P1_AAH, P2_AAH, P4_AAH, P4_AAH-1
+AIS    : P3_AIS
+MIA    : P10_MIA, P13_MIA, P15_MIA, P18_MIA
+IAC    : P1_LUAD, P2_LUAD, P3_LUAD, P4_LUAD, P10_LUAD, P13_LUAD, P21_LUAD, P22_LUAD, P25_LUAD
+```
 
 ---
 
-## 3. 单细胞基座：已查实的问题与权威口径
+## 3. 方法学事实（已核实，决定选型）
 
-### 3.1 阶段映射（权威 = GEO 逐样本 histology）
-- **GSE189357 真值**：`TD1/2/9 = IAC`、`TD3/4/6 = MIA`、`TD5/7/8 = AIS`；**无 AAH**。
-  - 旧错误：`TD9` 被标 **AAH**、`TD4` 被标 IAC → 项目里 **14,312 个"AAH"细胞实为 IAC**。
-- **GSE131907 真值**（按 `Sample_Origin`）：`nLung→Normal`、`tLung/tL/B→IAC`、`mLN→LNM`、`nLN→正常淋巴结`、`mBrain→脑转移`、`PE→胸腔积液`。
-  - 旧错误：`nLN`(35,169) 被记为 **LNM**；`mBrain`(21,158)+`PE`(19,755) 被并入 **IAC**；`LNM` 一档约 60% 是正常淋巴结。
-- **GSE148071**：应如实标注为 **Advanced NSCLC**（不做"早期 LUAD"表述）。
-- **原则**：一切静默默认（如 `.get(x,'IAC')`）必须取消。
-
-### 3.2 细胞类型映射
-- 旧 `Malignant` 由 `62_super_continent.R` 用**泛上皮标记**（EPCAM/KRT8/18/19/CDH1/SFN）argmax 判定 → **不是恶性特异**，`Pure_Tumor` 可能混入正常上皮。
-- **必须用 CNV 推断**（inferCNV/CopyKAT）证真恶性 vs 正常上皮。
-- 参照流形无肿瘤态 → SCMG 官方映射/隐空间**均无法区分恶性 vs 正常上皮**（已实测：余弦轮廓系数 0.035、kNN 纯度 0.68）。
-
-### 3.3 单细胞管线参数（沿用性）
-- **可沿用**：QC（nFeature 500–10000 / nCount 1000–60000 / mt<10%）、LogNormalize、HVG(vst,2000)、PCA(50)、Harmony、聚类。
-- **须重做**：① **双体去除**（`36` 用 nCount+nFeature z-sum 取高 2.5%，非 DoubletFinder，会误删好细胞）；② **恶性标签**（CNV）；③ **阶段映射**（GEO 真值）。
-- **文档/代码不一致**：Harmony `dims` 代码为 **1:50**，白皮书写 1:30。
-
-### 3.4 真 AAH（GSE308103，已下载 + QC）
-- 9 个 AAH 样本、~62,892 细胞；**上皮占比 30–51%（最大谱系）**，纤维 19–31% → **非纤维富集，可用**。
-- 口径差异：**snRNA（核）**，纳入时须注明。
-- QC 结果：`results/tables/gse308103_aah_qc.csv`。
+| 结论 | 依据 |
+| :--- | :--- |
+| **Visium spot 非单细胞**（55 µm 混合多细胞）→ 必须**解卷积** | 平台定义 |
+| 参考**模态需与切片匹配**（FFPE↔FFPE）→ 用 **GSE308103** 作参考 | RCTD / 基准文献 |
+| **sc↔sn 是 system 效应**，不能用 `modality 当 batch` | scvi-tools（SysVI 专为此设）；Hrovatin 2025 |
+| `scvi-tools 0.15.5` 的 scVI 参数默认值有效；**1.5.x 需 Py≥3.10（本机装不上）** | 实测 |
+| **RCTD `doublet_mode='full'` 无 reject 类别，且 `constrain=F`**（权重非概率） | 源码实测 |
+| `squidpy.nhood_enrichment` **置换标签、只返回 z、无 p 值** | 源码实测 |
+| **SCMG 无「状态逆转」能力**；`generate_transition_cells` 只在参照流形**已有**类型间插值；参照流形无肿瘤态 | 源码 + 实测 |
+| **观察性单细胞/空间不能建立因果**；合法杠杆 = **cis-MR + coloc** 或扰动实验 | 方法学共识 |
+| 单细胞基础模型（scGPT/Geneformer…）**打不过** scVI/Harmony/PCA 基线 | Kedzierska 2025 *Genome Biol*；Ahlmann-Eltze 2025 *Nat Methods* |
+| PLIP zero-shot 判 WHO 生长模式**未经验证**，且 spot 尺度**不足** | 文献 + 分辨率论证 |
+| CMap 的 **Tau 是 0–1 重现性指标，不可能为负**；`Tau≤-90` 系误用 | Subramanian 2017 |
 
 ---
 
-## 4. 空间（Visium）队列：真值
-- **核心 6 阶段**：Normal `P4_Normal`、AAH `P1_AAH`、AIS `P3_AIS`、MIA **`P10_MIA`**(GSM9226189, 真 MIA)、IAC `P3_LUAD`、LNM **`PT_3_LNM`**(GSE190811)。
-- **P0 级禁令**（[`.agents/rules/spatial_cohort_and_figure_prohibitions.md`](.agents/rules/spatial_cohort_and_figure_prohibitions.md)）：禁止 `P4_AAH1`/`P4_AAH` 充当 MIA；禁止把原发切片伪标 LNM。
-- GEO 已证：`P1_AAH`(GSM9226168) = 真 AAH；`P10_MIA` = 真 MIA；**空转 AAH 无顶替**。
-- ⚠️ `17_render_6stage_master_multimodal_matrix_complete.py` 仍用 `P4_AAH1` 当 MIA（旧版，须处理）。
+## 4. 环境事实（硬约束）
+
+- **无 GPU**（无 `/dev/nvidia*`，`torch.cuda.is_available()=False`）→ 深度学习/共折叠类方法仅 CPU 或需外部节点；
+- **Python 3.8.10、无 conda** → `scvi-tools 1.5`、`cellcharter` 装不上；
+- **共享库 root 属主** → 装包进个人库（`~/.local/lib/python3.8/site-packages`、`~/R/.../4.2`）；
+  曾因装 `cellcharter` 把 torch 降到 1.12 搞坏 scvi（已回滚 torch 2.4.1+cu118、pl 1.5.10.post0、torchmetrics 0.7.3）；
+- **网络**：`http(s)_proxy` 指向死端口 → 出网须绕代理；`github.com` 被墙但 `api/codeload` 通；
+  CRAN ✓、conda-forge ✓、PyPI 经清华镜像 ✓。
+
+**已装可用工具**：
+- R：`CopyKAT 1.2.5`、`coloc 5.2.3`、`ieugwasr 1.1.0`、`TwoSampleMR 0.7.9`、`scDblFinder 1.12.0`、`spacexr 2.2.1`、`DESeq2`、`scater/scuttle`
+- Python：`harmonypy 0.0.10`、`SpaGCN 1.2.7`、`plip`（权重已缓存 1.2 GB）、`vina 1.2.7`、`fpocket`(CLI)
+- 待装：BANKSY、PRECAST、P2Rank、gnina、PoseBusters、OpenMM（GROMACS 缺失）
 
 ---
 
-## 5. 已查实的"伪数据/伪算法"与处置
-| 对象 | 问题 | 处置 |
-| :--- | :--- | :--- |
-| `pipeline/11_tmb_...py` | 写死 TMB 表、HR、`np.exp` 伪 KM，无 Cox | 待重算/隔离 |
-| `pipeline/107_lincs_...py` | CMap 结果反推伪造，参考数据是 28×8 stub | ✅ 已改诚实版（无真数据即拒绝）；伪表已隔离 |
-| `117_scmg_master_316k_pipeline.py` | 伪时间/逆转概率写死（`stage_order` 字典 + `1-pseudotime`） | ✅ 已隔离 |
-| `merge_316k_umap.py` | 传统 UMAP + 写死分期表造逆转概率 | 已识别 |
-| `29/31/64_*.py` | 违禁样本映射（P4_AAH1→MIA、P3_LUAD→LNM） | ✅ 已隔离 |
-| `13/44/45/53/60/40/41/85/110` 等 | 写死数值/合成曲线/伪造矩阵 | 待清理（见 `PIPELINE_MANIFEST` 与审计） |
-| SCMG 全量逆转（118） | 真算，但全局相关 → 髓系污染（MCEMP1 等） | 传统口径问题，已记录 |
+## 5. 旧工程错误（勿再犯）
+
+见 `/home/eto/luad_invasion/luad_v2_out_of_scope/` 与 v1 白皮书的历史记录：TD9 误标 AAH；`nLN` 记成 LNM；脑转/胸水并入 IAC；
+写死数值与伪曲线；SCMG 逆转因子伪造；CMap 指标误用；GSE190811 当 LUAD LNM。
+
+**原则**：一切标签/分期/数值须有权威来源；**未经核实不得入库**；凡无真实来源 → **拒绝产出**。
 
 ---
 
-## 6. 单细胞脚本"最后一版"链（其余为旧版干扰）
-`30_scRNA_qc_filtering.R` → `34_super_atlas_harmony.R` → `36_doublet_removal.R` → `62_super_continent.R` → `subcluster_tumor_paper.R` → `build_14tumor_tme_reference.R` → `01_extract_subatlas_annotations.R` → `54_rigorous_paper_harmony_subclustering.R` / `calibrate_single_cell_gating.R` / `reannotate_immune_canonical.R` / `sync_master_metadata.py` → `101_rebuild_accurate_metadata_cache.py`
+## 6. 相关文件
 
-产出：`results/metadata_cache/all_subatlases_barcode_to_label_mapping.csv`（316,689 细胞；**当前版本阶段/标签有误，待重建**）。
-
----
-
-## 7. 整改路线（最高规格重建）
-1. **阶段映射权威化**（GSE189357 TD 真值 / GSE131907 `Sample_Origin` / GSE148071 如实），取消静默默认。
-2. **补真 AAH**：整合 GSE308103（snRNA，注明口径）。
-3. **CNV 证真恶性标签**（inferCNV/CopyKAT）。
-4. **重做双体去除**（DoubletFinder/scDblFinder）。
-5. **隔离旧版脚本**（每功能只留最后一版）。
-6. **下游连锁重做**：RCTD 解卷积（依赖单细胞签名）、空间 6 阶段、SCMG 分支（纯 SCMG）。
-7. **重出受影响图版**。
-
-> **原则**：不得再出现"标签/分期/数值未经权威核实即入库"；一切结果须有可追溯的真实来源。
-
----
-
-## 8. 文档目录
-- 白皮书（叙事，权威）：[`LUAD_SPATIOTEMPORAL_INVASION_ARCHITECTURE_AND_PROGRESS.md`](LUAD_SPATIOTEMPORAL_INVASION_ARCHITECTURE_AND_PROGRESS.md)
-- 本总纲（事实）：`PROJECT_SUMMARY.md`
-- 旧报告归档：[`archive/legacy_docs/`](archive/legacy_docs/)
-- 脚本清单：`PIPELINE_MANIFEST.md`；历史终审：`FINAL_RIGOROUS_AUDIT_VERDICT.md`
-- 规则：`.agents/rules/`（含 P0 空间样本禁令）
+- 技术路线：[`WHITEPAPER.md`](WHITEPAPER.md)
+- 检查点：`PLAN_AND_CHECKPOINTS.md`
+- 参数出处：[`PARAMETERS_AND_SOURCES.md`](PARAMETERS_AND_SOURCES.md)
+- 靶点 MR/coloc 手册：[`M7B_MR_COLOC_TARGET_ANCHORING.md`](M7B_MR_COLOC_TARGET_ANCHORING.md)
+- 空间 P0 禁令：[`spatial_cohort_and_figure_prohibitions.md`](spatial_cohort_and_figure_prohibitions.md)
+- 范围外存档：`/home/eto/luad_invasion/luad_v2_out_of_scope/`（含说明 README）
