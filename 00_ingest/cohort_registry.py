@@ -11,11 +11,14 @@ cohort_registry.py  —  权威队列登记表（single source of truth）
 权威口径来源：GEO 逐样本（见 docs/PROJECT_SUMMARY.md §数据底座）。
 铁律：**分期无静默默认**（未知 token 一律 raise）。
 """
+import os
 
 # -----------------------------------------------------------------------------
-# 1. 配对患者（经 GSE307534 与 GSE308103 样本名交叉核实）
+# 1. 配对患者（= 两个 GEO 权威表患者号的交集）
+#    ⚠️ 2026-09-15 修正：早期空转仅下载 19/56 张时交集为 9 例；56 张齐后实为 23 例
+#    （P3–P25）。**旧值 9 是下载不全的产物**，已作废。
 # -----------------------------------------------------------------------------
-PAIRED_PATIENTS = ["P3", "P4", "P10", "P13", "P15", "P18", "P21", "P22", "P25"]
+PAIRED_PATIENTS_MIN = 23          # 交集规模下限（不满足即视为数据不全，非静默通过）
 
 # -----------------------------------------------------------------------------
 # 2. 两个配对数据集
@@ -46,11 +49,15 @@ COHORTS = {
 STAGE_MAP = {
     "Normal": "Normal", "Normal1": "Normal",
     "AAH": "AAH", "AAH1": "AAH", "AAH-1": "AAH",   # P4 的第二个 AAH 病灶
-    "AIS": "AIS", "AIS1": "AIS",
+    "AIS": "AIS", "AIS1": "AIS", "AIS-1": "AIS",   # P21/P23 的第二个 AIS 病灶
     "MIA": "MIA",
-    "LUAD": "IAC", "LUAD1": "IAC",       # 数据中出现的变体
+    "LUAD": "IAC", "LUAD1": "IAC", "LUAD-1": "IAC",  # P7 的第二个 LUAD 病灶
     "IAC": "IAC",
 }
+
+# `-1` 后缀 = **同一患者的第二个病灶切片**（GEO 标题作 "second ... of patient N"），
+# 与首个病灶分期相同但**解剖独立**，不可合并。ordinal 显式记录以便下游追溯。
+SECOND_LESION_SUFFIX = "-1"
 
 STAGES = ["Normal", "AAH", "AIS", "MIA", "IAC"]     # 本项目配对范围（LNM 空转暂缺）
 LNM_STATUS = "空转 LNM 暂缺（公开库无合法 LUAD 淋巴结转移 Visium；待真实数据）"
@@ -70,12 +77,68 @@ def resolve_stage(token: str) -> str:
     raise KeyError(f"未知分期 token {token!r}；权威映射只含 {sorted(STAGE_MAP)} —— 拒绝静默默认。")
 
 
+def lesion_ordinal(token: str) -> int:
+    """1 = 该患者该分期的首个病灶；2 = 第二个（token 带 `-1`）。"""
+    return 2 if token.endswith(SECOND_LESION_SUFFIX) else 1
+
+
+# -----------------------------------------------------------------------------
+# 4b. GEO 权威样本表（GI 逐样本标题，provenance=00_ingest/geo_metadata/）
+#     用途：与**本地目录名**推导的 (patient, stage) 交叉核验；不一致即 FAIL。
+# -----------------------------------------------------------------------------
+GEO_META_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "geo_metadata")
+
+# 空转切片解压后**必须存在**的文件（相对切片根目录）
+SPATIAL_REQUIRED = (
+    "filtered_feature_bc_matrix/matrix.mtx.gz",
+    "filtered_feature_bc_matrix/barcodes.tsv.gz",
+    "filtered_feature_bc_matrix/features.tsv.gz",
+    "spatial/scalefactors_json.json",
+)
+# 必需但**文件名随 Space Ranger 版本而异**的项：每组至少命中一个
+SPATIAL_REQUIRED_ANY = (
+    ("spatial/tissue_positions.csv", "spatial/tissue_positions_list.csv"),
+)
+
+
+def load_geo(dataset: str) -> dict:
+    """GEO 权威 GSM → dict(patient_id, stage, lesion_ordinal, token, title)。
+
+    stage 为 **GEO 原始分期词**（LUAD/AIS/…），不是归一化后的 IAC；
+    归一化一律走 `resolve_stage`。
+    """
+    if dataset not in COHORTS:
+        raise KeyError(f"{dataset} 不在册；在册 {sorted(COHORTS)}")
+    path = os.path.join(GEO_META_DIR, f"{dataset}_samples.tsv")
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"缺 GEO 权威样本表 {path} —— 拒绝无据冻结。")
+    out = {}
+    with open(path, encoding="utf-8") as fh:
+        hdr = fh.readline().rstrip("\n").split("\t")
+        need = {"gsm", "patient_id", "stage", "lesion_ordinal", "token", "geo_title"}
+        if set(hdr) != need:
+            raise ValueError(f"GEO 表表头异常 {hdr}，期望 {sorted(need)}")
+        for line in fh:
+            c = line.rstrip("\n").split("\t")
+            out[c[0]] = dict(patient_id=c[1], stage=c[2], lesion_ordinal=int(c[3]),
+                             token=c[4], title=c[5])
+    return out
+
+
+def load_spatial_geo() -> dict:
+    return load_geo("GSE307534")
+
+
 def summary():
     print("=== 配对数据集（本项目范围）===")
     for k, v in COHORTS.items():
         print(f"  {k}: {v['modality']:8s} | {v['platform']} | GEO 样本 {v['n_samples_geo']}")
         print(f"      role: {v['role']}")
-    print(f"\n配对患者（{len(PAIRED_PATIENTS)}）: {', '.join(PAIRED_PATIENTS)}")
+    sn = {g["patient_id"] for g in load_geo("GSE308103").values()}
+    sp = {g["patient_id"] for g in load_geo("GSE307534").values()}
+    both = sorted(sn & sp, key=lambda x: int(x[1:]))
+    print(f"\n配对患者（{len(both)}，两模态交集）: {', '.join(both)}")
+    print(f"  仅空间（无 snRNA，不入配对）: {', '.join(sorted(sp - sn, key=lambda x: int(x[1:]))) or '无'}")
     print(f"阶段词表: {STAGES}")
     print(f"LNM: {LNM_STATUS}")
     print("\n禁用法（P0）:")

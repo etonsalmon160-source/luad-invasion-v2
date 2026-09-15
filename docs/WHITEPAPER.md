@@ -26,16 +26,17 @@
 
 ---
 
-## 2. 数据底座（仅两个数据集，9 例配对）
+## 2. 数据底座（仅两个数据集，23 例配对）
 
 | | **GSE308103** | **GSE307534** |
 | :--- | :--- | :--- |
 | 模态 | **snRNA**（细胞核；FFPE） | **Visium spot**（FFPE CytAssist；55 µm，**非单细胞**） |
 | 角色 | 单细胞**参考**；**唯一含 AAH** 的单细胞资源 | **空间图谱**（原位坐标）；**解卷积对象** |
-| 规模 | 75 样本；**798,100 核**（实测） | GEO 56 样本 / 25 患者；本地 19 张切片 |
+| 规模 | 75 样本；**798,100 核**（实测） | GEO 56 样本 / 25 患者；本地 **56 张切片** |
 | 分期 | Normal / AAH / AIS / MIA / IAC | Normal / AAH / AIS / MIA / IAC |
 
-**配对患者（9 例）**：P3 · P4 · P10 · P13 · P15 · P18 · P21 · P22 · P25 —— 每例在**两个模态**均有切片，本地空间切片**完整覆盖**这 9 例。
+**配对患者（23 例，P3–P25）** —— 每例在**两个模态**均有切片，本地空间切片**完整覆盖**这 23 例。
+> **2026-09-15 修正**：旧值"9 例"系**仅下载 19/56 张空间切片**时的交集产物；切片补齐后按两张 GEO 权威表求交集实为 23 例。
 
 **关键概念**：Visium 每个 spot 含**多个细胞**（混合信号）→ 必须用单细胞参考**解卷积**才能得到 spot 的细胞组成。配对的作用是**让参考模态匹配、患者匹配**，从而让解卷积可信；它**不取消**解卷积这一步。
 
@@ -49,7 +50,7 @@
 M0  输入冻结        两数据集样本/患者/分期冻结 + 哈希
 M1  QC / 双体       snRNA 专用阈值（MAD 离群）+ scDblFinder 逐样本
 M2  恶性证真        CopyKAT 逐样本 CNV（+ infercnv 子集交叉验证）
-M3  整合            scVI(batch=dataset) 建 snRNA 图谱
+M3  整合            scVI(batch=sample_id) 建 snRNA 图谱（原文 batch=dataset 已废，见 PLAN §C）
                     + scArches/scANVI 跨模态标签迁移；scIB 完整 panel
                     对照臂：纯 SCMG zero-shot 整合/流形（正交，不产出结论）
 M4  跨模态 AAH      同患者配对一致性（五判据）
@@ -101,7 +102,8 @@ DoubletFinder 需 Seurat 2/3 或 5，本机为 4.3.0）：
 
 ### M3 · 整合：**不做"modality 当 batch"**
 sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集共线 → 条件 VAE 会**欠校正**。
-正确做法：**snRNA 内部** 用 `scVI(batch=dataset)` 建图谱；**跨模态**用 **scArches/scANVI 标签迁移**（非"zero-shot"）。
+正确做法：**snRNA 内部** 用 `scVI(batch=sample_id)` 建图谱（**`patient_id` 绝不可作 batch**——分期嵌套于患者内）；
+**跨模态**用 **scArches/scANVI 标签迁移**（非"zero-shot"）。
 评估用 **scIB 完整 panel**：批去除（kBET + iLISI + graph-connectivity + PCR）**与** 生物保守（cLISI/ARI/NMI/ASW）**并报**；
 不单凭 iLISI↑ 判定成功（可被过度整合刷高）。
 **SCMG 对照臂**：仅做 zero-shot 跨数据集整合 + 流形 + 状态刻画；**不输出逆转/因果**（该能力不存在）。
@@ -186,7 +188,7 @@ sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集�
 | 风险 | 缓解 |
 | :--- | :--- |
 | sn↔空间跨模态不可迁移 | 同患者配对做**内部一致性**验证（M4）；低置信标 `unassigned` |
-| 空间患者数有限（本地 9 例配对） | 患者级聚合；TCGA 大样本兜底；**不主张亚型分型** |
+| 空间患者数有限（本地 23 例配对） | 患者级聚合；TCGA 大样本兜底；**不主张亚型分型** |
 | RCTD 罕见类型 <25 细胞报错 | 先合并稀有类型或降 `CELL_MIN_INSTANCE` 并留档 |
 | 组成性比例统计假阳性 | 效应量 + 置换检验，不用裸 FDR |
 | MR 所需 GWAS 可能受控 | 改用 OpenGWAS 肺癌 GWAS 并标注来源与样本量 |

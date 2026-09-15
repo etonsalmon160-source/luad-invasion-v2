@@ -28,11 +28,11 @@
 
 ### M0 · 输入冻结门 (Input Freeze)
 - **做**：按 [`00_ingest/cohort_registry.py`](00_ingest/cohort_registry.py) 纳入**两个配对数据集**
-  （`GSE308103` snRNA + `GSE307534` 空间），产出样本/患者/分期冻结表（含**9 例配对关系**）。
+  （`GSE308103` snRNA + `GSE307534` 空间），产出样本/患者/分期冻结表（含 **23 例**配对关系）。
 - **过门条件（全满足）**：
   1. 样本表字段齐全：`dataset, sample_id, patient_id, stage, modality`；
   2. **分期与 GEO 真值一致**（token 严格映射，未知即 raise）；**空转 LNM 不得伪造**（暂缺如实标注）；
-  3. **9 例配对患者**（P3/P4/P10/P13/P15/P18/P21/P22/P25）在**两模态**均有切片；
+  3. **23 例配对患者**（P3–P25）在**两模态**均有切片；
   4. 代码审查**无静默默认**；产出**冻结清单 + SHA-256 + 校验报告**。
 - **不过门 → 停**（不得进 M1）。
 
@@ -56,7 +56,9 @@
 - **GROMACS 缺失** → 装，或**砍掉 Stage-8 的 100 ns MD**（仅保留对接）。
 
 **C. 方法学修正**（写入下方 M3/M5/M6/M7 各门）
-- **M3**：弃用「modality 当 batch」（sc↔sn 是 *system* 效应，且 modality 与 dataset 共线）→ **scVI(batch=dataset)** 建 scRNA 图谱 + **scArches/scANVI 映射** sn RNA；scIB 用**完整 panel**。
+- **M3**：弃用「modality 当 batch」（sc↔sn 是 *system* 效应，且 modality 与 dataset 共线）→ **scVI(`batch=sample_id`)**。
+  **⚠️ 2026-09-15 更正**：原文 `batch=dataset` 在**单数据集**（GSE308103）下该键为**常量、无意义**；75 个样本文库才是唯一真实技术批次轴。
+  **且 `patient_id` 绝不可作 batch** —— 分期嵌套于患者内，校正它会抹掉 M4 门判据 ④ 所需的患者内配对对比。scIB 用**完整 panel**。
 - **M5**：弃用自归一化 Σ=1 作为门（full 模式无 reject，该门为空）→ 门改到 **RCTD 原生输出 + 显式 QC**；参考模态与切片匹配。
 - **M6**：GMM/BIC 改**稳定性/共识选择**；Fisher 改报**效应量**；Squidpy 统计改**类别标签 + 经验 p**。
 - **M7**：CMap 指标纠正为 **NCS**，或直接**砍掉**（无 LINCS 数据不产出）。
@@ -87,10 +89,14 @@
 - **注**：本数据为 **snRNA（GSE308103）** → CNV 需放宽参数并谨慎解读（核、低 UMI）；参考用同样本免疫/基质细胞。
 
 ### M3 · 整合门（双分支）
-- **做**：**A 标准分支**：**scVI（`batch=dataset`）** 建 scRNA 图谱 → **scArches/scANVI 映射 sn RNA**（非 zero-shot）。
+- **做**：**A 标准分支**：**scVI（`batch=sample_id`）**（原文 `batch=dataset` 见 §C 更正）。
+  **双臂**：**Arm A（不校正，主）** vs **Arm B（Harmony/scVI on `sample_id`，对照）**。
   **B SCMG 分支**：**zero-shot 跨数据集 scRNA 整合 + 全局流形 + 状态刻画**（**不掺传统算法**；**不输出逆转/因果**）。
-- **过门**：以 **scIB 完整口径**给数——批去除（kBET + iLISI + graph-connectivity + PCR）**与** 生物保守（cLISI/ARI/NMI/ASW）**并报**；证明**有分辨力**（各阶段可分），非"全糊一块"。
-- **禁用**：`modality 当 batch`（sc↔sn 为 system 效应且与 dataset 共线）；仅凭 iLISI↑ 不得判为整合成功（可被过度整合刷高）。
+- **过门**：以 **scIB 完整口径**给数——批去除（kBET + iLISI + graph-connectivity + PCR）**与** 生物保守（cLISI/ARI/NMI/ASW）**并报**；
+  **判据重写（2026-09-15）**：不再是「最大化 iLISI」，而是 **batch 指标可接受 _且_ 分期可分性被保留**（证明**有分辨力**，非"全糊一块"）。
+  单数据集**无 ground truth** ⇒ 生物保守的 ARI/NMI 只能算**未校正 vs 已校正簇标签之间**的，**须在 GP3 显式批准此门规格变更**。
+- **禁用**：`modality 当 batch`（sc↔sn 为 system 效应且与 dataset 共线）；**`patient_id` 作 batch**；仅凭 iLISI↑ 不得判为整合成功（可被过度整合刷高）。
+- **裁决**：Arm B 相对 Arm A 的 **ARI < 0.7** ⇒ Arm A 为主，如实报方法学局限。
 
 ### M4 · 跨模态 AAH 门（**五判据缺一不可**）
 - ① 各阶段**可分辨**；② 重叠阶段 sn↔sc **一致**；③ 平台偏移 **δ(stage) 稳定**；④ **sn 内部配对**（AAH vs 同患者 Normal/AIS）同向；⑤ AAH 身份 **CNV/标记**证真。
@@ -135,7 +141,7 @@
 ---
 
 ## 4. 双分支架构（贯穿 M3–M8）
-- **标准/主流分支**：scVI（`batch=dataset`）/scANVI + scArches、Harmony、Seurat、RCTD、SpaGCN、Squidpy、DESeq2、CellRank、SCENIC+…
+- **标准/主流分支**：scVI（`batch=sample_id`）/scANVI + scArches、Harmony、Seurat、RCTD、SpaGCN、Squidpy、DESeq2、CellRank、SCENIC+…
 - **纯 SCMG 分支**：**zero-shot 跨数据集 scRNA 整合 → 全局流形 → 细胞状态刻画**（**不掺传统算法**）。
   ~~条件扩散轨迹 → CausalGenePredictor 因果~~ —— **已删除**（能力不存在，见铁律 6）。
 - 两分支**对照**（scIB 完整口径）；工具源码见 [`tools/`](tools/)。
@@ -145,12 +151,13 @@
 
 ## 5. 数据来源与获取（**范围已收窄：仅两个配对数据集**）
 
-> **2026-09-12 收窄**：仅用 **`GSE308103`(snRNA) + `GSE307534`(Visium 空间)** —— 同一研究、**9 例患者配对**
-> （P3/P4/P10/P13/P15/P18/P21/P22/P25），**模态匹配（FFPE↔FFPE）**。
+> **2026-09-15 修正**：配对患者数 **9 → 23**（P3–P25）。**旧值 9 是"仅下载 19/56 张空间切片"时的产物**，
+> 切片下载齐后按两张 GEO 权威表求交集实为 **23 例**。见 `00_ingest/cohort_registry.py` 的 `PAIRED_PATIENTS_MIN`。
+> **2026-09-12 收窄**：仅用 **`GSE308103`(snRNA) + `GSE307534`(Visium 空间)** —— 同一研究、**模态匹配（FFPE↔FFPE）**。
 > 三个 scRNA 队列（GSE131907/189357/148071）**移出范围**，存档 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
 
 - **单细胞/参考**：`GSE308103`（snRNA，75 样本 / 798,100 核实测）——**唯一含 AAH** 的单细胞资源；
-- **空间**：`GSE307534`（Visium CytAssist FFPE；GEO 56 样本/25 患者，**本地 19 张切片**，覆盖全部 9 例配对患者）；
+- **空间**：`GSE307534`（Visium CytAssist FFPE；GEO 56 样本 / 25 患者，**本地 56 张切片齐**，覆盖全部 **23 例**配对患者；仅 P1/P2 无 snRNA 不入配对）；
 - **LNM**：空转暂缺（~~GSE190811~~ 经核实为**乳腺癌**，已废）；
 - （范围外，已存档）`HRA001130`（sc，受控）预留接口 → `/home/eto/luad_invasion/luad_v2_out_of_scope/`；
 - TCGA-LUAD：仅表达 + 临床（**突变文件 0 字节，WES/TMB 永久禁用**）。
@@ -181,9 +188,10 @@
 ## 6. 里程碑进度看板
 | 里程碑 | 状态 | 过门 |
 | :--- | :---: | :---: |
-| M0 输入冻结 | ✅ 100% | ✅ |
+| M0 输入冻结 | ⚠️ 未过门 | ☐ |
 | M-1 计划整改 | 🔶 进行中 | ☐ |
 | M1 QC/双体 | ✅ 100% | ✅ |
+| Step 0 表达对象重建 (GP0) | ✅ 100% | ✅ |
 | M2 CNV 证真 | ⬜ 0% | ☐ |
 | M3 整合(双分支) | ⬜ 0% | ☐ |
 | M4 跨模态 AAH | ⬜ 0% | ☐ |
@@ -195,6 +203,18 @@
 > 每过一个门 → 更新本表 + 记一笔"过门证据"（产物路径 + 哈希）。
 
 ### 过门证据 (Gate Evidence)
+
+**Step 0 · GP0 表达对象重建 — ✅ PASS (2026-09-15 23:27)**
+- 脚本：`02_expression/01_build_expression_gse308103.py`（构建）· `02_expression/02_verify_expression_build.py`（**对写出的 h5ad 复核**，不看构建器内存态）
+- 来源：75 个稠密文本计数矩阵 → 稀疏 AnnData；掩码 = M1 的 `qc_pass & doublet_class=='singlet'`
+- 结果：**(648,945 细胞 × 18,082 基因)**，nnz **791,571,728**，稀疏度 93.25%；分期 IAC 294,684 / Normal 152,302 / AIS 123,988 / AAH 53,887 / MIA 24,084（23 患者 / 75 样本）
+- 校验：V1–V6 **12/12 全绿**；V2 逐样本偏差 **0**；V3 nnz **精确等于** Σ nFeature；V3b **逐细胞** nnz 偏差 **0**；V5 分期无静默默认
+- **对抗性审计**（`02_expression/03_audit_expression_build.py`）：**22/22 全绿**。含 **A5 独立重抽取**（不同代码路径从原始文本重算 3 样本 × 逐元素比对）、**A2b 逐细胞行和 == nCount**（偏差 0）、**A4b 全 7.9 亿元素整数性**（V6b 只抽查 500 万）、**A6b/c R1 闭合**（token/patient/stage vs GEO 权威 75/75、23/23）
+- 额外独立核对：mask CSV 与 h5ad obs **逐行**四项一致；75 文件基因向量 SHA-256 唯一值数 = 1；float32 精度安全（max 52,227 ≪ 2²⁴）
+- 审计残余盲区（如实标缺）：(行和,非零数) 组合重复 252,677/648,945 → 同摘要细胞互换的盲区，由 A5/A7b 兜底；A5 仅覆盖 3/75 样本
+- 产物：`results/02_expression/gse308103_counts.h5ad` `f9dbe382…`（1.91 GB）· `gse308103_analysis_mask.csv.gz` `2f8bb0f6…` · `per_sample/*.npz` ×75 · `build_manifest.json`
+- 报告：[`results/02_expression/GP0_report.md`](results/02_expression/GP0_report.md)
+- 诚实记录：**首次运行崩于** `KeyError ['cell_barcode']`（`ad.AnnData` 就地持有 obs，`obs_names.name=None` 污染了其后的 `reset_index()`）→ 已定位、修复、重跑；**崩溃未污染数据**（h5ad 当时已成功写出）。失败日志留档 `logs/Step0_build_expression.run1_FAILED.stdout`
 
 **M1 QC / 双体 — ✅ PASS (2026-09-12)**
 - 数据集：`GSE308103`（snRNA）**75 样本 / 798,100 核**
@@ -209,15 +229,16 @@
 - 产物哈希：`gse308103_per_cell_qc.csv.gz` `44c890bb…` · `gse308103_qc_per_sample.csv` `2d0bd7df…`
 - ⚠️ v1 的 per-cell 表存在 `cell_barcode` 失效缺陷（fread autostart 跳过条码行）→ 已修复并全量重跑，v1/v2 报告作废
 
-**M0 输入冻结（配对）— ✅ PASS (2026-09-12)**
+**M0 输入冻结（配对）— ⚠️ 未过门 (2026-09-15 重做)**
 - 脚本：`00_ingest/01_freeze_paired.py`；registry `00_ingest/cohort_registry.py`
-- 结果：**94 样本 / 25 患者 / 9 例双模态配对**；唯一键 = `sample_key`（`dataset:sample_id`）
+- 结果：**131 样本 / 25 患者 / 23 例双模态配对**（P3–P25）；唯一键 = `sample_key`（`dataset:sample_id`）
 - 产物：`results/00_ingest/paired_{samples,patients,source_files}.csv` + `M0_paired_validation_report.md` + `paired_manifest.json`
-- 校验：C1–C5 全绿（含"空转 LNM 未伪造"）
-
-**M0 输入冻结 — ⏳ 待重做（范围收窄后）**
-- 现 registry 已改为**两个配对数据集**：[`00_ingest/cohort_registry.py`](00_ingest/cohort_registry.py)（配对患者 / 分期 token 严格映射 / P0 禁用法）。
-- **待产出**：两数据集的样本/患者/分期**冻结表 + SHA-256 + 校验报告**（含 9 例配对关系核验）。
+- 校验：C1–C7 绿；**C8 红 1 项** → `paired_manifest.json` 的 `gate_pass=false`
+- **未过门原因（唯一）**：`GSE307534/GSM9226176` 磁盘上的 tar **截断**（56,272,384 B，应为 90,677,930 B；
+  `gzip -t` 报 `unexpected end of file`），缺 `spatial/scalefactors_json.json` 与 `spatial/tissue_positions.csv`。
+  已实测重下载可得**完整 87 MB** tar（清单含全部必需文件，且**只有一个切片根** `P4_AAH2`）。
+- **不阻塞 M2/M3-A**：该缺口在**空间**数据集（GSE307534），而 M2/M3-A 只跑 **snRNA**（GSE308103）。补下载属 M5 前置，
+  且源目录 `/home/eto/luad_invasion` 为**只读**，需单独授权后另做。
 - ⚠️ 旧 M0（三 scRNA 队列）**已随范围收窄作废**，其脚本/产物移至 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
 
 > **历史记录（旧范围，已作废）**：曾冻结 3 个 scRNA 队列（GSE131907 / GSE189357 / GSE148071，420,766 细胞 / 109 样本 / 95 患者），

@@ -12,9 +12,10 @@
 | 数据集 | 真实身份 | 角色 | 实测规模 |
 | :--- | :--- | :--- | :--- |
 | **GSE308103** | snRNA-seq（FFPE fixed RNA） | 单细胞**参考**；**唯一含 AAH** 的单细胞资源 | **75 样本 / 798,100 核**（实测） |
-| **GSE307534** | Visium CytAssist FFPE 空间 | **空间图谱**（原位坐标）；解卷积对象 | GEO 56 样本/25 患者；**本地 19 张切片** |
+| **GSE307534** | Visium CytAssist FFPE 空间 | **空间图谱**（原位坐标）；解卷积对象 | GEO 56 样本/25 患者；**本地 56 张切片** |
 
-**配对（9 例）**：`P3 P4 P10 P13 P15 P18 P21 P22 P25` —— 两模态均有切片；本地空间切片**完整覆盖**这 9 例。
+**配对（23 例，P3–P25）**：两模态均有切片；本地空间切片**完整覆盖**这 23 例（P1/P2 仅空间、无 snRNA，不入配对）。
+> **2026-09-15 修正**：旧值"9 例"是**仅下载 19/56 张切片**时的交集产物；切片补齐后按两张 GEO 权威表求交集实为 23 例。
 分期（两模态一致）：**Normal / AAH / AIS / MIA / IAC**。
 
 **LNM**：空转淋巴结转移**无合法 LUAD 数据**。`GSE190811` 经 GEO 核实系列标题为
@@ -38,15 +39,18 @@
 > ⚠️ **核数据**（低 nCount、低 mt%）→ **不得照搬整细胞 scRNA 阈值**（`nCount≥1000` 会砍掉约 30% 的核；
 > `mt<10%` 几乎不筛）。QC 用**逐样本 MAD 离群** + `pct_mt < 5`。
 
-**GSE307534（空间）** — 本地 19 张切片，阶段覆盖：
+**GSE307534（空间）** — 本地 **56/56** 张切片（2026-09-15 补齐），阶段覆盖（GEO 权威表，`IAC` = 原始 token `LUAD`）：
 
 ```
-Normal : P4_Normal
-AAH    : P1_AAH, P2_AAH, P4_AAH, P4_AAH-1
-AIS    : P3_AIS
-MIA    : P10_MIA, P13_MIA, P15_MIA, P18_MIA
-IAC    : P1_LUAD, P2_LUAD, P3_LUAD, P4_LUAD, P10_LUAD, P13_LUAD, P21_LUAD, P22_LUAD, P25_LUAD
+Normal ( 1): P4_Normal
+AAH    (11): P1_AAH, P2_AAH, P4_AAH, P4_AAH-1, P6_AAH, P9_AAH, P11_AAH, P20_AAH, P22_AAH, P24_AAH, P25_AAH
+AIS    (14): P3_AIS, P5_AIS, P8_AIS, P9_AIS, P12_AIS, P14_AIS, P16_AIS, P17_AIS, P19_AIS, P21_AIS, P21_AIS-1, P22_AIS, P23_AIS, P23_AIS-1
+MIA    ( 4): P10_MIA, P13_MIA, P15_MIA, P18_MIA
+IAC    (26): P1_LUAD, P2_LUAD, P3_LUAD, P4_LUAD, P5_LUAD, P6_LUAD, P7_LUAD, P7_LUAD-1, P8_LUAD, P9_LUAD, P10_LUAD, P11_LUAD, P12_LUAD, P13_LUAD, P14_LUAD, P15_LUAD, P16_LUAD, P17_LUAD, P18_LUAD, P19_LUAD, P20_LUAD, P21_LUAD, P22_LUAD, P23_LUAD, P24_LUAD, P25_LUAD
 ```
+
+> ⚠️ 唯一缺陷：`GSM9226176` 的 tar **截断**（56,272,384 B / 应为 90,677,930 B；`gzip -t` 报 unexpected EOF），
+> 缺 `spatial/scalefactors_json.json` 与 `spatial/tissue_positions.csv`。已实测重下载可得完整 87 MB tar（只有一个切片根 `P4_AAH2`）。
 
 ---
 

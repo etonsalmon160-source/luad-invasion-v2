@@ -1,15 +1,23 @@
 {
-  "created_utc": "2026-09-12T12:56:59Z",
-  "gate_pass": true,
-  "n_paired": 9,
+  "created_utc": "2026-09-15T14:02:40Z",
+  "cross_check_problems": [],
+  "file_problems": [
+    "GSE307534 GSM9226176 切片文件缺失 ['spatial/scalefactors_json.json', 'spatial/tissue_positions.csv 或 spatial/tissue_positions_list.csv']（root=GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2）"
+  ],
+  "gate_pass": false,
+  "geo_tables_sha256": {
+    "GSE307534": "65b935cd5c0332dea263c8bc842524a53cdef9ec580a253db9e53c1af2a84893",
+    "GSE308103": "c25de6ae144e7ff3947b903499c5afb2cfaf51266ba1664edbded90b2dae2795"
+  },
+  "n_paired": 23,
   "n_patients": 25,
-  "n_samples": 94,
+  "n_samples": 131,
   "raw_root": "/home/eto/luad_invasion/data",
-  "registry_sha256": "6843e4e86cdaef11323663c428a7c49bfb86b518edf1d4c926db7ef983fce5f6",
+  "registry_sha256": "228617ee52d93d1d4a5c184ccd43e87fcd52d81724070dbce974d5a47d9a60d2",
   "schema": "M0-paired-1",
   "tables": {
-    "patients": "c9a0fc156365e49a598ac75d10b2f47be3272557e3e2bf6c14c97f85a47f0403",
-    "samples": "db5dcf7f4750aa2381dba7fd9cd21063734fd098da907d23e5feaecf03aabe3a",
-    "source_files": "e4d7722a155857fa6199fbda24513b3647b7bfea3cf34f91ef83ba18d657ed25"
+    "patients": "c5f76baaee399677bd8f6f0747757b2612de038b2db5a21922a0ddcddbe26aeb",
+    "samples": "9c382df9210a2937c1e270452b6c4d74dd6ec53fccdc8833963c2824c0556f65",
+    "source_files": "0c5e761c84a31da2fa2b880e8dc589be42898738ad7fde00ebea0945f443fdba"
   }
 }
