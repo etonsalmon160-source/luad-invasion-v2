@@ -1,0 +1,34 @@
+{
+  "schema": "luad_v2.expression_build/1",
+  "built_utc": "2026-09-15T15:27:44+00:00",
+  "dataset": "GSE308103",
+  "n_obs": 648945,
+  "n_vars": 18082,
+  "nnz": 791571728,
+  "stage_counts": {
+    "IAC": 294684,
+    "Normal": 152302,
+    "AIS": 123988,
+    "AAH": 53887,
+    "MIA": 24084
+  },
+  "n_samples": 75,
+  "gene_vector_sha256": "1cfda5cae64035da917a662312873642d896523e316a0980bf3e03b6fdb629db",
+  "gene_first": "SAMD11",
+  "gene_last": "MT-CYB",
+  "artifacts": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts.h5ad",
+      "sha256": "f9dbe38231b41efed5d628902155679924d7f4d13a770e3b5ecd79f4acbca168",
+      "bytes": 1914752105
+    },
+    "mask_csv": {
+      "path": "results/02_expression/gse308103_analysis_mask.csv.gz",
+      "sha256": "2f8bb0f6f90aeaa688c20841c3f7e602b5b8ddbbebb47085309c01bf73b654d7"
+    },
+    "per_sample_dir": "results/02_expression/per_sample"
+  },
+  "script_sha256": "aee13d850db2718f9c1369d2dac723e2acc0b16aa9051c62be4b0ab538a74bec",
+  "registry_sha256": "228617ee52d93d1d4a5c184ccd43e87fcd52d81724070dbce974d5a47d9a60d2",
+  "runtime_s": 1238.3
+}

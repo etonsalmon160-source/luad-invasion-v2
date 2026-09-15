@@ -15,7 +15,12 @@
 | **Stage 3** | `Stage 3: AIS In Situ` | **`P3_AIS`** | GSE307534 | GSM9226172 | 原位腺癌（AIS）纯伏壁样（Lepidic）生长切片。 |
 | **Stage 4** | `Stage 4: MIA Micro-inv` | **`P10_MIA`** | GSE307534 | GSM9226189 | **【铁律禁令】必须使用真实微浸润 `P10_MIA`；绝对禁止使用 `P4_AAH1` / `P4_AAH` 充当 MIA！** |
 | **Stage 5** | `Stage 5: IAC Invasive` | **`P3_LUAD`** | GSE307534 | GSM9226173 | **【铁律禁令】原发浸润性腺癌（IAC），实性/腺泡型与纤维化基质！** |
-| **Stage 6** | `Stage 6: LNM Metastasis` | **`PT_3_LNM`** | GSE190811 | GSM5732148 | **【永久锁定铁律】真实肺腺癌淋巴结转移切片（LNM），绝对禁止修改为 IAC 或原发切片！** |
+| **Stage 6** | `Stage 6: LNM Metastasis` | **⛔ 暂无合法切片（待真实 LUAD 数据）** | — | — | **【2026-09-12 勘误】原锁定的 `PT_3_LNM`(GSE190811) 经 GEO 核实为【乳腺癌】淋巴结转移（系列标题 "…breast cancer patients"），且其 GSM 号 GSM5732148 在该库并不存在（真实为 GSM5732357–2360）。该切片已【作废】，禁止用于任何 LUAD 产物；Stage 6 空间锚点暂缺，待项目方提供真实 LUAD 淋巴结转移空转数据后重锁。** |
+
+> **⛔ 勘误记录（2026-09-12）**：本文件原将 `PT_3_LNM`(GSE190811, GSM5732148) 作为 Stage 6 永久锁定切片，
+> 经 GEO 逐样本核实为**乳腺癌**数据。已作废。**LNM 阶段空间产物（解卷积 / 生态位 / PLIP / 对接）在其被替换前一律不得产出**；
+> 期间空间图谱限定为 **Normal → AAH → AIS → MIA → IAC**（全部来自 GSE307534 单库单平台）。
+> 单细胞层面的 LNM 仍可用 GSE131907 `mLN`（真转移淋巴结，44 患者中已 GEO 核实）。
 
 ---
 

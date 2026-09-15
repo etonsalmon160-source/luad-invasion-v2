@@ -6,9 +6,15 @@ results/**/*.h5*
 results/**/*.mtx*
 results/**/*.tar
 results/**/*.gz
+# 派生的稀疏矩阵二进制（可由 02_expression/01_build_expression_gse308103.py 从原始 .txt.gz 重建）
+# 漏掉这两条会让 git add 吞下 1.7 GB（单个 P24_LUAD.npz 即 183 MB，超 GitHub 100 MB 上限）
+results/**/*.npz
+results/**/*.npy
 *.rds
 *.h5ad
 *.h5
+*.npz
+*.npy
 *.tar
 *.tar.gz
 *.zip
