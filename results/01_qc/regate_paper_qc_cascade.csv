@@ -1,0 +1,6 @@
+step,n_cells,口径,pct_of_all
+全集（M1 输入）,798100,,100.0
+M1 qc_pass,767839,逐样本自适应 MAD,96.208
+M1 qc_pass & singlet = M1 掩膜,648945,scDblFinder 单细胞,81.311
+论文计数门（作用于全集）,555480,nFeature>=500 & nCount>=1000 & pct_mt<=20,69.6
+M1 掩膜 ∩ 论文计数门 = **新分析集**,413697,双体用 scDblFinder（R2）,51.835

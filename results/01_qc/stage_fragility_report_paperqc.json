@@ -1,0 +1,113 @@
+{
+  "script": "01_qc/11_regate_paper_qc.py（内嵌，重做 00c）",
+  "supersedes": "results/04_integration/stage_fragility_report.json（旧 648,945 口径）",
+  "cell_set": "论文 QC ∩ scDblFinder 单细胞，n=413697",
+  "by_stage": [
+    {
+      "stage": "Normal",
+      "n_cells": 94506,
+      "n_samples": 24,
+      "n_patients": 23,
+      "nFeature_p10": 849.0,
+      "nFeature_med": 1216.0,
+      "nCount_p10": 1110.0,
+      "nCount_med": 1738.0,
+      "pct_mt_med": 0.457,
+      "nFeature_med_vs_Normal": 1.0
+    },
+    {
+      "stage": "AAH",
+      "n_cells": 35283,
+      "n_samples": 9,
+      "n_patients": 8,
+      "nFeature_p10": 858.0,
+      "nFeature_med": 1315.0,
+      "nCount_p10": 1130.0,
+      "nCount_med": 1942.0,
+      "pct_mt_med": 0.618,
+      "nFeature_med_vs_Normal": 1.081
+    },
+    {
+      "stage": "AIS",
+      "n_cells": 81555,
+      "n_samples": 14,
+      "n_patients": 12,
+      "nFeature_p10": 857.0,
+      "nFeature_med": 1274.0,
+      "nCount_p10": 1122.0,
+      "nCount_med": 1841.0,
+      "pct_mt_med": 0.391,
+      "nFeature_med_vs_Normal": 1.048
+    },
+    {
+      "stage": "MIA",
+      "n_cells": 14266,
+      "n_samples": 4,
+      "n_patients": 4,
+      "nFeature_p10": 837.0,
+      "nFeature_med": 1122.0,
+      "nCount_p10": 1083.0,
+      "nCount_med": 1580.0,
+      "pct_mt_med": 0.309,
+      "nFeature_med_vs_Normal": 0.923
+    },
+    {
+      "stage": "IAC",
+      "n_cells": 188087,
+      "n_samples": 24,
+      "n_patients": 23,
+      "nFeature_p10": 843.0,
+      "nFeature_med": 1288.0,
+      "nCount_p10": 1121.0,
+      "nCount_med": 1955.0,
+      "pct_mt_med": 0.759,
+      "nFeature_med_vs_Normal": 1.059
+    }
+  ],
+  "threshold_survival_pct": [
+    {
+      "threshold": "nFeature>=200",
+      "Normal": 100.0,
+      "AAH": 100.0,
+      "AIS": 100.0,
+      "MIA": 100.0,
+      "IAC": 100.0,
+      "AAH_minus_Normal_pp": 0.0
+    },
+    {
+      "threshold": "nFeature>=500",
+      "Normal": 100.0,
+      "AAH": 100.0,
+      "AIS": 100.0,
+      "MIA": 100.0,
+      "IAC": 100.0,
+      "AAH_minus_Normal_pp": 0.0
+    },
+    {
+      "threshold": "nFeature>=1000",
+      "Normal": 71.45,
+      "AAH": 74.86,
+      "AIS": 74.21,
+      "MIA": 64.62,
+      "IAC": 72.7,
+      "AAH_minus_Normal_pp": 3.41
+    },
+    {
+      "threshold": "nFeature>=1500",
+      "Normal": 31.97,
+      "AAH": 39.95,
+      "AIS": 35.73,
+      "MIA": 22.33,
+      "IAC": 38.99,
+      "AAH_minus_Normal_pp": 7.98
+    }
+  ],
+  "verdict": {
+    "aah_median_nFeature_ratio_vs_Normal": 1.081,
+    "worst_survival_gap_pp": 0.0,
+    "count_level_fragility": false,
+    "aah_retention_pct": 65.48,
+    "normal_retention_pct": 62.05,
+    "aah_retention_minus_normal_pp": 3.43
+  }
+}

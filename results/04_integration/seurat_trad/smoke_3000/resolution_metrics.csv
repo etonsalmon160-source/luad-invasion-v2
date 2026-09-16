@@ -1,0 +1,5 @@
+"resolution","n_clusters","ari_seed_mean","ari_adjacent_prev","ari_xres","aah_absorption_rate","score","pass_seed","pass_aah","eligible","is_rstar"
+0.5,22,1,NA,0.9992,0,0.9996,TRUE,TRUE,TRUE,FALSE
+0.6,22,1,0.9992,0.9538,0,0.9769,TRUE,TRUE,TRUE,FALSE
+0.7,23,1,0.9084,0.9542,0,0.9771,TRUE,TRUE,TRUE,FALSE
+0.8,23,1,1,1,0,1,TRUE,TRUE,TRUE,TRUE

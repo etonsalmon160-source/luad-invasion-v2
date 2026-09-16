@@ -1,0 +1,93 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 801 cells in raw data"
+[1] "6695 genes past LOW.DR filtering"
+[1] "WARNING: low data quality; assigned LOW.DR to UP.DR..."
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 321 
+number of iterations= 260 
+number of iterations= 222 
+number of iterations= 556 
+number of iterations= 266 
+[1] "low confidence in classification"
+[1] "cell: 1"
+number of iterations= 307 
+[1] "cell: 2"
+number of iterations= 180 
+[1] "cell: 3"
+number of iterations= 179 
+[1] "cell: 4"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 5"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 6"
+number of iterations= 448 
+[1] "cell: 7"
+number of iterations= 373 
+[1] "cell: 8"
+number of iterations= 111 
+[1] "cell: 9"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 10"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 11"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 12"
+number of iterations= 136 
+[1] "cell: 13"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 14"
+number of iterations= 380 
+[1] "cell: 15"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 16"
+number of iterations= 295 
+[1] "cell: 17"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 18"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 19"
+number of iterations= 277 
+[1] "cell: 20"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 21"
+number of iterations= 263 
+[1] "cell: 22"
+number of iterations= 420 
+[1] "cell: 23"
+number of iterations= 167 
+[1] "cell: 24"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 25"
+number of iterations= 259 
+[1] "cell: 26"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 27"
+number of iterations= 493 
+[1] "cell: 28"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 29"
+number of iterations= 375 
+[1] "step 5: segmentation..."
+[1] "step 6: convert to genomic bins..."
+[1] "step 7: re-adjust baseline ..."
+[1] "step 8: final prediction ..."
+[1] "step 9: saving results..."
+[1] "step 10: ploting heatmap ..."
+Time difference of 3.832428 mins

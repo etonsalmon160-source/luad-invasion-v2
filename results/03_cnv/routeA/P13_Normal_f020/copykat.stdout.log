@@ -1,0 +1,8 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 801 cells in raw data"
+[1] "filtered out 403 cells with less than min.gene.per.cell; remaining 404 cells"
+[1] "1453 genes past LOW.DR filtering"
+[1] "WARNING: low data quality; assigned LOW.DR to UP.DR..."
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."

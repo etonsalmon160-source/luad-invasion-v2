@@ -1,0 +1,118 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 4847 cells in raw data"
+[1] "9045 genes past LOW.DR filtering"
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 136 
+number of iterations= 625 
+number of iterations= 216 
+number of iterations= 459 
+number of iterations= 244 
+number of iterations= 663 
+[1] "low confidence in classification"
+[1] "cell: 1"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 2"
+number of iterations= 398 
+[1] "cell: 3"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 4"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 5"
+number of iterations= 467 
+[1] "cell: 6"
+number of iterations= 239 
+[1] "cell: 7"
+number of iterations= 435 
+[1] "cell: 8"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 9"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 10"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 11"
+number of iterations= 259 
+[1] "cell: 12"
+number of iterations= 476 
+[1] "cell: 13"
+number of iterations= 238 
+[1] "cell: 14"
+number of iterations= 465 
+[1] "cell: 15"
+number of iterations= 329 
+[1] "cell: 16"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 17"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 18"
+number of iterations= 412 
+[1] "cell: 19"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 20"
+number of iterations= 479 
+[1] "cell: 21"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 22"
+number of iterations= 166 
+[1] "cell: 23"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 24"
+number of iterations= 361 
+[1] "cell: 25"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 26"
+number of iterations= 178 
+[1] "cell: 27"
+number of iterations= 279 
+[1] "cell: 28"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 29"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 30"
+number of iterations= 462 
+[1] "cell: 31"
+number of iterations= 275 
+[1] "cell: 32"
+number of iterations= 492 
+[1] "cell: 33"
+number of iterations= 304 
+[1] "cell: 34"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 35"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 36"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 37"
+number of iterations= 270 
+[1] "cell: 38"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 39"
+number of iterations= 194 
+[1] "cell: 40"
+number of iterations= 498 
+[1] "cell: 41"
+number of iterations= 216 
+[1] "cell: 42"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
