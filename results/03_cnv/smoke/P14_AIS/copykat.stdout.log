@@ -1,0 +1,22 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 4455 cells in raw data"
+[1] "filtered out 7 cells with less than min.gene.per.cell; remaining 4448 cells"
+[1] "7917 genes past LOW.DR filtering"
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 290 
+number of iterations= 302 
+number of iterations= 246 
+number of iterations= 165 
+number of iterations= 1166 
+number of iterations= 743 
+[1] "step 5: segmentation..."
+[1] "step 6: convert to genomic bins..."
+[1] "step 7: re-adjust baseline ..."
+[1] "step 8: final prediction ..."
+[1] "step 9: saving results..."
+[1] "step 10: ploting heatmap ..."
+Time difference of 50.22516 mins

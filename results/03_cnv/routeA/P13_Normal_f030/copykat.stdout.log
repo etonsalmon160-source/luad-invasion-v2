@@ -1,0 +1,32 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 801 cells in raw data"
+[1] "filtered out 154 cells with less than min.gene.per.cell; remaining 648 cells"
+[1] "1955 genes past LOW.DR filtering"
+[1] "WARNING: low data quality; assigned LOW.DR to UP.DR..."
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 733 
+number of iterations= 1723 
+[1] "low confidence in classification"
+[1] "cell: 1"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 2"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 3"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 4"
+number of iterations= 138 
+[1] "cell: 5"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 6"
+number of iterations= 433 
+[1] "step 5: segmentation..."
+[1] "step 6: convert to genomic bins..."
+[1] "step 7: re-adjust baseline ..."

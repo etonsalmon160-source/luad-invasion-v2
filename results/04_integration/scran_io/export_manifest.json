@@ -1,0 +1,50 @@
+{
+  "script": "04_integration/00a_export_counts_for_scran.py",
+  "purpose": "导出 genes×cells CSC 供 scran::computeSumFactors 使用",
+  "source": {
+    "path": "/home/eto/luad_v2/results/02_expression/gse308103_counts.h5ad",
+    "sha256": "f9dbe38231b41efed5d628902155679924d7f4d13a770e3b5ecd79f4acbca168",
+    "n_cells": 648945,
+    "n_genes": 18082,
+    "nnz": 791571728
+  },
+  "layout": "genes×cells CSC (dgCMatrix), i 为 0-based 行索引",
+  "artifacts": {
+    "data_f32": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/data_f32.bin",
+      "bytes": 3166286912,
+      "sha256": "43968f7aa1e33a96e37d22d55e75a163aafab07d4fc9a359eb3a2c58fb31195e"
+    },
+    "indices_i32": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/indices_i32.bin",
+      "bytes": 3166286912,
+      "sha256": "ea95d6acc23509135ccf1eb30f7e05ae1d5fe022f6c0b70d52cba8fffd9071b6"
+    },
+    "indptr_i32": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/indptr_i32.bin",
+      "bytes": 2595784,
+      "sha256": "606dee85ac90ca9f6b1f80b21ed95c211a50c6545e822c0e6be887fbb04a1a73"
+    },
+    "cell_names.txt": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/cell_names.txt",
+      "bytes": 23406571,
+      "sha256": "bb222624e910ee625041fc52a365a2c4a61703ec8f889174960de55f9cc3c173"
+    },
+    "gene_names.txt": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/gene_names.txt",
+      "bytes": 116081,
+      "sha256": "c5ce40e6751bf59a4da10f9293d7c7001f26404726e2a8dd85c165379c484ce8"
+    },
+    "cell_meta.csv.gz": {
+      "path": "/home/eto/luad_v2/results/04_integration/scran_io/cell_meta.csv.gz",
+      "bytes": 3016096,
+      "sha256": "b78bd0675787a923b4c58d74b8126304356c1b55fed5f51840abe57374516316"
+    }
+  },
+  "versions": {
+    "anndata": "0.9.2",
+    "numpy": "1.22.4",
+    "scipy": "1.10.1"
+  },
+  "wall_sec": 68.9
+}

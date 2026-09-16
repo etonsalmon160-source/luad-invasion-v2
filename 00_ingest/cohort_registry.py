@@ -55,9 +55,16 @@ STAGE_MAP = {
     "IAC": "IAC",
 }
 
-# `-1` 后缀 = **同一患者的第二个病灶切片**（GEO 标题作 "second ... of patient N"），
-# 与首个病灶分期相同但**解剖独立**，不可合并。ordinal 显式记录以便下游追溯。
-SECOND_LESION_SUFFIX = "-1"
+# ⚠️ "第二病灶"的命名约定**两个数据集不一样**，这一点必须是显式的。
+#    （2026-09-16 修正：此处早先只写 `-1`，并据此写了一个"按后缀猜序号"的函数
+#      `lesion_ordinal()`。那个函数对 GSE307534 正确、对 **GSE308103 错误**，
+#      而它从未被任何代码调用 —— 详见 results/03_cnv/GP1_report.md §6.1。）
+#    * GSE307534（空转）  ：`AAH-1` / `LUAD-1` / `AIS-1`            —— **带横线**
+#    * GSE308103（snRNA）：`AAH1` / `Normal1` / `LUAD1` / `AIS1`    —— **无横线**
+#    两者都表示"同一患者的第二个独立病灶"（GEO 标题作 "second ... of patient N"），
+#    与首个病灶分期相同但**解剖独立**，**不可合并**。
+#    故：**不得由 token 猜序号**。唯一权威来源是 GEO 表，读取走 resolve_lesion_ordinal()。
+#    `STAGE_MAP` 已同时登记两种写法（分期可解析）；序号则一律查表。
 
 STAGES = ["Normal", "AAH", "AIS", "MIA", "IAC"]     # 本项目配对范围（LNM 空转暂缺）
 LNM_STATUS = "空转 LNM 暂缺（公开库无合法 LUAD 淋巴结转移 Visium；待真实数据）"
@@ -77,9 +84,23 @@ def resolve_stage(token: str) -> str:
     raise KeyError(f"未知分期 token {token!r}；权威映射只含 {sorted(STAGE_MAP)} —— 拒绝静默默认。")
 
 
-def lesion_ordinal(token: str) -> int:
-    """1 = 该患者该分期的首个病灶；2 = 第二个（token 带 `-1`）。"""
-    return 2 if token.endswith(SECOND_LESION_SUFFIX) else 1
+def resolve_lesion_ordinal(sample_id: str, dataset: str = None) -> int:
+    """病灶序号的**唯一权威来源**：查 GEO 表。
+
+    1 = 该患者该分期的首个病灶；2 = 第二个独立病灶。
+    `sample_id` 形如 `P4_AAH1`（= GEO 表的 `f"{patient_id}_{token}"`）。
+    查不到即 raise —— **绝不按 token 后缀猜**（两数据集约定不同，猜必错其一）。
+
+    ⚠️ 本函数替代了早先的 `lesion_ordinal(token)`；后者按 `-1` 后缀猜，
+    对 GSE308103 的 `AAH1`/`AIS1`/… 一律返回 1（真值为 2）。
+    """
+    datasets = [dataset] if dataset is not None else list(COHORTS)
+    for ds in datasets:
+        for g in load_geo(ds).values():
+            if f"{g['patient_id']}_{g['token']}" == sample_id:
+                return g["lesion_ordinal"]
+    raise KeyError(f"GEO 权威表中无此样本 {sample_id!r}（查过 {datasets}）"
+                   f" —— 拒绝由 token 猜病灶序号。")
 
 
 # -----------------------------------------------------------------------------

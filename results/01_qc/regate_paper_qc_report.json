@@ -1,0 +1,253 @@
+{
+  "script": "01_qc/11_regate_paper_qc.py",
+  "purpose": "按源论文固定全局 QC 口径重建分析掩膜（替代 M1 自适应 MAD）",
+  "decided_by": "用户 2026-09-16 AskUserQuestion：「改用论文 QC 重建」",
+  "source_paper": {
+    "citation": "Peng F, Sinjab A, Dai Y, … Wang L, Kadara H. Cancer Cell 2026;44(2):321-339.e13",
+    "doi": "10.1016/j.ccell.2025.10.004",
+    "pmcid": "PMC12980502",
+    "qc_rule": "exclude nFeature<500 | nCount<1000 | pct_mt>20%",
+    "paper_n_retained": 401635
+  },
+  "thresholds": {
+    "min_nFeature": 500,
+    "min_nCount": 1000,
+    "max_pct_mt": 20.0,
+    "gene_min_cells": 3,
+    "gene_filter_stage": "在矩阵重建时施加（02_expression），本脚本不含"
+  },
+  "deviation_from_paper": {
+    "item": "doublet caller",
+    "paper": "Scrublet",
+    "ours": "scDblFinder",
+    "reason": "铁律 R2 钉死 scDblFinder，优先于「对齐论文」",
+    "mitigation": "M1 已跑 Scrublet 敏感性臂：results/01_qc/gse308103_sensitivity_doublet_rate.csv"
+  },
+  "cascade": [
+    {
+      "step": "全集（M1 输入）",
+      "n_cells": 798100,
+      "口径": null,
+      "pct_of_all": 100.0
+    },
+    {
+      "step": "M1 qc_pass",
+      "n_cells": 767839,
+      "口径": "逐样本自适应 MAD",
+      "pct_of_all": 96.208
+    },
+    {
+      "step": "M1 qc_pass & singlet = M1 掩膜",
+      "n_cells": 648945,
+      "口径": "scDblFinder 单细胞",
+      "pct_of_all": 81.311
+    },
+    {
+      "step": "论文计数门（作用于全集）",
+      "n_cells": 555480,
+      "口径": "nFeature>=500 & nCount>=1000 & pct_mt<=20",
+      "pct_of_all": 69.6
+    },
+    {
+      "step": "M1 掩膜 ∩ 论文计数门 = **新分析集**",
+      "n_cells": 413697,
+      "口径": "双体用 scDblFinder（R2）",
+      "pct_of_all": 51.835
+    }
+  ],
+  "removed_within_m1_singlets": {
+    "total": 235248,
+    "by_nFeature": 68694,
+    "by_nCount_only": 166554,
+    "by_pct_mt_only": 0,
+    "n_pct_mt_exactly_20": 0
+  },
+  "new_analysis_set": {
+    "n_cells": 413697,
+    "vs_paper_retained": {
+      "paper": 401635,
+      "delta": 12062,
+      "delta_pct": 3.0
+    },
+    "by_stage": [
+      {
+        "stage": "Normal",
+        "n_cells": 94506,
+        "n_samples": 24,
+        "n_patients": 23,
+        "n_cells_m1": 152302,
+        "retention_pct": 62.05,
+        "pct_of_new": 22.844
+      },
+      {
+        "stage": "AAH",
+        "n_cells": 35283,
+        "n_samples": 9,
+        "n_patients": 8,
+        "n_cells_m1": 53887,
+        "retention_pct": 65.48,
+        "pct_of_new": 8.529
+      },
+      {
+        "stage": "AIS",
+        "n_cells": 81555,
+        "n_samples": 14,
+        "n_patients": 12,
+        "n_cells_m1": 123988,
+        "retention_pct": 65.78,
+        "pct_of_new": 19.714
+      },
+      {
+        "stage": "MIA",
+        "n_cells": 14266,
+        "n_samples": 4,
+        "n_patients": 4,
+        "n_cells_m1": 24084,
+        "retention_pct": 59.23,
+        "pct_of_new": 3.448
+      },
+      {
+        "stage": "IAC",
+        "n_cells": 188087,
+        "n_samples": 24,
+        "n_patients": 23,
+        "n_cells_m1": 294684,
+        "retention_pct": 63.83,
+        "pct_of_new": 45.465
+      }
+    ]
+  },
+  "aah_fragility_recheck": {
+    "note": "在新分析集上重做 00c 的检验；00c 的旧口径结论不再直接沿用",
+    "by_stage": [
+      {
+        "stage": "Normal",
+        "n_cells": 94506,
+        "n_samples": 24,
+        "n_patients": 23,
+        "nFeature_p10": 849.0,
+        "nFeature_med": 1216.0,
+        "nCount_p10": 1110.0,
+        "nCount_med": 1738.0,
+        "pct_mt_med": 0.457,
+        "nFeature_med_vs_Normal": 1.0
+      },
+      {
+        "stage": "AAH",
+        "n_cells": 35283,
+        "n_samples": 9,
+        "n_patients": 8,
+        "nFeature_p10": 858.0,
+        "nFeature_med": 1315.0,
+        "nCount_p10": 1130.0,
+        "nCount_med": 1942.0,
+        "pct_mt_med": 0.618,
+        "nFeature_med_vs_Normal": 1.081
+      },
+      {
+        "stage": "AIS",
+        "n_cells": 81555,
+        "n_samples": 14,
+        "n_patients": 12,
+        "nFeature_p10": 857.0,
+        "nFeature_med": 1274.0,
+        "nCount_p10": 1122.0,
+        "nCount_med": 1841.0,
+        "pct_mt_med": 0.391,
+        "nFeature_med_vs_Normal": 1.048
+      },
+      {
+        "stage": "MIA",
+        "n_cells": 14266,
+        "n_samples": 4,
+        "n_patients": 4,
+        "nFeature_p10": 837.0,
+        "nFeature_med": 1122.0,
+        "nCount_p10": 1083.0,
+        "nCount_med": 1580.0,
+        "pct_mt_med": 0.309,
+        "nFeature_med_vs_Normal": 0.923
+      },
+      {
+        "stage": "IAC",
+        "n_cells": 188087,
+        "n_samples": 24,
+        "n_patients": 23,
+        "nFeature_p10": 843.0,
+        "nFeature_med": 1288.0,
+        "nCount_p10": 1121.0,
+        "nCount_med": 1955.0,
+        "pct_mt_med": 0.759,
+        "nFeature_med_vs_Normal": 1.059
+      }
+    ],
+    "threshold_survival_pct": [
+      {
+        "threshold": "nFeature>=200",
+        "Normal": 100.0,
+        "AAH": 100.0,
+        "AIS": 100.0,
+        "MIA": 100.0,
+        "IAC": 100.0,
+        "AAH_minus_Normal_pp": 0.0
+      },
+      {
+        "threshold": "nFeature>=500",
+        "Normal": 100.0,
+        "AAH": 100.0,
+        "AIS": 100.0,
+        "MIA": 100.0,
+        "IAC": 100.0,
+        "AAH_minus_Normal_pp": 0.0
+      },
+      {
+        "threshold": "nFeature>=1000",
+        "Normal": 71.45,
+        "AAH": 74.86,
+        "AIS": 74.21,
+        "MIA": 64.62,
+        "IAC": 72.7,
+        "AAH_minus_Normal_pp": 3.41
+      },
+      {
+        "threshold": "nFeature>=1500",
+        "Normal": 31.97,
+        "AAH": 39.95,
+        "AIS": 35.73,
+        "MIA": 22.33,
+        "IAC": 38.99,
+        "AAH_minus_Normal_pp": 7.98
+      }
+    ],
+    "verdict": {
+      "aah_median_nFeature_ratio_vs_Normal": 1.081,
+      "worst_survival_gap_pp": 0.0,
+      "count_level_fragility": false,
+      "aah_retention_pct": 65.48,
+      "normal_retention_pct": 62.05,
+      "aah_retention_minus_normal_pp": 3.43
+    }
+  },
+  "inputs": {
+    "per_cell_qc": {
+      "path": "/home/eto/luad_v2/results/01_qc/gse308103_per_cell_qc.csv.gz",
+      "sha256": "44c890bb664ec6e58327001dddbc54c284f4efd52a0f638a80d3335ad6fa4b1f"
+    },
+    "m1_mask": {
+      "path": "/home/eto/luad_v2/results/02_expression/gse308103_analysis_mask.csv.gz",
+      "sha256": "2f8bb0f6f90aeaa688c20841c3f7e602b5b8ddbbebb47085309c01bf73b654d7"
+    }
+  },
+  "outputs": {
+    "mask_paperqc": {
+      "path": "/home/eto/luad_v2/results/01_qc/gse308103_analysis_mask_paperqc.csv.gz",
+      "sha256": "ebc74c1e50545ed79d98621d361412068d8866f0ed1bdb0706707060f45606f5",
+      "n_cells": 413697
+    }
+  },
+  "versions": {
+    "pandas": "2.0.3",
+    "numpy": "1.22.4"
+  },
+  "wall_sec": 7.7
+}

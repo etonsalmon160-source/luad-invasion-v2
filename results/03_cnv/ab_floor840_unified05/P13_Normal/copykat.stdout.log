@@ -1,0 +1,54 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 393 cells in raw data"
+[1] "8138 genes past LOW.DR filtering"
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 226 
+number of iterations= 199 
+number of iterations= 375 
+number of iterations= 510 
+[1] "low confidence in classification"
+[1] "cell: 1"
+number of iterations= 348 
+[1] "cell: 2"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 3"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 4"
+number of iterations= 374 
+[1] "cell: 5"
+number of iterations= 259 
+[1] "cell: 6"
+number of iterations= 389 
+[1] "cell: 7"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 8"
+number of iterations= 298 
+[1] "cell: 9"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 10"
+number of iterations= 214 
+[1] "cell: 11"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 12"
+number of iterations= 346 
+[1] "cell: 13"
+WARNING! NOT CONVERGENT! 
+number of iterations= 500 
+[1] "cell: 14"
+number of iterations= 317 
+[1] "step 5: segmentation..."
+[1] "step 6: convert to genomic bins..."
+[1] "step 7: re-adjust baseline ..."
+[1] "step 8: final prediction ..."
+[1] "step 9: saving results..."
+[1] "step 10: ploting heatmap ..."
+Time difference of 3.114459 mins

@@ -1,0 +1,136 @@
+{
+  "script": "04_integration/00c_stage_fragility_check.py",
+  "purpose": "实证 AAH 脆弱性的来源：计数伪影 vs 转录距离",
+  "input": {
+    "path": "/home/eto/luad_v2/results/02_expression/gse308103_counts.h5ad",
+    "sha256": "f9dbe38231b41efed5d628902155679924d7f4d13a770e3b5ecd79f4acbca168",
+    "n_cells": 648945
+  },
+  "by_stage": [
+    {
+      "stage": "Normal",
+      "n_cells": 152302,
+      "pct_of_total": 23.469,
+      "n_samples": 24,
+      "n_patients": 23,
+      "nFeature_p10": 497.0,
+      "nFeature_p25": 639.0,
+      "nFeature_med": 921.0,
+      "nFeature_p75": 1350.0,
+      "nCount_p10": 612.0,
+      "nCount_med": 1228.0,
+      "pct_mt_med": 0.424,
+      "pct_mt_p90": 1.318,
+      "nFeature_med_vs_Normal": 1.0
+    },
+    {
+      "stage": "AAH",
+      "n_cells": 53887,
+      "pct_of_total": 8.304,
+      "n_samples": 9,
+      "n_patients": 8,
+      "nFeature_p10": 489.0,
+      "nFeature_p25": 652.0,
+      "nFeature_med": 985.0,
+      "nFeature_p75": 1536.0,
+      "nCount_p10": 614.0,
+      "nCount_med": 1337.0,
+      "pct_mt_med": 0.581,
+      "pct_mt_p90": 1.884,
+      "nFeature_med_vs_Normal": 1.069
+    },
+    {
+      "stage": "AIS",
+      "n_cells": 123988,
+      "pct_of_total": 19.106,
+      "n_samples": 14,
+      "n_patients": 12,
+      "nFeature_p10": 501.0,
+      "nFeature_p25": 662.0,
+      "nFeature_med": 982.0,
+      "nFeature_p75": 1458.0,
+      "nCount_p10": 619.0,
+      "nCount_med": 1323.0,
+      "pct_mt_med": 0.373,
+      "pct_mt_p90": 1.344,
+      "nFeature_med_vs_Normal": 1.066
+    },
+    {
+      "stage": "MIA",
+      "n_cells": 24084,
+      "pct_of_total": 3.711,
+      "n_samples": 4,
+      "n_patients": 4,
+      "nFeature_p10": 505.0,
+      "nFeature_p25": 644.8,
+      "nFeature_med": 870.0,
+      "nFeature_p75": 1202.0,
+      "nCount_p10": 613.0,
+      "nCount_med": 1135.0,
+      "pct_mt_med": 0.302,
+      "pct_mt_p90": 1.154,
+      "nFeature_med_vs_Normal": 0.945
+    },
+    {
+      "stage": "IAC",
+      "n_cells": 294684,
+      "pct_of_total": 45.41,
+      "n_samples": 24,
+      "n_patients": 23,
+      "nFeature_p10": 489.0,
+      "nFeature_p25": 642.0,
+      "nFeature_med": 944.0,
+      "nFeature_p75": 1496.0,
+      "nCount_p10": 614.0,
+      "nCount_med": 1301.0,
+      "pct_mt_med": 0.733,
+      "pct_mt_p90": 2.608,
+      "nFeature_med_vs_Normal": 1.025
+    }
+  ],
+  "threshold_survival_pct": [
+    {
+      "threshold": "nFeature>=200",
+      "Normal": 99.93,
+      "AAH": 99.88,
+      "AIS": 99.92,
+      "MIA": 99.96,
+      "IAC": 99.83,
+      "AAH_minus_Normal_pp": -0.05
+    },
+    {
+      "threshold": "nFeature>=500",
+      "Normal": 89.73,
+      "AAH": 89.02,
+      "AIS": 90.17,
+      "MIA": 90.54,
+      "IAC": 88.91,
+      "AAH_minus_Normal_pp": -0.72
+    },
+    {
+      "threshold": "nFeature>=1000",
+      "Normal": 44.34,
+      "AAH": 49.02,
+      "AIS": 48.82,
+      "MIA": 38.28,
+      "IAC": 46.4,
+      "AAH_minus_Normal_pp": 4.68
+    },
+    {
+      "threshold": "nFeature>=1500",
+      "Normal": 19.84,
+      "AAH": 26.16,
+      "AIS": 23.5,
+      "MIA": 13.23,
+      "IAC": 24.88,
+      "AAH_minus_Normal_pp": 6.32
+    }
+  ],
+  "verdict": {
+    "aah_median_nFeature_ratio_vs_Normal": 1.069,
+    "worst_survival_gap_pp": -0.72,
+    "count_level_fragility": false,
+    "interpretation": "AAH 核的测序深度不低于其它分期；常见计数门槛不选择性砍 AAH。⇒ 本数据集里 AAH 的脆弱性**不在计数层面**，对 AAH 单独放宽 QC 阈值**缺乏依据**（会构成另一种静默默认）。风险应转向**聚类层面**的处理：AAH 与 Normal 的转录距离细微，分辨率调高以分开 IAC 亚群时可能把 AAH 并入 Normal。⇒ 须在 GP5（分辨率选择）设显式可证伪护栏，见 PLAN_AND_CHECKPOINTS.md。"
+  },
+  "wall_sec": 7.0
+}

@@ -1,0 +1,50 @@
+{
+  "script": "02_expression/04_rebuild_expression_paperqc.py",
+  "purpose": "导出 genes×cells CSC 供 R 侧 Seurat/SCTransform 使用",
+  "source_h5ad": {
+    "path": "/home/eto/luad_v2/results/02_expression/gse308103_counts_paperqc.h5ad",
+    "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+    "n_cells": 413697,
+    "n_genes": 18069,
+    "nnz": 655222534
+  },
+  "layout": "genes×cells CSC (dgCMatrix), i 为 0-based 行索引；R 侧用 readBin + new(\"dgCMatrix\")",
+  "artifacts": {
+    "data_f32": {
+      "path": "results/04_integration/seurat_io/data_f32.bin",
+      "bytes": 2620890136,
+      "sha256": "b40e54283146b2c4bedfd6123610b9882c6748a161dd3950f013832d0d12cae5"
+    },
+    "indices_i32": {
+      "path": "results/04_integration/seurat_io/indices_i32.bin",
+      "bytes": 2620890136,
+      "sha256": "a4a4f6c2df97d7feaa16fe44f291206caf7feebd222d2f19449e1dfcb26f6b08"
+    },
+    "indptr_i32": {
+      "path": "results/04_integration/seurat_io/indptr_i32.bin",
+      "bytes": 1654792,
+      "sha256": "bd0f2490d687b658285b308c4ff18c608dfd18eba7563398a8de337b70ed2d10"
+    },
+    "cell_names.txt": {
+      "path": "results/04_integration/seurat_io/cell_names.txt",
+      "bytes": 14923453,
+      "sha256": "27ecc8f603e6fdb39ebfcb3a754dcc0cd2969bcd2e340e567b4be34b2e1e51fa"
+    },
+    "gene_names.txt": {
+      "path": "results/04_integration/seurat_io/gene_names.txt",
+      "bytes": 115984,
+      "sha256": "c7d1b37a8a0a12bdc70fa811644c14644f619bb9ebfbd02bb163ee0ff77a1de7"
+    },
+    "cell_meta.csv.gz": {
+      "path": "results/04_integration/seurat_io/cell_meta.csv.gz",
+      "bytes": 2023891,
+      "sha256": "cdc5a38010e0b8d0c1fc1361c1275518400d6e6638a06e5ebd22d7c2f07dd9bf"
+    }
+  },
+  "versions": {
+    "anndata": "0.9.2",
+    "numpy": "1.22.4",
+    "scipy": "1.10.1"
+  },
+  "wall_sec": 105.4
+}

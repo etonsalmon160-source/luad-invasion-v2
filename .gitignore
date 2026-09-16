@@ -33,3 +33,17 @@ env/
 
 # 第三方工具源码（可随时重新克隆，见 tools/README.md）
 tools/
+
+# ── 大体积可重建产物（2026-09-16 补）────────────────────────────────────────
+# 漏洞：上面的规则覆盖 *.gz/*.rds/*.h5*/*.npz/*.npy，但 **没有覆盖 *.bin 与 CopyKAT 的
+# 逐细胞文本转储**。补漏前 `git add results/` 会吞下 ~20 GB，其中十余个文件 >100 MB，
+# push 会被 GitHub 硬拒（单文件上限 100 MB）。均为脚本可重建物，不入库。
+results/**/*.bin
+results/**/*_copykat_*_by_cell.txt
+results/**/cell_names.txt
+results/**/embeddings/
+
+# 例外：GP4/GP5 的正式产物虽是 .gz，但体积小（全量约 4–6 MB）且是 GP5 签字的依据 ⇒ 必须入库。
+# 必须写在 `results/**/*.gz` 之后，否则被后者覆盖。
+!results/04_integration/seurat_trad/*/clusters.csv.gz
+!results/04_integration/seurat_trad/*/umap.csv.gz

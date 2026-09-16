@@ -1,0 +1,71 @@
+{
+  "schema": "luad_v2.expression_build/2",
+  "built_utc": "2026-09-16T12:00:20+00:00",
+  "checkpoint": "GP0-redo（论文 QC 口径）",
+  "dataset": "GSE308103",
+  "supersedes": {
+    "note": "旧的 648,945 核对象保留为敏感性臂，**未删除**",
+    "old_h5ad": "results/02_expression/gse308103_counts.h5ad",
+    "old_n_obs": 648945
+  },
+  "qc_rule": {
+    "min_nFeature": 500,
+    "min_nCount": 1000,
+    "max_pct_mt": 20,
+    "gene_min_cells": 3,
+    "doublet_caller": "scDblFinder (R2)"
+  },
+  "n_obs": 413697,
+  "n_vars": 18069,
+  "nnz": 655222534,
+  "n_genes_dropped_lt3cells": 13,
+  "genes_dropped": [
+    "HNRNPCL3",
+    "LCE3C",
+    "LCE3B",
+    "USP17L10",
+    "ZNF479",
+    "ANKRD30B",
+    "PSG11",
+    "BPIFB3",
+    "SPANXN1",
+    "AC236972.4",
+    "TGIF2LY",
+    "TSPY1",
+    "DAZ2"
+  ],
+  "stage_counts": {
+    "IAC": 188087,
+    "Normal": 94506,
+    "AIS": 81555,
+    "AAH": 35283,
+    "MIA": 14266
+  },
+  "n_samples": 75,
+  "n_patients": 23,
+  "artifacts": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+      "bytes": 3130354155
+    },
+    "mask": {
+      "path": "results/01_qc/gse308103_analysis_mask_paperqc.csv.gz",
+      "sha256": "ebc74c1e50545ed79d98621d361412068d8866f0ed1bdb0706707060f45606f5"
+    },
+    "seurat_io_dir": "results/04_integration/seurat_io"
+  },
+  "inputs": {
+    "old_h5ad": {
+      "path": "results/02_expression/gse308103_counts.h5ad",
+      "sha256": "f9dbe38231b41efed5d628902155679924d7f4d13a770e3b5ecd79f4acbca168"
+    }
+  },
+  "versions": {
+    "anndata": "0.9.2",
+    "numpy": "1.22.4",
+    "scipy": "1.10.1",
+    "pandas": "2.0.3"
+  },
+  "wall_sec": 110.8
+}

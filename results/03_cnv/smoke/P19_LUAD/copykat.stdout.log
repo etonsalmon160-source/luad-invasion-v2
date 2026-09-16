@@ -1,0 +1,18 @@
+[1] "running copykat v1.2.5"
+[1] "step1: read and filter data ..."
+[1] "18082 genes, 18302 cells in raw data"
+[1] "filtered out 6 cells with less than min.gene.per.cell; remaining 18296 cells"
+[1] "9142 genes past LOW.DR filtering"
+[1] "step 2: annotations gene coordinates ..."
+[1] "start annotation ..."
+[1] "step 3: smoothing data with dlm ..."
+[1] "step 4: measuring baselines ..."
+number of iterations= 291 
+number of iterations= 160 
+number of iterations= 69 
+number of iterations= 690 
+number of iterations= 956 
+number of iterations= 854 
+[1] "step 5: segmentation..."
+[1] "step 6: convert to genomic bins..."
+[1] "step 7: re-adjust baseline ..."
