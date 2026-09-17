@@ -25,16 +25,26 @@
 
 ## 法则 2 · 生物学特异性（marker 交叉校验）
 
-| 谱系 | 阳性 marker | 应为阴性 |
-| :--- | :--- | :--- |
-| 恶性/正常上皮 | EPCAM, KRT7/19, NKX2-1, SFTPC/B, AGER | PTPRC(CD45), CD3D, PECAM1 |
-| T/NK | CD3D/E, CD4, CD8A, GZMB, PRF1, NKG7 | EPCAM, COL1A1, CD68 |
-| B/浆细胞 | CD19, MS4A1, CD79A, SDC1, IGHG1 | CD3D, EPCAM, ACTA2 |
-| 髓系 | CD68, CD163, C1QA/B/C, SPP1, MARCO | CD3D, EPCAM, PECAM1 |
-| 成纤维 | COL1A1/A2, ACTA2, PDGFRB, FAP, CXCL12 | PTPRC, EPCAM, PECAM1 |
-| 内皮 | PECAM1, VWF, CDH5, EGFL7, KDR | EPCAM, PTPRC, COL1A1 |
+> 🔴 **2026-09-17 重建（用户指令「marker 要来自权威文章，不要给我从犄角旮旯搞来」）**。
+> 本表旧版（EPCAM/KRT7/19… 六行）**一个出处都没有**，属审计标缺。现按**一次文献**重建，
+> 逐基因出处见 [`05_annotation/marker_panel.py`](../05_annotation/marker_panel.py)。
+> **执行口径 = 该文件，不是本表**；本表为人读摘要。
+
+| 谱系 | 阳性 marker | 应为阴性 | 出处（一次文献） |
+| :--- | :--- | :--- | :--- |
+| 上皮 | EPCAM, KRT8/18/19, CDH1, NKX2-1, SFTPC, SFTPA1/A2, SFTPB, NAPSA, AGER, CAV1, PDPN, SCGB3A2, SCGB1A1 | PTPRC, CD3D, PECAM1, COL1A1 | Travaglini 2020 *Nature* 587:619（AT1/AT2/Club/pan-上皮）；Vieira Braga 2019 *Nat Med* 25:1153（气道）；**彭 2026 *Cancer Cell*（源论文，LUAD 谱系 NKX2-1）** |
+| T/NK | CD3D/E/G, TRAC, CD4, IL7R, CD8A/B, NKG7, GNLY, KLRD1, PRF1, GZMB | EPCAM, COL1A1, CD68 | Travaglini 2020；Vieira Braga 2019；Guo 2018 *Nat Med* 24:978（NSCLC T 细胞） |
+| B/浆细胞 | MS4A1, CD19, CD79A/B, MZB1, JCHAIN, SDC1, IGHG1, IGKC, XBP1, DERL3 | CD3D, EPCAM, ACTA2 | Travaglini 2020；Vieira Braga 2019 |
+| 髓系 | LYZ, AIF1, ITGAX, CD68, CD163, MSR1, C1QA/B/C, MARCO, APOE, FCN1, CD14, S100A8/9, SPP1 | CD3D, EPCAM, PECAM1 | Travaglini 2020（肺泡巨噬）；Habermann 2020 *Sci Adv* 6:eaba1972（SPP1⁺ 巨噬）；Zilionis 2019 *Immunity* 50:1317（肺肿瘤髓系） |
+| 成纤维 | COL1A1/A2, COL3A1, DCN, LUM, FN1, PDGFRA/B, ACTA2, TAGLN, FAP, CXCL12 | PTPRC, EPCAM, PECAM1 | Travaglini 2020；Habermann 2020；Reyfman 2019 *AJRCCM* 199:1517；Lambrechts 2018 *Nat Med* 24:1277（肿瘤基质） |
+| 内皮 | PECAM1, CDH5, KDR, CD34, VWF, EGFL7, RAMP2, EMCN, PLVAP, AQP1, CLDN5, FLT1 | EPCAM, PTPRC, COL1A1 | Travaglini 2020（EC 亚型）；Gillich 2020 *Nature* 586:785（肺泡毛细血管 aCap/gCap 特化）；Lambrechts 2018 |
 
 **恶性身份以 CNV 为准**；marker 仅作**一致性佐证**，不作判据。
+
+**与 GP6 标准 B 的独立性（重要）**：本表是 GP6 **标准 A** 的基因来源，**刻意不取自 HLCA 整合图谱**
+（Sikkema 2023 *Nat Med* 29:1563）——因为 CellTypist 的 `Human_Lung_Atlas.pkl` 正是该图谱训出来的，
+若两者同源，则 κ 变成自证。**残留非独立性如实声明**：HLCA 整合了上表所引的多套一次研究数据，
+故两者**并非统计独立**，只保证「marker 定义来源不同」。
 
 ---
 

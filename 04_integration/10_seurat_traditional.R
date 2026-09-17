@@ -38,6 +38,10 @@ suppressMessages({
   library(harmony)
   library(jsonlite)
 })
+# digest 只被 `digest::digest()` 显式调用（见下方 manifest 的 cells_file_sha256）。
+# 此处提前断言，避免"跑完 20 分钟才在最后一行报缺包"。
+if (!requireNamespace("digest", quietly = TRUE))
+  stop("缺 R 包 digest（用于 sha256）。install.packages('digest') 后重跑。")
 
 # ---- 0. 常量（显式登记，禁止散落）------------------------------------------
 ROOT     <- "/home/eto/luad_v2"
@@ -88,15 +92,32 @@ step <- function(label, expr) {
 # ---- 1. 参数解析 -----------------------------------------------------------
 argv <- commandArgs(trailingOnly = TRUE)
 MODE <- if (length(argv) >= 1) argv[1] else ""
-if (!MODE %in% c("smoke", "full")) stop("用法: 10_seurat_traditional.R {smoke --n_cells N | full}")
-N_SMOKE <- NA_integer_
+if (!MODE %in% c("smoke", "full", "subset"))
+  stop("用法: 10_seurat_traditional.R {smoke --n_cells N | full | subset --cells FILE --tag TAG}")
+N_SMOKE    <- NA_integer_
+CELLS_FILE <- NA_character_
+SUB_TAG    <- NA_character_
+SUB_LIN    <- NA_character_   # 谱系名，写进 manifest；必须显式给，不许推断
 if (MODE == "smoke") {
   i <- which(argv == "--n_cells")
   if (length(i) != 1 || length(argv) < i + 1) stop("smoke 模式须给 --n_cells N")
   N_SMOKE <- as.integer(argv[i + 1])
   if (is.na(N_SMOKE) || N_SMOKE < 2000) stop("n_cells 须 >= 2000（少于此时 HVG 与 PCA 不稳）")
 }
-TAG <- if (MODE == "full") "full" else sprintf("smoke_%d", N_SMOKE)
+if (MODE == "subset") {
+  # GP8a/GP8b 亚聚类：细胞集合是**唯一**改动变量，其余口径逐位同 full（PARAMETERS §M3-A.5）
+  i <- which(argv == "--cells"); j <- which(argv == "--tag"); k <- which(argv == "--lineage")
+  if (length(i) != 1 || length(j) != 1 || length(k) != 1)
+    stop("subset 模式须给 --cells FILE --tag TAG --lineage 谱系名")
+  CELLS_FILE <- argv[i + 1]; SUB_TAG <- argv[j + 1]; SUB_LIN <- argv[k + 1]
+  if (!file.exists(CELLS_FILE)) stop("找不到细胞清单: ", CELLS_FILE)
+  if (!grepl("^[A-Za-z0-9_.-]+$", SUB_TAG)) stop("--tag 只允许 [A-Za-z0-9_.-]：", SUB_TAG)
+  # 谱系名须是六谱系之一（法则2 表），挡住手滑写错
+  .LIN_OK <- c("上皮", "T/NK", "B/浆", "髓系", "成纤维", "内皮")
+  if (!SUB_LIN %in% .LIN_OK)
+    stop(sprintf("--lineage 须是 %s 之一，收到：%s", paste(.LIN_OK, collapse = "/"), SUB_LIN))
+}
+TAG <- switch(MODE, full = "full", smoke = sprintf("smoke_%d", N_SMOKE), subset = SUB_TAG)
 OUT <- file.path(OUTBASE, TAG)
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 dir.create(file.path(OUT, "embeddings"), showWarnings = FALSE)
@@ -146,6 +167,28 @@ if (MODE == "smoke") {
   MAT  <- MAT[, keep, drop = FALSE]
   META <- META[keep, , drop = FALSE]
   stopifnot(ncol(MAT) == nrow(META))
+}
+
+# ---- 3b. subset 过滤（GP8a/GP8b 亚聚类）------------------------------------
+# 细胞集合按用户 2026-09-17 签字的口径给定（PARAMETERS §M3-A.5），本脚本只**执行**该口径，
+# 不在此处重新推导谱系。清单里出现矩阵中不存在的 barcode 即硬报错 —— 不许静默丢细胞，
+# 否则亚聚类的实际规模会与登记值不符而无人察觉。
+if (MODE == "subset") {
+  want <- readLines(CELLS_FILE)
+  want <- want[nzchar(want)]
+  if (anyDuplicated(want)) stop("细胞清单含重复 barcode")
+  miss <- setdiff(want, colnames(MAT))
+  if (length(miss)) stop(sprintf("清单 %d 个 barcode 不在矩阵中（前 3 个：%s）",
+                                 length(miss), paste(head(miss, 3), collapse = ", ")))
+  keep <- match(want, colnames(MAT))          # 保持清单顺序，便于与登记值对撞
+  log(sprintf("subset 过滤：%d → %d 细胞（清单 %d 条，全部命中）",
+              N_CELLS, length(keep), length(want)))
+  MAT  <- MAT[, keep, drop = FALSE]
+  META <- META[keep, , drop = FALSE]
+  stopifnot(ncol(MAT) == nrow(META), ncol(MAT) == length(want))
+  log(sprintf("subset 规模核对：%d 样本 / %d 患者 / %d 分期",
+              length(unique(META$sample_id)), length(unique(META$patient_id)),
+              length(unique(META$stage))))
 }
 
 # ---- 4. Seurat 对象 --------------------------------------------------------
@@ -290,15 +333,26 @@ absorption <- function(cl) {
 absorb <- vapply(RESOLUTIONS, function(r) absorption(LAB[[sprintf("harmony_res%.1f_seed0", r)]]),
                  numeric(1))
 
-score <- 0.5 * seed_stab + 0.5 * xres
-ok    <- (seed_stab >= ARI_SEED_MIN) & (absorb <= AAH_ABSORPTION_MAX)   # 指标3 待 GP6 补
+# ⚠️ 2026-09-17 修：原实现拿**未舍入**的 seed_stab/absorb 判 pass_*，却把 round(...,4) 写进 CSV。
+#   ⇒ CSV 里可能出现 `ari_seed_mean = 0.9000` 而 `pass_seed = FALSE` 的自相矛盾行（0.89996 舍入后
+#   显示 0.9000 却仍判 FALSE）；而 03_subcluster_annotation.py 读的正是**舍入后**那一列，
+#   边界样本上两侧会给出相反的 r*。
+#   现改为「先舍入 → 再用舍入值算 score 与 pass_*」⇒ CSV 自洽，R 与 Python 口径逐位一致。
+seed_stab_r <- round(seed_stab, 4)
+xres_r      <- round(xres, 4)
+adj_r       <- round(adj, 4)
+absorb_r    <- round(absorb, 4)
+score_r     <- round(0.5 * seed_stab_r + 0.5 * xres_r, 4)
+pass_seed_r <- seed_stab_r >= ARI_SEED_MIN
+pass_aah_r  <- absorb_r <= AAH_ABSORPTION_MAX
+ok          <- pass_seed_r & pass_aah_r          # 指标3 待 GP6 补
 METRICS <- data.frame(
   resolution = RESOLUTIONS, n_clusters = n_clust,
-  ari_seed_mean = round(seed_stab, 4),
-  ari_adjacent_prev = round(adj, 4), ari_xres = round(xres, 4),
-  aah_absorption_rate = round(absorb, 4),
-  score = round(score, 4),
-  pass_seed = seed_stab >= ARI_SEED_MIN, pass_aah = absorb <= AAH_ABSORPTION_MAX,
+  ari_seed_mean = seed_stab_r,
+  ari_adjacent_prev = adj_r, ari_xres = xres_r,
+  aah_absorption_rate = absorb_r,
+  score = score_r,
+  pass_seed = pass_seed_r, pass_aah = pass_aah_r,
   eligible = ok, stringsAsFactors = FALSE)
 RSTAR <- if (any(ok)) {
   # 预注册（PARAMETERS §M3-A.3）：r* = argmax score，受指标 1/3/4 三条硬约束；
@@ -308,7 +362,10 @@ RSTAR <- if (any(ok)) {
   #   已改为下方的显式实现；该 run 的产物由 run_manifest.json 的 rstar_correction 块更正。
   e <- METRICS[METRICS$eligible, ]
   e <- e[order(-e$score), ]
-  tied <- e$resolution[e$score > e$score[1] - 0.01]   # 与最高分差 <0.01 者视为并列
+  # ⚠️ 2026-09-17 修：原为严格 `>`，而 Python 侧 03_subcluster_annotation.py 的同一规则用 `>=`
+  #   （`score >= best - TIE_BREAK_EPS`）。恰好在差 0.01 时会分出**不同**的 r*，
+  #   且 resolution_metrics.csv 的 is_rstar 列与 rstar.json 会互相矛盾。统一为 `>=`。
+  tied <- e$resolution[e$score >= e$score[1] - 0.01]  # 与最高分差 ≤0.01 者视为并列
   min(tied)                                           # 取较低分辨率
 } else NA_real_
 METRICS$is_rstar <- !is.na(RSTAR) & METRICS$resolution == RSTAR
@@ -334,6 +391,11 @@ for (nm in c("harmony", "pca")) {
 }
 writeLines(colnames(obj), file.path(OUT, "embeddings", "cells.txt"))
 
+# subset 模式的清单哈希提到 man 之外算一次：manifest 的 subset 块与 metrics_caveat
+# 都要用同一个值，就地算两遍容易在日后改动中走散。
+MAN_SUBSET_SHA <- if (MODE == "subset")
+  unname(digest::digest(file = CELLS_FILE, algo = "sha256")) else NA_character_
+
 man <- list(
   script = "04_integration/10_seurat_traditional.R",
   tag = TAG, mode = MODE,
@@ -343,6 +405,16 @@ man <- list(
   subsample = if (MODE == "smoke")
     list(n_target = N_SMOKE, n_actual = ncol(obj), stratify_by = "sample_id",
          seed = SEED_SUBSAMPLE) else NULL,
+  subset = if (MODE == "subset") list(
+    cells_file = CELLS_FILE,
+    # R 的 tools 包**没有** sha256sum（只有 md5sum）；用 digest::digest 算 sha256。
+    # 2026-09-17 首跑 6 谱系时此处崩掉 6 次（subset 分支此前从未被执行过），改此。
+    cells_file_sha256 = MAN_SUBSET_SHA,
+    n_listed = length(keep), n_actual = ncol(obj),
+    lineage = SUB_LIN,
+    caliber = "标准 A 单口径 = GP6 冻结 A_frozen 标签（seed0, r*=0.6），用户 2026-09-17 裁定；PARAMETERS §M3-A.5",
+    n_samples = length(unique(META$sample_id)), n_patients = length(unique(META$patient_id)),
+    stage_counts = as.list(table(META$stage))) else NULL,
   params = list(
     sctransform = list(vst.flavor = VST_FLAVOR, variable.features.n = N_HVG,
                        variable.features.rv.th = RV_TH, ncells = N_CELLS_MODEL,
@@ -387,11 +459,19 @@ man <- list(
     rstar_candidate = RSTAR,
     rstar_status = if (is.na(RSTAR)) "区间内无可行解 ⇒ 停在 GP5，不放宽阈值"
                    else "候选，**待 GP5 人工签字**"),
-  metrics_interpretable = (MODE == "full"),
+  metrics_interpretable = (MODE %in% c("full", "subset")),
   metrics_caveat = if (MODE == "smoke")
     paste("smoke 为**分层子样本**（每样本细胞数远小于真实值）⇒ Harmony 与 Louvain 的行为",
           "不代表全量。本轮的 resolution_metrics / aah_absorption **不得用于挑选 r\\***，",
-          "仅用于验证代码路径与测时。") else NULL,
+          "仅用于验证代码路径与测时。") else if (MODE == "subset")
+    # ⚠️ 2026-09-17 修：本行原写死「上皮交集」—— 但 subset 是六谱系**共用**的分支，
+    #    五个非上皮谱系的 manifest 里都印着这句错话（同 `lineage = "上皮"` 那类漏检）。
+    #    现改为按 --lineage 实参生成，并把登记在案的口径与清单哈希一并写出。
+    sprintf(paste("本轮为**亚聚类**：谱系=%s，细胞集合 = %s（标准 A 单口径，seed0 全局 r*=0.6 的该谱系全部细胞），",
+                  "清单 sha256 = %s。metric4（AAH 吸收护栏）的语义是全量口径的**投影**而非同一定义：",
+                  "本谱系子集里 AAH 细胞仍存在，但簇的分期构成已随谱系而变 ⇒ 该列**不与全量值直接比较**。",
+                  "其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。"),
+            SUB_LIN, basename(CELLS_FILE), substr(MAN_SUBSET_SHA, 1, 16)) else NULL,
   versions = list(R = R.version.string, Seurat = as.character(packageVersion("Seurat")),
                   SeuratObject = as.character(packageVersion("SeuratObject")),
                   sctransform = as.character(packageVersion("sctransform")),

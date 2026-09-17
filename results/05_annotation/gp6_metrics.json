@@ -1,0 +1,164 @@
+{
+  "resolution": 0.6,
+  "frozen_seed": 0,
+  "n_seeds": 5,
+  "n_cells": 413697,
+  "n_clusters": 45,
+  "kappa_by_seed": {
+    "seed0": {
+      "kappa_pos_cell": 0.8538911331867357,
+      "kappa_excl_ambig": 0.8754529052475808,
+      "agreement_rate_pos_cell": 0.8848529237582096,
+      "agreement_rate_excl_ambig": 0.9020079730579619
+    },
+    "seed1": {
+      "kappa_pos_cell": 0.8544873081650185,
+      "kappa_excl_ambig": 0.8760823500972246,
+      "agreement_rate_pos_cell": 0.8853387865998544,
+      "agreement_rate_excl_ambig": 0.9025177010001826
+    },
+    "seed2": {
+      "kappa_pos_cell": 0.8552086511659528,
+      "kappa_excl_ambig": 0.8769527511828191,
+      "agreement_rate_pos_cell": 0.8859044179677397,
+      "agreement_rate_excl_ambig": 0.9032024101763
+    },
+    "seed3": {
+      "kappa_pos_cell": 0.8534954249941191,
+      "kappa_excl_ambig": 0.8750435003599477,
+      "agreement_rate_pos_cell": 0.88458944589881,
+      "agreement_rate_excl_ambig": 0.9017315534276035
+    },
+    "seed4": {
+      "kappa_pos_cell": 0.8546310993438895,
+      "kappa_excl_ambig": 0.8762290535293592,
+      "agreement_rate_pos_cell": 0.885452396319045,
+      "agreement_rate_excl_ambig": 0.9026343551561137
+    }
+  },
+  "kappa_frozen": 0.8538911331867357,
+  "verdict": "PASS",
+  "n_disagreement": 47636,
+  "disagreement_rate": 0.11514707624179049,
+  "panel_missing": {
+    "上皮": [
+      "KRT18",
+      "SFTPA2"
+    ],
+    "T/NK": [
+      "CD8B"
+    ],
+    "髓系": [
+      "FCN1"
+    ]
+  },
+  "panel_used": {
+    "上皮": 14,
+    "T/NK": 12,
+    "B/浆": 11,
+    "髓系": 15,
+    "成纤维": 12,
+    "内皮": 12
+  },
+  "celltypist": {
+    "model_path": "/home/eto/.celltypist/data/models/Human_Lung_Atlas.pkl",
+    "sha256": "6b0730537f4fee9f9a6195891a72635d1a3b9e21cade7a7481b2b14808070fdd",
+    "n_celltypes": 61,
+    "n_features": 5017,
+    "n_features_present": 4500,
+    "source": "Sikkema L, Ramírez-Suástegui C, Strobl DC, et al. An integrated cell atlas of the lung in health and disease. Nat Med 2023;29(6):1563-1577. doi:10.1038/s41591-023-02327-2"
+  },
+  "ambiguous_celltypist_types": {
+    "Hematopoietic stem cells": [
+      "髓系",
+      "HSC 是否归髓系无共识；HLCA 单列"
+    ],
+    "Mast cells": [
+      "髓系",
+      "肥大细胞属髓系起源但常单列；HLCA 单列"
+    ],
+    "Mesothelium": [
+      "未归属",
+      "间皮不属六大谱系任何一个；保持未归属"
+    ],
+    "Pericytes": [
+      "成纤维",
+      "血管周细胞属 mural 而非成纤维；本项目归入基质"
+    ],
+    "SM activated stress response": [
+      "成纤维",
+      "平滑肌应激态归入基质"
+    ],
+    "Smooth muscle": [
+      "成纤维",
+      "平滑肌归入基质（非成纤维，判断项）"
+    ],
+    "Smooth muscle FAM83D+": [
+      "成纤维",
+      "同上"
+    ]
+  },
+  "disagreement_pairs_top": {
+    "上皮|髓系": 7721,
+    "髓系|上皮": 5252,
+    "B/浆|髓系": 3600,
+    "成纤维|上皮": 3484,
+    "内皮|上皮": 2697,
+    "B/浆|T/NK": 2321,
+    "B/浆|上皮": 2046,
+    "髓系|成纤维": 1882,
+    "上皮|成纤维": 1724,
+    "内皮|成纤维": 1701,
+    "上皮|T/NK": 1630,
+    "T/NK|上皮": 1464,
+    "B/浆|成纤维": 1341,
+    "上皮|内皮": 1058,
+    "髓系|内皮": 946
+  },
+  "b2_status": "done",
+  "tri_agree_clusters": 7,
+  "cluster_tri_disagree": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+  ],
+  "jaccard_params": {
+    "topn": 50,
+    "atlas_marker_topn": 20
+  }
+}

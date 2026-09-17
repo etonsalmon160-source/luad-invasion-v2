@@ -1,0 +1,26 @@
+{
+  "tag": "tnkA",
+  "r_star": 0.5,
+  "best_score": 0.985,
+  "eligible": [
+    0.5,
+    0.6,
+    0.7,
+    0.8
+  ],
+  "tie_break": "差 ≤ 0.01 取较低分辨率（§M3-A.3）",
+  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束；指标3 待注释后补算",
+  "constraints_applied": [
+    "ari_seed_mean ≥ 0.9（= 指标1 跨种子稳定性；**承重**）",
+    "aah_absorption_rate ≤ 0.5（= 指标4 AAH 吸收护栏；**已施加但本批实测全分辨率为 0 ⇒ 空转**，按 PARAMETERS §M3-A.3 第 241/243 行的裁定**不得计入 r* 的通过理由**）",
+    "指标3（谱系覆盖 ≥ 0.90）**未施加** —— 它要等注释后才算得出来，按 §M3-A.3 第 242 行的裁定留待 GP8 注释阶段**逐谱系补算**；若届时某谱系 < 0.90，该分辨率不得作 r*，须停在检查点升级（本条是**登记在案的口子**，不是遗漏）",
+    "（前两条均自 resolution_metrics.csv 的**原始指标列**重算；R 侧派生的 pass_seed / pass_aah / eligible 一律不复用，避免边界分叉）"
+  ],
+  "rstar_authoritative_over": "resolution_metrics.csv 的 is_rstar 列。R 侧按**预注册**阈值 0.90 计算，无法反映事后放宽 ⇒ 本条 relaxed=true 时，该列的 is_rstar 必为全 FALSE，属**预期**，不是矛盾。",
+  "seed_min_applied": 0.9,
+  "relaxed": false,
+  "seed_min_preregistered": null,
+  "relaxed_note": null,
+  "signed_by": null,
+  "signed_note": "🔴 待人工签字：确认 r* 无误后，把 signed_by 改为署名（如 \"<姓名> 2026-09-18\"），`--stage annotate` 才会放行（§M3-A.5）。"
+}

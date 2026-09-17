@@ -47,3 +47,10 @@ results/**/embeddings/
 # 必须写在 `results/**/*.gz` 之后，否则被后者覆盖。
 !results/04_integration/seurat_trad/*/clusters.csv.gz
 !results/04_integration/seurat_trad/*/umap.csv.gz
+
+# ── 崩溃前基线（2026-09-17）──────────────────────────────────────────────────
+# `.prev_nomanifest/` 是 subset 首跑崩在最后一行时留存下来的**验证脚手架**，用于比对重跑
+# 是否逐字节一致。核对已完成（4/6 谱系三项产物 md5 全同，值已登记在
+# docs/PARAMETERS_AND_SOURCES.md §M3-A.5）。它**不是交付物**：86 MB，且其中 clusters/umap
+# 与正式产物同源、embeddings 可由脚本重建。⇒ 明确不入库，本地保留备查，可随时删。
+results/04_integration/seurat_trad/.prev_nomanifest/
