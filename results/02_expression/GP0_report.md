@@ -1,7 +1,12 @@
 # GP0 · 表达对象重建门
 
+> ⚠️ **历史报告（旧 648,945 × 18,082 对象 ＝ 现行「敏感性臂」）。现行分析口径是 413,697 × 18,069（论文 QC）。**
+> 本报告只描述旧对象；现行对象见 [`rebuild_paperqc_manifest.json`](rebuild_paperqc_manifest.json) 与
+> `PLAN_AND_CHECKPOINTS.md` §6「过门证据」GP0 块（其中记录了 2026-09-17 审计对 paperqc 对象补做的校验）。
+
 > **结论：GP0 PASS ✅**（2026-09-15 23:27 构建完成，23:30 校验）
 > 校验脚本：`02_expression/02_verify_expression_build.py` → `PASS 12 / FAIL 0`
+> （2026-09-17 该脚本改为双模式；默认 `MODE=old` 仍校此对象，结果 **13 PASS / 0 FAIL**，无回归）
 
 ---
 

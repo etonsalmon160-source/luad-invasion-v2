@@ -28,7 +28,15 @@
     },
     "per_sample_dir": "results/02_expression/per_sample"
   },
-  "script_sha256": "aee13d850db2718f9c1369d2dac723e2acc0b16aa9051c62be4b0ab538a74bec",
+  "script_sha256": "34b0ca6a4162eafa134dc612bc51ed11678e69cd158f9953abb480a8c0d75cc4",
+  "script_sha256_note": {
+    "at": "2026-09-17",
+    "was": "aee13d850db2718f9c1369d2dac723e2acc0b16aa9051c62be4b0ab538a74bec",
+    "what": "脚本头部加了「本对象＝敏感性臂，非现行口径」的 docstring 横幅（2026-09-17 检查点审计）",
+    "why": "该对象已被论文 QC 口径（413,697 核）取代；不标注则新会话可能误当作当前分析对象",
+    "impact": "**仅注释改动，无任何可执行代码变更** ⇒ 本 manifest 所列 h5ad / mask 产物哈希**仍然有效**，无需重跑",
+    "code_changed": false
+  },
   "registry_sha256": "228617ee52d93d1d4a5c184ccd43e87fcd52d81724070dbce974d5a47d9a60d2",
   "runtime_s": 1238.3
 }

@@ -12,8 +12,15 @@
   V5 obs 的 stage 与 resolve_stage(stage_token) 完全一致（无静默默认）
   V6 计数矩阵为**非负整数**，且无全零细胞
 
+⚠️ 两种口径（2026-09-17 补）——`GP0_MODE` 环境变量选择：
+  `old`（默认）  = 旧 648,945 × 18,082 对象，**敏感性臂**。V2/V3 参考 = M1 掩码。
+  `paperqc`     = 现行分析口径 413,697 × 18,069。V2 参考 = `gse308103_analysis_mask_paperqc.csv.gz`
+                  （= M1 ∩ 论文绝对门）。**V3 形不同**：重建时施加 `gene_min_cells=3` 丢了 13 个基因，
+                  故 `nnz ≤ Σ nFeature`，差额 = 被丢基因内的非零计数（**不得**要求相等）。
+
 用法
-  python 02_expression/02_verify_expression_build.py
+  python 02_expression/02_verify_expression_build.py                 # 旧对象
+  GP0_MODE=paperqc python 02_expression/02_verify_expression_build.py  # 现行口径
 """
 from __future__ import annotations
 
@@ -30,12 +37,26 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "00_ingest"))
 import cohort_registry as REG  # noqa: E402
 
-H5 = os.path.join(ROOT, "results/02_expression/gse308103_counts.h5ad")
-QC_TABLE = os.path.join(ROOT, "results/01_qc/gse308103_per_cell_qc.csv.gz")
-MANIFEST = os.path.join(ROOT, "results/02_expression/build_manifest.json")
+MODE = os.environ.get("GP0_MODE", "old")
+if MODE not in ("old", "paperqc"):
+    raise SystemExit(f"GP0_MODE 只接受 'old' | 'paperqc'，收到 {MODE!r}")
 
-EXPECT_N_OBS = 648945
-EXPECT_N_VARS = 18082
+QC_TABLE = os.path.join(ROOT, "results/01_qc/gse308103_per_cell_qc.csv.gz")
+
+if MODE == "paperqc":
+    H5 = os.path.join(ROOT, "results/02_expression/gse308103_counts_paperqc.h5ad")
+    MANIFEST = os.path.join(ROOT, "results/02_expression/rebuild_paperqc_manifest.json")
+    MASK = os.path.join(ROOT, "results/01_qc/gse308103_analysis_mask_paperqc.csv.gz")
+    EXPECT_N_OBS = 413697
+    EXPECT_N_VARS = 18069
+    V3_STRICT = False   # gene_min_cells=3 丢基因 ⇒ nnz ≤ Σ nFeature
+else:
+    H5 = os.path.join(ROOT, "results/02_expression/gse308103_counts.h5ad")
+    MANIFEST = os.path.join(ROOT, "results/02_expression/build_manifest.json")
+    MASK = None
+    EXPECT_N_OBS = 648945
+    EXPECT_N_VARS = 18082
+    V3_STRICT = True
 
 fails, warns, notes = [], [], []
 
@@ -56,33 +77,58 @@ def main():
     chk("V1 维度", A.shape == (EXPECT_N_OBS, EXPECT_N_VARS),
         f"{A.shape} vs ({EXPECT_N_OBS}, {EXPECT_N_VARS})")
 
-    # ---- M1 权威计数 ----
-    qc = pd.read_csv(QC_TABLE, usecols=["sample_id", "cell_barcode", "qc_pass", "doublet_class", "nFeature"])
-    keep = qc["qc_pass"].astype(bool) & (qc["doublet_class"] == "singlet")
-    m1 = qc.loc[keep]
-    notes.append(f"M1 权威掩码：{len(m1):,} 细胞 / {m1['sample_id'].nunique()} 样本")
+    # ---- 权威参考掩码 ----
+    if MODE == "paperqc":
+        ref = pd.read_csv(MASK)   # = M1 ∩ 论文绝对门
+        ref_label = "论文 QC 掩膜"
+    else:
+        qc = pd.read_csv(QC_TABLE, usecols=["sample_id", "cell_barcode", "qc_pass", "doublet_class", "nFeature"])
+        keep = qc["qc_pass"].astype(bool) & (qc["doublet_class"] == "singlet")
+        ref = qc.loc[keep]
+        ref_label = "M1 掩膜（qc_pass & singlet）"
+    notes.append(f"权威参考掩码 [{ref_label}]：{len(ref):,} 细胞 / {ref['sample_id'].nunique()} 样本")
+    chk("V0 参考掩码条码集合 == h5ad obs_names",
+        set(ref["cell_barcode"].astype(str)) == set(A.obs_names.astype(str)),
+        f"|ref\\h5ad|={len(set(ref['cell_barcode'].astype(str)) - set(A.obs_names.astype(str)))} "
+        f"|h5ad\\ref|={len(set(A.obs_names.astype(str)) - set(ref['cell_barcode'].astype(str)))}")
 
     # ---- V2 逐样本细胞数 ----
     got = A.obs["sample_id"].value_counts().rename("built")
-    exp = m1["sample_id"].value_counts().rename("m1")
+    exp = ref["sample_id"].value_counts().rename("ref")
     cmp = pd.concat([got, exp], axis=1).fillna(0).astype(int)
-    cmp["diff"] = cmp["built"] - cmp["m1"]
+    cmp["diff"] = cmp["built"] - cmp["ref"]
     maxdev = int(cmp["diff"].abs().max()) if len(cmp) else -1
-    chk("V2 逐样本 n_obs == M1", maxdev == 0,
+    chk("V2 逐样本 n_obs == 参考掩码", maxdev == 0,
         f"最大偏差 {maxdev}；样本数 {len(cmp)}")
     if maxdev:
         notes.append(cmp[cmp["diff"] != 0].to_string())
 
-    # ---- V3 nnz == Σ nFeature ----
+    # ---- V3 nnz vs Σ nFeature ----
     nnz = int(X.nnz)
-    sum_feat = int(m1["nFeature"].sum())
-    # 逐细胞 nnz 分布对照（防止整体相等但逐细胞错位）
+    sum_feat = int(ref["nFeature"].sum()) if "nFeature" in ref.columns else None
     per_cell_nnz = np.asarray(X.getnnz(axis=1)).ravel()
+    if sum_feat is None:
+        # paperqc 掩膜表无 nFeature 列 → 用 obs.nFeature（逐行已核与掩膜一致）
+        sum_feat = int(A.obs["nFeature"].astype(np.int64).sum())
+        notes.append(f"V3 参考 Σ nFeature 取自 obs（掩膜表无该列）：{sum_feat:,}")
+    delta = sum_feat - nnz
+    if V3_STRICT:
+        chk("V3 nnz == Σ nFeature(mask)", nnz == sum_feat, f"矩阵 {nnz:,} vs 参考 {sum_feat:,}")
+    else:
+        # gene_min_cells=3 丢 13 基因 ⇒ nnz 应 ≤ Σ nFeature，差额 = 被丢基因内非零计数
+        chk("V3 nnz ≤ Σ nFeature(mask)", 0 <= delta, f"矩阵 {nnz:,} vs 参考 {sum_feat:,}，差额 {delta:,}")
+        notes.append(f"V3 说明[paperqc]：差额 {delta:,} = 重建时被丢的 "
+                     f"{json.load(open(MANIFEST, encoding='utf-8')).get('n_genes_dropped_lt3cells', '?')} "
+                     f"个 <3 细胞基因内的非零计数（**构造性，非损坏**）")
     obs_nfeat = A.obs["nFeature"].to_numpy() if "nFeature" in A.obs else None
-    chk("V3 nnz == Σ nFeature(mask)", nnz == sum_feat, f"矩阵 {nnz:,} vs M1 {sum_feat:,}")
     if obs_nfeat is not None:
-        d = int(np.abs(per_cell_nnz.astype(np.int64) - obs_nfeat.astype(np.int64)).max())
-        chk("V3b 逐细胞 nnz == obs.nFeature", d == 0, f"最大偏差 {d}")
+        diff_pc = per_cell_nnz.astype(np.int64) - obs_nfeat.astype(np.int64)
+        d = int(np.abs(diff_pc).max())
+        if V3_STRICT:
+            chk("V3b 逐细胞 nnz == obs.nFeature", d == 0, f"最大偏差 {d}")
+        else:
+            chk("V3b 逐细胞 nnz ≤ obs.nFeature", int(diff_pc.max()) <= 0, f"最大超出 {int(diff_pc.max())}")
+            notes.append(f"V3b 说明[paperqc]：逐细胞差额总和 {-int(diff_pc.sum()):,}（应等于 V3 差额）")
     else:
         warns.append("V3b 跳过：obs 无 nFeature 列")
 
@@ -112,7 +158,8 @@ def main():
         f"全零 {int((per_cell_nnz == 0).sum())}")
 
     # ---- 报告 ----
-    print("\n================ GP0 校验 ================")
+    print(f"\n================ GP0 校验 [MODE={MODE}] ================")
+    print(f"  对象: {os.path.relpath(H5, ROOT)}")
     for n in notes:
         print("  ·", n)
     for w in warns:
@@ -126,11 +173,16 @@ def main():
 
     if os.path.exists(MANIFEST):
         m = json.load(open(MANIFEST, encoding="utf-8"))
-        print(f"  manifest: nnz={m['nnz']:,}  gene_sha={m['gene_vector_sha256'][:16]}…")
+        print(f"  manifest: nnz={m['nnz']:,}")
+        gs = m.get("gene_vector_sha256")
+        if gs:
+            print(f"  gene_vector_sha256={gs[:16]}…")
+        else:
+            print("  gene_vector_sha256=（该 manifest 未记录 —— paperqc 版按构造未存全基因组向量哈希）")
         print(f"  h5ad sha256={m['artifacts']['h5ad']['sha256'][:16]}…")
 
     print("=========================================")
-    print("VERDICT:", "GP0 PASS ✅" if not fails else "GP0 FAIL ❌")
+    print("VERDICT:", f"GP0 PASS ✅ [{MODE}]" if not fails else f"GP0 FAIL ❌ [{MODE}]")
     return 2 if fails else 0
 
 

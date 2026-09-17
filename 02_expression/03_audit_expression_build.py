@@ -2,6 +2,11 @@
 """
 02_expression/03_audit_expression_build.py  —  GP0 对抗性审计
 
+⚠️ **本脚本审计的是旧 648,945 × 18,082 对象（＝敏感性臂），非现行分析口径。**
+   现行口径（413,697 × 18,069）的校验见 `02_verify_expression_build.py GP0_MODE=paperqc`；
+   其独立重抽取类审计（对应本脚本的 A5）**尚未对 paperqc 对象做**，如实标缺。
+   登记：`PLAN_AND_CHECKPOINTS.md` §6「过门证据」GP0 块。
+
 **这不是 GP0 门校验的替代品，而是它的补强。**
 
 `02_verify_expression_build.py` 的 V1–V6 证明的是**自洽性**：

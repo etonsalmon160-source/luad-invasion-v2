@@ -2,6 +2,12 @@
 """
 02_expression/01_build_expression_gse308103.py  —  Step 0
 
+⚠️ **本脚本产出的是旧 648,945 × 18,082 对象 = 现在的「敏感性臂」，非现行分析口径。**
+   现行口径（413,697 × 18,069，论文 QC）由 **`04_rebuild_expression_paperqc.py`** 产出。
+   本脚本**未作废**（用于复现敏感性臂），但**请勿**误当作当前分析对象。
+   登记：`PLAN_AND_CHECKPOINTS.md` §2.0 行 2 / §6「过门证据」；`PARAMETERS_AND_SOURCES.md` §M3-A.0。
+   校验：`02_verify_expression_build.py`（**默认即校本对象**）；现行口径加 `GP0_MODE=paperqc`。
+
 从 75 个**稠密文本**基因×细胞矩阵重建**稀疏 AnnData**。
 
 为什么需要这步：M1 只落了汇总 CSV（per_cell_qc / per_sample），**没有持久化任何表达对象**。

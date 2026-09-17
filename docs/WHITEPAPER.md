@@ -48,7 +48,8 @@
 
 ```
 M0  输入冻结        两数据集样本/患者/分期冻结 + 哈希
-M1  QC / 双体       snRNA 专用阈值（MAD 离群）+ scDblFinder 逐样本
+M1  QC / 双体       逐样本自适应 MAD + scDblFinder；**分析掩膜再叠加源论文绝对门**
+                    （`nFeature≥500 & nCount≥1000 & pct_mt≤20`）→ 413,697 核（2026-09-16 起，见 PLAN §2.0 行 2）
 M2  恶性证真        CopyKAT 逐样本 CNV（+ infercnv 子集交叉验证）
 M3  整合            scVI(batch=sample_id) 建 snRNA 图谱（原文 batch=dataset 已废，见 PLAN §C）
                     + scArches/scANVI 跨模态标签迁移；scIB 完整 panel
@@ -79,6 +80,12 @@ M8  结构对接        fpocket+P2Rank → Vina → gnina 重打分 → PoseBust
 **稳健性（两项敏感性）**：
 - **nmads 3 vs 5**：+1.97 pp（逐样本中位 2.20 pp）→ 阈值选择**不敏感**；
 - **双体剔除比例**：与固定 top-10% 重合约 **62.3%** → 判定**对率假设较敏感**，故此结果**须配下游"剔/不剔"敏感性**。
+
+> ⚠️ **2026-09-16 口径变更（本节上文仍成立，但不再是最终分析口径）**：用户裁定**改按源论文固定 QC 重建**。
+> 最终分析掩膜 = **M1（`qc_pass & singlet`）∩ 论文绝对门**（`nFeature≥500 & nCount≥1000 & pct_mt≤20`）
+> = **413,697 核 × 18,069 基因**。链：798,100 → 767,839 → 648,945(∩单细胞) → 论文门 555,480 → **交集 413,697**。
+> 即**"不能照搬绝对阈值"这一直觉被论文口径叠加覆盖**：绝对门照样施加。旧 648,945 对象保留为**敏感性臂**。
+> 双体判定器与论文有**已知偏差**：论文用 Scrublet，本项目用 **scDblFinder**（遵守 R2），据此如实登记。
 
 **双体判定的两项独立验证**（本环境无法做第二方法交叉验证——scrublet 在稀疏核上可检测比例仅 ~0.5%；
 DoubletFinder 需 Seurat 2/3 或 5，本机为 4.3.0）：
@@ -123,7 +130,7 @@ sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集�
 **禁用**：把 `nhood_enrichment` 写成 `P<0.001`（该函数**不返回 p 值**；它置换的是标签）；对 `co_occurrence` 声称做过置换（它**不做**）；距离步长小于 Visium ~100 µm 点距。富集检验报**效应量**（Fisher FDR 受组成性 + 大 N 灌水）。
 
 ### M7 · 靶点：**遗传统计锚定是"因果"的合法杠杆**
-- **M7a 预后**：生态位签名**患者/切片级聚合** → TCGA-LUAD bulk 打分 → **多变量 Cox（校正分期/年龄/性别）+ KM**；防过拟合（惩罚/交叉验证）。措辞 = **预后关联**。空间仅 9–25 例 → **不主张患者亚型分型**。
+- **M7a 预后**：生态位签名**患者/切片级聚合** → TCGA-LUAD bulk 打分 → **多变量 Cox（校正分期/年龄/性别）+ KM**；防过拟合（惩罚/交叉验证）。措辞 = **预后关联**。空间配对仅 **23 例** → **不主张患者亚型分型**。
 - **M7b 候选靶点池**：来源 = 恶性程序/regulon **＋** 生态位签名 → **cis-MR + coloc**（LUAD GWAS × 肺 eQTL）→ **Open Targets 可成药性 + DepMap 选择性依赖 + 临床期药物匹配**。见 [`M7B_MR_COLOC_TARGET_ANCHORING.md`](M7B_MR_COLOC_TARGET_ANCHORING.md)。
   输出 `genetic_support ∈ {supported, not_supported, not_testable}`；**不得事后调参**，`not_testable` **如实标缺**。
 - **M7c CMap**：仅当获得**真实 LINCS 数据**且用对指标（**NCS**，非负 Tau）才执行；否则**不产出**。
@@ -198,7 +205,7 @@ sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集�
 
 ## 9. 交付物（图版规划）
 
-1. **F1** 配对设计 + 数据底座（9 患者 × 双模态 × 分期）
+1. **F1** 配对设计 + 数据底座（**23 例**配对患者 × 双模态 × 分期）
 2. **F2** snRNA 图谱与恶性程序（CNV 证真 → 状态/轨迹 → regulon）
 3. **F3** 空间解卷积与生态位（RCTD → BANKSY 生态位 → 浸润前沿）
 4. **F4** 跨模态 AAH 一致性（五判据）
