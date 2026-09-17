@@ -20,6 +20,11 @@
   "relaxed": false,
   "seed_min_preregistered": null,
   "relaxed_note": null,
-  "signed_by": null,
+  "signed_by": "用户本人（会话内表态，2026-09-18；非手写签署，账号 etonsalmon160-source）",
+  "signed_provisional": true,
+  "signed_caveat": "⚠️ **暂定签字，该检查点未关闭**。指标3（谱系覆盖 ≥0.90）**从未计算** —— 它的定义域要等注释后才有，须在 GP8 注释后逐谱系补算；**若不过线，本 r\\* 须重做**（上皮、T·NK、髓系、内皮 已坐在网格最粗档 0.5，网格内无可退之档）。签字性质＝会话内口头确认，**非手写签署**。",
+  "checkpoint_open": [
+    "指标3 谱系覆盖 ≥0.90：从未计算（需注释后才有定义域）"
+  ],
   "signed_note": "🔴 待人工签字：确认 r* 无误后，把 signed_by 改为署名（如 \"<姓名> 2026-09-18\"），`--stage annotate` 才会放行（§M3-A.5）。"
 }
