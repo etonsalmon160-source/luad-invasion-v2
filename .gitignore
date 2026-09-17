@@ -48,6 +48,14 @@ results/**/embeddings/
 !results/04_integration/seurat_trad/*/clusters.csv.gz
 !results/04_integration/seurat_trad/*/umap.csv.gz
 
+# ── 例外 2：GP6 逐细胞标签（2026-09-17 PR 前复核补）──────────────────────────
+# `00_build_lineage_subsets.py` 的**唯一输入**就是这个文件 —— 六个谱系的冻结清单
+# （`*_subset_barcodes.txt`，已入库且带 sha256）全部由它切出。不入库 ⇒ 克隆后无法复现那六份
+# 已冻结的清单，「清单哈希」这条溯源链就断在这里。7.5 MB，值得存。
+# ⚠️ `gp6_scores.csv.gz`（26 MB，标准 A 的逐细胞模块分）**故意不在此列**：它是标签的**证据**、
+#    不是任何已入库脚本的输入，且重跑 `01_dual_standard_annotation.py` 即可再生。
+!results/05_annotation/gp6_cell_labels.csv.gz
+
 # ── 崩溃前基线（2026-09-17）──────────────────────────────────────────────────
 # `.prev_nomanifest/` 是 subset 首跑崩在最后一行时留存下来的**验证脚手架**，用于比对重跑
 # 是否逐字节一致。核对已完成（4/6 谱系三项产物 md5 全同，值已登记在

@@ -1,5 +1,6 @@
 {
   "source": "results/05_annotation/gp6_cell_labels.csv.gz",
+  "source_sha256": "fa031a52a4ab3b7098d3fca5555b0749b2f4622711153c0b742f8ae09aaf12e2",
   "caliber": "标准 A 单口径（A_frozen, seed0, r*=0.6）",
   "min_cells": 1000,
   "lineages": {

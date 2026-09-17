@@ -97,6 +97,9 @@ def main():
     out = os.path.join(OUTDIR, "lineage_subsets_manifest.json")
     with open(out, "w") as fh:
         json.dump(dict(source=os.path.relpath(LABELS, ROOT),
+                       # ⚠️ 2026-09-17 补：原 manifest 只记了输入**路径**不记**哈希** —— 于是
+                       # 「六份清单哈希」这条溯源链在输入端是断的（换了另一版标签文件也看不出来）。
+                       source_sha256=hashlib.sha256(open(LABELS, "rb").read()).hexdigest(),
                        caliber="标准 A 单口径（A_frozen, seed0, r*=0.6）",
                        min_cells=MIN_CELLS, lineages=report),
                   fh, ensure_ascii=False, indent=2)
