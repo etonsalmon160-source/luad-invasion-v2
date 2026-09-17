@@ -7,12 +7,12 @@
 #   登记位置：docs/PARAMETERS_AND_SOURCES.md §M3-A.1「已作废登记」表。
 #   现行替代：04_integration/10_seurat_traditional.R
 # ============================================================================
-# 00b_scran_sizefactors.R —— scran 池化 size factor（M3-A.1 登记的归一化主口径）
+# 00b_scran_sizefactors.R —— scran 池化 size factor（**旧口径，已作废**）
 #
 # 出处：Lun, Bach & Marioni 2016, Genome Biol 17:75
 #       "Pooling across cells to normalize single-cell RNA sequencing data
 #        with many zero counts"
-# 登记于 docs/PARAMETERS_AND_SOURCES.md M3-A.1（🟡P 主口径）
+# 登记于 docs/PARAMETERS_AND_SOURCES.md M3-A.1 §「已作废登记」表（原为 🟡P 主口径，2026-09-16 作废）
 #
 # 输入：results/04_integration/scran_io/  （由 00a_export_counts_for_scran.py 产出）
 # 输出：results/04_integration/scran_size_factors.csv.gz  （cell_barcode,sample_id,size_factor）
