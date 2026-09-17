@@ -1,0 +1,33 @@
+"step","sec","rss_before_gb","rss_after_gb"
+"读入 CSC 三元组 + 组装 dgCMatrix",27,0.35,7.7
+"CreateSeuratObject",3.8,9.01,9.72
+"SCTransform(vst.flavor=v2, HVG=3000)",280.1,8.93,24.09
+"RunPCA(npcs=50)",65.4,24.09,27.74
+"RunHarmony(group.by.vars=sample_id, dims=1:50)",43.7,27.74,27.74
+"FindNeighbors(Harmony 臂)",28.1,27.74,16.24
+"FindNeighbors(不校正臂)",23.1,16.24,13.81
+"FindClusters(harmony, r=0.5, seed=0)",25.4,13.81,13.81
+"FindClusters(harmony, r=0.5, seed=1)",22.1,13.81,13.81
+"FindClusters(harmony, r=0.5, seed=2)",21.6,13.81,13.81
+"FindClusters(harmony, r=0.5, seed=3)",22.5,13.81,13.81
+"FindClusters(harmony, r=0.5, seed=4)",19.8,13.81,13.81
+"FindClusters(harmony, r=0.6, seed=0)",19.7,13.81,13.81
+"FindClusters(harmony, r=0.6, seed=1)",22.1,13.81,13.81
+"FindClusters(harmony, r=0.6, seed=2)",23.1,13.81,13.81
+"FindClusters(harmony, r=0.6, seed=3)",17.2,13.81,13.81
+"FindClusters(harmony, r=0.6, seed=4)",19,13.81,13.81
+"FindClusters(harmony, r=0.7, seed=0)",21.6,13.81,13.81
+"FindClusters(harmony, r=0.7, seed=1)",24.6,13.81,13.81
+"FindClusters(harmony, r=0.7, seed=2)",23.9,13.81,13.81
+"FindClusters(harmony, r=0.7, seed=3)",19.2,13.81,13.81
+"FindClusters(harmony, r=0.7, seed=4)",21.9,13.81,13.81
+"FindClusters(harmony, r=0.8, seed=0)",23.8,13.81,13.81
+"FindClusters(harmony, r=0.8, seed=1)",23.8,13.81,13.81
+"FindClusters(harmony, r=0.8, seed=2)",22.6,13.81,13.81
+"FindClusters(harmony, r=0.8, seed=3)",22,13.81,13.81
+"FindClusters(harmony, r=0.8, seed=4)",22.5,13.81,13.81
+"FindClusters(pca, r=0.5, seed=0)",19.8,13.81,13.81
+"FindClusters(pca, r=0.6, seed=0)",24,13.81,13.81
+"FindClusters(pca, r=0.7, seed=0)",20.6,13.81,13.81
+"FindClusters(pca, r=0.8, seed=0)",19.8,13.81,13.81
+"RunUMAP(reduction=harmony, dims=1:50)",79.4,13.81,13.81
