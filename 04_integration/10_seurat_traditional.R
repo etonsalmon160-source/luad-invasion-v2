@@ -315,7 +315,8 @@ xres <- vapply(seq_along(RESOLUTIONS), function(i) {
   mean(v, na.rm = TRUE)
 }, numeric(1))
 
-# 指标3：谱系覆盖（GP6 之前无注释，故此处**只报簇数**，不伪造覆盖分）
+# 指标3：谱系覆盖（**不在本脚本计算** —— 见 05_annotation/04_metric3_coverage.py。
+#        此处**只报簇数**，不得以簇数冒充覆盖分）
 n_clust <- vapply(RESOLUTIONS, function(r) length(unique(LAB[[sprintf("harmony_res%.1f_seed0", r)]])),
                   integer(1))
 
@@ -345,7 +346,7 @@ absorb_r    <- round(absorb, 4)
 score_r     <- round(0.5 * seed_stab_r + 0.5 * xres_r, 4)
 pass_seed_r <- seed_stab_r >= ARI_SEED_MIN
 pass_aah_r  <- absorb_r <= AAH_ABSORPTION_MAX
-ok          <- pass_seed_r & pass_aah_r          # 指标3 待 GP6 补
+ok          <- pass_seed_r & pass_aah_r          # 指标3 不由本脚本施加（见 04_metric3_coverage.py）
 METRICS <- data.frame(
   resolution = RESOLUTIONS, n_clusters = n_clust,
   ari_seed_mean = seed_stab_r,
@@ -439,7 +440,11 @@ man <- list(
   metrics = list(
     guard = list(aah_absorption_max = AAH_ABSORPTION_MAX,
                  note = "指标4 为本项目附加，非论文配方；见 PARAMETERS §M3-A.3"),
-    metric3_absent = "指标3（谱系覆盖）需 GP6 注释后方可计算，本轮**未计算**，不得以簇数冒充",
+    metric3_absent = paste0("指标3（谱系覆盖）**不在本脚本计算** —— 见 05_annotation/04_metric3_coverage.py ",
+                            "与产物 results/05_annotation/metric3_coverage.csv（2026-09-21 补算：",
+                            "七对象 × 4 分辨率 × 5 种子全过线，对 r* 无区分力）。",
+                            "⚠️ 旧措辞「需 GP6 注释后方可计算」是错的（它不依赖注释）。",
+                            "此处只报 n_clusters，不得以簇数冒充覆盖分"),
     metric1_caveat = paste0(
       # ⚠️ 本字段**由 METRICS 实算**，禁止写死结论。
       #    旧版曾把 3,000 细胞冒烟的"ARI 恒 = 1.0 ⇒ 指标1 不承重"写死在此，

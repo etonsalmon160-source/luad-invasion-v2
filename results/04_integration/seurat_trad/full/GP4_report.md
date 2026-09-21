@@ -190,7 +190,12 @@
 剔掉了 r=0.5 与 r=0.8 两个候选。对照历史：3,000 细胞时 ARI 恒 = 1.0（空转），60,000 细胞时 0.9346–0.9834。
 **不得用小规模结果推断本规模** —— 本轮已证实。
 
-**指标3（谱系覆盖）本轮未计算** —— 它需要 GP6 的注释 marker 才能算。manifest 里已标 `metric3_absent`。
+**指标3（谱系覆盖）在 GP4 时点未计算** —— 当时认为它需要 GP6 的注释 marker 才能算。manifest 里已标 `metric3_absent`。
+
+> ✅ **后续（2026-09-21）**：该说法**已更正** —— 登记口径（「≥1 个 marker 集」＝任一套即可）**并不依赖注释**。指标3 已由
+> `05_annotation/04_metric3_coverage.py` 补算完毕（口径 R_mean），七对象 × 4 分辨率 × 5 种子**全过线、对 `r*` 无区分力**。
+> 详见 `results/05_annotation/GP5_report.md` §6.7 与 `docs/PARAMETERS_AND_SOURCES.md` §M3-A.3。
+> ⚠️ 本行以上为 **GP4 时点记录，保留不改**；`run_manifest.json` 的 `metric3_absent` 字段同属时点记录。
 `eligible` 列因此只反映了 1/4 两条约束，**不是完整的三约束判定**。
 
 ---
