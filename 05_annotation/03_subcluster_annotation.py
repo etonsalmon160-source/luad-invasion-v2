@@ -131,15 +131,18 @@ def stage_select(tag, relax_seed_min=None):
                eligible=[float(x) for x in ok["resolution"]],
                tie_break="差 ≤ 0.01 取较低分辨率（§M3-A.3）",
                rule="r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 "
-                    "与 aah_absorption_rate ≤ %g 两条约束；指标3 待注释后补算" % AAH_ABSORPTION_MAX,
+                    "与 aah_absorption_rate ≤ %g 两条约束；指标3 已补算（2026-09-21，口径 R_mean）"
+                    "且对 r* 无区分力" % AAH_ABSORPTION_MAX,
                constraints_applied=[
                    "ari_seed_mean ≥ %g（= 指标1 跨种子稳定性；**承重**）" % thr,
                    "aah_absorption_rate ≤ %g（= 指标4 AAH 吸收护栏；**已施加但本批实测全分辨率为 0 "
                    "⇒ 空转**，按 PARAMETERS §M3-A.3 第 241/243 行的裁定**不得计入 r* 的通过理由**）"
                    % AAH_ABSORPTION_MAX,
-                   "指标3（谱系覆盖 ≥ 0.90）**未施加** —— 它要等注释后才算得出来，按 §M3-A.3 第 242 行"
-                   "的裁定留待 GP8 注释阶段**逐谱系补算**；若届时某谱系 < 0.90，该分辨率不得作 r*，"
-                   "须停在检查点升级（本条是**登记在案的口子**，不是遗漏）",
+                   "指标3（谱系覆盖 ≥ 0.90）**已补算（2026-09-21）** —— 口径「逐基因检出率均值」"
+                   "（R_mean，见 PARAMETERS §M3-A.3 的 2026-09-21 裁定）；七个对象 × 4 分辨率 × "
+                   "5 种子全过线（最低 0.9310）⇒ **未淘汰任何分辨率，对 r* 无区分力**。"
+                   "故本 r* 仍**只由指标1 + 指标2 承担**，不得记入指标3 的功劳。"
+                   "⚠️ 原措辞「待注释后补算」是错的，见 GP5_report.md §6.1 的更正。",
                    "（前两条均自 resolution_metrics.csv 的**原始指标列**重算；"
                    "R 侧派生的 pass_seed / pass_aah / eligible 一律不复用，避免边界分叉）"],
                rstar_authoritative_over="resolution_metrics.csv 的 is_rstar 列。"
