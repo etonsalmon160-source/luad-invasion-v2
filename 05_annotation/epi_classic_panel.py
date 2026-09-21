@@ -23,11 +23,30 @@
 3. **稀有型**（Serous/Ionocyte/Neuroendocrine/Tuft）正常肺合计 <0.3%，照算照报，但胜出簇过小时
    须标 `rare/likely-spurious`。
 
-两处、且仅两处对原表的偏离（显式登记，不静默）
-----------------------------------------------
-- `ORTHOLOG_FIX`：Table S1 Club 行写的是**小鼠**基因号 `CYP2F2`，换用人同源 `CYP2F1`。
-- `TABLE_S4_FILL`：Table S1 的基因若**不在本数据矩阵**，从**同一篇 Travaglini 2020** 的
-  Table S4（该亚型对应 cluster 的富集基因）取替代 —— 不另找文献。
+对原表的偏离（2026-09-21 用户裁定后）
+------------------------------------
+裁定把两种"偏离原表"分开，处置不同：
+
+**① 认人同源 —— 保留（1 类偏离）**
+`ORTHOLOG_FIX`：Table S1 Club 行的 `CYP2F2` 是**小鼠**基因号（该表其余格均为人的，此格系
+物种笔误）；换用人同源 `CYP2F1`。**这不叫"补"** —— `CYP2F1` 就是原表点名那个基因的人版本，
+且**同篇论文自己的 Table S4**（用他们自己的人类数据算出的簇富集表）相关两行写的正是 `CYP2F1`。
+⇒ 依据充足，保留。
+
+**② 找替身填缺槽 —— 删除（0 类）**
+原 `TABLE_S4_FILL`（`DAPL1` 缺则取同篇 Table S4 的 `KRT15`/`KRT17` 顶替）**已按裁定删除**。
+⚠️ 它此前**从未被任何代码读取**（生成器写了、产线没用，`grep` 核实）⇒ 删除它
+**不改变任何已算结果**，只是清死代码并冻结该裁定。
+
+🔴 后果：两个型被削弱（**须随结果报告**）
+----------------------------------------
+| 型 | Table S1 槽 | 实际可用 | 丢的是 | 为什么 |
+|---|---|---|---|---|
+| Basal | 4 | **3** | `DAPL1` | 本矩阵没有；按裁定不取 `KRT15`/`KRT17` 顶替 |
+| Serous | 3 | **2** | `PRR4` | 本矩阵没有；按裁定不留替身 |
+
+⇒ **Basal 判别力下降**（用户做此裁定时已被告知）。产线对 ≤2 基因的型自动打
+  `thin_panel`；`KNOWN_ABSENT_IN_MATRIX` 供报告逐条引用。Club 不受影响（可用 3 个基因）。
 """
 
 # ---------------------------------------------------------------- 一次文献
@@ -35,16 +54,25 @@ REFERENCES = {
     "Travaglini2020": "Travaglini KJ, Nabhan AN, Penland L, et al. A molecular cell atlas of the "
                       "human lung from single-cell RNA sequencing. Nature 2020;587(7835):619-625. "
                       "doi:10.1038/s41586-020-2922-4；PMC7704697 "
-                      "【本面板主干 Table S1 Canonical markers；补齐用 Table S4】",
+                      "【本面板主干 Table S1 Canonical markers；Club 行另有物种核对见 Table S4】",
     "Habermann2020": "Habermann AC, Gutierrez AJ, Bui LT, et al. Single-cell RNA sequencing reveals "
                      "profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary "
                      "fibrosis. Sci Adv 2020;6(28):eaba1972. doi:10.1126/sciadv.aba1972 "
                      "【仅用于对 Table S1 存疑条目做第二意见核对，不入本面板】",
 }
 
-# -------- 允许的偏离 #1：小鼠基因号 → 人同源号（登记，非静默）
+# -------- 小鼠基因号 → 人同源号。2026-09-21 用户裁定：**此类保留**（「只认人同源」）
+# 裁定把两种"偏离原表"分开：认人同源号（= 认字）允许；找替身填缺槽（= 找替身）不允许。
+# 依据：Table S1 其余格均为人类基因号，唯 Club 行写 CYP2F2（小鼠），系物种笔误；
+#      同篇论文 Table S4（他们自己的人类数据）该行写的正是 CYP2F1。
 ORTHOLOG_FIX = {
-    "CYP2F2": "CYP2F1",   # Table S1 Club Cell 行；小鼠 → 人同源
+    "CYP2F2": "CYP2F1",
+}
+
+# Table S1 上皮块中**本矩阵肯定没有**的槽（供报告引用；实际缺失由矩阵过滤现算）
+KNOWN_ABSENT_IN_MATRIX = {
+    "DAPL1": "本矩阵无此基因；按 2026-09-21 裁定不从 Table S4 取 KRT15/KRT17 顶替（找替身）",
+    "PRR4": "本矩阵无此基因；按 2026-09-21 裁定不留替身",
 }
 
 # ------------------------------------------------- Table S1 经典 marker（主干，逐字）
@@ -61,17 +89,7 @@ TABLE_S1_MARKERS = {
     "Goblet/Mucous": ["MUC5AC", "MUC5B", "SPDEF"],
 }
 
-# 面板 = Table S1 主干
-# Table S4 补齐候选（供 Basal 在 Table S1 基因不在矩阵时顶替；同篇 Travaglini 2020）
-TABLE_S4_FILL = {
-    "Basal": [
-        "KRT17", "S100A2", "MIR205HG", "SERPINF1", "FHL2", "IGFBP2", "HNRNPA1", "RPL3",
-        "MPZL2", "EEF1G", "KRT15", "IFITM1", "NPM1", "RPS17", "RPLP1", "DLK2",
-        "MYC", "RPL10A", "SOD3", "RPL4", "KRT5", "NGFR", "TINAGL1", "LDHA",
-        "LAMB3", "RPL35A", "RPS7", "RPL5", "RPL14", "IER3", "RPS27A", "GAPDH",
-        "BTF3", "GPC3", "RPS18", "DKK3", "RPL13A", "RPS6", "ETS2", "BCAM",
-    ],
-}
+# 面板 = Table S1 主干（仅 1 类偏离：Club 行小鼠号→人同源；无 Table S4 补齐）
 
 # 合并说明（Goblet 与 Mucous 在 Table S1 里共用 MUC5B ⇒ 无法分开）
 MERGED = {

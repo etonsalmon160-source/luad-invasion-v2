@@ -9,6 +9,9 @@
 🔴 对原表的偏离共 **5 类**，逐条登记于 ORTHOLOG_FIX / ALIAS_FIX / DROP_NON_SYMBOL /
    SOURCE_TABLE_DEFECTS / UNANNOTATABLE —— **没有一条是静默的**。
    （原文写「4 类」漏数了 ⓪ ORTHOLOG_FIX，与 §M3-A.5e 的「5 类」自相矛盾；2026-09-17 统一为 5。）
+   🔴 **2026-09-21 用户裁定**：认人同源号（认字）**允许**；找替身填缺槽（找替身）**不允许**。
+   ⇒ ⓪ ORTHOLOG_FIX（CYP2F2→人同源 CYP2F1）**保留**，5 类全部生效；
+     而 Table S4 式的"补替身"**未采用** —— DAPL1 / PRR4 缺失如实上报，不留替身。
 
 🔴 必须随结果报告的两件事：
   1. **非上皮面板比上皮粗**（源表性质）：多型只有 1–2 个基因槽，解读须同 §M3-A.5c 谨慎。
@@ -23,6 +26,9 @@ REFERENCES = {
 }
 
 # ⓪ 物种修正：原表个别行写的是**小鼠**基因号 → 换人同源
+# 🔴 2026-09-21 用户裁定：认人同源号（认字）**允许**；找替身填缺槽（找替身）**不允许**。
+#    依据：Table S1 其余格均人类号、唯 Club 行写 CYP2F2，系物种笔误；
+#         同篇论文 Table S4（他们自己的人类数据）该行写的正是 CYP2F1。
 ORTHOLOG_FIX = {
     "CYP2F2": "CYP2F1",
 }
@@ -200,6 +206,8 @@ def assert_provenance():
 
     ⚠️ 2026-09-17 修：原校验只查 ALIAS_FIX 与 DROP_NON_SYMBOL，**漏了 ORTHOLOG_FIX**
     （小鼠基因号 → 人同源）。若日后重生成时 CYP2F2 残留未被换掉，原校验放行。
+    ⚠️ 2026-09-21：用户裁定认人同源号**允许**（故本判据保留 ORTHOLOG_FIX 这一项）；
+    "找替身填缺槽"**不允许**，未引入任何替身表，故判据无需增项。
     """
     flat = {g for d in PANELS.values() for gs in d.values() for g in gs}
     residue = (flat & set(ALIAS_FIX)) | (flat & set(DROP_NON_SYMBOL)) \
