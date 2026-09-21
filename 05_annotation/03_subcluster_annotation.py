@@ -192,8 +192,49 @@ def check_rstar_signature(tag, res):
     return j
 
 
+def enforce_annotation_seed(tag, seed):
+    """注释用哪个种子，由 `05_seed_representativeness.py` 的**预注册判据**决定，此处只执行。
+
+    背景（GP5_report.md §十二 登记的缺口）：原先「种子 0 有代表性」只在**全量**上验过，
+    六个谱系未验。2026-09-21 补验后，三个谱系在各自 r* 处种子 0 掉队超过 0.01
+    （髓系、B/浆、成纤维）⇒ 按判据须改用该谱系内最具代表性的种子。
+
+    判据（跑之前写下，看结果前后未改，**不得在此处重新裁定**）：
+        gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]
+        gap ≤ 0.01（复用 §M3-A.3 破平口径，不新发明阈值）⇒ 并列，沿用种子 0
+        gap >  0.01 ⇒ 改用 argmax 的那个种子
+
+    种子只影响**用哪一列簇标签**（`clusters.csv.gz` 里 `harmony_res*_seed*`），
+    不影响 r* —— r* 由**跨全部种子的平均** ARI 选出，与用哪个种子无关。
+    """
+    mf = f"{OUT}/seed_representativeness_manifest.json"
+    if not os.path.exists(mf):
+        raise SystemExit(f"🔴 没有 {os.path.relpath(mf, ROOT)} —— 注释的种子选择必须由"
+                         f" 05_seed_representativeness.py 的预注册判据产生。"
+                         f"拒绝静默默认用种子 0。")
+    man = json.load(open(mf, encoding="utf-8"))
+    per = man.get("verdict", {}).get("per_object", {})
+    if tag not in per:
+        raise SystemExit(f"🔴 {os.path.relpath(mf, ROOT)} 的 verdict.per_object 里没有 {tag}")
+    po = per[tag]
+    want = 0 if po["pass_"] else int(po["best_seed"])
+    if int(seed) != want:
+        raise SystemExit(
+            f"🔴 {tag}：--seed {seed} ≠ 预注册判据决定的种子 {want} —— "
+            f"（r*={po['r_star']}，种子0 均值 {po['ref_mean']:.4f}，最好种子 "
+            f"{int(po['best_seed'])} 均值 {po['best_mean']:.4f}，gap {po['gap']:+.4f}，"
+            f"种子0 排名 {int(po['ref_rank'])}/5）。拒绝注释。")
+    log(f"种子闸门 ✅ {tag}：用种子 {want}（预注册判据；"
+        + ("并列，沿用种子 0" if po["pass_"]
+           else f"种子 0 掉队 gap={po['gap']:+.4f} ⇒ 改用最好种子 {want}") + "）")
+    return want, dict(seed=int(want), rule=man["preregistered_rule"],
+                      evidence=os.path.relpath(mf, ROOT), manifest_sha256=sha256(mf),
+                      per_object=po)
+
+
 def stage_annotate(tag, lineage, res, seed):
     rstar = check_rstar_signature(tag, res)
+    seed, seed_ev = enforce_annotation_seed(tag, seed)
     man = json.load(open(SUBSETS))
     if lineage not in man["lineages"]:
         raise SystemExit(f"谱系未登记：{lineage}")
@@ -317,6 +358,7 @@ def stage_annotate(tag, lineage, res, seed):
 
     mf = dict(tag=tag, lineage=lineage, res=res, seed=seed, col=col,
               n_cells=int(len(bcs)), n_clusters=len(ucl),
+              seed_selection=seed_ev,
               rstar_signed_by=rstar["signed_by"],
               rstar_relaxed=bool(rstar.get("relaxed")),
               rstar_json_sha256=sha256(f"{OUT}/{tag}_rstar.json"),
@@ -338,7 +380,10 @@ def main():
     ap.add_argument("--tag", required=True)
     ap.add_argument("--lineage", default=None)
     ap.add_argument("--res", type=float, default=None)
-    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--seed", type=int, default=0,
+                    help="注释用的重聚类种子。⚠️ 不是自由参数：由 "
+                         "05_seed_representativeness.py 的预注册判据决定，"
+                         "传错即 SystemExit（见 enforce_annotation_seed）。")
     ap.add_argument("--relax-seed-min", type=float, default=None,
                     help="🔴 事后放宽跨种子稳定性阈值。仅限用户明确裁定的谱系使用；"
                          "产物会登记 relaxed=true，结果只能作探索性结论。")
