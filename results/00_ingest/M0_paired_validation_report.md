@@ -1,10 +1,10 @@
 # M0 输入冻结（配对数据集）· 校验报告
 
-- schema `M0-paired-1` · 2026-09-15T14:02:40Z · raw `/home/eto/luad_invasion/data`
-- registry sha256 `228617ee52d93d1d4a5c184ccd43e87fcd52d81724070dbce974d5a47d9a60d2`
+- schema `M0-paired-1` · 2026-09-22T12:00:47Z · raw `/home/eto/luad_invasion/data`
+- registry sha256 `bc69152fe44e364a0990adf784c9d5fb035d34c47a99922fa0a87d2432770726`
 - GEO 权威表 sha256 `{'GSE308103': 'c25de6ae144e7ff3947b903499c5afb2cfaf51266ba1664edbded90b2dae2795', 'GSE307534': '65b935cd5c0332dea263c8bc842524a53cdef9ec580a253db9e53c1af2a84893'}`
 
-## 过门判定：**❌ FAIL**
+## 过门判定：**✅ PASS**
 
 | 检查 | 结果 | 详情 |
 | :-- | :--: | :-- |
@@ -15,7 +15,7 @@
 | C5 空转 LNM 未伪造 | ✅ | 无 LNM 行 |
 | C6 样本数与 GEO 全量一致（{'GSE308103': 75, 'GSE307534': 56}） | ✅ | 实测={'GSE308103': 75, 'GSE307534': 56} |
 | C7 本地名 vs GEO 标题 逐样本核对（无缺、无多、无不符） | ✅ | 131 样本全部一致 |
-| C8 空转切片必需文件齐备（矩阵 + spatial 坐标/缩放） | ❌ | 1 张不完整，见报告 §切片完整性 |
+| C8 空转切片必需文件齐备（矩阵 + spatial 坐标/缩放） | ✅ | 56 切片全部齐备 |
 
 ## 计数
 
@@ -72,11 +72,8 @@
 
 判据：每张空转切片必须含 `filtered_feature_bc_matrix/{matrix.mtx,barcodes.tsv,features.tsv}.gz` + `spatial/scalefactors_json.json` + `spatial/tissue_positions(.csv|_list.csv)`。
 
-发现 **1** 张不完整：
+56 张切片全部齐备。
 
-- ⚠️ GSE307534 GSM9226176 切片文件缺失 ['spatial/scalefactors_json.json', 'spatial/tissue_positions.csv 或 spatial/tissue_positions_list.csv']（root=GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2）
-
-> 处置：**重下该 GSM**（NCBI 端限速易致 tar 截断）；未补齐前 M0 不过门。
 
 ## 病灶序号（`lesion_ordinal`）
 
@@ -98,7 +95,7 @@
 
 - `paired_samples.csv` `9c382df9210a2937c1e270452b6c4d74dd6ec53fccdc8833963c2824c0556f65`
 - `paired_patients.csv` `c5f76baaee399677bd8f6f0747757b2612de038b2db5a21922a0ddcddbe26aeb`
-- `paired_source_files.csv` `0c5e761c84a31da2fa2b880e8dc589be42898738ad7fde00ebea0945f443fdba`
+- `paired_source_files.csv` `812f36b2c31537085eb03c6298b8204a462d38371a3dcb6f3f0570ccd54268c4`
 
 ## 说明
 - **唯一键 = `sample_key`（`<dataset>:<sample_id>`）**。`sample_id` 跨数据集**不唯一**（同一患者同一病灶的 snRNA 与空间切片同名，如 `P3_LUAD`）→ 下游 join **必须用 `sample_key`**。

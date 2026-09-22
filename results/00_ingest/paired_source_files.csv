@@ -126,7 +126,7 @@ GSE307534,spatial_slide,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE3075
 GSE307534,spatial_file,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/filtered_feature_bc_matrix/matrix.mtx.gz,54564900.0,
 GSE307534,spatial_file,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/filtered_feature_bc_matrix/barcodes.tsv.gz,64659.0,
 GSE307534,spatial_file,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/filtered_feature_bc_matrix/features.tsv.gz,156782.0,
-GSE307534,spatial_file,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/spatial/scalefactors_json.json,,MISSING
+GSE307534,spatial_file,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/spatial/scalefactors_json.json,206.0,
 GSE307534,spatial_dir,P4_AAH-1,GSM9226176,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226176_P4_AAH-1/P4_AAH2/spatial,,
 GSE307534,spatial_slide,P4_LUAD,GSM9226177,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226177_P4_LUAD/P4_LUAD,,
 GSE307534,spatial_file,P4_LUAD,GSM9226177,/home/eto/luad_invasion/data/GSE307534/extracted/GSM9226177_P4_LUAD/P4_LUAD/filtered_feature_bc_matrix/matrix.mtx.gz,256104138.0,
