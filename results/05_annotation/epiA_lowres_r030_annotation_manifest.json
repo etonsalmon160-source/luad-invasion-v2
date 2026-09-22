@@ -1,0 +1,104 @@
+{
+  "tag": "epiA_lowres",
+  "out_tag": "epiA_lowres_r030",
+  "lineage": "上皮",
+  "res": 0.3,
+  "seed": 0,
+  "col": "harmony_res0.3_seed0",
+  "n_cells": 133384,
+  "n_clusters": 17,
+  "seed_selection": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "2992c7c6aa575ef4866f7b54140efebb16d7291e8936dd25e54c7896d1589ca4",
+    "per_object": {
+      "lineage": "上皮(诊断网格)",
+      "r_star": 0.2,
+      "n_cells": 133384,
+      "best_seed": 3,
+      "best_mean": 0.990087,
+      "ref_mean": 0.989912,
+      "gap": 0.000176,
+      "ref_rank": 2,
+      "ref_vs_best_matched_frac": 0.997436,
+      "cells_changing_label": 342,
+      "pass_": true
+    }
+  },
+  "rstar_signed_by": "Claude（诊断性查看，用户会话内授权『看看』，2026-09-22；**非用户手写签署**，仅供查看，不得进主结论）",
+  "rstar_relaxed": false,
+  "rstar_json_sha256": "224a676cd9b50814f66d52e8fd49e3dcc6797718ec6826b45433204b1d3bb84a",
+  "panel": "s1",
+  "panel_sha256": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced",
+  "panel_caliber": null,
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/epiA_lowres/clusters.csv.gz",
+      "sha256": "53d2fa033373bd3f5680cb9264ce9e4a59672c0c221b0ddfc2ff27467860a024",
+      "cluster_col": "harmony_res0.3_seed0"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/epiA_subset_barcodes.txt",
+      "sha256": "d12a115a87d0790d7fe8cf27b16170999d94daba51f3016fdb79c5aa3fdde55e",
+      "n_cells": 133384
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "69cadf4b939f6c1e6395c55f5ad7553ee5031b691cdcbdbaee6036d5ab2c6f29"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {
+    "Basal": [
+      "DAPL1"
+    ],
+    "Serous": [
+      "PRR4"
+    ]
+  },
+  "thin_panel_types": [
+    "Serous",
+    "Tuft"
+  ],
+  "unscorable_types": [],
+  "unannotatable": [
+    "Bronchial Vessel"
+  ],
+  "source_table_defects": [
+    "CD4+ Mem/Eff",
+    "Basophil/Mast"
+  ],
+  "summary_over": "全部簇",
+  "n_clusters_kept": 17,
+  "never_won": [
+    "Club",
+    "Ionocyte",
+    "Neuroendocrine",
+    "Tuft",
+    "Goblet/Mucous"
+  ],
+  "win_distribution": {
+    "AT1": 29714,
+    "AT2": 92560,
+    "Basal": 2665,
+    "Ciliated": 6718,
+    "Serous": 1727
+  },
+  "contamination": null
+}

@@ -1,0 +1,127 @@
+{
+  "script": "05_annotation/10_readopt_excluded_cells.py",
+  "script_sha256": "a1a14b904a3053c4f39a490410600c1e66e7e0e76584ce2ec50cc0a3f2222aed",
+  "created_at": "2026-09-22T08:32:55",
+  "caliber": "逐细胞三态接手：面板线 = gp6_scores.csv.gz 六谱系逐细胞模块分 argmax（ctrl_size=50, seed=0，与 GP6 标准 A 同一份打分）；CellTypist 线 = B_lineage。两线一致且 ≠ 原谱系 ⇒ readopted；两线一致且 = 原谱系 ⇒ restored；不一致或任一线弃权 ⇒ unadopted。",
+  "no_new_parameters": true,
+  "no_new_parameters_note": "本步没有引入任何新阈值：两条线及其参数完全沿用已登记的GP6 打分与已存的 CellTypist 输出，只把聚合层级由簇降为细胞。",
+  "unadopted_provisional_rule": "unadopted 细胞**暂不移动**，留在 A_adjudicated 给它的谱系。剔除与接手都是主动动作，人工未判之前不动最保守；故 A_adjudicated 与已签字的六份子集清单一字未改。",
+  "disclosure": "🔴 判据与剔除判据同源（同一份面板打分、同一份 CellTypist 输出），是同一证据换聚合层级，**不是独立验证**。readopted 不可当独立第二证据用；unadopted 的条数本身是本次簇级裁决不确定性的度量。",
+  "inputs": {
+    "sources": {
+      "adj": "dfaecc05c529bbe7cfb06990fd5cd13c99de03adf906fd1e534ded7e6c743093",
+      "scr": "c657f0e4907c625082c043653746d88911d4929efcf5ff93090a6941fdaf9a9f",
+      "man": "16f63507e4d256f6286e4833f755f619e6ffd85ceaf48e46b7b51f4f15878138"
+    },
+    "excluded_cells_sha256": {
+      "epiA_excluded_cells.csv.gz": "a0e5e44fc1cea0c863db72670a2d6f31a312cede71d0bc43faf69febf326e366",
+      "tnkA_excluded_cells.csv.gz": "a710b54cec50bc6dcea351218a6685eca86c4db1a6d6c5230fdf29bb1d26b03c",
+      "bplasmaA_excluded_cells.csv.gz": "d40fa28194bd96e1583296ac1fa44d994b66edb35c4acba16005ce1cc458e033",
+      "myeloidA_excluded_cells.csv.gz": "887382b1fd99ef2b977d2e5bbb0a138a5a862a2e4f590a84e553d40b683309df",
+      "fibroA_excluded_cells.csv.gz": "e7f6ff610c4fb9f0eef139b0c576339654a56bd62e62cf929e60f08fc61437d1",
+      "endoA_excluded_cells.csv.gz": "9d69ad6acad6f5eb0ad4cb77d797734f01c350cbe32b1795cecb0b76d6cee2e9"
+    }
+  },
+  "outputs": {
+    "detail": "results/05_annotation/gp8c_readopt_excluded_cells.csv.gz",
+    "detail_sha256": "29fa09586c84d15228d42ff2ba198c62cac5d20fdd58d9fdbad033f2e159ee58",
+    "unadopted": "results/05_annotation/gp8c_readopt_unadopted.csv",
+    "unadopted_sha256": "e4439c2f84c4cccb04150975907fe8df3e089a2805c3e0aab32c4c21fc4d6dc0",
+    "assignment": "results/05_annotation/gp8c_cell_assignment.csv.gz",
+    "assignment_sha256": "2b3d62ffdf943e114bea908a6e869de58c265d605af06427f31d23c3ea579e3e"
+  },
+  "per_tag": {
+    "epiA": {
+      "lineage": "上皮",
+      "n_excluded": 0,
+      "states": {},
+      "excluded_clusters": [],
+      "note": "清单为空"
+    },
+    "tnkA": {
+      "lineage": "T/NK",
+      "n_excluded": 956,
+      "states": {
+        "unadopted": 496,
+        "readopted": 327,
+        "restored": 133
+      },
+      "excluded_clusters": [
+        "23",
+        "37"
+      ],
+      "note": ""
+    },
+    "bplasmaA": {
+      "lineage": "B/浆",
+      "n_excluded": 8367,
+      "states": {
+        "unadopted": 4556,
+        "readopted": 2485,
+        "restored": 1326
+      },
+      "excluded_clusters": [
+        "11",
+        "16",
+        "19",
+        "23",
+        "25",
+        "4",
+        "5",
+        "7",
+        "8"
+      ],
+      "note": ""
+    },
+    "myeloidA": {
+      "lineage": "髓系",
+      "n_excluded": 215,
+      "states": {
+        "readopted": 100,
+        "unadopted": 84,
+        "restored": 31
+      },
+      "excluded_clusters": [
+        "27"
+      ],
+      "note": ""
+    },
+    "fibroA": {
+      "lineage": "成纤维",
+      "n_excluded": 0,
+      "states": {},
+      "excluded_clusters": [],
+      "note": "清单为空"
+    },
+    "endoA": {
+      "lineage": "内皮",
+      "n_excluded": 4580,
+      "states": {
+        "unadopted": 2467,
+        "readopted": 1170,
+        "restored": 943
+      },
+      "excluded_clusters": [
+        "12",
+        "26",
+        "27",
+        "5"
+      ],
+      "note": ""
+    }
+  },
+  "summary": {
+    "n_excluded": 14118,
+    "n_restored": 2433,
+    "n_readopted": 4082,
+    "n_unadopted": 7603,
+    "readopt_to": {
+      "上皮": 1525,
+      "成纤维": 1312,
+      "T/NK": 771,
+      "髓系": 255,
+      "内皮": 181,
+      "B/浆": 38
+    }
+  }
+}

@@ -1,31 +1,33 @@
 {
-  "source": "results/05_annotation/gp6_cell_labels.csv.gz",
-  "source_sha256": "fa031a52a4ab3b7098d3fca5555b0749b2f4622711153c0b742f8ae09aaf12e2",
-  "caliber": "标准 A 单口径（A_frozen, seed0, r*=0.6）",
+  "source": "results/05_annotation/gp6_cell_labels_adjudicated.csv.gz",
+  "source_sha256": "dfaecc05c529bbe7cfb06990fd5cd13c99de03adf906fd1e534ded7e6c743093",
+  "label_column": "A_adjudicated",
+  "caliber": "标准 A 单口径 + 2026-09-22 全局簇错标裁决（A_adjudicated, seed0, r*=0.6）",
+  "supersedes_note": "2026-09-22：本清单由 A_adjudicated 切出，取代 results/_superseded/2026-09-22_cluster_adjudication/ 下的旧清单。改变：上皮 141,105→133,384、髓系 54,407→64,084、B/浆 34,385→31,282、T/NK 62,483→64,034、内皮 43,684→43,280、成纤维不变。",
   "min_cells": 1000,
   "lineages": {
     "上皮": {
       "file": "epiA_subset_barcodes.txt",
-      "n_cells": 141105,
-      "sha256": "a952857e3dbb119d2a5eca6201ba8f7bbe35443d09c695f7e22e08d1b0324d34",
+      "n_cells": 133384,
+      "sha256": "d12a115a87d0790d7fe8cf27b16170999d94daba51f3016fdb79c5aa3fdde55e",
       "subclusterable": true
     },
     "T/NK": {
       "file": "tnkA_subset_barcodes.txt",
-      "n_cells": 62483,
-      "sha256": "b80e212a1b1e1286db9faf5056b0124674395e270fc8ab550549363bdf452bd0",
+      "n_cells": 64034,
+      "sha256": "8cb87515d5463bdbdb9c6885decef19611a73b5a8f6abbdc850507d5c620b0c5",
       "subclusterable": true
     },
     "B/浆": {
       "file": "bplasmaA_subset_barcodes.txt",
-      "n_cells": 34385,
-      "sha256": "b3f3ef2b07fb43bd0f0fc079d04329bc8272ab7291bcd59324ed7d073a040d04",
+      "n_cells": 31282,
+      "sha256": "7e34c5c5baedb0ecfef071a8e2f3c738964c97cc29d74aa13c65c2a731a5cd0a",
       "subclusterable": true
     },
     "髓系": {
       "file": "myeloidA_subset_barcodes.txt",
-      "n_cells": 54407,
-      "sha256": "b6936588925448496afd79cd33a2fedab223cefb9e902410549d98a571e5e312",
+      "n_cells": 64084,
+      "sha256": "2fd34840c92f8a6ebf11ea8713903af7ecd7d0ed5a6622864836f01805b2fb1f",
       "subclusterable": true
     },
     "成纤维": {
@@ -36,8 +38,8 @@
     },
     "内皮": {
       "file": "endoA_subset_barcodes.txt",
-      "n_cells": 43684,
-      "sha256": "1416797a02b41c5efa5491a017e9c49506012a2870ae80585e6d3a4d69d566c7",
+      "n_cells": 43280,
+      "sha256": "9ee8d0c08a26bd14592b654d3c9578561d1143f5bb6f2a74e544e8306f2396ac",
       "subclusterable": true
     }
   }

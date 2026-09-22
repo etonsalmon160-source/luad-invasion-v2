@@ -117,6 +117,30 @@ if (MODE == "subset") {
   if (!SUB_LIN %in% .LIN_OK)
     stop(sprintf("--lineage 须是 %s 之一，收到：%s", paste(.LIN_OK, collapse = "/"), SUB_LIN))
 }
+# ---- 1b. 网格覆盖（**默认不动**；仅诊断实验用） --------------------------------
+# 为什么不直接改上面 RESOLUTIONS 那行：已有 7 个 run 的 run_manifest.json 都指向本脚本，
+# 它们声明的口径是「论文区间 0.5–0.8」。把默认值改掉，那些历史 manifest 就与文件对不上，
+# 属于事后改口径。故只加开关：不传 --res-grid 时行为**一个字不变**；
+# 传了才覆盖，且 manifest 里注明这是**诊断网格、非论文口径**。
+# 诊断用途：上皮/成纤维在 0.5–0.8 全不达跨种子 0.90，往下试是否只是"分辨率太高"。
+RES_GRID_OVERRIDE <- NA_character_
+i <- which(argv == "--res-grid")
+if (length(i) > 1) stop("--res-grid 只能给一次")
+if (length(i) == 1) {
+  if (length(argv) < i + 1) stop("--res-grid 须给逗号分隔的分辨率，如 0.2,0.3,0.4,0.5")
+  RES_GRID_OVERRIDE <- argv[i + 1]
+  v <- suppressWarnings(as.numeric(strsplit(RES_GRID_OVERRIDE, ",")[[1]]))
+  if (any(is.na(v))) stop("--res-grid 含非数字：", RES_GRID_OVERRIDE)
+  if (any(abs(v * 10 - round(v * 10)) > 1e-9))
+    stop("--res-grid 只允许一位小数（簇标签列名按 harmony_res%.1f 生成）：", RES_GRID_OVERRIDE)
+  if (any(v <= 0 | v > 3)) stop("--res-grid 取值须在 (0, 3]：", RES_GRID_OVERRIDE)
+  if (anyDuplicated(v)) stop("--res-grid 有重复值：", RES_GRID_OVERRIDE)
+  RESOLUTIONS <- sort(v)
+  log(sprintf("⚠️ 分辨率网格被 --res-grid 覆盖为 %s —— **诊断实验，非论文口径 0.5–0.8**",
+              paste(RESOLUTIONS, collapse = ", ")))
+  log(sprintf("⚠️ 跨种子硬约束 ARI ≥ %.2f 保持不动（本次就是要验它能不能过）", ARI_SEED_MIN))
+}
+
 TAG <- switch(MODE, full = "full", smoke = sprintf("smoke_%d", N_SMOKE), subset = SUB_TAG)
 OUT <- file.path(OUTBASE, TAG)
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
@@ -429,6 +453,14 @@ man <- list(
     neighbors = list(k.param = K_PARAM, annoy.metric = "euclidean", nn.method = "annoy",
                      prune.SNN = PRUNE_SNN, graphs = c("harmony_snn", "pca_snn")),
     clusters  = list(resolutions = RESOLUTIONS, seeds = SEEDS, algorithm = 1L,
+                     resolutions_override = if (is.na(RES_GRID_OVERRIDE)) NULL else RES_GRID_OVERRIDE,
+                     resolutions_override_note = if (is.na(RES_GRID_OVERRIDE))
+                       "未覆盖（论文区间 0.5–0.8）" else
+                       sprintf(paste("🔴 本轮网格被 --res-grid 覆盖为 %s —— **诊断实验，非论文口径**。",
+                                     "目的：上皮/成纤维在 0.5–0.8 跨种子 ARI 全不达 0.90，",
+                                     "验证是否只是分辨率偏高。硬约束 ARI ≥ 0.90 **未放宽**。",
+                                     "本 run 不产出用于下游注释的 r*，除非人工签字。"),
+                               paste(RESOLUTIONS, collapse = ", ")),
                      modularity.fxn = 1L, n.start = 10L, n.iter = 10L,
                      group.singletons = TRUE, method = "matrix"),
     umap      = list(n.neighbors = 30L, min.dist = 0.3, metric = "cosine",

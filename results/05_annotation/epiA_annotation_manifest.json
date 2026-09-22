@@ -1,0 +1,109 @@
+{
+  "tag": "epiA",
+  "lineage": "上皮",
+  "res": 0.7,
+  "seed": 0,
+  "col": "harmony_res0.7_seed0",
+  "n_cells": 133384,
+  "n_clusters": 27,
+  "seed_selection": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "692158eba19531024999e2132e007fdf5462dff9101aed8d2bc4c5c2296d649f",
+    "per_object": {
+      "lineage": "上皮",
+      "r_star": 0.7,
+      "n_cells": 133384,
+      "best_seed": 4,
+      "best_mean": 0.867788,
+      "ref_mean": 0.861408,
+      "gap": 0.00638,
+      "ref_rank": 3,
+      "ref_vs_best_matched_frac": 0.918768,
+      "cells_changing_label": 10835,
+      "pass_": true
+    }
+  },
+  "rstar_signed_by": "用户本人（会话内表态，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+  "rstar_relaxed": true,
+  "rstar_json_sha256": "6a370ce55811b77966c309222c6cf5de5aee2bc338d2f6c716c222c02776efeb",
+  "panel_sha256": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced",
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/epiA/clusters.csv.gz",
+      "sha256": "13e58cb384d2af31cd740d46bfc4516fb0078a1efe1306a25682a7f18bde566f",
+      "cluster_col": "harmony_res0.7_seed0"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/epiA_subset_barcodes.txt",
+      "sha256": "d12a115a87d0790d7fe8cf27b16170999d94daba51f3016fdb79c5aa3fdde55e",
+      "n_cells": 133384
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "326a64f387b8b0f47bb6dcbb70fc25689ae709322877c341b75692bb0097e2e1"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {
+    "Basal": [
+      "DAPL1"
+    ],
+    "Serous": [
+      "PRR4"
+    ]
+  },
+  "thin_panel_types": [
+    "Serous",
+    "Tuft"
+  ],
+  "unscorable_types": [],
+  "unannotatable": [
+    "Bronchial Vessel"
+  ],
+  "source_table_defects": [
+    "CD4+ Mem/Eff",
+    "Basophil/Mast"
+  ],
+  "summary_over": "全部簇",
+  "n_clusters_kept": 27,
+  "never_won": [
+    "Club",
+    "Ionocyte",
+    "Neuroendocrine",
+    "Tuft"
+  ],
+  "win_distribution": {
+    "AT1": 30320,
+    "AT2": 88666,
+    "Basal": 2386,
+    "Ciliated": 6697,
+    "Goblet/Mucous": 3587,
+    "Serous": 1728
+  },
+  "contamination": {
+    "csv": "results/05_annotation/epiA_contamination.csv",
+    "csv_sha256": "b3ef6bc920fd703a75b71b1b51faa0d22f2af728e924cc4d4dff31f1aa8d5aa4",
+    "excluded_clusters": [],
+    "n_cells_excluded": 0,
+    "cells_list": "epiA_excluded_cells.csv.gz",
+    "clean_barcodes": "epiA_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

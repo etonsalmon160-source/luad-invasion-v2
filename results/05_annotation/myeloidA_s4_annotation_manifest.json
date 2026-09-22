@@ -1,0 +1,313 @@
+{
+  "tag": "myeloidA",
+  "out_tag": "myeloidA_s4",
+  "lineage": "髓系",
+  "res": 0.5,
+  "seed": 0,
+  "col": "harmony_res0.5_seed0",
+  "n_cells": 64084,
+  "n_clusters": 28,
+  "seed_selection": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "09a3306d77bb5db89442677242caa4cce203f9456694143a8d108b416c6a2cdc",
+    "per_object": {
+      "lineage": "髓系",
+      "r_star": 0.5,
+      "n_cells": 64084,
+      "best_seed": 4,
+      "best_mean": 0.983435,
+      "ref_mean": 0.975543,
+      "gap": 0.007892,
+      "ref_rank": 5,
+      "ref_vs_best_matched_frac": 0.972474,
+      "cells_changing_label": 1764,
+      "pass_": true
+    }
+  },
+  "rstar_signed_by": "Claude（自动夜跑）2026-09-22",
+  "rstar_relaxed": false,
+  "rstar_json_sha256": "44c5267a8b2658b573fb4106b88d9cf2c63c7191fe2f1bfcc6e497521d132056",
+  "panel": "s4",
+  "panel_sha256": "dc61f7b5492c9385aa8522055bbe67bc524c0dfd584259743dd87ff8bd19b99b",
+  "panel_caliber": {
+    "json": "/home/eto/luad_v2/results/05_annotation/panel_caliber_s4.json",
+    "json_sha256": "ce2617c5bde17d8452ede56278129a3cb324d4f5d0a59b3a9acc10b8318388c9",
+    "signed_by": "Claude（自动夜跑 2026-09-22，代冻口径文件；五项口径由用户会话内选定，待追认）",
+    "rule": {
+      "only_10x": true,
+      "only_10x_why": "本数据是 10x Flex；SS2 = Smart-seq2（板式全长），技术不匹配。",
+      "filter": {
+        "avg_logFC_min": 1.0,
+        "specificity_min": 0.3,
+        "specificity_def": "pct_in_cluster − pct_out_cluster",
+        "why": "S4 是按 logFC 排序的完整差异表（每张 200–2000 基因），不是 canonical 面板。不筛特异性则相关亚型（动脉/静脉/毛细血管）分数高度相关、argmax 乱跳。"
+      },
+      "cap": {
+        "n": 20,
+        "order": "avg_logFC 降序",
+        "fill": "矩阵里没有的基因**跳过、继续往下取**，直到凑足 20 个真有的 ⇒ 各型面板等长"
+      },
+      "granularity": "照 S4 原粒度（内皮 9 型、髓系 S4 部分的 15 型）",
+      "fallback_from_s1": {
+        "髓系": {
+          "Neutrophil": [
+            "S100A8",
+            "S100A9",
+            "IFITM2",
+            "FCGR3B"
+          ],
+          "Eosinophil": [
+            "SIGLEC8"
+          ]
+        }
+      },
+      "fallback_reason": {
+        "Neutrophil": "Table S4 里中性粒**只有 SS2 表**（Cluster 43 (SS2)），无 10x 表。严格走「只用 10x」会丢掉该型，而它在本数据里标注了 1,406 个核 ⇒ 沿用 S1 行。",
+        "Eosinophil": "Table S4 **没有嗜酸簇**（该型稀少未被单独分出）⇒ 沿用 S1 行（其本来即 1 槽，不可打分）。"
+      },
+      "no_alias_fix": {
+        "decision": true,
+        "why": "S4 混用旧符号（CTGF/CYR61/SEPP1/KIAA0101/C10orf54 等）。换 CTGF→CCN2 属「认字」允许，但此处**不换也不找替身**，把判断量降到最低——丢一个 marker 是保守误差，不是伪造结果。缺失者由运行时存在性检查如实报 missing。"
+      }
+    }
+  },
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/myeloidA/clusters.csv.gz",
+      "sha256": "42aa3905839a04ac0e03b9d76e46cc293493109b29fa07e7792d3da9a9a3ca51",
+      "cluster_col": "harmony_res0.5_seed0"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/myeloidA_subset_barcodes.txt",
+      "sha256": "2fd34840c92f8a6ebf11ea8713903af7ecd7d0ed5a6622864836f01805b2fb1f",
+      "n_cells": 64084
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "69cadf4b939f6c1e6395c55f5ad7553ee5031b691cdcbdbaee6036d5ab2c6f29"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {
+    "Basophil/Mast 1": [
+      "TPSB2",
+      "TPSAB1",
+      "C1orf186",
+      "SDPR",
+      "SIGLEC17P",
+      "LOC284454"
+    ],
+    "Basophil/Mast 2": [
+      "TPSAB1",
+      "TPSB2",
+      "LOC101927482",
+      "CCL4L1",
+      "SELK",
+      "C1orf186",
+      "SIGLEC17P",
+      "SDPR",
+      "BRE-AS1",
+      "LOC284454"
+    ],
+    "Platelet/Megakaryocyte": [
+      "ACRBP",
+      "SDPR",
+      "LIMS1",
+      "GPX1",
+      "RAP1B",
+      "NGFRAP1",
+      "HRAT92",
+      "CXCR2P1",
+      "GP1BA",
+      "C9orf89",
+      "C6orf25",
+      "VIM-AS1",
+      "TUBA8",
+      "HIST1H2BK",
+      "H3F3AP4",
+      "GGTA1P",
+      "NAT8B",
+      "SCGB1C1",
+      "MIR4435-2HG",
+      "LINC00152",
+      "TMEM55A",
+      "WBP5",
+      "GUCY1B3",
+      "FAM63A",
+      "MIR6843",
+      "SENCR",
+      "FAM212A",
+      "LOC113230",
+      "LINC00657",
+      "GNAS"
+    ],
+    "Macrophage": [
+      "HLA-DRB1",
+      "TXN",
+      "LOC731424",
+      "HLA-DRB5"
+    ],
+    "Proliferating Macrophage": [
+      "KIAA0101",
+      "HMGN2",
+      "CD59",
+      "HLA-DRB1",
+      "HN1",
+      "LOC731424"
+    ],
+    "Plasmacytoid Dendritic": [
+      "NAPSB",
+      "VIMP",
+      "C9orf142",
+      "LINC00996",
+      "SLC7A5P2"
+    ],
+    "Myeloid Dendritic Type 1": [
+      "WFDC21P",
+      "HLA-DPB1",
+      "HLA-DPA1",
+      "HLA-DQB1",
+      "HLA-DQA1",
+      "TXN",
+      "HLA-DQA2",
+      "NAPSB",
+      "HLA-DRB1",
+      "HLA-DRB5",
+      "HLA-DQB2",
+      "HLA-DRB6"
+    ],
+    "Myeloid Dendritic Type 2": [
+      "HLA-DPB1",
+      "HLA-DQA1",
+      "HLA-DQB1",
+      "HLA-DPA1",
+      "HLA-DRB6",
+      "HLA-DRB1",
+      "HLA-DRB5",
+      "HLA-DQB2",
+      "HLA-DMB",
+      "HLA-DQA2",
+      "NAPSB",
+      "HLA-DMA"
+    ],
+    "IGSF21+ Dendritic": [
+      "SEPP1",
+      "HLA-DQA1",
+      "HLA-DPA1",
+      "HLA-DRB1",
+      "GGTA1P",
+      "HLA-DQB1",
+      "HLA-DPB1",
+      "HLA-DRB5",
+      "HLA-DMA",
+      "HLA-DRB6",
+      "HLA-DQA2",
+      "HLA-DMB",
+      "GPX1"
+    ],
+    "EREG+ Dendritic": [
+      "HLA-DQB1",
+      "HLA-DQA2",
+      "HLA-DPB1"
+    ],
+    "TREM2+ Dendritic": [
+      "HLA-DQA1",
+      "HLA-DMB",
+      "TXN",
+      "HLA-DRB1",
+      "HLA-DMA",
+      "HLA-DQB1",
+      "HLA-DRB5",
+      "HLA-DPA1",
+      "HLA-DRB6",
+      "HLA-DPB1"
+    ],
+    "Classical Monocyte": [
+      "FCN1",
+      "TKT"
+    ],
+    "OLR1+ Classical Monocyte": [
+      "CCL4L1",
+      "GK",
+      "FCN1",
+      "WTAP",
+      "LINC00152",
+      "LOC731424",
+      "MIR4435-2HG"
+    ],
+    "Nonclassical Monocyte": [
+      "LINC01272",
+      "FCN1",
+      "FAM26F",
+      "C10orf54",
+      "ZFAND5"
+    ],
+    "Intermediate Monocyte": [
+      "FCN1",
+      "LINC01272",
+      "PRELID1"
+    ]
+  },
+  "thin_panel_types": [
+    "Eosinophil"
+  ],
+  "unscorable_types": [
+    "Eosinophil"
+  ],
+  "unannotatable": [],
+  "source_table_defects": [
+    "Cluster 21 标签不一致",
+    "Cluster 50 标签不一致",
+    "旧基因符号"
+  ],
+  "summary_over": "保留簇（已剔除跨谱系污染簇）",
+  "n_clusters_kept": 27,
+  "never_won": [
+    "Basophil/Mast 2",
+    "Platelet/Megakaryocyte",
+    "OLR1+ Classical Monocyte",
+    "Intermediate Monocyte"
+  ],
+  "win_distribution": {
+    "Basophil/Mast 1": 6368,
+    "Classical Monocyte": 1985,
+    "EREG+ Dendritic": 2476,
+    "IGSF21+ Dendritic": 9193,
+    "Macrophage": 10837,
+    "Myeloid Dendritic Type 1": 1953,
+    "Myeloid Dendritic Type 2": 6100,
+    "Neutrophil": 840,
+    "Nonclassical Monocyte": 2327,
+    "Plasmacytoid Dendritic": 925,
+    "Proliferating Macrophage": 294,
+    "TREM2+ Dendritic": 20571
+  },
+  "contamination": {
+    "csv": "results/05_annotation/myeloidA_contamination.csv",
+    "csv_sha256": "16873aaf92493555db71a6f1f172dec5ec41dcfc1b644c258b4053596fe4c416",
+    "excluded_clusters": [
+      "27"
+    ],
+    "n_cells_excluded": 215,
+    "cells_list": "myeloidA_s4_excluded_cells.csv.gz",
+    "clean_barcodes": "myeloidA_s4_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

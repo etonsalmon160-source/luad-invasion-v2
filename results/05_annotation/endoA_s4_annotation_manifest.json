@@ -1,0 +1,164 @@
+{
+  "tag": "endoA",
+  "out_tag": "endoA_s4",
+  "lineage": "内皮",
+  "res": 0.7,
+  "seed": 0,
+  "col": "harmony_res0.7_seed0",
+  "n_cells": 43280,
+  "n_clusters": 29,
+  "seed_selection": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "09a3306d77bb5db89442677242caa4cce203f9456694143a8d108b416c6a2cdc",
+    "per_object": {
+      "lineage": "内皮",
+      "r_star": 0.7,
+      "n_cells": 43280,
+      "best_seed": 2,
+      "best_mean": 0.982784,
+      "ref_mean": 0.980831,
+      "gap": 0.001953,
+      "ref_rank": 2,
+      "ref_vs_best_matched_frac": 0.994455,
+      "cells_changing_label": 240,
+      "pass_": true
+    }
+  },
+  "rstar_signed_by": "Claude（自动夜跑）2026-09-22",
+  "rstar_relaxed": false,
+  "rstar_json_sha256": "f3bfa2da10b1153b8d1556ca1ff3c64ad1220ffa02e6ab0bfd75230123c8b355",
+  "panel": "s4",
+  "panel_sha256": "dc61f7b5492c9385aa8522055bbe67bc524c0dfd584259743dd87ff8bd19b99b",
+  "panel_caliber": {
+    "json": "/home/eto/luad_v2/results/05_annotation/panel_caliber_s4.json",
+    "json_sha256": "ce2617c5bde17d8452ede56278129a3cb324d4f5d0a59b3a9acc10b8318388c9",
+    "signed_by": "Claude（自动夜跑 2026-09-22，代冻口径文件；五项口径由用户会话内选定，待追认）",
+    "rule": {
+      "only_10x": true,
+      "only_10x_why": "本数据是 10x Flex；SS2 = Smart-seq2（板式全长），技术不匹配。",
+      "filter": {
+        "avg_logFC_min": 1.0,
+        "specificity_min": 0.3,
+        "specificity_def": "pct_in_cluster − pct_out_cluster",
+        "why": "S4 是按 logFC 排序的完整差异表（每张 200–2000 基因），不是 canonical 面板。不筛特异性则相关亚型（动脉/静脉/毛细血管）分数高度相关、argmax 乱跳。"
+      },
+      "cap": {
+        "n": 20,
+        "order": "avg_logFC 降序",
+        "fill": "矩阵里没有的基因**跳过、继续往下取**，直到凑足 20 个真有的 ⇒ 各型面板等长"
+      },
+      "granularity": "照 S4 原粒度（内皮 9 型、髓系 S4 部分的 15 型）",
+      "fallback_from_s1": {
+        "髓系": {
+          "Neutrophil": [
+            "S100A8",
+            "S100A9",
+            "IFITM2",
+            "FCGR3B"
+          ],
+          "Eosinophil": [
+            "SIGLEC8"
+          ]
+        }
+      },
+      "fallback_reason": {
+        "Neutrophil": "Table S4 里中性粒**只有 SS2 表**（Cluster 43 (SS2)），无 10x 表。严格走「只用 10x」会丢掉该型，而它在本数据里标注了 1,406 个核 ⇒ 沿用 S1 行。",
+        "Eosinophil": "Table S4 **没有嗜酸簇**（该型稀少未被单独分出）⇒ 沿用 S1 行（其本来即 1 槽，不可打分）。"
+      },
+      "no_alias_fix": {
+        "decision": true,
+        "why": "S4 混用旧符号（CTGF/CYR61/SEPP1/KIAA0101/C10orf54 等）。换 CTGF→CCN2 属「认字」允许，但此处**不换也不找替身**，把判断量降到最低——丢一个 marker 是保守误差，不是伪造结果。缺失者由运行时存在性检查如实报 missing。"
+      }
+    }
+  },
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/endoA/clusters.csv.gz",
+      "sha256": "8830d1c399df771969f59a9322b1836c1326c8a8875ce78f847b7fd57f9a4ccf",
+      "cluster_col": "harmony_res0.7_seed0"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/endoA_subset_barcodes.txt",
+      "sha256": "9ee8d0c08a26bd14592b654d3c9578561d1143f5bb6f2a74e544e8306f2396ac",
+      "n_cells": 43280
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "69cadf4b939f6c1e6395c55f5ad7553ee5031b691cdcbdbaee6036d5ab2c6f29"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {
+    "Bronchial Vessel 1": [
+      "CTGF",
+      "CYR61",
+      "SNHG5"
+    ],
+    "Bronchial Vessel 2": [
+      "CYR61"
+    ],
+    "Lymphatic": [
+      "PPP1R2",
+      "LIMS1",
+      "LINC00152",
+      "ANGPT2",
+      "GGTA1P"
+    ]
+  },
+  "thin_panel_types": [
+    "Capillary Intermediate 2"
+  ],
+  "unscorable_types": [
+    "Capillary Intermediate 2"
+  ],
+  "unannotatable": [],
+  "source_table_defects": [
+    "Cluster 21 标签不一致",
+    "Cluster 50 标签不一致",
+    "旧基因符号"
+  ],
+  "summary_over": "保留簇（已剔除跨谱系污染簇）",
+  "n_clusters_kept": 25,
+  "never_won": [],
+  "win_distribution": {
+    "Artery": 6388,
+    "Bronchial Vessel 1": 2292,
+    "Bronchial Vessel 2": 4674,
+    "Capillary": 8839,
+    "Capillary Aerocyte": 305,
+    "Capillary Intermediate 1": 7194,
+    "Lymphatic": 3354,
+    "Vein": 5654
+  },
+  "contamination": {
+    "csv": "results/05_annotation/endoA_contamination.csv",
+    "csv_sha256": "825260388d2d41a61d07fbc3481ab94a4b159155302f70db00c6d3a9789e8b7d",
+    "excluded_clusters": [
+      "12",
+      "26",
+      "27",
+      "5"
+    ],
+    "n_cells_excluded": 4580,
+    "cells_list": "endoA_s4_excluded_cells.csv.gz",
+    "clean_barcodes": "endoA_s4_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

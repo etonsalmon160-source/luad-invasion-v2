@@ -1,0 +1,243 @@
+{
+  "tag": "bplasmaA",
+  "lineage": "B/浆",
+  "res": 0.6,
+  "seed": 0,
+  "cluster_col": "harmony_res0.6_seed0",
+  "seed_gate": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "692158eba19531024999e2132e007fdf5462dff9101aed8d2bc4c5c2296d649f",
+    "per_object": {
+      "lineage": "B/浆",
+      "r_star": 0.6,
+      "n_cells": 31282,
+      "best_seed": 3,
+      "best_mean": 0.983384,
+      "ref_mean": 0.977918,
+      "gap": 0.005466,
+      "ref_rank": 2,
+      "ref_vs_best_matched_frac": 0.99204,
+      "cells_changing_label": 249,
+      "pass_": true
+    }
+  },
+  "rstar_gate": {
+    "r_star": 0.6,
+    "relaxed": false,
+    "seed_min_applied": 0.9,
+    "signed_by": "Claude（自动夜跑）2026-09-22",
+    "source": "bplasmaA_rstar.json"
+  },
+  "rstar_note": "r* 为预注册口径签字",
+  "n_cells": 31282,
+  "n_clusters": 31,
+  "rule": {
+    "panel_line": "法则2 六谱系面板逐细胞 score_genes → 簇内均值 → argmax ≠ B/浆 ⇒ 非本谱系",
+    "celltypist_line": "GP6 已存 B_lineage 的簇内非本谱系占比 > 0.5 ⇒ 非本谱系",
+    "combine": [
+      "须两条线同时命中才标",
+      "（本谱系 B/浆 适用；单线命中写入 single_line_hold 列留痕但不剔）"
+    ],
+    "combine_scope": {
+      "any_line": [
+        "上皮"
+      ],
+      "need_both": [
+        "B/浆",
+        "T/NK",
+        "内皮",
+        "成纤维",
+        "髓系"
+      ],
+      "applied_to": "B/浆",
+      "applied": "须两条线同时命中"
+    },
+    "combine_reason": "2026-09-21 用户裁定（GP8b 后）。面板线的前提是「面板能在本谱系打出可分辨的分」，而该前提是**为上皮冻结时成立的**。GP8b 实跑证明它在低表达谱系不成立：法则2 面板自身基因在 T/NK 里只有 7.76/1e4（上皮 54.4、B/浆 208.5、成纤维 26.4、髓系 24.9、内皮 13.7），T/NK 保留簇的面板自评中位仅 0.43，score_genes 扣掉对照集后 argmax 在噪声里挑最大值 —— T/NK 被标的 11 簇有 10 簇是**单面板线**命中，而 CellTypist 对同一批细胞报 98–99% T/NK。照旧口径会错删 32% 的 T 细胞。**指出规则的作用域 ≠ 事后调阈值**（法则 3.2）：上皮口径一字未改，非上皮改为两线同时命中方剔；CellTypist 线阈值 0.50、面板线 ctrl_size/seed 均一字未动，单线命中仍如实落表供人工判读。",
+    "frozen": true,
+    "frozen_note": "规则在本脚本写定时即冻结；CellTypist 线结果先被看到，面板线完成前规则未改。合并口径的作用域修订为 2026-09-21 GP8b 之后、在**看到非上皮谱系结果之后**所做，已如实记入 combine_reason，不掩饰其时序。"
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "lineage_genes_used": {
+    "上皮": [
+      "EPCAM",
+      "KRT8",
+      "KRT19",
+      "CDH1",
+      "NKX2-1",
+      "SFTPC",
+      "SFTPA1",
+      "SFTPB",
+      "NAPSA",
+      "AGER",
+      "CAV1",
+      "PDPN",
+      "SCGB3A2",
+      "SCGB1A1"
+    ],
+    "T/NK": [
+      "CD3D",
+      "CD3E",
+      "CD3G",
+      "TRAC",
+      "CD4",
+      "IL7R",
+      "CD8A",
+      "NKG7",
+      "GNLY",
+      "KLRD1",
+      "PRF1",
+      "GZMB"
+    ],
+    "B/浆": [
+      "MS4A1",
+      "CD19",
+      "CD79A",
+      "CD79B",
+      "MZB1",
+      "JCHAIN",
+      "SDC1",
+      "IGHG1",
+      "IGKC",
+      "XBP1",
+      "DERL3"
+    ],
+    "髓系": [
+      "LYZ",
+      "AIF1",
+      "ITGAX",
+      "CD68",
+      "CD163",
+      "MSR1",
+      "C1QA",
+      "C1QB",
+      "C1QC",
+      "MARCO",
+      "APOE",
+      "CD14",
+      "S100A8",
+      "S100A9",
+      "SPP1"
+    ],
+    "成纤维": [
+      "COL1A1",
+      "COL1A2",
+      "COL3A1",
+      "DCN",
+      "LUM",
+      "FN1",
+      "PDGFRA",
+      "PDGFRB",
+      "ACTA2",
+      "TAGLN",
+      "FAP",
+      "CXCL12"
+    ],
+    "内皮": [
+      "PECAM1",
+      "CDH5",
+      "KDR",
+      "CD34",
+      "VWF",
+      "EGFL7",
+      "RAMP2",
+      "EMCN",
+      "PLVAP",
+      "AQP1",
+      "CLDN5",
+      "FLT1"
+    ]
+  },
+  "lineage_genes_missing": {
+    "上皮": [
+      "KRT18",
+      "SFTPA2"
+    ],
+    "T/NK": [
+      "CD8B"
+    ],
+    "髓系": [
+      "FCN1"
+    ]
+  },
+  "verdict": {
+    "n_nonepi": 9,
+    "cells_nonepi": 8367,
+    "both_lines": [
+      "4",
+      "5",
+      "7",
+      "8",
+      "11",
+      "16",
+      "19",
+      "23",
+      "25"
+    ],
+    "one_line": [],
+    "clusters": {
+      "0": "保留",
+      "1": "保留",
+      "2": "保留",
+      "3": "保留",
+      "4": "面板+CellTypist",
+      "5": "面板+CellTypist",
+      "6": "保留",
+      "7": "面板+CellTypist",
+      "8": "面板+CellTypist",
+      "9": "保留",
+      "10": "保留",
+      "11": "面板+CellTypist",
+      "12": "保留",
+      "13": "保留",
+      "14": "保留",
+      "15": "保留",
+      "16": "面板+CellTypist",
+      "17": "保留",
+      "18": "保留",
+      "19": "面板+CellTypist",
+      "20": "保留",
+      "21": "保留",
+      "22": "保留",
+      "23": "面板+CellTypist",
+      "24": "保留",
+      "25": "面板+CellTypist",
+      "26": "保留",
+      "27": "保留",
+      "28": "保留",
+      "29": "保留",
+      "30": "保留"
+    },
+    "n_single_line_held": 3,
+    "cells_single_line_held": 203,
+    "single_line_held": {
+      "26": "CellTypist",
+      "28": "面板",
+      "30": "CellTypist"
+    }
+  },
+  "inputs": {
+    "results/02_expression/gse308103_counts_paperqc.h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+    "results/05_annotation/bplasmaA_subset_barcodes.txt": "7e34c5c5baedb0ecfef071a8e2f3c738964c97cc29d74aa13c65c2a731a5cd0a",
+    "results/04_integration/seurat_trad/bplasmaA/clusters.csv.gz": "48c20e77bd11710f83e79feda3e5ad5c3784e1b7dddd5c971fabce13ae2ca28b",
+    "results/05_annotation/gp6_cell_labels.csv.gz": "fa031a52a4ab3b7098d3fca5555b0749b2f4622711153c0b742f8ae09aaf12e2",
+    "05_annotation/marker_panel.py": "ffb8c0379e086c5eaf32138f8cf5ebdb3990bafd722cbf0375a19f045371d421",
+    "05_annotation/06_contamination_check.py": "1b618482077d508acda8024988968f9e605ffb031f054235b74ca28595449910"
+  },
+  "outputs": {
+    "results/05_annotation/bplasmaA_contamination.csv": "a98e652dacfffd6b19f8d372e82e1c8025e758aa19b7e8086443c41eeb829ea3",
+    "results/05_annotation/bplasmaA_lineage_scores_by_cluster.csv": "6a86c516d35ea013d0349fe8b2111db7ba4d3eb53af1f00cbaad72ae9eceb713"
+  },
+  "note": "本脚本只诊断，不改数据；不决定剔除后是否重聚类（检查点问题）。下游 03_subcluster_annotation.py 只认 flag 列 —— single_line_hold 列**不会**导致剔除。"
+}

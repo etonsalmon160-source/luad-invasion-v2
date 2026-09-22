@@ -1,0 +1,229 @@
+{
+  "script": "04_integration/10_seurat_traditional.R",
+  "tag": "epiA_lowres",
+  "mode": "subset",
+  "source_paper": {
+    "citation": "Peng F, Sinjab A, … Kadara H. Cancer Cell 2026;44(2):321-339.e13",
+    "doi": "10.1016/j.ccell.2025.10.004",
+    "pmcid": "PMC12980502"
+  },
+  "input": {
+    "seurat_io": {
+      "path": "/home/eto/luad_v2/results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+      "n_cells": 413697,
+      "n_genes": 18069,
+      "nnz": 655222534
+    },
+    "n_cells": 133384,
+    "n_genes": 17784
+  },
+  "subsample": {},
+  "subset": {
+    "cells_file": "results/05_annotation/epiA_subset_barcodes.txt",
+    "cells_file_sha256": "d12a115a87d0790d7fe8cf27b16170999d94daba51f3016fdb79c5aa3fdde55e",
+    "n_listed": 133384,
+    "n_actual": 133384,
+    "lineage": "上皮",
+    "caliber": "标准 A 单口径 = GP6 冻结 A_frozen 标签（seed0, r*=0.6），用户 2026-09-17 裁定；PARAMETERS §M3-A.5",
+    "n_samples": 75,
+    "n_patients": 23,
+    "stage_counts": {
+      "AAH": 11891,
+      "AIS": 28525,
+      "IAC": 56134,
+      "MIA": 4583,
+      "Normal": 32251
+    }
+  },
+  "params": {
+    "sctransform": {
+      "vst.flavor": "v2",
+      "variable.features.n": 3000,
+      "variable.features.rv.th": 1.3,
+      "ncells": 5000,
+      "vars.to.regress": {},
+      "do.scale": false,
+      "do.center": true,
+      "clip.range": [-66.67933213, 66.67933213],
+      "conserve.memory": false,
+      "return.only.var.genes": true,
+      "seed.use": 1448145
+    },
+    "pca": {
+      "npcs": 50,
+      "seed.use": 42,
+      "features": "SCT VariableFeatures (3000)"
+    },
+    "harmony": {
+      "group.by.vars": "sample_id",
+      "reduction.use": "pca",
+      "dims.use": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+      "reduction.save": "harmony",
+      "project.dim": true,
+      "note": "其余为 harmony 2.0.5 默认"
+    },
+    "neighbors": {
+      "k.param": 20,
+      "annoy.metric": "euclidean",
+      "nn.method": "annoy",
+      "prune.SNN": 0.06666667,
+      "graphs": ["harmony_snn", "pca_snn"]
+    },
+    "clusters": {
+      "resolutions": [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+      "seeds": [0, 1, 2, 3, 4],
+      "algorithm": 1,
+      "resolutions_override": "0.2,0.3,0.4,0.5,0.6,0.7,0.8",
+      "resolutions_override_note": "🔴 本轮网格被 --res-grid 覆盖为 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 —— **诊断实验，非论文口径**。 目的：上皮/成纤维在 0.5–0.8 跨种子 ARI 全不达 0.90， 验证是否只是分辨率偏高。硬约束 ARI ≥ 0.90 **未放宽**。 本 run 不产出用于下游注释的 r*，除非人工签字。",
+      "modularity.fxn": 1,
+      "n.start": 10,
+      "n.iter": 10,
+      "group.singletons": true,
+      "method": "matrix"
+    },
+    "umap": {
+      "n.neighbors": 30,
+      "min.dist": 0.3,
+      "metric": "cosine",
+      "umap.method": "uwot",
+      "spread": 1,
+      "n.components": 2,
+      "seed.use": 42
+    }
+  },
+  "arms": {
+    "main": "harmony（论文配方）",
+    "sensitivity": "不校正 pca（**不属于论文配方**，共线风险下的稳健性对照）"
+  },
+  "metrics": {
+    "guard": {
+      "aah_absorption_max": 0.5,
+      "note": "指标4 为本项目附加，非论文配方；见 PARAMETERS §M3-A.3"
+    },
+    "metric3_absent": "指标3（谱系覆盖）**不在本脚本计算** —— 见 05_annotation/04_metric3_coverage.py 与产物 results/05_annotation/metric3_coverage.csv（2026-09-21 补算：七对象 × 4 分辨率 × 5 种子全过线，对 r* 无区分力）。⚠️ 旧措辞「需 GP6 注释后方可计算」是错的（它不依赖注释）。此处只报 n_clusters，不得以簇数冒充覆盖分",
+    "metric1_caveat": "指标1（跨种子稳定性，硬约束 ARI ≥ 0.90）：本轮实测 0.8201–0.9891，3/7 个分辨率达标；未达标：r=0.5(ARI=0.8501)、r=0.6(ARI=0.8423)、r=0.7(ARI=0.8605)、r=0.8(ARI=0.8201) ⇒ 该约束在本规模上**承重**，已剔除这 4 个候选。 护栏效力随规模而变（历史实测：3,000 细胞空转，ARI 恒 = 1.0；60,000 细胞 0.9346–0.9834）——不得用小规模结果推断本规模。⚠️ 本字段由 METRICS 实算，若与 METRICS 表不符以 METRICS 表为准。",
+    "rstar_candidate": 0.2,
+    "rstar_status": "候选，**待 GP5 人工签字**"
+  },
+  "metrics_interpretable": true,
+  "metrics_caveat": "本轮为**亚聚类**：谱系=上皮，细胞集合 = epiA_subset_barcodes.txt（标准 A 单口径，seed0 全局 r*=0.6 的该谱系全部细胞）， 清单 sha256 = d12a115a87d0790d。metric4（AAH 吸收护栏）的语义是全量口径的**投影**而非同一定义： 本谱系子集里 AAH 细胞仍存在，但簇的分期构成已随谱系而变 ⇒ 该列**不与全量值直接比较**。 其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。",
+  "versions": {
+    "R": "R version 4.2.2 Patched (2022-11-10 r83330)",
+    "Seurat": "4.3.0",
+    "SeuratObject": "4.1.3",
+    "sctransform": "0.3.5",
+    "harmony": "2.0.5",
+    "glmGamPoi": "1.10.0",
+    "Matrix": "1.5.3"
+  },
+  "embeddings": {
+    "harmony": {
+      "path": "embeddings/harmony_f32.bin",
+      "dim": [133384, 50],
+      "bytes": 26676800,
+      "md5": "6326a67228177e4bd7e49ebef86ecd3e",
+      "seed": null
+    },
+    "pca": {
+      "path": "embeddings/pca_f32.bin",
+      "dim": [133384, 50],
+      "bytes": 26676800,
+      "md5": "7ae21f5ea8edc606e86ad43394c9e273",
+      "seed": 42
+    }
+  },
+  "metrics_table": [
+    {
+      "resolution": 0.2,
+      "n_clusters": 13,
+      "ari_seed_mean": 0.9891,
+      "ari_xres": 0.8856,
+      "aah_absorption_rate": 0,
+      "score": 0.9374,
+      "pass_seed": true,
+      "pass_aah": true,
+      "eligible": true,
+      "is_rstar": true
+    },
+    {
+      "resolution": 0.3,
+      "n_clusters": 17,
+      "ari_seed_mean": 0.9741,
+      "ari_adjacent_prev": 0.8856,
+      "ari_xres": 0.8112,
+      "aah_absorption_rate": 0,
+      "score": 0.8926,
+      "pass_seed": true,
+      "pass_aah": true,
+      "eligible": true,
+      "is_rstar": false
+    },
+    {
+      "resolution": 0.4,
+      "n_clusters": 20,
+      "ari_seed_mean": 0.9,
+      "ari_adjacent_prev": 0.7367,
+      "ari_xres": 0.7747,
+      "aah_absorption_rate": 0,
+      "score": 0.8374,
+      "pass_seed": true,
+      "pass_aah": true,
+      "eligible": true,
+      "is_rstar": false
+    },
+    {
+      "resolution": 0.5,
+      "n_clusters": 22,
+      "ari_seed_mean": 0.8501,
+      "ari_adjacent_prev": 0.8126,
+      "ari_xres": 0.7936,
+      "aah_absorption_rate": 0,
+      "score": 0.8218,
+      "pass_seed": false,
+      "pass_aah": true,
+      "eligible": false,
+      "is_rstar": false
+    },
+    {
+      "resolution": 0.6,
+      "n_clusters": 24,
+      "ari_seed_mean": 0.8423,
+      "ari_adjacent_prev": 0.7745,
+      "ari_xres": 0.8125,
+      "aah_absorption_rate": 0,
+      "score": 0.8274,
+      "pass_seed": false,
+      "pass_aah": true,
+      "eligible": false,
+      "is_rstar": false
+    },
+    {
+      "resolution": 0.7,
+      "n_clusters": 27,
+      "ari_seed_mean": 0.8605,
+      "ari_adjacent_prev": 0.8505,
+      "ari_xres": 0.8534,
+      "aah_absorption_rate": 0,
+      "score": 0.857,
+      "pass_seed": false,
+      "pass_aah": true,
+      "eligible": false,
+      "is_rstar": false
+    },
+    {
+      "resolution": 0.8,
+      "n_clusters": 32,
+      "ari_seed_mean": 0.8201,
+      "ari_adjacent_prev": 0.8563,
+      "ari_xres": 0.8563,
+      "aah_absorption_rate": 0,
+      "score": 0.8382,
+      "pass_seed": false,
+      "pass_aah": true,
+      "eligible": false,
+      "is_rstar": false
+    }
+  ],
+  "wall_sec": 4778.2
+}

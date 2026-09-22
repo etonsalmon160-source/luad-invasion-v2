@@ -13,6 +13,14 @@
 对原表**必需**的偏离，共 **5 类**，逐条登记在 `ORTHOLOG_FIX` / `ALIAS_FIX` / `DROP_NON_SYMBOL` /
 `SOURCE_TABLE_DEFECTS` / `UNANNOTATABLE`：
 
+🔴 **2026-09-21 用户裁定**：把两种"偏离原表"分开 —— **认人同源号（= 认字）允许**，
+**找替身填缺槽（= 找替身）不允许**。据此后果：
+- ⓪ `ORTHOLOG_FIX` **保留**（`CYP2F2`→`CYP2F1`）。依据：Table S1 其余格均人类号、唯 Club 行写
+  小鼠号 `CYP2F2`（物种笔误），且同篇 Table S4（他们自己的人类数据）该行写的正是 `CYP2F1`。
+  生成器在下方用 Table S4 做**可执行对账**：凡替换后的基因必须出现在 Table S4 里，否则硬报错。
+- Table S4「找替身填缺槽」（`DAPL1` 缺则取 `KRT15`/`KRT17`）**已删**。⚠️ 它此前从未被任何代码
+  读取（`grep` 核实）⇒ 删除不改变任何已算结果。`DAPL1`/`PRR4` 缺失如实上报，不留替身。
+
 ① `ALIAS_FIX`：原表写的是**描述性名称或缩写**，不是基因符号。
    已核实矩阵里存在对应符号的才换；换不了的进 ②。
 ② `DROP_NON_SYMBOL`：原表写的不是符号、且其对应的真符号**不在本矩阵**。
@@ -68,10 +76,12 @@ LINEAGE_ROWS = {
              57: "Nonclassical Monocyte"},
 }
 
-# ⓪ 物种修正：原表个别行写的是**小鼠**基因号 → 换人同源（与上皮那份口径一致）
-ORTHOLOG_FIX = {
-    "CYP2F2": "CYP2F1",   # Table S1「Club Cell」行；CYP2F2 为小鼠，人同源为 CYP2F1
-}
+# ⓪ 物种修正：原表个别行写的是**小鼠**基因号 → 换人同源。
+# 🔴 **2026-09-21 用户裁定「只认人同源」——此类保留**（区别于"找替身填缺槽"，后者被禁）。
+#    依据：Table S1 其余格均为人类基因号，唯「Club」行写 CYP2F2（小鼠），系物种笔误；
+#         同篇论文 Table S4（他们自己的人类数据）该行写的正是 CYP2F1。
+#    生成器用 Table S4 对账硬校验此替换（见 main()），换不了就报错。
+ORTHOLOG_FIX = {"CYP2F2": "CYP2F1"}
 
 # ① 原表写描述性名称/缩写 → 换成矩阵里**确实存在**的基因符号（逐个核过）
 ALIAS_FIX = {
@@ -222,6 +232,9 @@ def main():
     A('🔴 对原表的偏离共 **5 类**，逐条登记于 ORTHOLOG_FIX / ALIAS_FIX / DROP_NON_SYMBOL /')
     A('   SOURCE_TABLE_DEFECTS / UNANNOTATABLE —— **没有一条是静默的**。')
     A('   （原文写「4 类」漏数了 ⓪ ORTHOLOG_FIX，与 §M3-A.5e 的「5 类」自相矛盾；2026-09-17 统一为 5。）')
+    A('   🔴 **2026-09-21 用户裁定**：认人同源号（认字）**允许**；找替身填缺槽（找替身）**不允许**。')
+    A('   ⇒ ⓪ ORTHOLOG_FIX（CYP2F2→人同源 CYP2F1）**保留**，5 类全部生效；')
+    A('     而 Table S4 式的"补替身"**未采用** —— DAPL1 / PRR4 缺失如实上报，不留替身。')
     A('')
     A('🔴 必须随结果报告的两件事：')
     A('  1. **非上皮面板比上皮粗**（源表性质）：多型只有 1–2 个基因槽，解读须同 §M3-A.5c 谨慎。')
@@ -236,6 +249,9 @@ def main():
     A('}')
     A('')
     A('# ⓪ 物种修正：原表个别行写的是**小鼠**基因号 → 换人同源')
+    A('# 🔴 2026-09-21 用户裁定：认人同源号（认字）**允许**；找替身填缺槽（找替身）**不允许**。')
+    A('#    依据：Table S1 其余格均人类号、唯 Club 行写 CYP2F2，系物种笔误；')
+    A('#         同篇论文 Table S4（他们自己的人类数据）该行写的正是 CYP2F1。')
     A('ORTHOLOG_FIX = {')
     for k, v in ORTHOLOG_FIX.items():
         A(f'    "{k}": "{v}",')
@@ -321,6 +337,8 @@ def main():
     A('')
     A('    ⚠️ 2026-09-17 修：原校验只查 ALIAS_FIX 与 DROP_NON_SYMBOL，**漏了 ORTHOLOG_FIX**')
     A('    （小鼠基因号 → 人同源）。若日后重生成时 CYP2F2 残留未被换掉，原校验放行。')
+    A('    ⚠️ 2026-09-21：用户裁定认人同源号**允许**（故本判据保留 ORTHOLOG_FIX 这一项）；')
+    A('    "找替身填缺槽"**不允许**，未引入任何替身表，故判据无需增项。')
     A('    """')
     A('    flat = {g for d in PANELS.values() for gs in d.values() for g in gs}')
     A('    residue = (flat & set(ALIAS_FIX)) | (flat & set(DROP_NON_SYMBOL)) \\')

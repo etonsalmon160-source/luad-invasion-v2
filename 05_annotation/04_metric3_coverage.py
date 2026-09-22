@@ -15,7 +15,8 @@
 
 对象与分辨率
 ------------
-    full r*=0.6 ；epiA 0.5 ；tnkA 0.5 ；myeloidA 0.5 ；endoA 0.5 ；bplasmaA 0.6 ；fibroA 0.8
+    full r*=0.6 ；epiA 0.7 ；tnkA 0.8 ；myeloidA 0.5 ；endoA 0.7 ；bplasmaA 0.6 ；fibroA 0.8
+    （2026-09-22 更新；换 r* 前为 epiA 0.5 / tnkA 0.5 / endoA 0.5）
     每对象在 {0.5,0.6,0.7,0.8} **四档全算**，每档 **5 个种子全算**（r* 由跨种子均值选出，
     这里看种子敏感性）。
 
@@ -72,12 +73,16 @@ HEADLINE = "R_mean"     # 头条口径；另两种并列上报
 TOL = 1e-6              # 全量模块分重算比对容差
 CANARY = 4096           # 原始计数未被改动的金丝雀长度
 
+# ⚠️ 各对象的 r* 是**手抄**自 `results/05_annotation/<tag>_rstar.json`，不是运行时读取。
+# 2026-09-22 更新：L1 标签口径由 `A_frozen` 换成 `A_adjudicated` ⇒ 谱系成员变化 ⇒
+# 六谱系重聚类 ⇒ **上皮 0.5→0.7、T·NK 0.5→0.8、内皮 0.5→0.7**（髓系/B·浆/成纤维不变）。
+# 换 r* 后必须重跑本脚本，否则 `coverage.csv` 里「r* 处」那几行取的是**已作废的分辨率**。
 OBJECTS = [
     ("full",     None,                           0.6),
-    ("epiA",     "epiA_subset_barcodes.txt",     0.5),
-    ("tnkA",     "tnkA_subset_barcodes.txt",     0.5),
+    ("epiA",     "epiA_subset_barcodes.txt",     0.7),
+    ("tnkA",     "tnkA_subset_barcodes.txt",     0.8),
     ("myeloidA", "myeloidA_subset_barcodes.txt", 0.5),
-    ("endoA",    "endoA_subset_barcodes.txt",    0.5),
+    ("endoA",    "endoA_subset_barcodes.txt",    0.7),
     ("bplasmaA", "bplasmaA_subset_barcodes.txt", 0.6),
     ("fibroA",   "fibroA_subset_barcodes.txt",   0.8),
 ]
@@ -127,6 +132,23 @@ B = (A_X_CSR[:, [list(A.var_names).index(g) for g in PANEL_GENES]] > 0).tocsr()
 B.data = np.ones_like(B.data, dtype=bool)        # 纯 bool，检出只看 0/1
 PANEL_COL = {lin: np.array([GI[g] for g in USED[lin]]) for lin in MP.LINEAGES}
 log(f"  检出矩阵 B：{B.shape}  nnz={B.nnz:,}（{len(PANEL_GENES)} 个 panel 基因）")
+
+
+def content_sha256(path, chunk=1 << 22):
+    """解压后内容的 sha256（`.gz` 用）。非 `.gz` 退化为同 sha256。
+
+    ⚠️ 为什么需要它：`.gz` 的**压缩文件**哈希里含 gzip MTIME 字段 ⇒ 即使内容一字未改，
+    逐次运行也会得到不同的哈希（2026-09-22 实测：08b967d8… → 794a222c…，内容相同）。
+    压缩哈希因此**不可作复现锚点**（违反 R5「产物可复现且哈希」的本意），内容哈希才是。
+    """
+    if not path.endswith(".gz"):
+        return sha256(path)
+    import gzip
+    h = hashlib.sha256()
+    with gzip.open(path, "rb") as fh:
+        for blk in iter(lambda: fh.read(chunk), b""):
+            h.update(blk)
+    return h.hexdigest()
 
 
 def assert_raw_untouched(stage):
@@ -313,9 +335,49 @@ for tag, _, rstar in OBJECTS:
     log(f"{LIN_CN[tag]:<9}" +
         "  ".join(f"r{r}{'*' if r == rstar else ' '}={c:.4f}" for r, c in zip(v.res, v.coverage)))
 
+# ── 两段说明改为**由 cov 现算**，不再写死 ───────────────────────────────────
+# 2026-09-22 教训：旧文本写死「七个对象全部过线」。换 L1 口径后髓系子集由 54,407
+# 涨到 64,084，该句立刻变成假话，而它已经写进了 manifest。⇒ 凡随数据变化的结论，
+# 一律从表里算出来，不写字符串常量。
+_rm = cov[(cov.reading == HEADLINE) & (cov.seed == 0)]
+_at_rstar = [(t, float(_rm[(_rm.object == t) & (_rm.res == r)].coverage.iloc[0]),
+              int(_rm[(_rm.object == t) & (_rm.res == r)].n_pass.iloc[0]),
+              int(_rm[(_rm.object == t) & (_rm.res == r)].n_clusters.iloc[0]))
+             for t, _, r in OBJECTS]
+_n_fail = [x for x in _at_rstar if x[1] < COV_MIN]
+_n_below = int((cov[cov.reading == HEADLINE].coverage < COV_MIN).sum())
+_p = [f"{HEADLINE} 下各对象 r* 处（seed0）：",
+      " · ".join(f"{LIN_CN[t]} {c:.4f}({p_}/{n})" for t, c, p_, n in _at_rstar),
+      f"；最低 {min(x[1] for x in _at_rstar):.4f}。"]
+if _n_fail:
+    _p.append("⇒ 🔴 **%d 个对象在 r* 处不过线**（%s）⇒ 本指标**已淘汰这些谱系的 r* 候选**，"
+              "须按 §M3-A.3 停在检查点升级，或由用户**显式裁定**覆盖（不得默许、不得事后放宽阈值）。"
+              % (len(_n_fail), "、".join(LIN_CN[t] for t, *_ in _n_fail)))
+else:
+    _p.append("⇒ 全部过线 ⇒ 指标3 对 r* 无区分力，未排除任何分辨率。")
+_p.append(f"全网格 {_n_below} 格低于 {COV_MIN}。不得把「指标3 过线」写成对 r* 的支持证据。")
+non_binding_note = "".join(_p)
+
+_ow = cov[(cov.reading == f"{HEADLINE}_own") & (cov.seed == 0)]
+_ow_rstar = [(t, float(_ow[(_ow.object == t) & (_ow.res == r)].coverage.iloc[0]),
+              int(_ow[(_ow.object == t) & (_ow.res == r)].n_pass.iloc[0]),
+              int(_ow[(_ow.object == t) & (_ow.res == r)].n_clusters.iloc[0]))
+             for t, _, r in OBJECTS if t in OWN_LIN]
+_ow_fail = [x for x in _ow_rstar if x[1] < COV_MIN]
+_ow_grid = cov[(cov.reading == f"{HEADLINE}_own") & (cov.seed == 0) & (cov.coverage < COV_MIN)]
+_p = ["收紧到「本谱系那套」后，各谱系 r* 处（seed0）：",
+      " · ".join(f"{LIN_CN[t]} {c:.4f}({p_}/{n})" for t, c, p_, n in _ow_rstar)]
+_p.append("⇒ 🔴 **" + "、".join(LIN_CN[t] for t, *_ in _ow_fail) + " 在 r* 处不过线**。"
+          if _ow_fail else "⇒ r* 处全过线。")
+if len(_ow_grid):
+    _p.append("全网格另有 %d 格低于 %s：" % (len(_ow_grid), COV_MIN) + "；".join(
+        f"{LIN_CN[row.object]} r={row.res} s{int(row.seed)}={row.coverage:.4f}"
+        for row in _ow_grid.itertuples()))
+own_panel_note = "".join(_p)
+
 man = dict(
     script="05_annotation/04_metric3_coverage.py",
-    registered_definition="PARAMETERS_AND_SOURCES.md §M3-A.3 第 237 行",
+    registered_definition="PARAMETERS_AND_SOURCES.md §M3-A.3 的「指标3 谱系覆盖」行（**不引行号**：该表会增行，行号会漂）",
     registered_text="有 ≥1 个法则2 marker 集在 ≥25% 细胞检出且模块分均值 >0 的簇占比，硬约束 ≥ 0.90",
     caliber_ambiguity_note=(
         "登记原文的「marker 集在 ≥25% 细胞检出」有歧义 ⇒ 三种读法并列上报："
@@ -346,18 +408,24 @@ man = dict(
                    "（环境 RNA 带进来一点即够），等于没测；"
                    "② R_all 结构性不可达 —— 面板故意跨亚型（上皮那套同时含 AT1 的 AGER/CAV1 与 "
                    "AT2 的 SFTPC/NAPSA），没有任何单一细胞类型能把整组基因都表达在 ≥25% 细胞里。"),
-        non_binding_note=("R_mean 下七个对象在四个分辨率 × 五个种子上**全部过线**"
-                          "（最低 B/浆 0.9375）⇒ 指标3 对 r* **无区分力**，"
-                          "未排除任何分辨率 ⇒ 六个 r* 一个都没变。"
-                          "⇒ 不得把「指标3 过线」写成对 r* 的支持证据。"),
-        own_panel_note=("收紧到「本谱系那套」后仍在 r* 处全过线；跨分辨率仅淘汰 T/NK r=0.8"
-                        "（0.8974 < 0.90），而 T/NK 的 r* 是 0.5 ⇒ **r* 仍无一改变**。")),
+        non_binding_note=non_binding_note,
+        own_panel_note=own_panel_note,
+        recompute_note=("🔴 2026-09-22 重算：L1 标签口径由 `A_frozen` 换为 `A_adjudicated` ⇒ 谱系成员变化 "
+                        "⇒ 按脚本头部注释的要求重跑。旧产物备份于 `results/05_annotation/.prev_metric3_20260921/`。"
+                        "本次两处改动：① OBJECTS 里手抄的 r* —— epiA 0.5→0.7、tnkA 0.5→0.8、endoA 0.5→0.7"
+                        "（髓系/B·浆/成纤维不变）；② `non_binding_note` 与 `own_panel_note` 改为**由 cov 现算** —— "
+                        "旧文本写死「七个对象全部过线」，换子集后即成假话。")),
     inputs={os.path.relpath(p, ROOT): sha256(p) for p in
             [H5, GP6_SCORES, f"{ROOT}/05_annotation/marker_panel.py"]
             + [f"{OUT}/{b}" for _, b, _ in OBJECTS if b]},
     outputs={},
 )
 man["outputs"] = {os.path.relpath(p, ROOT): sha256(p) for p in [cov_path, pc_path]}
+man["outputs_content_sha256"] = {os.path.relpath(p, ROOT): content_sha256(p)
+                                for p in [cov_path, pc_path]}
+man["hash_note"] = ("⚠️ `outputs` 里 `.gz` 项是**压缩文件**的 sha256，含 gzip MTIME ⇒ 逐次运行必变，"
+                    "**不可作复现锚点**；`outputs_content_sha256` 记的是**解压后内容**的 sha256，"
+                    "它才是可复现的锚点（R5）。非 `.gz` 项两者相同。")
 man_path = os.path.join(OUT, "metric3_manifest.json")
 with open(man_path, "w") as fh:
     json.dump(man, fh, ensure_ascii=False, indent=2)

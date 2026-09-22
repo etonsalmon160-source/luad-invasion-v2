@@ -1,0 +1,72 @@
+{
+  "tag": "epiA_lowres",
+  "r_star": 0.3,
+  "status": {
+    "verdict": "🔵 **探索性备选，不是官方口径。** 上皮 L2 的官方 r* 是 `epiA_rstar.json` 里的 **0.7**（放宽口径）。本文件只登记 2026-09-22 那次低分辨率诊断实验的结论，供追溯，**不得**用来替代官方 r*、**不得**进主结论。",
+    "user_ruling": "用户 2026-09-22 先裁定「就0.3」，随后在得知 ① 本项目那道 0.90 门是自定的、无文献出处，② 源论文分辨率区间是 0.5–0.8、0.3 在其外，③ 用 0.3 会让 Goblet/Mucous 型消失——之后改裁定为「恢复」，即**维持官方 r*=0.7**。本文件据此降级。",
+    "why_kept_on_disk": "0.3 那次注释（`epiA_lowres_r030_*`）已经产出，且 `05_annotation/03_subcluster_annotation.py` 的闸门按本文件的 `r_star`/`signed_by` 放行重跑。降级为探索性（而非清空签字）是为了让那份诊断产物**仍可复现**，同时把它的效力范围写死在此处。"
+  },
+  "best_score": 0.8926,
+  "eligible": [
+    0.2,
+    0.3,
+    0.4
+  ],
+  "tie_break": "差 ≤ 0.01 取较低分辨率（§M3-A.3）",
+  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束",
+  "seed_min_applied": 0.9,
+  "relaxed": false,
+  "full_grid_ari_seed": {
+    "0.2": 0.9891,
+    "0.3": 0.9741,
+    "0.4": 0.9,
+    "0.5": 0.8501,
+    "0.6": 0.8423,
+    "0.7": 0.8605,
+    "0.8": 0.8201
+  },
+  "rule_override": {
+    "rule_pick": 0.2,
+    "used_here": 0.3,
+    "why": "预注册规则的 argmax 落在 0.2，而 0.2 是本次网格的**最低点**：跨种子 ARI 随分辨率下降而上升，在 r→0 时必然成立，故『最低点最稳』是退化行为。取 0.3 内点以避开。",
+    "why_it_does_not_matter": "🔵 **实测：0.2 与 0.3 在上皮注释上等价。** 拿 0.3 的型拆到 0.2 的分区里（13 簇）看：簇1=AT1、簇4=纤毛、簇8=基底、簇11=浆液**四个型全部完整保留**，其余全是 AT2；0.3 比 0.2 多出的 4 个簇**全是 AT2 内部细分**。两套划分得到同一个五型清单 ⇒ 0.2 vs 0.3 之争不影响任何生物学结论。"
+  },
+  "什么是这次实验真正查出来的": {
+    "the_real_finding": "🔴 **0.3 相对官方 0.7 少的唯一一个型，就是独立方法唯一不认的那个。** 其余 AT1/AT2/纤毛/浆液在两个分辨率下几乎逐细胞相同（浆液一边 1,728、一边 1,727，构成分毫不差）。所以 0.3 不损失任何被独立证据支持的型——这条成立，且是本次实验最有价值的产物。",
+    "but_it_is_not_the_official_caliber": "但『0.3 不损失型』**不等于**『该把官方 r* 改成 0.3』：① 0.3 落在源论文 0.5–0.8 区间外；② 让 0.7 显得不合格的那道 0.90 门，本项目自己文档已承认**是自定、无文献出处**（PARAMETERS §M3-A.3 第 232 行）。两条合起来，走出原生区间去迁就一把无出处的尺子，理由不足。",
+    "side_finding": "🔴 **0.7 独有的 Goblet/Mucous（3,587 核）在 0.3 下全部被吸收** —— 3,565 核判成 AT2、22 核判成纤毛。0.3 的 17 个簇只有 5 个型。⇒『用 0.3』与『保留 Goblet/Mucous』**不能同时成立**。"
+  },
+  "independent_evidence": {
+    "what": "用与我的 marker 面板不同源的第三方图谱（CellTypist + Human Lung Atlas，Sikkema 2023 HLCA）复判上皮各型。**哪套分辨率都改变不了这个外部锚**。",
+    "confirms": {
+      "AT1": "我判 AT1 的核 98.1% 独立方法亦判 AT1；独立方法的 31,011 个 AT1 有 94% 落进我的 AT1 簇。",
+      "AT2": "独立方法 70,020 个 AT2 有 97–98% 落进我的 AT2。",
+      "Ciliated": "我判纤毛纯度 97.3%；独立方法的 9,052 个纤毛 72% 落进我的纤毛簇。",
+      "Basal": "我判基底纯度 78.5%（独立方法称 Basal resting + Suprabasal）。"
+    },
+    "not_confirms": {
+      "Goblet/Mucous": "40.8% 被判 Multiciliated、16.1% Club、13.5% pre-TB secretory，仅 3.2% Goblet、3.5% SMG mucous ⇒ 独立方法**不认它是一个型**。反向亦印证：独立方法的 664 个 Goblet (nasal) 有 80% 落进我的 AT2、仅 17% 落进我这个簇。",
+      "Serous": "53.2% AT2 + 29.9% SMG serous (bronchial) + 5.7% SMG duct ⇒ **非干净型但确有信号**（接住独立方法 91% 的 SMG serous 细胞）。"
+    },
+    "honest_limit": "🔴 本检验**只能证伪、不能证实**：它说明 0.3 不损失任何被独立支持的型；但**不能**在 0.2 与 0.3 之间当裁判（两者型清单本就相同）。不得说成『独立验证了 0.3』。",
+    "figure": "results/05_annotation/figures/independent_adjudication.png"
+  },
+  "deviation_from_source_paper": {
+    "paper": "Peng et al. 2026 Cancer Cell（源论文）PMID 41202811 / PMC12980502，DOI 10.1016/j.ccell.2025.10.004",
+    "paper_wording": "「To identify distinct cell types, the 'FindNeighbors' function of Seurat was used to construct the SNN Graph, based on unsupervised clustering performed with 'FindClusters' function with a resolution set to 0.5-0.8.」",
+    "the_deviation": "🔴 0.3 **落在源论文所述 0.5–0.8 范围之外**。按本项目 2026-09-16 立的先例（论文参数因同批样本、同一平台而属**原生口径**，自选值属无出处），这是一条必须登记的偏差。",
+    "the_deeper_point": "🔴 更根本的是：**源论文根本没设这种跨种子稳定性门。** 它对付「边界模糊」的办法是用 NMF 模块分取最高分（连续量），不是要求簇必须跨种子稳住。本项目这套「硬聚类 + 稳定性门」本身就跟原文不是一路，r\\* 之争只是这个分歧露出来的一角。",
+    "status": "已登记。用户 2026-09-22 裁定维持官方 0.7（即接受原文区间优先于本项目的 0.90 门）。"
+  },
+  "source_paper_on_undefined_cells": {
+    "question": "很多研究不是会留一个『未定义细胞』的阈值吗？源论文如何处理？",
+    "answer": "🔴 **源论文没有『未定义』这一类。** 两句原文规定了它怎么处理说不清的细胞：",
+    "mechanism_1_remove": "「Clusters co-expressing discrepant lineage markers were identified and removed.」⇒ **混合谱系的簇直接删掉**，不是给它名字。双体亦然（先 Scrublet 逐样本，再删『形成独立簇、杂交表达』的簇）。",
+    "mechanism_2_argmax": "「Each cell was assigned an MP label based on the highest corresponding MP score.」⇒ 剩下的一律**取最高分**，不设置信度阈值、不留空标签。",
+    "consequence_for_us": "🔵 按原文做法，本项目 Goblet/Mucous（MUC 与 SFTPC 共表达 = 混合谱系）**应当被删掉**。用户 2026-09-22 裁定「保留他」，是一条**偏离原文惯例**的裁决，已登记。",
+    "independent_tool_side": "本次独立注释（CellTypist）在 133,384 个上皮核上也没有产生任何 Unassigned；但 26.6% 的核置信度 <0.5、11.7% <0.1 ⇒『说不清』的细胞数值上存在，只是工具不给它名字。"
+  },
+  "signed_by": "用户本人（会话内表态，2026-09-22「就0.3」；同日随后改裁「恢复」= 维持官方 0.7。非手写签署，账号 etonsalmon160-source）",
+  "signed_at": "2026-09-22T05:10:00",
+  "sign_caveat": "🔵 本文件是**探索性备选**，效力仅限追溯本次诊断实验。官方口径见 `epiA_rstar.json`（r*=0.7，relaxed=true）。"
+}

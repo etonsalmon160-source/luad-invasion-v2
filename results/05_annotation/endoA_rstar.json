@@ -1,7 +1,7 @@
 {
   "tag": "endoA",
-  "r_star": 0.5,
-  "best_score": 0.98,
+  "r_star": 0.7,
+  "best_score": 0.965,
   "eligible": [
     0.5,
     0.6,
@@ -9,11 +9,11 @@
     0.8
   ],
   "tie_break": "差 ≤ 0.01 取较低分辨率（§M3-A.3）",
-  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束；指标3 已补算（2026-09-21，口径 R_mean）且对 r* 无区分力",
+  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束；指标3 已补算，并 **2026-09-22 在 L1 新口径（A_adjudicated）下重算** —— **对本对象（endoA）无区分力**（四档全过线，见 `constraints_applied`），但 🔴 **「对髓系也无区分力」已不成立**（髓系 r* 处 R_mean 0.8929 不过线，见 `myeloidA_rstar.json` 的 `metric3_gate`）。",
   "constraints_applied": [
     "ari_seed_mean ≥ 0.9（= 指标1 跨种子稳定性；**承重**）",
     "aah_absorption_rate ≤ 0.5（= 指标4 AAH 吸收护栏；**已施加但本批实测全分辨率为 0 ⇒ 空转**，按 PARAMETERS §M3-A.3 第 241/243 行的裁定**不得计入 r* 的通过理由**）",
-    "指标3（谱系覆盖 ≥ 0.90）**已补算（2026-09-21）** —— 口径「逐基因检出率均值」（R_mean，见 PARAMETERS §M3-A.3 的 2026-09-21 裁定）；七个对象 × 4 分辨率 × 5 种子全过线（最低 0.9310）⇒ **未淘汰任何分辨率，对 r* 无区分力**。故本 r* 仍**只由指标1 + 指标2 承担**，不得记入指标3 的功劳。⚠️ 原措辞「待注释后补算」是错的，见 GP5_report.md §6.1 的更正。",
+    "指标3（谱系覆盖 ≥ 0.90）—— 口径「逐基因检出率均值」（R_mean，见 PARAMETERS §M3-A.3 的 2026-09-21 裁定），**2026-09-22 在 L1 新口径（A_adjudicated）下重算过**（产物 results/05_annotation/metric3_coverage.csv）。**本对象（endoA）四档分辨率全部过线**：R_mean 与 R_mean_own 四档**均为 1.0000(29/29)** ⇒ **未淘汰本对象的任何分辨率，对本 r* 无区分力**。故本 r* 仍**只由指标1 + 指标2 承担**，不得记入指标3 的功劳。🔴 **原文「七个对象 × 4 分辨率 × 5 种子全过线（最低 0.9310）」已作废** —— 那是 2026-09-21 **旧髓系子集**下的全局结论；重算后全网格最低为髓系 r=0.5 的 0.8929（own 口径 0.8571），**髓系在 r* 处不过线**（用户 2026-09-22 裁定保留、登记为已知缺陷，见 `myeloidA_rstar.json` 的 `metric3_gate`）。**本对象不受该作废影响**（上列数值即重算后所得）。⚠️ 原措辞「待注释后补算」是错的，见 GP5_report.md §6.1 的更正。",
     "（前两条均自 resolution_metrics.csv 的**原始指标列**重算；R 侧派生的 pass_seed / pass_aah / eligible 一律不复用，避免边界分叉）"
   ],
   "rstar_authoritative_over": "resolution_metrics.csv 的 is_rstar 列。R 侧按**预注册**阈值 0.90 计算，无法反映事后放宽 ⇒ 本条 relaxed=true 时，该列的 is_rstar 必为全 FALSE，属**预期**，不是矛盾。",
@@ -21,9 +21,9 @@
   "relaxed": false,
   "seed_min_preregistered": null,
   "relaxed_note": null,
-  "signed_by": "用户本人（会话内表态，2026-09-18；非手写签署，账号 etonsalmon160-source）",
-  "signed_provisional": false,
-  "signed_caveat": "✅ **检查点已于 2026-09-21 关闭。** 沿革：2026-09-18 用户「暂定签字」时唯一的开口是指标3（谱系覆盖 ≥0.90）**从未计算**（当时误以为须等注释）；2026-09-21 查明它**不依赖注释**并补算完毕 —— 口径取「逐基因检出率均值」（R_mean，详见 PARAMETERS §M3-A.3 的 2026-09-21 裁定），七个对象 × 4 分辨率 × 5 种子**全部过线（最低 0.9310）**，且实测**对 r* 无区分力** ⇒ 六个 r* 一个都没变。详见 `GP5_report.md` §6.7。签字性质仍为**会话内确认，非手写签署**（见 signed_by）。",
-  "checkpoint_open": [],
-  "signed_note": "🔴 待人工签字：确认 r* 无误后，把 signed_by 改为署名（如 \"<姓名> 2026-09-18\"），`--stage annotate` 才会放行（§M3-A.5）。"
+  "signed_by": "用户本人（会话内表态，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+  "signed_note": "🔴 用户 2026-09-22 明确指示「帮我签字」。签字前已按其授权，从 `resolution_metrics.csv` 的**原始指标列**独立复核：① 四档 `0.5·ari_seed_mean + 0.5·ari_xres` 逐位复现 score = 0.9124 / 0.9262 / **0.9650** / 0.9508；② `argmax_r score` 落在 **r=0.7**，与次高（r=0.8 的 0.9508）相差 0.0142 **> 0.01 ⇒ 无并列**，未动用破平规则；③ 四档 `ari_seed_mean` = 0.9474 / 0.9426 / 0.9796 / 0.9426 **全部 ≥ 0.90 ⇒ 未动用放宽**（`relaxed: false`）。⚠️ 本谱系与 T·NK 一样，是 2026-09-22 从 `A_frozen` 切到 `A_adjudicated` 后**新 r* 仍用预注册原值直接过线**的一支，把握度高于旧口径（旧 r*=0.5）。",
+  "signed_at": "2026-09-22T08:04:18",
+  "sign_authority": "① 原始自动签字依据：用户 2026-09-22 睡前明确授权「我准备睡觉了，关键部分你先自己按照最科学的方式决断，明天早上给我报告」——该次签字未经人工逐行核对。② 本次改签依据：用户醒后 2026-09-22 指示「帮我签字」，且已先收到按上述规则复核 r* 的结果。",
+  "sign_caveat": "🔴 历史记录（夜跑本意）：r* 由 `03 --stage select` 按预注册规则机械产出，签字脚本只落签字、不参与取值。**原列的人工复核事项已由本签字的 `signed_note` 逐条执行**（指标1 跨种子 / 指标2 跨分辨率 / AAH 吸收护栏与本 r* 的对应关系）。⚠️ 仍未做的事：未复算 `aah_absorption_rate` 的底层配对（本批四档实测全为 0 ⇒ 该护栏空转，按 PARAMETERS §M3-A.3 的裁定不计入 r* 的通过理由）。"
 }

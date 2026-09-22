@@ -1,0 +1,211 @@
+{
+  "script": "05_annotation/05_seed_representativeness.py",
+  "generated": "2026-09-22T12:04:20",
+  "purpose": "补 GP5_report.md §十二 登记的洞：种子 0 的『代表性』原先只在全量上验过，六个谱系未验。",
+  "method": "只读各 run 已落盘的簇标签（clusters.csv.gz 的 harmony_res*_seed* 列），算 10 个两两 ARI 与逐种子对其余 4 个的均值。**不重跑任何聚类。**",
+  "preregistered_rule": {
+    "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+    "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+    "tol": 0.01,
+    "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+    "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+    "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+  },
+  "selfcheck": {
+    "claim": "每个 (对象,分辨率) 的 10 个两两 ARI 均值 == R 侧 ari_seed_mean",
+    "tol": 0.0001,
+    "status": "PASS（否则脚本 SystemExit）"
+  },
+  "verdict": {
+    "any_fail": true,
+    "failed_objects": [
+      "tnkA",
+      "fibroA"
+    ],
+    "note": "见 failed_objects，须换种子",
+    "per_object": {
+      "full": {
+        "lineage": "全量",
+        "r_star": 0.6,
+        "n_cells": 413697,
+        "best_seed": 0,
+        "best_mean": 0.932755,
+        "ref_mean": 0.932755,
+        "gap": 0.0,
+        "ref_rank": 1,
+        "ref_vs_best_matched_frac": 1.0,
+        "cells_changing_label": 0,
+        "pass_": true
+      },
+      "epiA": {
+        "lineage": "上皮",
+        "r_star": 0.7,
+        "n_cells": 133384,
+        "best_seed": 4,
+        "best_mean": 0.867788,
+        "ref_mean": 0.861408,
+        "gap": 0.00638,
+        "ref_rank": 3,
+        "ref_vs_best_matched_frac": 0.918768,
+        "cells_changing_label": 10835,
+        "pass_": true
+      },
+      "tnkA": {
+        "lineage": "T/NK",
+        "r_star": 0.8,
+        "n_cells": 64034,
+        "best_seed": 3,
+        "best_mean": 0.979294,
+        "ref_mean": 0.964844,
+        "gap": 0.01445,
+        "ref_rank": 5,
+        "ref_vs_best_matched_frac": 0.967627,
+        "cells_changing_label": 2073,
+        "pass_": false
+      },
+      "myeloidA": {
+        "lineage": "髓系",
+        "r_star": 0.5,
+        "n_cells": 64084,
+        "best_seed": 4,
+        "best_mean": 0.983435,
+        "ref_mean": 0.975543,
+        "gap": 0.007892,
+        "ref_rank": 5,
+        "ref_vs_best_matched_frac": 0.972474,
+        "cells_changing_label": 1764,
+        "pass_": true
+      },
+      "endoA": {
+        "lineage": "内皮",
+        "r_star": 0.7,
+        "n_cells": 43280,
+        "best_seed": 2,
+        "best_mean": 0.982784,
+        "ref_mean": 0.980831,
+        "gap": 0.001953,
+        "ref_rank": 2,
+        "ref_vs_best_matched_frac": 0.994455,
+        "cells_changing_label": 240,
+        "pass_": true
+      },
+      "bplasmaA": {
+        "lineage": "B/浆",
+        "r_star": 0.6,
+        "n_cells": 31282,
+        "best_seed": 3,
+        "best_mean": 0.983384,
+        "ref_mean": 0.977918,
+        "gap": 0.005466,
+        "ref_rank": 2,
+        "ref_vs_best_matched_frac": 0.99204,
+        "cells_changing_label": 249,
+        "pass_": true
+      },
+      "fibroA": {
+        "lineage": "成纤维",
+        "r_star": 0.8,
+        "n_cells": 77633,
+        "best_seed": 4,
+        "best_mean": 0.884134,
+        "ref_mean": 0.861489,
+        "gap": 0.022644,
+        "ref_rank": 4,
+        "ref_vs_best_matched_frac": 0.930622,
+        "cells_changing_label": 5386,
+        "pass_": false
+      },
+      "epiA_lowres": {
+        "lineage": "上皮(诊断网格)",
+        "r_star": 0.2,
+        "n_cells": 133384,
+        "best_seed": 3,
+        "best_mean": 0.990087,
+        "ref_mean": 0.989912,
+        "gap": 0.000176,
+        "ref_rank": 2,
+        "ref_vs_best_matched_frac": 0.997436,
+        "cells_changing_label": 342,
+        "pass_": true
+      },
+      "fibroA_lowres": {
+        "lineage": "成纤维(诊断网格)",
+        "r_star": 0.2,
+        "n_cells": 77633,
+        "best_seed": 4,
+        "best_mean": 0.973611,
+        "ref_mean": 0.971852,
+        "gap": 0.001759,
+        "ref_rank": 2,
+        "ref_vs_best_matched_frac": 0.988162,
+        "cells_changing_label": 919,
+        "pass_": true
+      }
+    },
+    "recommended": [
+      {
+        "object": "tnkA",
+        "lineage": "T/NK",
+        "r_star": 0.8,
+        "n_cells": 64034,
+        "from_seed": 0,
+        "to_seed": 3,
+        "from_mean": 0.964844,
+        "to_mean": 0.979294,
+        "gap": 0.01445,
+        "ref_vs_best_matched_frac": 0.967627,
+        "cells_changing_label": 2073,
+        "ref_rank": 5
+      },
+      {
+        "object": "fibroA",
+        "lineage": "成纤维",
+        "r_star": 0.8,
+        "n_cells": 77633,
+        "from_seed": 0,
+        "to_seed": 4,
+        "from_mean": 0.861489,
+        "to_mean": 0.884134,
+        "gap": 0.022644,
+        "ref_vs_best_matched_frac": 0.930622,
+        "cells_changing_label": 5386,
+        "ref_rank": 4
+      }
+    ],
+    "action_note": "r* 由跨全部种子的平均 ARI 选出，与种子无关 ⇒ 换种子不动 r*。⚠️「此刻换种子不产生额外成本」只在注释**尚未开始**时成立；本清单每轮重跑都会重写，是否已产生返工成本请看生成时刻（generated）。"
+  },
+  "scope_note": "⚠️ 判据用的是**簇标签的接近程度**（ARI 与最优配对一致率），不是**注释结果**是否相同。两套划分里若某个簇头基因没变，注释就一样；反差出现在『换了标签但 marker 谱几乎没变』的情形。要直接看注释差异，须用两个种子各跑一次注释（本脚本不做，成本 ~41 min/次）。",
+  "caveat_fibroA": "成纤维的 r* 是**事后放宽**阈值后取的（relaxed=true），其种子间 ARI 本就 <0.90；该谱系即使判为并列，产物仍只能作探索性结论。",
+  "inputs": {
+    "full/clusters.csv.gz": "4e6e6977561da9ca300d060aa63efe97739d159766dffccc040c192768206408",
+    "full/resolution_metrics.csv": "58c35608eb90ba6340388ccaf1272d4092ecd4d1e9712b56745707c225f1c9c3",
+    "results/04_integration/seurat_trad/full/run_manifest.json": "a57c977c293ae4cbf2c7c8b4d4349a59aef878fde081d9040f16014cc893d390",
+    "epiA/clusters.csv.gz": "13e58cb384d2af31cd740d46bfc4516fb0078a1efe1306a25682a7f18bde566f",
+    "epiA/resolution_metrics.csv": "6da18899793bdd3040ac3583a46bfba6c6a1518b545b5f5154d0c196404058cf",
+    "results/05_annotation/epiA_rstar.json": "6a370ce55811b77966c309222c6cf5de5aee2bc338d2f6c716c222c02776efeb",
+    "tnkA/clusters.csv.gz": "6087e31445fe3a4b8a477227795304cef95c43b7b41d9d5b42e9a83ae15ae97b",
+    "tnkA/resolution_metrics.csv": "c50dd5554cc8c6640330cc44410f103833c0b6f6f40e8b0cf6a12ee7878f2005",
+    "results/05_annotation/tnkA_rstar.json": "3491f42c4ee8a450bb8a5fb6a8b70eea6f181181bc7f8dd57e6c1057752c3e60",
+    "myeloidA/clusters.csv.gz": "42aa3905839a04ac0e03b9d76e46cc293493109b29fa07e7792d3da9a9a3ca51",
+    "myeloidA/resolution_metrics.csv": "602fe665797175a9ff45d33528616f93599962dbd9ceeb432570903451b29d36",
+    "results/05_annotation/myeloidA_rstar.json": "44c5267a8b2658b573fb4106b88d9cf2c63c7191fe2f1bfcc6e497521d132056",
+    "endoA/clusters.csv.gz": "8830d1c399df771969f59a9322b1836c1326c8a8875ce78f847b7fd57f9a4ccf",
+    "endoA/resolution_metrics.csv": "933a803a63afd53a6380235502f275dabdf91da2243b54785a9cc96860c87bf1",
+    "results/05_annotation/endoA_rstar.json": "f3bfa2da10b1153b8d1556ca1ff3c64ad1220ffa02e6ab0bfd75230123c8b355",
+    "bplasmaA/clusters.csv.gz": "48c20e77bd11710f83e79feda3e5ad5c3784e1b7dddd5c971fabce13ae2ca28b",
+    "bplasmaA/resolution_metrics.csv": "4d55232e9026860b1ad02035b6e6f3ed32c84fd2a9fcd015285737fed43486d2",
+    "results/05_annotation/bplasmaA_rstar.json": "1453ebb451766896c4f137094ea283e4197bd771f032d66dc55e5ce90da19764",
+    "fibroA/clusters.csv.gz": "a0fd8a983b68e33f3f9abc8b40b4215e4e4d53e609ce639ee2c234ac3c3809a1",
+    "fibroA/resolution_metrics.csv": "d730cdf2d6026c07be6ff090ac48c793135f783c219857a361a736f8d35aaa0c",
+    "results/05_annotation/fibroA_rstar.json": "40ae5dfcd956e3d179342a147a577e6f7d0be01b2f08b11c7a1852c45c6bc6f8",
+    "epiA_lowres/clusters.csv.gz": "53d2fa033373bd3f5680cb9264ce9e4a59672c0c221b0ddfc2ff27467860a024",
+    "epiA_lowres/resolution_metrics.csv": "41607966332177e9c072998e6499dbd01ce7377b1a60bfae0efa1d204fa292d4",
+    "results/05_annotation/epiA_lowres_rstar.json": "48ab2dfe9f89947ac6f09867df0d647d9fba8cabda1a0c41996feb48eaca73f4",
+    "fibroA_lowres/clusters.csv.gz": "b056d86b06ceab22a2ed694d8bd7a0c2b609ee812724ec506f9fae9b3a70a6d6",
+    "fibroA_lowres/resolution_metrics.csv": "16ae39aa0fe8c9dc34a9cf33b7419524c1d1dd390044c3d615219a2fd4dd4280",
+    "results/05_annotation/fibroA_lowres_rstar.json": "552fa3f975f81c0db9718ed8abf43160aac1288c83cbbc56249e4fba957f191f"
+  },
+  "outputs": {
+    "results/05_annotation/seed_representativeness.csv": "2549c906ba2ced805297f2cb9779598320d546dbf6d99b67de982e27b8695334"
+  }
+}
