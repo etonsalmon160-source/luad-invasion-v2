@@ -56,6 +56,12 @@ results/**/embeddings/
 #    不是任何已入库脚本的输入，且重跑 `01_dual_standard_annotation.py` 即可再生。
 !results/05_annotation/gp6_cell_labels.csv.gz
 
+# ── 例外 3：P24 环境 RNA 检验的逐细胞表（2026-09-22）─────────────────────────
+# `08_p24_ambient_ig_test.py` 的 manifest 直接引用这张表；而它的上游 h5ad
+# （`gse308103_counts_paperqc.h5ad`）**本身不入库**，重建要先跑完整个表达对象重建。
+# 为了「P24 是否单列/加环境校正」这个待决问题可被独立复核，8.2 MB 值得存。
+!results/05_annotation/p24_ambient_ig_cells.csv.gz
+
 # ── 崩溃前基线（2026-09-17）──────────────────────────────────────────────────
 # `.prev_nomanifest/` 是 subset 首跑崩在最后一行时留存下来的**验证脚手架**，用于比对重跑
 # 是否逐字节一致。核对已完成（4/6 谱系三项产物 md5 全同，值已登记在

@@ -1,0 +1,56 @@
+{
+ "caliber": "p24_ambient_confirm",
+ "caliber_sha256": "a522659e87cd6f33de75ca5431e49534421a23fad19e810c1916a298f70d7941",
+ "caliber_frozen_at": "2026-09-22T14:05:00",
+ "honesty_boundary": "🔴 这个度量本人在 2026-09-22 的探索里**已经看过**（当时 P24 的表现是好的）。所以本确认**不是独立验证**，是『同一批数据上换一个更强设计再统计一遍』。为了让它比探索版真的更强，本口径刻意换了两处设计：① 分析单位从**细胞**改为**病人**；② 加一组**负对照基因集**排除『P24 什么程序都高』的伪影。这两点探索版都没有。",
+ "primary_patient_level": {
+  "p24_value": 0.3770043731778426,
+  "others_median": 0.04828253503454269,
+  "others_max": 0.1352968552622831,
+  "ratio_to_median": 7.808296994101966,
+  "mad_scale": 0.0326795228658472,
+  "robust_z": 10.058954639354338,
+  "rank_among_patients": 1,
+  "n_patients": 23,
+  "rule": [
+   "P24 为**最高**（rank 1 / 23）",
+   "且 P24 ≥ 其他 22 位中位数的 3 倍",
+   "且稳健离群分 (P24 − median) / MAD_scale ≥ 3，其中 MAD_scale = 1.4826 × median(|x − median|)"
+  ],
+  "verdict_supports_H1": true
+ },
+ "specificity_negative_control": {
+  "null": "200 组 × 10 基因，逐基因检出率匹配 ±0.05，seed=0",
+  "pool_size": 13105,
+  "tolerance": 0.05,
+  "n_null": 200,
+  "null_mean": 0.22494038942107455,
+  "null_p95": 0.29073563098708866,
+  "null_max": 0.31382757184506455,
+  "p24_on_plasma_program": 0.3770043731778426,
+  "empirical_p": 0.004975124378109453,
+  "verdict_supports_H1": true
+ },
+ "secondary_ig_umi_fraction": {
+  "readout": "每位病人的**非 B/浆**细胞中，IG 恒定区 UMI 占比的中位数",
+  "p24_value": 0.0043127459626857,
+  "others_median": 0.0002866182047703,
+  "rank_among_patients": 1,
+  "n_patients": 23,
+  "verdict_supports_H1": true
+ },
+ "overall_verdict": "确认支持 H1（环境 RNA）",
+ "interpretation": "P24 的浆程序信号在**病人级**是全局最高的离群点，且显著高过逐基因匹配的负对照 ⇒ 不是『P24 什么基因都高』的伪影；IG 恒定区占比同样最高（不同源读数）。",
+ "not_independent_validation": "🔴 这个度量本人在 2026-09-22 的探索里**已经看过**（当时 P24 的表现是好的）。所以本确认**不是独立验证**，是『同一批数据上换一个更强设计再统计一遍』。为了让它比探索版真的更强，本口径刻意换了两处设计：① 分析单位从**细胞**改为**病人**；② 加一组**负对照基因集**排除『P24 什么程序都高』的伪影。这两点探索版都没有。",
+ "inputs": {
+  "caliber": "a522659e87cd6f33de75ca5431e49534421a23fad19e810c1916a298f70d7941",
+  "cells_csv": "5be16878601890e74199e51d0746eb1831cb82527ea635c4cecf8f9f7d243775",
+  "h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+ },
+ "outputs": {
+  "per_patient": "results/05_annotation/p24_ambient_confirm_per_patient.csv",
+  "null_distribution": "results/05_annotation/p24_ambient_confirm_null_distribution.csv",
+  "figure": "figures/p24_ambient_confirm.png"
+ },
+ "figure_sha256": "2f6ad5ed9e7a3a21994ec030ac40c529e965a2cf1a7d876ec1b0f59bb43cf4d9"
+}
