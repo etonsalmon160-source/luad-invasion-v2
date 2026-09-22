@@ -1,0 +1,57 @@
+{
+  "caliber": "p24_ambient_confirm",
+  "purpose": "把 2026-09-22 探索性发现的『P24 的非 B/浆 谱系里浆细胞程序异常抬高 = 环境 RNA』升级为一次有预注册口径的确认性统计。",
+  "why_refreeze": "用户 2026-09-22 会话内决定『重冻结口径，跑确认版』。原探索版（08_p24_ambient_ig_test.py 的 Part B）的度量与阈值是看到预注册检验饱和之后才定的，法则 3.2 不许当时就追认为口径 ⇒ 本文件把度量**先行**冻结，再由 09 脚本执行。",
+  "honesty_boundary": "🔴 这个度量本人在 2026-09-22 的探索里**已经看过**（当时 P24 的表现是好的）。所以本确认**不是独立验证**，是『同一批数据上换一个更强设计再统计一遍』。为了让它比探索版真的更强，本口径刻意换了两处设计：① 分析单位从**细胞**改为**病人**；② 加一组**负对照基因集**排除『P24 什么程序都高』的伪影。这两点探索版都没有。",
+  "frozen_by": "Claude（按用户 2026-09-22 会话内裁定起草并冻结；用户已表态『重冻结口径，跑确认版』）",
+  "frozen_at": "2026-09-22T14:05:00",
+  "frozen_note": "口径在 09 脚本**首次运行之前**写成；脚本开头会校验本文件存在且 sha256 与 manifest 相符，缺则 SystemExit（法则 3.1：新口径先冻结、再计算）。",
+
+  "data": {
+    "cells_table": "results/05_annotation/p24_ambient_ig_cells.csv.gz",
+    "h5ad": "results/02_expression/gse308103_counts_paperqc.h5ad",
+    "lineage_column": "A_readopted",
+    "non_b_lineages": ["上皮", "内皮", "髓系", "成纤维", "T/NK"],
+    "note": "非 B/浆 谱系共 384,862 核、23 位病人（每位病人是其三个样本合并）。"
+  },
+
+  "gene_sets": {
+    "plasma_program": ["MZB1", "XBP1", "PRDM1", "SDC1", "DERL3", "TNFRSF17", "CD27", "IRF4", "POU2AF1", "JCHAIN"],
+    "ig_constant": ["IGHG1", "IGHG3", "IGHA1", "IGHA2", "IGHM", "IGHD", "IGHE", "IGKC", "IGLC1", "IGLC7", "IGLL1"],
+    "gene_set_provenance": "浆程序与 IG 恒定区基因集沿用 08 脚本（已在 GP8c §三（二）登记）。JCHAIN 归浆程序、不入 IG 恒定区（它是浆细胞程序基因）。"
+  },
+
+  "primary_test": {
+    "unit_of_analysis": "patient",
+    "metric": "每位病人的**非 B/浆**细胞中，10 个浆程序基因里检出 ≥ 3 个的细胞占比",
+    "statistic": "P24 的值 vs 其余 22 位病人的同指标",
+    "support_H1_if": [
+      "P24 为**最高**（rank 1 / 23）",
+      "且 P24 ≥ 其他 22 位中位数的 3 倍",
+      "且稳健离群分 (P24 − median) / MAD_scale ≥ 3，其中 MAD_scale = 1.4826 × median(|x − median|)"
+    ],
+    "threshold_origin": "3× 与 MAD ≥ 3 均为**本项目约定**，无文献出处（沿用 08 探索版的 3×，使其可比）"
+  },
+
+  "specificity_control": {
+    "null": "从矩阵里按**逐基因检出率匹配**抽 200 组『伪基因集』（每组 10 个基因，每个基因的检出率与原浆程序对应基因相差 ≤ 0.05），seed = 0",
+    "why": "P24 细胞的 nFeature 本身就高（中位 1,787–1,925 vs 其他 1,178）⇒ 必须排除『P24 对任何基因集都高』这个伪影。",
+    "support_H1_if": "P24 的浆程序指标 ≥ 200 组伪集分布的 95 百分位（经验 p ≤ 0.05）",
+    "randomness_declaration": "🔴 这里的随机数用于**负对照的零分布**，不是造数据（不违反 R3）。seed 固定为 0，与项目内其他随机步骤（score_genes 的 random_state=0）一致。"
+  },
+
+  "secondary_test": {
+    "readout": "每位病人的**非 B/浆**细胞中，IG 恒定区 UMI 占比的中位数",
+    "why": "与浆程序**不同源**的独立读数（只算恒定区计数占比，不用程序基因列表）。",
+    "support_H1_if": "P24 同样为最高（rank 1 / 23）"
+  },
+
+  "not_doing": [
+    "不改 08 脚本的探索结果（那份照实保留）。",
+    "不做细胞级显著性检验（细胞不独立，会让 p 值虚高）。",
+    "不宣称因果；本节只说『P24 的浆程序信号是否异常抬高』。"
+  ],
+
+  "signed_by": "用户本人（2026-09-22 会话内表态『重冻结口径，跑确认版』；非手写签署）",
+  "signed_at": "2026-09-22T14:05:00"
+}
