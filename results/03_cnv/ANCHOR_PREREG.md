@@ -191,7 +191,13 @@ distance="euclidean", genome="hg20", n.cores=1, output.seg="FALSE"
 | CopyKAT（`norm.cell.names`） | 本文件即将执行 |
 | SCEVAN（真名 `norm_cell`） | ✅ **2026-09-22 已隔离安装完成**（`03_cnv/09_install_scevan_isolated.R`，日志 `logs/scevan_install.log`）：装进专用 R 库 **`/home/eto/Rlibs/SCEVAN`**（`.libPaths()` 前置加载），主库（Seurat/harmony/scran/copykat）装后复核未受影响。<br>版本冻结（两者均非 CRAN，只能用 git SHA）：**`yaGST` 2017.8.25 @ `56227df`**、**`SCEVAN` 1.0.3 @ `5a49b88a`**。<br>**2026-09-22 更正（原写"venv / `import SCEVAN`"，是错的）**：SCEVAN 是 **R 包**（`AntonioDeFalco/SCEVAN`，README: "SCEVAN is an R package"），靠 `devtools::install_github` 装，并依赖同样是 GitHub-only 的 **`yaGST`**（`miccec/yaGST`）。⇒ 隔离手段是**专用 R 库目录**而非 venv。原先那句 `import SCEVAN` 是拿 Python 去 import 一个 R 包，**该检查本身无意义**。<br>🔴 **参数名二次更正**：README 写的 `norm_cells` **在 1.0.3 里不存在**；`formals()` 实测真名为 **`pipelineCNA(norm_cell=)`** 与 **`classifyTumorCells(norm_cell_names=)`**（`FIXED_NORMAL_CELLS` 两者都有）。照 README 字面名调用会直接报 unused argument。<br>⚠️ **只装了，没跑**——SCEVAN 臂的**运行**仍须另开预注册。（R 侧 `infercnv` 亦未装。） |
 
-⇒ 本文件**先跑 CopyKAT 臂**。SCEVAN 臂**已具备运行条件（装好且版本已冻结）**，但其运行与判读**另开预注册**；两臂的一致性报告在两者都齐之后做。
+⇒ 本文件**先跑 CopyKAT 臂**。SCEVAN 臂**已具备运行条件（装好且版本已冻结）**，但其运行与判读**另开预注册**——**已开：[`SCEVAN_PREREG.md`](SCEVAN_PREREG.md)（2026-09-22 登记）**；两臂的一致性报告在两者都齐之后做。
+
+⚠️ 该预注册里有两项**结论性登记**，读本文件的人应当知道：
+① `FIXED_NORMAL_CELLS=TRUE` **必须禁用**（源码 `classifyTumor.R:292` 把凡不在锚定名单里的细胞
+一律写成 `malignant`，不看 CNV、不看聚类 ⇒ 输出是按定义构造的，信息量为零）；
+② SCEVAN 的 `cutree(hcc, 2)`（`classifyTumor.R:285`）与 copykat 的 `copykat.R:456`
+是**同构的强制二值切分** ⇒ 两臂一致只能排除"各量各的切分"，**不能**排除共同的结构性局限。
 
 ---
 
@@ -262,3 +268,42 @@ Goblet 2.4% / Basal 2.2% / **Serous 全队列仅 14 核**。
 
 ⚠️ **本裁定只界定边界，不修改本臂的任何输入定义、守卫或判读**（§2–§5 逐字不动）；
 P11 冒烟圈定的范围（§9 第 2 项）亦不变。
+
+### 9.4 细胞数下限：G5 保不住**小 n 的运行**（2026-09-22 实测，登记）
+
+G5 约束的是**锚定**细胞数（≥10），**没有**约束**单次运行的总细胞数** `n = 锚定 + 病灶`。
+2026-09-22 用运行器（[`../../03_cnv/run_epi_full_anchor.sh`](../../03_cnv/run_epi_full_anchor.sh)）实测：
+
+| `n` | 结果 | copykat 报错 |
+| ---: | :--- | :--- |
+| **34** | 🔴 **未完成** | `either 'k' or 'h' must be specified`（step 7 之后） |
+| 200, 304, 378, 480, 633, 694 | ✅ 完成 | 无 |
+
+⚠️ **`n=34` 那次锚定分支确实走到了**（日志含 `baseline is from known input`），
+**失败发生在后面的切分/基线重估步骤**，与锚定无关。
+⇒ 这是 copykat 自身的**低细胞数下限**，不是本臂口径的问题。
+
+**登记**：`n` 过小的运行记 **`not_testable`**，逐条上报，**不填补、不放宽、不合并样本**。
+🔴 **精确阈值未测**（只知落在 34 与 200 之间）—— 说"阈值是 200"是**无据的**。
+若日后要定，须单独做一次边界标定，**不得**据上表插值。
+⚠️ **该下界与 G5 是两回事**：G5 是「基线要有足够细胞」，本条是「copykat 要有足够细胞才能收敛」。
+SCEVAN 侧有它自己的、更紧的下限（`preProcessing.R:163`，见 `SCEVAN_PREREG.md` §3.4），
+**三者不得互相替代**。
+
+### 9.5 运行器与成本/内存模型的前置验证（2026-09-22）
+
+首跑前用 7 次实测（`logs/epi_full_anchor_smallN_probe/`）核对了两个模型：
+
+| 模型 | 中段（n 300–700）误差 | 低段（n ≤200）误差 |
+| :--- | :--- | :--- |
+| 挂钟 `t = 54.1 + 0.00415·n^1.700` | −14.5% … −4.1% | +41.7%（n=200）、+210%（n=34，且该跑本身失败） |
+| 峰值内存 `0.08935·n^0.497` | −11.2% … +2.8% | +21.9%（n=200） |
+
+⇒ **两个模型在设定挂钟与内存预算的那一段（大 n）内可用**；低段不准，但低段的跑很短，
+**不影响排期**。⚠️ 两个模型都是**向 n ≤ 3,118 外推**（拟合点上限）——`P4_LUAD|AT2` 的
+`n=9,113` **超出了拟合范围**，这是**已知外推**，不是已验证值。
+
+**G1 旗标在抽查中频繁触发**（6 次可完成跑里 3 次 `flag_anchor_purity`：
+锚定侧被判非整倍体比例 P9_AIS 0.304 / P16_AIS 0.259 / P21_AIS 0.209；
+P21_LUAD、P8_AIS、P3_AIS 为 0.000/0.000/0.075）。
+**均未越过 G1 的停机线 0.50**，故照常跑完全队列，**逐条上报**（§5 已预定该处置，不新增）。
