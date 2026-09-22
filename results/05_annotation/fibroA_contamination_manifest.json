@@ -1,0 +1,235 @@
+{
+  "tag": "fibroA",
+  "lineage": "成纤维",
+  "res": 0.8,
+  "seed": 4,
+  "cluster_col": "harmony_res0.8_seed4",
+  "seed_gate": {
+    "seed": 4,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "be5170afc559977ab2cde98a64f1f7889484babdd44928bad2c3e25b0ea9535f",
+    "per_object": {
+      "lineage": "成纤维",
+      "r_star": 0.8,
+      "n_cells": 77633,
+      "best_seed": 4,
+      "best_mean": 0.884134,
+      "ref_mean": 0.861489,
+      "gap": 0.022644,
+      "ref_rank": 4,
+      "ref_vs_best_matched_frac": 0.930622,
+      "cells_changing_label": 5386,
+      "pass_": false
+    }
+  },
+  "rstar_gate": {
+    "r_star": 0.8,
+    "relaxed": true,
+    "seed_min_applied": 0.85,
+    "signed_by": "用户本人（会话内表态，2026-09-18；非手写签署，账号 etonsalmon160-source）",
+    "source": "fibroA_rstar.json"
+  },
+  "rstar_note": "🔴 本谱系 r* 为**事后放宽**口径 ⇒ 结果只能作探索性结论，不得进主结论",
+  "n_cells": 77633,
+  "n_clusters": 33,
+  "rule": {
+    "panel_line": "法则2 六谱系面板逐细胞 score_genes → 簇内均值 → argmax ≠ 成纤维 ⇒ 非本谱系",
+    "celltypist_line": "GP6 已存 B_lineage 的簇内非本谱系占比 > 0.5 ⇒ 非本谱系",
+    "combine": [
+      "须两条线同时命中才标",
+      "（本谱系 成纤维 适用；单线命中写入 single_line_hold 列留痕但不剔）"
+    ],
+    "combine_scope": {
+      "any_line": [
+        "上皮"
+      ],
+      "need_both": [
+        "B/浆",
+        "T/NK",
+        "内皮",
+        "成纤维",
+        "髓系"
+      ],
+      "applied_to": "成纤维",
+      "applied": "须两条线同时命中"
+    },
+    "combine_reason": "2026-09-21 用户裁定（GP8b 后）。面板线的前提是「面板能在本谱系打出可分辨的分」，而该前提是**为上皮冻结时成立的**。GP8b 实跑证明它在低表达谱系不成立：法则2 面板自身基因在 T/NK 里只有 7.76/1e4（上皮 54.4、B/浆 208.5、成纤维 26.4、髓系 24.9、内皮 13.7），T/NK 保留簇的面板自评中位仅 0.43，score_genes 扣掉对照集后 argmax 在噪声里挑最大值 —— T/NK 被标的 11 簇有 10 簇是**单面板线**命中，而 CellTypist 对同一批细胞报 98–99% T/NK。照旧口径会错删 32% 的 T 细胞。**指出规则的作用域 ≠ 事后调阈值**（法则 3.2）：上皮口径一字未改，非上皮改为两线同时命中方剔；CellTypist 线阈值 0.50、面板线 ctrl_size/seed 均一字未动，单线命中仍如实落表供人工判读。",
+    "frozen": true,
+    "frozen_note": "规则在本脚本写定时即冻结；CellTypist 线结果先被看到，面板线完成前规则未改。合并口径的作用域修订为 2026-09-21 GP8b 之后、在**看到非上皮谱系结果之后**所做，已如实记入 combine_reason，不掩饰其时序。"
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "lineage_genes_used": {
+    "上皮": [
+      "EPCAM",
+      "KRT8",
+      "KRT19",
+      "CDH1",
+      "NKX2-1",
+      "SFTPC",
+      "SFTPA1",
+      "SFTPB",
+      "NAPSA",
+      "AGER",
+      "CAV1",
+      "PDPN",
+      "SCGB3A2",
+      "SCGB1A1"
+    ],
+    "T/NK": [
+      "CD3D",
+      "CD3E",
+      "CD3G",
+      "TRAC",
+      "CD4",
+      "IL7R",
+      "CD8A",
+      "NKG7",
+      "GNLY",
+      "KLRD1",
+      "PRF1",
+      "GZMB"
+    ],
+    "B/浆": [
+      "MS4A1",
+      "CD19",
+      "CD79A",
+      "CD79B",
+      "MZB1",
+      "JCHAIN",
+      "SDC1",
+      "IGHG1",
+      "IGKC",
+      "XBP1",
+      "DERL3"
+    ],
+    "髓系": [
+      "LYZ",
+      "AIF1",
+      "ITGAX",
+      "CD68",
+      "CD163",
+      "MSR1",
+      "C1QA",
+      "C1QB",
+      "C1QC",
+      "MARCO",
+      "APOE",
+      "CD14",
+      "S100A8",
+      "S100A9",
+      "SPP1"
+    ],
+    "成纤维": [
+      "COL1A1",
+      "COL1A2",
+      "COL3A1",
+      "DCN",
+      "LUM",
+      "FN1",
+      "PDGFRA",
+      "PDGFRB",
+      "ACTA2",
+      "TAGLN",
+      "FAP",
+      "CXCL12"
+    ],
+    "内皮": [
+      "PECAM1",
+      "CDH5",
+      "KDR",
+      "CD34",
+      "VWF",
+      "EGFL7",
+      "RAMP2",
+      "EMCN",
+      "PLVAP",
+      "AQP1",
+      "CLDN5",
+      "FLT1"
+    ]
+  },
+  "lineage_genes_missing": {
+    "上皮": [
+      "KRT18",
+      "SFTPA2"
+    ],
+    "T/NK": [
+      "CD8B"
+    ],
+    "髓系": [
+      "FCN1"
+    ]
+  },
+  "verdict": {
+    "n_nonepi": 0,
+    "cells_nonepi": 0,
+    "both_lines": [],
+    "one_line": [],
+    "clusters": {
+      "0": "保留",
+      "1": "保留",
+      "2": "保留",
+      "3": "保留",
+      "4": "保留",
+      "5": "保留",
+      "6": "保留",
+      "7": "保留",
+      "8": "保留",
+      "9": "保留",
+      "10": "保留",
+      "11": "保留",
+      "12": "保留",
+      "13": "保留",
+      "14": "保留",
+      "15": "保留",
+      "16": "保留",
+      "17": "保留",
+      "18": "保留",
+      "19": "保留",
+      "20": "保留",
+      "21": "保留",
+      "22": "保留",
+      "23": "保留",
+      "24": "保留",
+      "25": "保留",
+      "26": "保留",
+      "27": "保留",
+      "28": "保留",
+      "29": "保留",
+      "30": "保留",
+      "31": "保留",
+      "32": "保留"
+    },
+    "n_single_line_held": 3,
+    "cells_single_line_held": 1840,
+    "single_line_held": {
+      "20": "CellTypist",
+      "26": "CellTypist",
+      "32": "CellTypist"
+    }
+  },
+  "inputs": {
+    "results/02_expression/gse308103_counts_paperqc.h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+    "results/05_annotation/fibroA_subset_barcodes.txt": "505b82a900745cb443dd31e6ab8fdd1c544cf80d7b126b22543c03ec3606f516",
+    "results/04_integration/seurat_trad/fibroA/clusters.csv.gz": "a0fd8a983b68e33f3f9abc8b40b4215e4e4d53e609ce639ee2c234ac3c3809a1",
+    "results/05_annotation/gp6_cell_labels.csv.gz": "fa031a52a4ab3b7098d3fca5555b0749b2f4622711153c0b742f8ae09aaf12e2",
+    "05_annotation/marker_panel.py": "ffb8c0379e086c5eaf32138f8cf5ebdb3990bafd722cbf0375a19f045371d421",
+    "05_annotation/06_contamination_check.py": "1b618482077d508acda8024988968f9e605ffb031f054235b74ca28595449910"
+  },
+  "outputs": {
+    "results/05_annotation/fibroA_contamination.csv": "2845ef27c06ea12e77337fc1d9c3cfdeb540272309e7b7d7bfa7e226903b7c22",
+    "results/05_annotation/fibroA_lineage_scores_by_cluster.csv": "9bc742dc6762711b66518197b486a6ab20fa63eb7f0ce515424ec3d49de3b2f0"
+  },
+  "note": "本脚本只诊断，不改数据；不决定剔除后是否重聚类（检查点问题）。下游 03_subcluster_annotation.py 只认 flag 列 —— single_line_hold 列**不会**导致剔除。"
+}

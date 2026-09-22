@@ -1,6 +1,6 @@
 {
   "script": "05_annotation/04_metric3_coverage.py",
-  "registered_definition": "PARAMETERS_AND_SOURCES.md §M3-A.3 第 237 行",
+  "registered_definition": "PARAMETERS_AND_SOURCES.md §M3-A.3 的「指标3 谱系覆盖」行（**不引行号**：该表会增行，行号会漂）",
   "registered_text": "有 ≥1 个法则2 marker 集在 ≥25% 细胞检出且模块分均值 >0 的簇占比，硬约束 ≥ 0.90",
   "caliber_ambiguity_note": "登记原文的「marker 集在 ≥25% 细胞检出」有歧义 ⇒ 三种读法并列上报：R_any=任一基因检出率≥25%；R_mean=各基因检出率均值≥25%；R_all=全部基因检出率≥25%。头条取 R_mean，但**口径由用户裁定**，本脚本不代为选择。另按 §六.6 第 2 条增列 R_mean_own = 只认「本谱系那套」panel（收紧口径），用于检验「被错认也算认得出」这个口子有多大；全量对象无「本谱系」，该列不适用。",
   "headline_reading": "R_mean",
@@ -125,10 +125,10 @@
   ],
   "per_object_rstar": {
     "full": 0.6,
-    "epiA": 0.5,
-    "tnkA": 0.5,
+    "epiA": 0.7,
+    "tnkA": 0.8,
     "myeloidA": 0.5,
-    "endoA": 0.5,
+    "endoA": 0.7,
     "bplasmaA": 0.6,
     "fibroA": 0.8
   },
@@ -143,22 +143,28 @@
     "ruled_by": "用户（会话内批准）",
     "decision": "登记口径取 R_mean（panel 各基因检出率均值 ≥25%）",
     "rationale": "另两种读法可被证明是退化的，不是挑好看的那个：① R_any 恒 = 1.0 —— 面板里只要有一个基因在 ≥25% 细胞里冒头就算过（环境 RNA 带进来一点即够），等于没测；② R_all 结构性不可达 —— 面板故意跨亚型（上皮那套同时含 AT1 的 AGER/CAV1 与 AT2 的 SFTPC/NAPSA），没有任何单一细胞类型能把整组基因都表达在 ≥25% 细胞里。",
-    "non_binding_note": "R_mean 下七个对象在四个分辨率 × 五个种子上**全部过线**（最低 B/浆 0.9375）⇒ 指标3 对 r* **无区分力**，未排除任何分辨率 ⇒ 六个 r* 一个都没变。⇒ 不得把「指标3 过线」写成对 r* 的支持证据。",
-    "own_panel_note": "收紧到「本谱系那套」后仍在 r* 处全过线；跨分辨率仅淘汰 T/NK r=0.8（0.8974 < 0.90），而 T/NK 的 r* 是 0.5 ⇒ **r* 仍无一改变**。"
+    "non_binding_note": "R_mean 下各对象 r* 处（seed0）：全量 0.9556(43/45) · 上皮 1.0000(27/27) · T/NK 1.0000(40/40) · 髓系 0.8929(25/28) · 内皮 1.0000(29/29) · B/浆 1.0000(31/31) · 成纤维 1.0000(34/34)；最低 0.8929。⇒ 🔴 **1 个对象在 r* 处不过线**（髓系）⇒ 本指标**已淘汰这些谱系的 r* 候选**，须按 §M3-A.3 停在检查点升级，或由用户**显式裁定**覆盖（不得默许、不得事后放宽阈值）。全网格 15 格低于 0.9。不得把「指标3 过线」写成对 r* 的支持证据。",
+    "own_panel_note": "收紧到「本谱系那套」后，各谱系 r* 处（seed0）：上皮 1.0000(27/27) · T/NK 0.9500(38/40) · 髓系 0.8571(24/28) · 内皮 1.0000(29/29) · B/浆 1.0000(31/31) · 成纤维 1.0000(34/34)⇒ 🔴 **髓系 在 r* 处不过线**。全网格另有 4 格低于 0.9：髓系 r=0.5 s0=0.8571；髓系 r=0.6 s0=0.8621；髓系 r=0.7 s0=0.8621；髓系 r=0.8 s0=0.8710",
+    "recompute_note": "🔴 2026-09-22 重算：L1 标签口径由 `A_frozen` 换为 `A_adjudicated` ⇒ 谱系成员变化 ⇒ 按脚本头部注释的要求重跑。旧产物备份于 `results/05_annotation/.prev_metric3_20260921/`。本次两处改动：① OBJECTS 里手抄的 r* —— epiA 0.5→0.7、tnkA 0.5→0.8、endoA 0.5→0.7（髓系/B·浆/成纤维不变）；② `non_binding_note` 与 `own_panel_note` 改为**由 cov 现算** —— 旧文本写死「七个对象全部过线」，换子集后即成假话。"
   },
   "inputs": {
     "results/02_expression/gse308103_counts_paperqc.h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
     "results/05_annotation/gp6_scores.csv.gz": "c657f0e4907c625082c043653746d88911d4929efcf5ff93090a6941fdaf9a9f",
     "05_annotation/marker_panel.py": "ffb8c0379e086c5eaf32138f8cf5ebdb3990bafd722cbf0375a19f045371d421",
-    "results/05_annotation/epiA_subset_barcodes.txt": "a952857e3dbb119d2a5eca6201ba8f7bbe35443d09c695f7e22e08d1b0324d34",
-    "results/05_annotation/tnkA_subset_barcodes.txt": "b80e212a1b1e1286db9faf5056b0124674395e270fc8ab550549363bdf452bd0",
-    "results/05_annotation/myeloidA_subset_barcodes.txt": "b6936588925448496afd79cd33a2fedab223cefb9e902410549d98a571e5e312",
-    "results/05_annotation/endoA_subset_barcodes.txt": "1416797a02b41c5efa5491a017e9c49506012a2870ae80585e6d3a4d69d566c7",
-    "results/05_annotation/bplasmaA_subset_barcodes.txt": "b3f3ef2b07fb43bd0f0fc079d04329bc8272ab7291bcd59324ed7d073a040d04",
+    "results/05_annotation/epiA_subset_barcodes.txt": "d12a115a87d0790d7fe8cf27b16170999d94daba51f3016fdb79c5aa3fdde55e",
+    "results/05_annotation/tnkA_subset_barcodes.txt": "8cb87515d5463bdbdb9c6885decef19611a73b5a8f6abbdc850507d5c620b0c5",
+    "results/05_annotation/myeloidA_subset_barcodes.txt": "2fd34840c92f8a6ebf11ea8713903af7ecd7d0ed5a6622864836f01805b2fb1f",
+    "results/05_annotation/endoA_subset_barcodes.txt": "9ee8d0c08a26bd14592b654d3c9578561d1143f5bb6f2a74e544e8306f2396ac",
+    "results/05_annotation/bplasmaA_subset_barcodes.txt": "7e34c5c5baedb0ecfef071a8e2f3c738964c97cc29d74aa13c65c2a731a5cd0a",
     "results/05_annotation/fibroA_subset_barcodes.txt": "505b82a900745cb443dd31e6ab8fdd1c544cf80d7b126b22543c03ec3606f516"
   },
   "outputs": {
-    "results/05_annotation/metric3_coverage.csv": "8418c1929654ca8f8dfe950ef2f2d8b985fc0fab0e2fb1421a3ede4e7c70b352",
-    "results/05_annotation/metric3_per_cluster.csv.gz": "65fefaf43427959e02189f420374d0aa731e48906584d53df82ec5c4bd47a343"
-  }
+    "results/05_annotation/metric3_coverage.csv": "e7441ecb6f8d09b4c1005f53123c70df81a166f596e91516fca42d4057393052",
+    "results/05_annotation/metric3_per_cluster.csv.gz": "358c3ac7c58eb15cd90be35d4d074b8aa1336a8ff7f64da5c3829498777037c4"
+  },
+  "outputs_content_sha256": {
+    "results/05_annotation/metric3_coverage.csv": "e7441ecb6f8d09b4c1005f53123c70df81a166f596e91516fca42d4057393052",
+    "results/05_annotation/metric3_per_cluster.csv.gz": "6f21fb06d20473c3f94151a19a6aabc8af0e643f34ae05d05de487f123f33d2b"
+  },
+  "hash_note": "⚠️ `outputs` 里 `.gz` 项是**压缩文件**的 sha256，含 gzip MTIME ⇒ 逐次运行必变，**不可作复现锚点**；`outputs_content_sha256` 记的是**解压后内容**的 sha256，它才是可复现的锚点（R5）。非 `.gz` 项两者相同。"
 }

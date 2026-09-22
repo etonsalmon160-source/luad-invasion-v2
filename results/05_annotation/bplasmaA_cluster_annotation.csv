@@ -1,0 +1,32 @@
+cluster,n_cells,argmax,win_margin,n_patients,top_patient_frac,flag,donor_flag,decision,reason,excluded,excluded_reason
+0,5996,B,1.0449,23,0.373,,,,,False,
+1,3154,Plasma,0.4353,23,0.206,,,,,False,
+2,2964,Plasma,0.3869,23,0.205,,,,,False,
+3,2552,Plasma,0.4078,22,0.305,,,,,False,
+4,2391,B,0.3721,22,0.768,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+5,1655,B,0.1355,22,0.537,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+6,1276,Plasma,0.1495,23,0.597,,,,,False,
+7,1066,Plasma,0.0213,21,0.474,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+8,1044,B,0.3237,22,0.636,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+9,826,Plasma,0.2493,23,0.323,,,,,False,
+10,818,Plasma,0.5948,22,0.165,,,,,False,
+11,787,B,0.1793,21,0.706,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+12,768,Plasma,0.3258,23,0.189,,,,,False,
+13,749,Plasma,0.4004,21,0.224,,,,,False,
+14,745,Plasma,0.2926,23,0.157,,,,,False,
+15,741,B,1.1626,22,0.324,,,,,False,
+16,736,B,0.254,22,0.643,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+17,601,Plasma,0.4441,23,0.145,,,,,False,
+18,464,Plasma,0.3104,22,0.218,,,,,False,
+19,394,B,0.1601,23,0.421,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+20,356,Plasma,0.4923,21,0.242,,,,,False,
+21,205,Plasma,0.4386,16,0.205,,,,,False,
+22,200,Plasma,0.2204,13,0.67,,,,,False,
+23,188,B,0.2759,20,0.495,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+24,164,Plasma,0.464,12,0.598,,,,,False,
+25,106,B,0.2171,17,0.519,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/bplasmaA_contamination.csv
+26,102,B,0.0577,12,0.755,,,,,False,
+27,68,Plasma,0.1915,15,0.382,,,,,False,
+28,67,B,0.0654,13,0.358,,,,,False,
+29,65,Plasma,0.4241,13,0.323,,,,,False,
+30,34,B,0.082,9,0.353,,,,,False,

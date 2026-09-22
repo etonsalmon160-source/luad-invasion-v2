@@ -1,0 +1,98 @@
+{
+  "tag": "fibroA",
+  "lineage": "成纤维",
+  "res": 0.8,
+  "seed": 4,
+  "col": "harmony_res0.8_seed4",
+  "n_cells": 77633,
+  "n_clusters": 33,
+  "seed_selection": {
+    "seed": 4,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "be5170afc559977ab2cde98a64f1f7889484babdd44928bad2c3e25b0ea9535f",
+    "per_object": {
+      "lineage": "成纤维",
+      "r_star": 0.8,
+      "n_cells": 77633,
+      "best_seed": 4,
+      "best_mean": 0.884134,
+      "ref_mean": 0.861489,
+      "gap": 0.022644,
+      "ref_rank": 4,
+      "ref_vs_best_matched_frac": 0.930622,
+      "cells_changing_label": 5386,
+      "pass_": false
+    }
+  },
+  "rstar_signed_by": "用户本人（会话内表态，2026-09-18；非手写签署，账号 etonsalmon160-source）",
+  "rstar_relaxed": true,
+  "rstar_json_sha256": "40ae5dfcd956e3d179342a147a577e6f7d0be01b2f08b11c7a1852c45c6bc6f8",
+  "panel_sha256": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced",
+  "subsets_manifest": "1ac9875c0843b11b078a6caa68a05efc7307499a3191a7048dbc157235f66a12",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/fibroA/clusters.csv.gz",
+      "sha256": "a0fd8a983b68e33f3f9abc8b40b4215e4e4d53e609ce639ee2c234ac3c3809a1",
+      "cluster_col": "harmony_res0.8_seed4"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/fibroA_subset_barcodes.txt",
+      "sha256": "505b82a900745cb443dd31e6ab8fdd1c544cf80d7b126b22543c03ec3606f516",
+      "n_cells": 77633
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "44cb56638fab83df57f841794e7887eb76b06198d1c98a7535daedf51678388c"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {},
+  "thin_panel_types": [
+    "Fibroblast"
+  ],
+  "unscorable_types": [],
+  "unannotatable": [
+    "Bronchial Vessel"
+  ],
+  "source_table_defects": [
+    "CD4+ Mem/Eff",
+    "Basophil/Mast"
+  ],
+  "summary_over": "全部簇",
+  "n_clusters_kept": 33,
+  "never_won": [
+    "Airway Smooth Muscle",
+    "Mesothelial"
+  ],
+  "win_distribution": {
+    "Fibroblast": 35581,
+    "Lipofibroblast": 5920,
+    "Myofibroblast": 24244,
+    "Pericyte": 3480,
+    "Vascular Smooth Muscle": 8408
+  },
+  "contamination": {
+    "csv": "results/05_annotation/fibroA_contamination.csv",
+    "csv_sha256": "2845ef27c06ea12e77337fc1d9c3cfdeb540272309e7b7d7bfa7e226903b7c22",
+    "excluded_clusters": [],
+    "n_cells_excluded": 0,
+    "cells_list": "fibroA_excluded_cells.csv.gz",
+    "clean_barcodes": "fibroA_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

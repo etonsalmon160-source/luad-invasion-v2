@@ -1,0 +1,30 @@
+cluster,n_cells,argmax,win_margin,n_patients,top_patient_frac,flag,donor_flag,decision,reason,excluded,excluded_reason
+0,6365,Lymphatic,0.0874,23,0.133,thin_panel,,,,False,
+1,6326,Artery,0.116,23,0.272,thin_panel,,,,False,
+2,3636,Lymphatic,0.0142,23,0.251,thin_panel,,,,False,
+3,3458,Artery,1.1118,23,0.21,thin_panel,,,,False,
+4,3354,Lymphatic,1.719,23,0.116,thin_panel,,,,False,
+5,3347,Artery,0.0411,23,0.22,thin_panel,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+6,2350,Lymphatic,0.0432,23,0.204,thin_panel,,,,False,
+7,2244,Artery,0.9127,23,0.177,thin_panel,,,,False,
+8,1297,Lymphatic,0.03,23,0.196,thin_panel,,,,False,
+9,995,Lymphatic,0.1094,23,0.161,thin_panel,,,,False,
+10,987,Artery,0.1145,22,0.243,thin_panel,,,,False,
+11,917,Artery,0.4263,22,0.411,thin_panel,,,,False,
+12,907,Artery,0.0775,23,0.251,thin_panel,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+13,884,Artery,0.0835,22,0.299,thin_panel,,,,False,
+14,846,Artery,0.2382,23,0.214,thin_panel,,,,False,
+15,845,Artery,0.0838,23,0.178,thin_panel,,,,False,
+16,829,Lymphatic,0.021,23,0.352,thin_panel,,,,False,
+17,586,Artery,0.142,22,0.232,thin_panel,,,,False,
+18,420,Artery,0.8475,23,0.167,thin_panel,,,,False,
+19,405,Artery,0.1124,19,0.435,thin_panel,,,,False,
+20,372,Artery,0.1097,23,0.309,thin_panel,,,,False,
+21,336,Artery,0.2011,21,0.211,thin_panel,,,,False,
+22,335,Artery,0.1631,23,0.257,thin_panel,,,,False,
+23,305,Lymphatic,0.0671,22,0.216,thin_panel,,,,False,
+24,281,Lymphatic,0.0094,21,0.242,thin_panel,,,,False,
+25,214,Artery,0.1461,23,0.173,thin_panel,,,,False,
+26,191,Lymphatic,0.0235,21,0.262,thin_panel,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+27,135,Artery,0.0687,20,0.393,thin_panel,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+28,113,Artery,0.0955,19,0.186,thin_panel,,,,False,

@@ -1,0 +1,97 @@
+{
+  "tag": "tnkA",
+  "lineage": "T/NK",
+  "res": 0.8,
+  "seed": 3,
+  "col": "harmony_res0.8_seed3",
+  "n_cells": 64034,
+  "n_clusters": 40,
+  "seed_selection": {
+    "seed": 3,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "692158eba19531024999e2132e007fdf5462dff9101aed8d2bc4c5c2296d649f",
+    "per_object": {
+      "lineage": "T/NK",
+      "r_star": 0.8,
+      "n_cells": 64034,
+      "best_seed": 3,
+      "best_mean": 0.979294,
+      "ref_mean": 0.964844,
+      "gap": 0.01445,
+      "ref_rank": 5,
+      "ref_vs_best_matched_frac": 0.967627,
+      "cells_changing_label": 2073,
+      "pass_": false
+    }
+  },
+  "rstar_signed_by": "Claude（自动夜跑）2026-09-22",
+  "rstar_relaxed": false,
+  "rstar_json_sha256": "3491f42c4ee8a450bb8a5fb6a8b70eea6f181181bc7f8dd57e6c1057752c3e60",
+  "panel_sha256": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced",
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/tnkA/clusters.csv.gz",
+      "sha256": "6087e31445fe3a4b8a477227795304cef95c43b7b41d9d5b42e9a83ae15ae97b",
+      "cluster_col": "harmony_res0.8_seed3"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/tnkA_subset_barcodes.txt",
+      "sha256": "8cb87515d5463bdbdb9c6885decef19611a73b5a8f6abbdc850507d5c620b0c5",
+      "n_cells": 64034
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "326a64f387b8b0f47bb6dcbb70fc25689ae709322877c341b75692bb0097e2e1"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {},
+  "thin_panel_types": [],
+  "unscorable_types": [],
+  "unannotatable": [
+    "Bronchial Vessel"
+  ],
+  "source_table_defects": [
+    "CD4+ Mem/Eff",
+    "Basophil/Mast"
+  ],
+  "summary_over": "保留簇（已剔除跨谱系污染簇）",
+  "n_clusters_kept": 38,
+  "never_won": [],
+  "win_distribution": {
+    "CD4+ Mem/Eff": 1917,
+    "CD4+ Naive T": 37528,
+    "CD8+ Mem/Eff T": 8173,
+    "CD8+ Naive T": 2680,
+    "NK": 10608,
+    "NKT": 2172
+  },
+  "contamination": {
+    "csv": "results/05_annotation/tnkA_contamination.csv",
+    "csv_sha256": "0e7d753d7fc664681888b785a239c5fea1f73803a2e24a3e462772c3ba4c99b0",
+    "excluded_clusters": [
+      "23",
+      "37"
+    ],
+    "n_cells_excluded": 956,
+    "cells_list": "tnkA_excluded_cells.csv.gz",
+    "clean_barcodes": "tnkA_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

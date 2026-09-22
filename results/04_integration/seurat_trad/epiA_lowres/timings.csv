@@ -1,0 +1,51 @@
+"step","sec","rss_before_gb","rss_after_gb"
+"读入 CSC 三元组 + 组装 dgCMatrix",27.1,0.35,7.7
+"CreateSeuratObject",8.4,10.75,12.75
+"SCTransform(vst.flavor=v2, HVG=3000)",599.1,10.81,95.64
+"RunPCA(npcs=50)",162.5,95.64,104.74
+"RunHarmony(group.by.vars=sample_id, dims=1:50)",103.3,104.74,105.43
+"FindNeighbors(Harmony 臂)",62.6,105.43,70.62
+"FindNeighbors(不校正臂)",53.2,70.62,71.02
+"FindClusters(harmony, r=0.2, seed=0)",86.5,71.02,71.04
+"FindClusters(harmony, r=0.2, seed=1)",91.6,71.04,71.07
+"FindClusters(harmony, r=0.2, seed=2)",78.8,71.07,71.18
+"FindClusters(harmony, r=0.2, seed=3)",82.2,71.18,71.29
+"FindClusters(harmony, r=0.2, seed=4)",90.9,71.29,71.39
+"FindClusters(harmony, r=0.3, seed=0)",97,71.39,71.4
+"FindClusters(harmony, r=0.3, seed=1)",93,71.4,71.4
+"FindClusters(harmony, r=0.3, seed=2)",85.5,71.4,71.4
+"FindClusters(harmony, r=0.3, seed=3)",84.8,71.4,71.4
+"FindClusters(harmony, r=0.3, seed=4)",88.2,71.4,71.4
+"FindClusters(harmony, r=0.4, seed=0)",87.2,71.4,71.42
+"FindClusters(harmony, r=0.4, seed=1)",91.5,71.42,71.42
+"FindClusters(harmony, r=0.4, seed=2)",83.1,71.42,71.42
+"FindClusters(harmony, r=0.4, seed=3)",80.5,71.42,71.42
+"FindClusters(harmony, r=0.4, seed=4)",76.4,71.42,71.42
+"FindClusters(harmony, r=0.5, seed=0)",76.5,71.42,71.42
+"FindClusters(harmony, r=0.5, seed=1)",76.6,71.42,71.45
+"FindClusters(harmony, r=0.5, seed=2)",78.8,71.45,71.45
+"FindClusters(harmony, r=0.5, seed=3)",87.7,71.45,71.45
+"FindClusters(harmony, r=0.5, seed=4)",87.8,71.45,71.45
+"FindClusters(harmony, r=0.6, seed=0)",85.9,71.45,71.45
+"FindClusters(harmony, r=0.6, seed=1)",79.4,71.45,71.45
+"FindClusters(harmony, r=0.6, seed=2)",89.3,71.45,71.11
+"FindClusters(harmony, r=0.6, seed=3)",86.8,71.11,71.11
+"FindClusters(harmony, r=0.6, seed=4)",95.6,71.11,71.11
+"FindClusters(harmony, r=0.7, seed=0)",85.3,71.11,71.11
+"FindClusters(harmony, r=0.7, seed=1)",88.2,71.11,71.11
+"FindClusters(harmony, r=0.7, seed=2)",79.6,71.11,71.11
+"FindClusters(harmony, r=0.7, seed=3)",84,71.11,71.11
+"FindClusters(harmony, r=0.7, seed=4)",88.3,71.11,71.11
+"FindClusters(harmony, r=0.8, seed=0)",86.3,71.11,71.11
+"FindClusters(harmony, r=0.8, seed=1)",87.4,71.11,71.11
+"FindClusters(harmony, r=0.8, seed=2)",78.3,71.11,71.11
+"FindClusters(harmony, r=0.8, seed=3)",78.5,71.11,71.11
+"FindClusters(harmony, r=0.8, seed=4)",83.9,71.11,71.11
+"FindClusters(pca, r=0.2, seed=0)",83.6,71.11,71.16
+"FindClusters(pca, r=0.3, seed=0)",86.5,71.16,71.16
+"FindClusters(pca, r=0.4, seed=0)",76.8,71.16,71.16
+"FindClusters(pca, r=0.5, seed=0)",75.7,71.16,71.33
+"FindClusters(pca, r=0.6, seed=0)",74.9,71.33,71.77
+"FindClusters(pca, r=0.7, seed=0)",77.2,71.77,72.21
+"FindClusters(pca, r=0.8, seed=0)",78.2,72.21,72.66
+"RunUMAP(reduction=harmony, dims=1:50)",212,72.66,21.69

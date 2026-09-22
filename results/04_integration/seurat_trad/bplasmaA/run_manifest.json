@@ -15,25 +15,25 @@
       "n_genes": 18069,
       "nnz": 655222534
     },
-    "n_cells": 34385,
-    "n_genes": 16361
+    "n_cells": 31282,
+    "n_genes": 16250
   },
   "subsample": {},
   "subset": {
     "cells_file": "results/05_annotation/bplasmaA_subset_barcodes.txt",
-    "cells_file_sha256": "b3f3ef2b07fb43bd0f0fc079d04329bc8272ab7291bcd59324ed7d073a040d04",
-    "n_listed": 34385,
-    "n_actual": 34385,
+    "cells_file_sha256": "7e34c5c5baedb0ecfef071a8e2f3c738964c97cc29d74aa13c65c2a731a5cd0a",
+    "n_listed": 31282,
+    "n_actual": 31282,
     "lineage": "B/浆",
     "caliber": "标准 A 单口径 = GP6 冻结 A_frozen 标签（seed0, r*=0.6），用户 2026-09-17 裁定；PARAMETERS §M3-A.5",
     "n_samples": 75,
     "n_patients": 23,
     "stage_counts": {
-      "AAH": 1119,
-      "AIS": 2794,
-      "IAC": 26275,
-      "MIA": 370,
-      "Normal": 3827
+      "AAH": 840,
+      "AIS": 2415,
+      "IAC": 24655,
+      "MIA": 265,
+      "Normal": 3107
     }
   },
   "params": {
@@ -45,10 +45,7 @@
       "vars.to.regress": {},
       "do.scale": false,
       "do.center": true,
-      "clip.range": [
-        -33.85508332,
-        33.85508332
-      ],
+      "clip.range": [-32.29138172, 32.29138172],
       "conserve.memory": false,
       "return.only.var.genes": true,
       "seed.use": 1448145
@@ -61,58 +58,7 @@
     "harmony": {
       "group.by.vars": "sample_id",
       "reduction.use": "pca",
-      "dims.use": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        44,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ],
+      "dims.use": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
       "reduction.save": "harmony",
       "project.dim": true,
       "note": "其余为 harmony 2.0.5 默认"
@@ -122,25 +68,11 @@
       "annoy.metric": "euclidean",
       "nn.method": "annoy",
       "prune.SNN": 0.06666667,
-      "graphs": [
-        "harmony_snn",
-        "pca_snn"
-      ]
+      "graphs": ["harmony_snn", "pca_snn"]
     },
     "clusters": {
-      "resolutions": [
-        0.5,
-        0.6,
-        0.7,
-        0.8
-      ],
-      "seeds": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ],
+      "resolutions": [0.5, 0.6, 0.7, 0.8],
+      "seeds": [0, 1, 2, 3, 4],
       "algorithm": 1,
       "modularity.fxn": 1,
       "n.start": 10,
@@ -167,13 +99,13 @@
       "aah_absorption_max": 0.5,
       "note": "指标4 为本项目附加，非论文配方；见 PARAMETERS §M3-A.3"
     },
-    "metric3_absent": "指标3（谱系覆盖）需 GP6 注释后方可计算，本轮**未计算**，不得以簇数冒充",
-    "metric1_caveat": "指标1（跨种子稳定性，硬约束 ARI ≥ 0.90）：本轮实测 0.8977–0.9580，3/4 个分辨率达标；未达标：r=0.8(ARI=0.8977) ⇒ 该约束在本规模上**承重**，已剔除这 1 个候选。 护栏效力随规模而变（历史实测：3,000 细胞空转，ARI 恒 = 1.0；60,000 细胞 0.9346–0.9834）——不得用小规模结果推断本规模。⚠️ 本字段由 METRICS 实算，若与 METRICS 表不符以 METRICS 表为准。",
+    "metric3_absent": "指标3（谱系覆盖）**不在本脚本计算** —— 见 05_annotation/04_metric3_coverage.py 与产物 results/05_annotation/metric3_coverage.csv（2026-09-21 补算：七对象 × 4 分辨率 × 5 种子全过线，对 r* 无区分力）。⚠️ 旧措辞「需 GP6 注释后方可计算」是错的（它不依赖注释）。此处只报 n_clusters，不得以簇数冒充覆盖分",
+    "metric1_caveat": "指标1（跨种子稳定性，硬约束 ARI ≥ 0.90）：本轮实测 0.9342–0.9782，4/4 个分辨率达标；全部达标 ⇒ 该约束在本规模上未剔除任何候选。 护栏效力随规模而变（历史实测：3,000 细胞空转，ARI 恒 = 1.0；60,000 细胞 0.9346–0.9834）——不得用小规模结果推断本规模。⚠️ 本字段由 METRICS 实算，若与 METRICS 表不符以 METRICS 表为准。",
     "rstar_candidate": 0.6,
     "rstar_status": "候选，**待 GP5 人工签字**"
   },
   "metrics_interpretable": true,
-  "metrics_caveat": "本轮为**亚聚类**：谱系=B/浆，细胞集合 = bplasmaA_subset_barcodes.txt（标准 A 单口径，seed0 全局 r*=0.6 的该谱系全部细胞），清单 sha256 = b3f3ef2b07fb43bd。metric4（AAH 吸收护栏）的语义是全量口径的**投影**而非同一定义：本谱系子集里 AAH 细胞仍存在，但簇的分期构成已随谱系而变 ⇒ 该列**不与全量值直接比较**。其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。",
+  "metrics_caveat": "本轮为**亚聚类**：谱系=B/浆，细胞集合 = bplasmaA_subset_barcodes.txt（标准 A 单口径，seed0 全局 r*=0.6 的该谱系全部细胞）， 清单 sha256 = 7e34c5c5baedb0ec。metric4（AAH 吸收护栏）的语义是全量口径的**投影**而非同一定义： 本谱系子集里 AAH 细胞仍存在，但簇的分期构成已随谱系而变 ⇒ 该列**不与全量值直接比较**。 其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。",
   "versions": {
     "R": "R version 4.2.2 Patched (2022-11-10 r83330)",
     "Seurat": "4.3.0",
@@ -186,33 +118,27 @@
   "embeddings": {
     "harmony": {
       "path": "embeddings/harmony_f32.bin",
-      "dim": [
-        34385,
-        50
-      ],
-      "bytes": 6877000,
-      "md5": "0cd73dbbf4f15add2ee76219b33affe2",
+      "dim": [31282, 50],
+      "bytes": 6256400,
+      "md5": "64e93ea2eb60a1a35a49cd77b7d5a2c9",
       "seed": null
     },
     "pca": {
       "path": "embeddings/pca_f32.bin",
-      "dim": [
-        34385,
-        50
-      ],
-      "bytes": 6877000,
-      "md5": "f34bc6d2060daae3fe303458fb7a475c",
+      "dim": [31282, 50],
+      "bytes": 6256400,
+      "md5": "77ee1c4cd6b4c4c7e9ab41b4fbc04153",
       "seed": 42
     }
   },
   "metrics_table": [
     {
       "resolution": 0.5,
-      "n_clusters": 32,
-      "ari_seed_mean": 0.9317,
-      "ari_xres": 0.9329,
+      "n_clusters": 29,
+      "ari_seed_mean": 0.9342,
+      "ari_xres": 0.9539,
       "aah_absorption_rate": 0,
-      "score": 0.9323,
+      "score": 0.9441,
       "pass_seed": true,
       "pass_aah": true,
       "eligible": true,
@@ -220,12 +146,12 @@
     },
     {
       "resolution": 0.6,
-      "n_clusters": 34,
-      "ari_seed_mean": 0.9569,
-      "ari_adjacent_prev": 0.9329,
-      "ari_xres": 0.9291,
+      "n_clusters": 31,
+      "ari_seed_mean": 0.9765,
+      "ari_adjacent_prev": 0.9539,
+      "ari_xres": 0.9696,
       "aah_absorption_rate": 0,
-      "score": 0.943,
+      "score": 0.973,
       "pass_seed": true,
       "pass_aah": true,
       "eligible": true,
@@ -233,12 +159,12 @@
     },
     {
       "resolution": 0.7,
-      "n_clusters": 33,
-      "ari_seed_mean": 0.958,
-      "ari_adjacent_prev": 0.9252,
-      "ari_xres": 0.8918,
+      "n_clusters": 32,
+      "ari_seed_mean": 0.9782,
+      "ari_adjacent_prev": 0.9852,
+      "ari_xres": 0.9826,
       "aah_absorption_rate": 0,
-      "score": 0.9249,
+      "score": 0.9804,
       "pass_seed": true,
       "pass_aah": true,
       "eligible": true,
@@ -246,29 +172,17 @@
     },
     {
       "resolution": 0.8,
-      "n_clusters": 35,
-      "ari_seed_mean": 0.8977,
-      "ari_adjacent_prev": 0.8584,
-      "ari_xres": 0.8584,
+      "n_clusters": 33,
+      "ari_seed_mean": 0.9753,
+      "ari_adjacent_prev": 0.9801,
+      "ari_xres": 0.9801,
       "aah_absorption_rate": 0,
-      "score": 0.8781,
-      "pass_seed": false,
+      "score": 0.9777,
+      "pass_seed": true,
       "pass_aah": true,
-      "eligible": false,
+      "eligible": true,
       "is_rstar": false
     }
   ],
-  "wall_sec": 632.7,
-  "metrics_caveat_correction": {
-    "at": "2026-09-17",
-    "by": "PR 前复核",
-    "what": "metrics_caveat 文案更正（**仅文字，未改任何计算**）",
-    "original": "本轮为**亚聚类**：细胞集合已限定为上皮交集，故 metric4（AAH 吸收护栏）的语义 是全量口径的**投影**而非同一定义 —— 空转（分母无 AAH）时记 NA，不得与全量值直接比较。 其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。",
-    "corrected": "本轮为**亚聚类**：谱系=B/浆，细胞集合 = bplasmaA_subset_barcodes.txt（标准 A 单口径，seed0 全局 r*=0.6 的该谱系全部细胞），清单 sha256 = b3f3ef2b07fb43bd。metric4（AAH 吸收护栏）的语义是全量口径的**投影**而非同一定义：本谱系子集里 AAH 细胞仍存在，但簇的分期构成已随谱系而变 ⇒ 该列**不与全量值直接比较**。其余口径（SCTransform 参数 / PCA / Harmony / kNN / 网格 / 种子）与 full 逐位相同。",
-    "why": "原文案在 subset 分支里**写死了「上皮交集」**。subset 是六谱系共用的代码路径，故五个非上皮谱系的 manifest 里都印着「细胞集合已限定为上皮交集」这句错话；且「交集」一词本身也已过时（口径 2026-09-17 已改为标准 A 单口径）。与 `lineage = \"上皮\"` 属同一类「共用分支里的写死值」漏检。",
-    "script_defect": "04_integration/10_seurat_traditional.R 的 metrics_caveat 原为硬编码字符串，已改为按 --lineage 实参生成。",
-    "scope": "仅改 metrics_caveat 一个字段。metrics_table / resolution_metrics.csv / clusters.csv.gz / umap.csv.gz / params / versions / embeddings / wall_sec 一律未改。",
-    "not_rerun": "未重跑该 run（六谱系合计约 2 小时）。更正为**确定性文字替换**，不触及任何随机数或计算路径。R 源脚本已修，此后新跑不会再出现该文案。",
-    "origin_sha256_note": "原始 metrics_caveat 全文已完整保存在本块的 original 字段，未静默丢弃。"
-  }
+  "wall_sec": 510.8
 }

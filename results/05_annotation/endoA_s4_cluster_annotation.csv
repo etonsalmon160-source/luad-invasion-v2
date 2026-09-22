@@ -1,0 +1,30 @@
+cluster,n_cells,argmax,win_margin,n_patients,top_patient_frac,flag,donor_flag,decision,reason,excluded,excluded_reason
+0,6365,Capillary Intermediate 1,0.0278,23,0.133,,,,,False,
+1,6326,Capillary,0.7963,23,0.272,,,,,False,
+2,3636,Vein,0.7742,23,0.251,,,,,False,
+3,3458,Artery,0.8333,23,0.21,,,,,False,
+4,3354,Lymphatic,0.6741,23,0.116,,,,,False,
+5,3347,Capillary,0.085,23,0.22,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+6,2350,Bronchial Vessel 2,0.0746,23,0.204,,,,,False,
+7,2244,Artery,0.4474,23,0.177,,,,,False,
+8,1297,Bronchial Vessel 1,0.0921,23,0.196,,,,,False,
+9,995,Bronchial Vessel 1,0.2781,23,0.161,,,,,False,
+10,987,Bronchial Vessel 2,0.3765,22,0.243,,,,,False,
+11,917,Bronchial Vessel 2,0.3627,22,0.411,,,,,False,
+12,907,Capillary,0.1946,23,0.251,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+13,884,Capillary,0.1214,22,0.299,,,,,False,
+14,846,Vein,0.9095,23,0.214,,,,,False,
+15,845,Vein,0.6496,23,0.178,,,,,False,
+16,829,Capillary Intermediate 1,1.4024,23,0.352,,,,,False,
+17,586,Capillary,1.1199,22,0.232,,,,,False,
+18,420,Bronchial Vessel 2,0.048,23,0.167,,,,,False,
+19,405,Artery,0.045,19,0.435,,,,,False,
+20,372,Capillary,0.1521,23,0.309,,,,,False,
+21,336,Capillary,0.2017,21,0.211,,,,,False,
+22,335,Capillary,0.2378,23,0.257,,,,,False,
+23,305,Capillary Aerocyte,0.0103,22,0.216,,,,,False,
+24,281,Artery,0.0098,21,0.242,,,,,False,
+25,214,Vein,0.1327,23,0.173,,,,,False,
+26,191,Artery,0.0827,21,0.262,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+27,135,Artery,0.0629,20,0.393,,,,,True,跨谱系污染（面板+CellTypist 命中）；判据见 results/05_annotation/endoA_contamination.csv
+28,113,Vein,0.0061,19,0.186,,,,,False,

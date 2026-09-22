@@ -1,0 +1,229 @@
+{
+  "stage": "GP6 全局簇错标裁决层",
+  "date": "2026-09-22",
+  "caliber": "在 gp6_cell_labels.csv.gz 的逐细胞标签上**新增** A_adjudicated 一列；A_frozen 逐字节保留，旧口径不作废，新旧两版并存可对账。",
+  "rule": {
+    "text": "逐簇两线一致率 < 0.90 且 A_lineage != B_lineage_mode（谱系级分歧）",
+    "threshold": 0.9,
+    "threshold_source": "GP6 预注册的「强制人工复核」阈值，本次未新发明、未调整",
+    "n_low_agreement": 23,
+    "n_low_agreement_cells": 174395,
+    "n_lineage_level": 4,
+    "candidates": [
+      "17",
+      "26",
+      "38",
+      "44"
+    ],
+    "note": "候选集由规则机械确定；脚本硬断言人工裁决表 == 规则输出，否则 SystemExit。"
+  },
+  "decisions": {
+    "17": {
+      "from_": "上皮",
+      "to": "髓系",
+      "phenotype": "肥大细胞",
+      "n_cells": 6574,
+      "evidence": "driver_genes_meandiff top15 全为肥大细胞特异基因（CPA3;HDC;KIT;MS4A2;GATA2;TPSG1;IL1RL1;ALOX5;HPGDS;SIGLEC6 等）；CellTypist 髓系占 97%；A 面板六分数全塌平（上皮+0.271/髓系+0.061/T-NK−0.175）",
+      "panel_blind_spot": "GATA2/KIT 属髓系范畴，但 marker_panel.py 的髓系面板未收肥大细胞 marker"
+    },
+    "26": {
+      "from_": "B/浆",
+      "to": "髓系",
+      "phenotype": "树突状细胞（DC）",
+      "n_cells": 3103,
+      "evidence": "driver_genes_meandiff top15 含 IRF8;WDFY4;CIITA;CSF2RA;SPI1;CD74 —— DC 定义基因；CellTypist 髓系占 93%；A 面板 B/浆仅 +0.282 且上皮 +0.136，六分数塌平",
+      "panel_blind_spot": "marker_panel.py 的髓系面板未收 DC marker（无 IRF8/WDFY4/CIITA）"
+    },
+    "38": {
+      "from_": "上皮",
+      "to": "T/NK",
+      "phenotype": "T 细胞（泡在表面活性剂环境 RNA 里）",
+      "n_cells": 1147,
+      "evidence": "环境 RNA 判别（逐基因检出率对深度匹配背景的倍数）：T/NK 核心 2.50×（三组最高）、分泌型上皮 1.79×、结构型上皮仅 1.15×。A 面板给本簇上皮 +1.115（明显高于 T/NK +0.434）**正是因为这 1.79×**——上皮面板 7/16 是分泌型基因，会随环境 RNA 一起被抬高；结构型上皮只比背景高 15%，撑不起「上皮」这个身份。CellTypist 族亦判 T/NK。",
+      "panel_blind_spot": "上皮面板 7/16 为分泌型，是本簇被误判的机制"
+    },
+    "44": {
+      "from_": "内皮",
+      "to": "T/NK",
+      "phenotype": "T/NK",
+      "n_cells": 404,
+      "evidence": "driver_genes_meandiff top15 全为 T 基因（IL7R;TRAC;CD2;TRBC2;CORO1A;IKZF1;CD96;ITGAL;CXCR4 等）；A 面板内皮 +0.444 vs T/NK +0.399，只差 0.045（近并列）",
+      "panel_blind_spot": ""
+    }
+  },
+  "timing_disclosure": "🔴 本裁决**发生在看到下游结果之后**。触发点：2026-09-22 调查「B/浆 谱系剔除率 28.55% 是否合理」，簇 26 由该调查直接暴露；簇 17/38/44 是在其后**系统套用**上述预注册规则（遍历全部 45 个全局簇）时发现的。规则本身预注册于 GP6、与本次调查无关，候选集由规则机械确定、非人工挑选。但「先看到下游、后做裁决」这一时序如实登记，不掩饰（法则 3.2）。",
+  "known_limitation": "marker_panel.py 的髓系面板（16 基因）**不含任何肥大细胞 marker**（无 CPA3/TPSAB1/TPSG1/MS4A2/KIT/HDC/GATA2）、**不含任何 DC marker**（无 IRF8/WDFY4/CIITA/CSF2RA/LAMP3/CLEC9A/IL3RA）；上皮面板 16 基因中 **7 个为分泌型**（表面活性剂/分泌球蛋白），易受环境 RNA 抬高。本次经用户 2026-09-22 裁定**不补面板**，作为**已知局限**登记；意味着自动化的簇级 argmax 在这两类细胞上**仍会出错**，须靠本裁决层兜底。",
+  "ambient_check": {
+    "rule": "结构型上皮检出率 vs 深度匹配背景（全图谱 nCount 落在本簇 IQR 内的细胞，剔除本簇自身）；不设阈值，看形状；不使用随机数。",
+    "struct_epi": [
+      "EPCAM",
+      "KRT8",
+      "KRT18",
+      "KRT19",
+      "CDH1",
+      "NKX2-1",
+      "AGER",
+      "CAV1",
+      "PDPN"
+    ],
+    "secret_epi": [
+      "SFTPC",
+      "SFTPA1",
+      "SFTPA2",
+      "SFTPB",
+      "NAPSA",
+      "SCGB3A2",
+      "SCGB1A1"
+    ],
+    "tnk_core": [
+      "CD3D",
+      "CD3E",
+      "CD3G",
+      "TRAC",
+      "CD4",
+      "IL7R",
+      "CD8A",
+      "CD8B",
+      "NKG7",
+      "GNLY",
+      "KLRD1",
+      "PRF1",
+      "GZMB"
+    ],
+    "source": "三组基因集全部取自 marker_panel.py 已登记面板的子集，未引入新出处",
+    "gene_sets_missing_in_matrix": [
+      "KRT18",
+      "SFTPA2",
+      "CD8B"
+    ],
+    "summary": [
+      {
+        "raw": "17",
+        "gene_set": "T/NK 核心",
+        "n_genes": 12,
+        "pct_in_mean": 0.034,
+        "pct_bg_mean": 0.1117,
+        "ratio_mean": 0.3,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "17",
+        "gene_set": "分泌型上皮(易环境RNA)",
+        "n_genes": 6,
+        "pct_in_mean": 0.4045,
+        "pct_bg_mean": 0.3906,
+        "ratio_mean": 1.04,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "17",
+        "gene_set": "结构型上皮",
+        "n_genes": 8,
+        "pct_in_mean": 0.0899,
+        "pct_bg_mean": 0.1565,
+        "ratio_mean": 0.57,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "26",
+        "gene_set": "T/NK 核心",
+        "n_genes": 12,
+        "pct_in_mean": 0.1122,
+        "pct_bg_mean": 0.0922,
+        "ratio_mean": 1.22,
+        "n_genes_over_2x": 2
+      },
+      {
+        "raw": "26",
+        "gene_set": "分泌型上皮(易环境RNA)",
+        "n_genes": 6,
+        "pct_in_mean": 0.3923,
+        "pct_bg_mean": 0.4779,
+        "ratio_mean": 0.82,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "26",
+        "gene_set": "结构型上皮",
+        "n_genes": 8,
+        "pct_in_mean": 0.1183,
+        "pct_bg_mean": 0.2441,
+        "ratio_mean": 0.48,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "38",
+        "gene_set": "T/NK 核心",
+        "n_genes": 12,
+        "pct_in_mean": 0.273,
+        "pct_bg_mean": 0.1092,
+        "ratio_mean": 2.5,
+        "n_genes_over_2x": 7
+      },
+      {
+        "raw": "38",
+        "gene_set": "分泌型上皮(易环境RNA)",
+        "n_genes": 6,
+        "pct_in_mean": 0.6927,
+        "pct_bg_mean": 0.3879,
+        "ratio_mean": 1.79,
+        "n_genes_over_2x": 2
+      },
+      {
+        "raw": "38",
+        "gene_set": "结构型上皮",
+        "n_genes": 8,
+        "pct_in_mean": 0.1773,
+        "pct_bg_mean": 0.1537,
+        "ratio_mean": 1.15,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "44",
+        "gene_set": "T/NK 核心",
+        "n_genes": 12,
+        "pct_in_mean": 0.2566,
+        "pct_bg_mean": 0.1107,
+        "ratio_mean": 2.32,
+        "n_genes_over_2x": 6
+      },
+      {
+        "raw": "44",
+        "gene_set": "分泌型上皮(易环境RNA)",
+        "n_genes": 6,
+        "pct_in_mean": 0.3919,
+        "pct_bg_mean": 0.3816,
+        "ratio_mean": 1.03,
+        "n_genes_over_2x": 0
+      },
+      {
+        "raw": "44",
+        "gene_set": "结构型上皮",
+        "n_genes": 8,
+        "pct_in_mean": 0.1265,
+        "pct_bg_mean": 0.1468,
+        "ratio_mean": 0.86,
+        "n_genes_over_2x": 0
+      }
+    ],
+    "csv": "results/05_annotation/gp6_adjudication_ambient_check.csv"
+  },
+  "signed_by": "Claude（自动夜跑）2026-09-22",
+  "signed_note": "🔴 待人工签字：核对 gp6_adjudication_evidence.csv 与 gp6_adjudication_ambient_check.csv 后，把 signed_by 改为署名（如 \"<姓名> 2026-09-22\"）。未签字前下游不得改用 A_adjudicated。",
+  "outputs": {
+    "results/05_annotation/gp6_cell_labels_adjudicated.csv.gz": "dfaecc05c529bbe7cfb06990fd5cd13c99de03adf906fd1e534ded7e6c743093",
+    "results/05_annotation/gp6_adjudication_evidence.csv": "f36b088c1c496a431ea77a54713f0412193c9cf7b1ae5e7c60cf75a9af4ebb35",
+    "results/05_annotation/gp6_adjudication_ambient_check.csv": "e8d8a623b1e01224ceb1c5ec077b3ceadbaa06784425eddc63a85db600501677"
+  },
+  "inputs": {
+    "results/05_annotation/gp6_cell_labels.csv.gz": "fa031a52a4ab3b7098d3fca5555b0749b2f4622711153c0b742f8ae09aaf12e2",
+    "results/05_annotation/gp6_cluster_labels.csv": "fdb56b904d8231811a525b5b1e3e2df8a8905970057833b4d5356dc215e3140c",
+    "results/04_integration/seurat_trad/full/clusters.csv.gz": "4e6e6977561da9ca300d060aa63efe97739d159766dffccc040c192768206408",
+    "results/02_expression/gse308103_counts_paperqc.h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+    "05_annotation/09_adjudicate_global_labels.py": "b00e94666b0985c91a9a0f6ecca17e46a3b51fdc21cf0e1f311b3a8da7da8c8a",
+    "05_annotation/marker_panel.py": "ffb8c0379e086c5eaf32138f8cf5ebdb3990bafd722cbf0375a19f045371d421"
+  },
+  "signed_at": "2026-09-22T00:27:35",
+  "sign_authority": "用户 2026-09-22 睡前明确授权：「我准备睡觉了，关键部分你先自己按照最科学的方式决断，明天早上给我报告」。四个簇的归属本身是用户当日经 AskUserQuestion 亲自裁定的（17→髓系 / 26→髓系 / 38→T/NK / 44→T/NK）。",
+  "sign_caveat": "🔴 本次签字**未经人工逐行核对证据表**。系统自动核对的部分：① 候选簇由 GP6 预注册规则机械产出，脚本硬断言其与人工裁决表相等；② 环境 RNA 判别的基因集全部取自已登记面板；③ 全部输入输出均有 sha256。**须人工复核的部分**：gp6_adjudication_evidence.csv 与 gp6_adjudication_ambient_check.csv 的判读。"
+}

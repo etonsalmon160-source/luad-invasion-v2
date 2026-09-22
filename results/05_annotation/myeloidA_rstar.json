@@ -1,27 +1,69 @@
 {
   "tag": "myeloidA",
   "r_star": 0.5,
-  "best_score": 0.9365,
+  "best_score": 0.9832,
   "eligible": [
     0.5,
-    0.6
+    0.6,
+    0.7,
+    0.8
   ],
   "tie_break": "差 ≤ 0.01 取较低分辨率（§M3-A.3）",
-  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束；指标3 已补算（2026-09-21，口径 R_mean）且对 r* 无区分力",
+  "rule": "r* = argmax_r [0.5·ARI_seed + 0.5·ARI_xres]，受 ari_seed_mean ≥ 阈值 与 aah_absorption_rate ≤ 0.5 两条约束。🔴 2026-09-22 更正：本谱系的指标3 **并非「对 r* 无区分力」，而是在 r* 处不过线**（R_mean 0.8929 < 0.90）。该不过线**不改变 r* 的取值**，理由见 `metric3_gate`。",
   "constraints_applied": [
     "ari_seed_mean ≥ 0.9（= 指标1 跨种子稳定性；**承重**）",
     "aah_absorption_rate ≤ 0.5（= 指标4 AAH 吸收护栏；**已施加但本批实测全分辨率为 0 ⇒ 空转**，按 PARAMETERS §M3-A.3 第 241/243 行的裁定**不得计入 r* 的通过理由**）",
-    "指标3（谱系覆盖 ≥ 0.90）**已补算（2026-09-21）** —— 口径「逐基因检出率均值」（R_mean，见 PARAMETERS §M3-A.3 的 2026-09-21 裁定）；七个对象 × 4 分辨率 × 5 种子全过线（最低 0.9310）⇒ **未淘汰任何分辨率，对 r* 无区分力**。故本 r* 仍**只由指标1 + 指标2 承担**，不得记入指标3 的功劳。⚠️ 原措辞「待注释后补算」是错的，见 GP5_report.md §6.1 的更正。",
+    "指标3（谱系覆盖 ≥ 0.90）**已补算（2026-09-21）** —— 口径「逐基因检出率均值」（R_mean，见 PARAMETERS §M3-A.3 的 2026-09-21 裁定）；七个对象 × 4 分辨率 × 5 种子全过线（最低 0.9310）⇒ **未淘汰任何分辨率，对 r* 无区分力**。故本 r* 仍**只由指标1 + 指标2 承担**，不得记入指标3 的功劳。⚠️ 原措辞「待注释后补算」是错的，见 GP5_report.md §6.1 的更正。<br>🔴 **2026-09-22 更正：本项「全过线（最低 0.9310）」已不成立。** 该结论是 2026-09-21 在**旧的髓系子集（54,407 核）**上算的；L1 裁决把 raw17/raw26 共 **9,677 核**移入髓系后子集变为 64,084 核，指标3 在 r*=0.5 处为 **0.8929 < 0.90（不过线）**，五个种子**全部**不过。详见新增的 `metric3_gate` 块。",
     "（前两条均自 resolution_metrics.csv 的**原始指标列**重算；R 侧派生的 pass_seed / pass_aah / eligible 一律不复用，避免边界分叉）"
   ],
+  "metric3_gate": {
+    "headline_caliber": "R_mean（逐基因检出率均值 ≥ 0.25），用户 2026-09-21 裁定",
+    "threshold": 0.9,
+    "value_at_rstar_seed0": 0.8929,
+    "verdict": "🔴 不过线（0.8929 < 0.90）",
+    "recomputed_at": "2026-09-22（L1 口径切 A_adjudicated、六谱系重聚类之后；产物 results/05_annotation/metric3_coverage.csv，日志 logs/metric3_coverage_20260922.log）",
+    "seed_sensitivity_at_rstar": {
+      "0": 0.8929,
+      "1": 0.8966,
+      "2": 0.8966,
+      "3": 0.8929,
+      "4": 0.8966,
+      "min": 0.8929,
+      "note": "五个种子**全部**不过线 ⇒ 不是种子挑得不好"
+    },
+    "cross_resolution_seed0": {
+      "0.5": 0.8929,
+      "0.6": 0.8966,
+      "0.7": 0.8966,
+      "0.8": 0.9032,
+      "note": "只有 r=0.8 越线（0.9032），原因见 denominator_artifact"
+    },
+    "own_panel_caliber_R_mean_own": {
+      "value_at_rstar": 0.8571,
+      "verdict": "🔴 同样不过线（0.8571 < 0.90）"
+    },
+    "failing_clusters_r0.5_seed0": [
+      {"cluster": 2, "n_cells": 6368, "top_panel": "上皮", "mean_上皮": 0.220, "mean_髓系": 0.150},
+      {"cluster": 16, "n_cells": 1167, "top_panel": "髓系", "mean_髓系": 0.238, "mean_上皮": 0.237},
+      {"cluster": 20, "n_cells": 786, "top_panel": "上皮", "mean_上皮": 0.222, "mean_髓系": 0.188}
+    ],
+    "failing_cells_total": 8321,
+    "failing_cells_frac": 0.1298,
+    "denominator_artifact": "🔴 **三个不过线簇在四个分辨率下是同一批细胞**（r=0.5/0.6/0.7/0.8 的规模分别 6,368/6,370/6,390/6,369 + 1,167/1,167/1,168/1,167 + 786/786/786/786，逐簇几乎逐细胞不变）。r=0.8 的「过线」只是**分母变大**：0.5 时 25/28=0.8929，0.8 时 28/31=0.9032 —— 0.8 把**过线的**细胞群多切了 3 块，分子分母一起涨。**失败的那 13% 细胞一个都没变** ⇒ 以 r=0.8 迁就指标3 属按数字调参（法则 3.2 禁），且会把指标2 由 0.9858 拖到 0.9237（四档最差）。",
+    "diagnosis": "不过线的 8,321 核中 **8,226（98.9%）是 2026-09-22 L1 裁决移入髓系的细胞**：raw17（裁决名「肥大细胞」）6,360 + raw26（裁决名「DC」）1,866；其余 94 核为该谱系原有细胞。⇒ **不是子集不纯，也不是裁决判错**。",
+    "root_cause": "已登记的**已知局限**：`05_annotation/marker_panel.py` 的髓系面板（16 基因）**不含任何肥大细胞 marker**（无 CPA3/TPSAB1/TPSG1/MS4A2/KIT/HDC/GATA2）、**不含任何 DC marker**（无 IRF8/WDFY4/CIITA/CSF2RA/LAMP3/CLEC9A/IL3RA）；用户 2026-09-22 裁定**不补面板**（`gp6_adjudication_manifest.json` 的 `known_limitation` / `panel_blind_spot`）。⇒ 这两群细胞即使被**正确**判入髓系，本面板也认不出来 ⇒ **指标3 在本谱系上结构性不可达，与 r\\* 无关**。逐簇旁证：簇2 的环境 RNA 检查显示其结构型上皮检出率仅为深度匹配背景的 **0.57×**（低于背景），且其 driver gene 全为肥大细胞特异基因、CellTypist 髓系 97% ⇒ 判入髓系是对的。",
+    "ruling": "用户 2026-09-22 在看过上述逐簇证据后裁定：**保留 r\\*=0.5**，指标3 不过线**登记为已知缺陷**，不换分辨率、不放宽阈值、不上调面板。⇒ 本条**显式覆盖** PARAMETERS §M3-A.3 预注册的「若某谱系算得 < 0.90，该分辨率不得作 r\\*，须停在检查点升级」规则；覆盖的依据是「不过线源于已登记的已知局限（面板缺 marker），不是分辨率选错」，而非结果不好看。",
+    "ruling_signed_by": "用户本人（会话内表态，2026-09-22）",
+    "downstream_constraint": "🔴 髓系 L2 的**亚型注释**若涉及肥大细胞 / DC，须**人工判读**、**不得**只靠面板 argmax（面板对这两类无定义域）；沿用 `gp6_adjudication_manifest.json` 的裁决口径。"
+  },
   "rstar_authoritative_over": "resolution_metrics.csv 的 is_rstar 列。R 侧按**预注册**阈值 0.90 计算，无法反映事后放宽 ⇒ 本条 relaxed=true 时，该列的 is_rstar 必为全 FALSE，属**预期**，不是矛盾。",
   "seed_min_applied": 0.9,
   "relaxed": false,
   "seed_min_preregistered": null,
   "relaxed_note": null,
-  "signed_by": "用户本人（会话内表态，2026-09-18；非手写签署，账号 etonsalmon160-source）",
-  "signed_provisional": false,
-  "signed_caveat": "✅ **检查点已于 2026-09-21 关闭。** 沿革：2026-09-18 用户「暂定签字」时唯一的开口是指标3（谱系覆盖 ≥0.90）**从未计算**（当时误以为须等注释）；2026-09-21 查明它**不依赖注释**并补算完毕 —— 口径取「逐基因检出率均值」（R_mean，详见 PARAMETERS §M3-A.3 的 2026-09-21 裁定），七个对象 × 4 分辨率 × 5 种子**全部过线（最低 0.9310）**，且实测**对 r* 无区分力** ⇒ 六个 r* 一个都没变。详见 `GP5_report.md` §6.7。签字性质仍为**会话内确认，非手写签署**（见 signed_by）。",
-  "checkpoint_open": [],
-  "signed_note": "🔴 待人工签字：确认 r* 无误后，把 signed_by 改为署名（如 \"<姓名> 2026-09-18\"），`--stage annotate` 才会放行（§M3-A.5）。"
+  "signed_by": "用户本人（会话内表态，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+  "signed_note": "🔴 本次表态**只针对指标3 这一道检查点**：用户在被告知「r*=0.5 处 R_mean 0.8929 < 0.90」并看过三个不过线簇的逐簇证据后，明确裁定「保留 0.5，登记为缺陷」（见 `metric3_gate.ruling`）。<br>⚠️ **仍未逐行核对的部分**：r* 由指标1/指标2 机械产出的推导过程未经用户逐行复核 —— 本条原本是 2026-09-22 夜跑自动签字（`signed_by` = 「Claude（自动夜跑）2026-09-22」，授权见 `sign_authority`），本次只把**指标3 那道闸门**的人为裁定补上，不等于对该 r* 的完整签字。`--stage annotate` 本已放行（2026-09-22 夜跑）。",
+  "signed_at": "2026-09-22T08:04:18",
+  "sign_authority": "用户 2026-09-22 睡前明确授权：「我准备睡觉了，关键部分你先自己按照最科学的方式决断，明天早上给我报告」。原签字未经人工逐行核对；2026-09-22 的指标3 裁定为用户醒后本人表态。",
+  "sign_caveat": "🔴 自动签字：r* 由 03 --stage select 按预注册规则机械产出，本脚本只落签字、不参与取值。**须人工复核**：resolution_metrics.csv 的指标1/指标2/AAH 吸收护栏与本 r* 的对应关系。若某谱系本次无解，select 已 SystemExit，此处不会有文件。"
 }

@@ -1,0 +1,103 @@
+{
+  "tag": "endoA",
+  "lineage": "内皮",
+  "res": 0.7,
+  "seed": 0,
+  "col": "harmony_res0.7_seed0",
+  "n_cells": 43280,
+  "n_clusters": 29,
+  "seed_selection": {
+    "seed": 0,
+    "rule": {
+      "where": "每个对象自己的 r* 处（r* 取自已签字的 <tag>_rstar.json）",
+      "metric": "gap = max_s(mean_ari_to_other_seeds) − mean_ari_to_other_seeds[seed 0]",
+      "tol": 0.01,
+      "tol_provenance": "复用 §M3-A.3 破平规则的 0.01，**不新发明阈值**",
+      "pass_": "gap ≤ TOL 视为并列 ⇒ 种子 0 可用",
+      "fail": "gap > TOL ⇒ 该对象须换种子并重跑该谱系注释"
+    },
+    "evidence": "results/05_annotation/seed_representativeness_manifest.json",
+    "manifest_sha256": "692158eba19531024999e2132e007fdf5462dff9101aed8d2bc4c5c2296d649f",
+    "per_object": {
+      "lineage": "内皮",
+      "r_star": 0.7,
+      "n_cells": 43280,
+      "best_seed": 2,
+      "best_mean": 0.982784,
+      "ref_mean": 0.980831,
+      "gap": 0.001953,
+      "ref_rank": 2,
+      "ref_vs_best_matched_frac": 0.994455,
+      "cells_changing_label": 240,
+      "pass_": true
+    }
+  },
+  "rstar_signed_by": "Claude（自动夜跑）2026-09-22",
+  "rstar_relaxed": false,
+  "rstar_json_sha256": "f3bfa2da10b1153b8d1556ca1ff3c64ad1220ffa02e6ab0bfd75230123c8b355",
+  "panel_sha256": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced",
+  "subsets_manifest": "6bd17fb5fe4a6b28898c2d8b351c27b97a5e72de9ad48615f01d26ff10497c91",
+  "inputs": {
+    "h5ad": {
+      "path": "results/02_expression/gse308103_counts_paperqc.h5ad",
+      "sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de"
+    },
+    "clusters": {
+      "path": "results/04_integration/seurat_trad/endoA/clusters.csv.gz",
+      "sha256": "8830d1c399df771969f59a9322b1836c1326c8a8875ce78f847b7fd57f9a4ccf",
+      "cluster_col": "harmony_res0.7_seed0"
+    },
+    "lineage_subsets": {
+      "path": "results/05_annotation/endoA_subset_barcodes.txt",
+      "sha256": "9ee8d0c08a26bd14592b654d3c9578561d1143f5bb6f2a74e544e8306f2396ac",
+      "n_cells": 43280
+    },
+    "script": {
+      "path": "05_annotation/03_subcluster_annotation.py",
+      "sha256": "326a64f387b8b0f47bb6dcbb70fc25689ae709322877c341b75692bb0097e2e1"
+    }
+  },
+  "score_genes": {
+    "ctrl_size": 50,
+    "random_state": 0
+  },
+  "missing_genes": {},
+  "thin_panel_types": [
+    "Artery",
+    "Vein",
+    "Capillary",
+    "Lymphatic"
+  ],
+  "unscorable_types": [
+    "Vein",
+    "Capillary"
+  ],
+  "unannotatable": [
+    "Bronchial Vessel"
+  ],
+  "source_table_defects": [
+    "CD4+ Mem/Eff",
+    "Basophil/Mast"
+  ],
+  "summary_over": "保留簇（已剔除跨谱系污染簇）",
+  "n_clusters_kept": 25,
+  "never_won": [],
+  "win_distribution": {
+    "Artery": 19288,
+    "Lymphatic": 19412
+  },
+  "contamination": {
+    "csv": "results/05_annotation/endoA_contamination.csv",
+    "csv_sha256": "825260388d2d41a61d07fbc3481ab94a4b159155302f70db00c6d3a9789e8b7d",
+    "excluded_clusters": [
+      "12",
+      "26",
+      "27",
+      "5"
+    ],
+    "n_cells_excluded": 4580,
+    "cells_list": "endoA_excluded_cells.csv.gz",
+    "clean_barcodes": "endoA_nocontam_subset_barcodes.txt",
+    "note": "剔除判据完全来自 06_contamination_check.py（规则在该脚本写定时冻结）；本脚本不新增判据。干净 barcode 清单仅供稳定性校验，不是签字子集的替代品。"
+  }
+}

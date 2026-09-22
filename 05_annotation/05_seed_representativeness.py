@@ -29,6 +29,7 @@
 import hashlib
 import json
 import os
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -39,15 +40,20 @@ ROOT = "/home/eto/luad_v2"
 TRAD = f"{ROOT}/results/04_integration/seurat_trad"
 ANN = f"{ROOT}/results/05_annotation"
 
-RES_GRID = [0.5, 0.6, 0.7, 0.8]
+# ⚠️ 2026-09-22：本网格原写死为论文区间 [0.5, 0.6, 0.7, 0.8]。低分辨率诊断 run
+#    （epiA_lowres / fibroA_lowres）的 r* 落在 0.2，写死的网格会让 r* 取不到值 ⇒
+#    改为**逐对象读各自 resolution_metrics.csv 的分辨率列**。对已有 7 个对象逐位等价
+#    （它们的表正好只有 0.5–0.8），只有新对象才吃到新网格。
 SEEDS = [0, 1, 2, 3, 4]
 TOL = 0.01          # 与 §M3-A.3 破平规则同一个数；此处复用，不新发明
 ARI_TOL = 1e-4      # 与 R 侧 ari_seed_mean（4 位小数）比对的容差
 REF_SEED = 0        # 本项目当前用于注释的种子
 
-OBJECTS = ["full", "epiA", "tnkA", "myeloidA", "endoA", "bplasmaA", "fibroA"]
+OBJECTS = ["full", "epiA", "tnkA", "myeloidA", "endoA", "bplasmaA", "fibroA",
+           "epiA_lowres", "fibroA_lowres"]
 LIN_CN = {"full": "全量", "epiA": "上皮", "tnkA": "T/NK", "myeloidA": "髓系",
-          "endoA": "内皮", "bplasmaA": "B/浆", "fibroA": "成纤维"}
+          "endoA": "内皮", "bplasmaA": "B/浆", "fibroA": "成纤维",
+          "epiA_lowres": "上皮(诊断网格)", "fibroA_lowres": "成纤维(诊断网格)"}
 
 
 def sha256(p):
@@ -118,7 +124,8 @@ def main():
             r_star = float(json.load(open(rstar_src, encoding="utf-8"))["r_star"])
         log(f"=== {LIN_CN[tag]}（{tag}）r* = {r_star}  n_cells={len(clu):,} ===")
 
-        for r in RES_GRID:
+        grid = sorted(float(x) for x in met["resolution"].tolist())
+        for r in grid:
             cols = {s: clu[f"harmony_res{r}_seed{s}"].to_numpy() for s in SEEDS}
             pairs, m2o, codes = pairwise_aris(cols)
             n_clu = {s: int(pd.Series(cols[s]).nunique()) for s in SEEDS}
@@ -210,7 +217,8 @@ def main():
                     f"→ 种子 {int(r['best_seed'])}({r['best_mean']:.4f})   gap={r['gap_best_minus_ref']:+.4f}   "
                     f"两套划分最优配对下一致 {r['ref_vs_best_matched_frac'] * 100:.2f}%"
                     f"（即约 {int((1 - r['ref_vs_best_matched_frac']) * r['n_cells']):,} 个细胞会换簇）")
-        log(f"   ⇒ ⚠️ 但**先别急着重跑**：GP8a 注释**尚未开始**，此刻换种子**不产生额外成本**；")
+        log(f"   ⇒ ⚠️ 换种子**不产生额外成本**这句话，只在注释**尚未开始**时成立。")
+        log(f"      本清单每轮重跑都会重写，是否已经产生返工成本，请看清单里的生成时刻（generated）。")
         log(f"      而 r* 是用**跨全部种子的平均** ARI 选的（与用哪个种子无关），故换种子**不动 r***。")
     else:
         log(f"✅ 结论：七个对象在各自 r* 处，种子 {REF_SEED} 与最好种子的差距都 ≤ {TOL}")
@@ -222,7 +230,10 @@ def main():
 
     man = dict(
         script=os.path.relpath(__file__, ROOT),
-        generated="2026-09-21",
+        # ⚠️ 2026-09-22 修：原来这里**写死** "2026-09-21"，而 S4 每轮重跑都会重写本清单
+        #    （run_gp8c_pipeline.sh 的 S4 没有 newer 闸门）——产物会一直声称自己是初版那
+        #    天生成的。属伪造溯源。改成真实生成时刻。
+        generated=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         purpose="补 GP5_report.md §十二 登记的洞：种子 0 的『代表性』原先只在全量上验过，六个谱系未验。",
         method="只读各 run 已落盘的簇标签（clusters.csv.gz 的 harmony_res*_seed* 列），"
                "算 10 个两两 ARI 与逐种子对其余 4 个的均值。**不重跑任何聚类。**",
@@ -249,8 +260,9 @@ def main():
                                        ref_vs_best_matched_frac=verdicts[t]["ref_vs_best_matched_frac"],
                                        cells_changing_label=verdicts[t]["cells_changing_label"],
                                        ref_rank=verdicts[t]["ref_rank"]) for t in bad],
-                     action_note="GP8a 注释尚未开始 ⇒ 此刻换种子不产生额外成本；"
-                                 "r* 由跨全部种子的平均 ARI 选出，与种子无关 ⇒ 换种子不动 r*。"),
+                     action_note="r* 由跨全部种子的平均 ARI 选出，与种子无关 ⇒ 换种子不动 r*。"
+                                 "⚠️「此刻换种子不产生额外成本」只在注释**尚未开始**时成立；"
+                                 "本清单每轮重跑都会重写，是否已产生返工成本请看生成时刻（generated）。"),
         scope_note="⚠️ 判据用的是**簇标签的接近程度**（ARI 与最优配对一致率），"
                    "不是**注释结果**是否相同。两套划分里若某个簇头基因没变，注释就一样；"
                    "反差出现在『换了标签但 marker 谱几乎没变』的情形。"

@@ -62,3 +62,23 @@ results/**/embeddings/
 # docs/PARAMETERS_AND_SOURCES.md §M3-A.5）。它**不是交付物**：86 MB，且其中 clusters/umap
 # 与正式产物同源、embeddings 可由脚本重建。⇒ 明确不入库，本地保留备查，可随时删。
 results/04_integration/seurat_trad/.prev_nomanifest/
+
+# ── 指标3 换 r* 前的旧产物（2026-09-22）─────────────────────────────────────
+# L1 口径切到 `A_adjudicated` 后，上皮/T·NK/内皮 三个谱系的 `r*` 变了，而
+# `metric3_coverage.csv` 是按「各对象自己的 r*」那几行取头条的 ⇒ 旧产物中的
+# `r*` 处数值已不成立。重跑 `05_annotation/04_metric3_coverage.py` 得到现行版本，
+# 旧三份留在此处备查（sha256 见 docs/PARAMETERS_AND_SOURCES.md §M3-A.3）。
+# 不入库：它由脚本可完全再生，且现行版本已在库内。
+results/05_annotation/.prev_metric3_20260921/
+
+# ── 旧口径产物备份（2026-09-22 L1 口径切换前）───────────────────────────────
+# `_superseded/` 存的是 `A_frozen` 口径下被 `A_adjudicated` 取代的那一整套产物
+# （subset barcodes + seurat_trad 各谱系），仅作**本地比对/回溯**用。171 MB，且
+# 全部可由脚本在旧口径下再生 ⇒ **不入库**（与 `.prev_nomanifest/` 同一处置）。
+# ⚠️ 任何文档都**不得**把 `results/_superseded/` 当哈希锚点引用。
+results/_superseded/
+
+# ── 临时脚手架（scratch）──────────────────────────────────────────────────
+# 一次性诊断脚本与外部数据落地（含 90 MB 的 `GSM9226176` 空间 tar）。**不是交付物**，
+# 其中已验证可用的脚本应在定稿后再迁入正式目录（如 `04_integration/`）。
+scratch/
