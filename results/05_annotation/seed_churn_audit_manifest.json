@@ -1,0 +1,105 @@
+{
+  "script": "05_annotation/06_seed_churn_audit.py",
+  "generated": "2026-09-22T13:22:53",
+  "purpose": "重算 GP8c_report.md §八 那个不可复现的『换种子改标签率』（15.91% / 51.36%），并补一版『旧运行 vs 新运行』的配对改标签率。",
+  "question_from": "用户 2026-09-22 裁定后要求处理 GP8c §十 待办 6。",
+  "definition": {
+    "source": "05_annotation/05_seed_representativeness.py",
+    "source_sha256": "16dd40add551e37585d09f4fe9c13d67f6c6c05bab8d4cadde23708488c94024",
+    "fn": "matched_agreement()（匈牙利最优配对：列联表 → linear_sum_assignment）",
+    "registered_caliber": "results/05_annotation/seed_representativeness.csv 的 ref_vs_best_matched_frac —— ⚠️ 该列语义是**一致率**（非改标签率），本脚本据此硬自检：1 − matched_churn_frac == 该列。",
+    "note": "定义**原样引用**上游脚本，未在此重写；重写即换口径。",
+    "raw_counterpart": "raw_mismatch_frac = 直接比整数簇标签，**无配对**。Leiden 簇编号任意 ⇒ 把『同一簇换编号』也计为改标签，**不是改标签率**。"
+  },
+  "findings": {
+    "identity_of_51_36": {
+      "value": 0.513562,
+      "is_pair": {
+        "run": "new",
+        "resolution": 0.5,
+        "seed_a": 0,
+        "seed_b": 1,
+        "metric": "raw_mismatch_frac"
+      },
+      "same_pair_matched": 0.121311,
+      "statement": "51.36% 是**裸**标签不一致率，非改标签率；同一对在配对定义下为 12.13%。"
+    },
+    "identity_of_15_91": {
+      "value": null,
+      "status": "UNREPRODUCIBLE",
+      "evidence": "全库（含 logs/）grep '15.91' 仅命中该句正文本身，无任何产物/日志/脚本含该值 ⇒ 无法复现，标记作废。"
+    },
+    "registered_value_at_rstar": {
+      "r_star": 0.7,
+      "ref_seed": 0,
+      "best_seed": 4,
+      "matched_churn_frac": 0.081232
+    }
+  },
+  "selfcheck": {
+    "claim": "新版 r*=0.7 处 种子0 vs 种子4 的配对**一致率** == seed_representativeness.csv 已登记值",
+    "tol": 1e-06,
+    "status": "PASS（否则 SystemExit）",
+    "agreement_computed": 0.918768,
+    "agreement_registered": 0.918768,
+    "churn_frac": 0.081232
+  },
+  "same_resolution_old_vs_new": {
+    "0.5": {
+      "old_ari": 0.945457,
+      "new_ari": 0.850112,
+      "old_churn": 0.039142,
+      "new_churn": 0.087224
+    },
+    "0.6": {
+      "old_ari": 0.819824,
+      "new_ari": 0.842322,
+      "old_churn": 0.116967,
+      "new_churn": 0.098332
+    },
+    "0.7": {
+      "old_ari": 0.839544,
+      "new_ari": 0.860499,
+      "old_churn": 0.081364,
+      "new_churn": 0.077853
+    },
+    "0.8": {
+      "old_ari": 0.847618,
+      "new_ari": 0.820124,
+      "old_churn": 0.091693,
+      "new_churn": 0.114487
+    }
+  },
+  "old_labels_restricted_to_shared_cells_gp8c_section8": {
+    "0.5": 0.943762,
+    "0.6": 0.812958,
+    "0.7": 0.83289,
+    "0.8": 0.841331
+  },
+  "part_b_old_vs_new": {
+    "status": "computed",
+    "shared_cells": 133384,
+    "old_only": 7721,
+    "new_only": 0,
+    "old_run": {
+      "path": "results/_superseded/2026-09-22_cluster_adjudication/04_integration/seurat_trad/epiA/clusters.csv.gz",
+      "sha256": "091aa7297411257e051564a3244828dc4778832333f5166c4931a87716fe0dbd",
+      "caliber": "A_frozen（旧口径）",
+      "r_star": 0.5,
+      "archived": false,
+      "note": "results/_superseded/ 不入库，.gitignore 明令不得当哈希锚点⇒ 本段数字属一次性历史比对，旧副本删除后不可再生"
+    }
+  },
+  "inputs": {
+    "results/04_integration/seurat_trad/epiA/clusters.csv.gz": "13e58cb384d2af31cd740d46bfc4516fb0078a1efe1306a25682a7f18bde566f",
+    "results/05_annotation/epiA_rstar.json": "6a370ce55811b77966c309222c6cf5de5aee2bc338d2f6c716c222c02776efeb",
+    "results/05_annotation/seed_representativeness.csv": "2549c906ba2ced805297f2cb9779598320d546dbf6d99b67de982e27b8695334",
+    "05_annotation/05_seed_representativeness.py": "16dd40add551e37585d09f4fe9c13d67f6c6c05bab8d4cadde23708488c94024",
+    "results/_superseded/2026-09-22_cluster_adjudication/04_integration/seurat_trad/epiA/clusters.csv.gz": "091aa7297411257e051564a3244828dc4778832333f5166c4931a87716fe0dbd"
+  },
+  "outputs": {
+    "results/05_annotation/seed_churn_audit.csv": "18fab3f1b2b6a0e2a60ac1c6f37195bda48c7b1cb2ad151454e8730263d638da",
+    "figures/seed_churn_audit.png": "4631f63d528c065e47d047d190bf56cecfa84b1d116798cc8aa51313bd904eaf"
+  },
+  "caveat": "⚠️ 【二】old_vs_new_same_cells 的输入在 results/_superseded/（不入库、不得作哈希锚点）⇒ 该段属一次性历史比对，不可再生；【一】与旧运行自身那两段来自同一份旧副本，同样不可再生；新版部分的输入均在库内，可复现。图只示 seed0 对比，表内含全部种子对。"
+}
