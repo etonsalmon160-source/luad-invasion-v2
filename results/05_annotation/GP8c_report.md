@@ -10,7 +10,8 @@
 六个谱系的亚聚类和注释**全部跑完**（退出码全 0），每个细胞恰好归属一个谱系（413,697 互斥且完备）。
 但有 **三件事必须放到最前面**，因为它们影响你怎么读后面的所有数字：
 
-1. ~~**内皮的亚型注释在方法上不成立**~~ → **已修复（2026-09-22 你追认 S4 面板）**：原来每型只有 1–2 个基因槽，4 种内皮被压成 2 种——不是数据问题，是面板问题；换成同篇论文 Table S4 的逐簇富集表后，**8 个内皮亚型各自胜出**。详见第三节（一）。**注意**：这份 S4 面板同样修了髓系面板，但髓系的 S4 注释**尚未写进本报告**（见第十节）。
+1. ~~**内皮的亚型注释在方法上不成立**~~ → **已修复（2026-09-22 你追认 S4 面板）**：原来每型只有 1–2 个基因槽，4 种内皮被压成 2 种——不是数据问题，是面板问题；换成同篇论文 Table S4 的逐簇富集表后，**8 个内皮亚型各自胜出**。详见第三节（一）。
+同一份 S4 也换了髓系 L2 面板（8 型 → 12 型胜出），详见第三节（一之二）——**但 S4 不改 L1，全局簇 17/26 是你人工裁决修掉的，不是 S4 修掉的**。
 2. **B/浆 的"27% 污染"其实是一个样本（P24）的问题**，可查、可处置，且**不影响其它五个谱系**。环境 RNA 检验已跑完**预注册失败 → 探索版纠正 → 重冻结口径确认版**三步，确认版**三项全过**（病人级 7.8× 中位、稳健 z=10.1、负对照经验 p=0.005）⇒ **P24 的环境 RNA 假设成立**，详见第三节（二）。**原文（PMC12980502）全文没有提这件事**——既没做环境 RNA 校正，也没标记任何人类 snRNA 样本，反而把 P24 当代表案例用（同节末）。**待你定的只剩处置方式**——**2026-09-22 你已裁定『保留 + 标注』**（不剔除、不现在加环境校正），决定书 `results/05_annotation/p24_disposition_decision.json`。
 3. **上皮旧版"过关"作废**——在修正后的细胞集上复现不出来。
 
@@ -57,6 +58,8 @@
 ### 髓系（myeloidA）· r\*=0.5 · 种子 0 · 已剔 1 簇 215 核
 27 个亚簇，63,869 核。
 
+**旧面板（Table S1，已被取代）**——8 型能赢，11 个簇报 thin_panel：
+
 | 亚型 | 核数 |
 |---|---|
 | Classical Monocyte | 18,517 |
@@ -68,10 +71,33 @@
 | Neutrophil | 1,191 |
 | mDC1 | 786 |
 
-**面板薄的类型**：Eosinophil、mDC1、mDC2、Classical Monocyte、Nonclassical Monocyte、Basophil/Mast。
-**完全打不了分的**：Eosinophil、Nonclassical Monocyte（可用基因 <2 个）。
-**TPSAB1 不在矩阵里**（肥大细胞最经典的 marker），所以 Basophil/Mast 实际只剩 MS4A2+CPA3 两个槽。
-而且源表里 Basophil 和 Mast 两行**基因完全相同** ⇒ 结构上不可分辨，合并上报。
+**现行面板（Table S4，2026-09-22 你追认）**——12 型各自胜出，0 个簇报 thin_panel：
+
+| 亚型 | 核数 |
+|---|---|
+| TREM2+ Dendritic | 20,571 |
+| Macrophage | 10,837 |
+| IGSF21+ Dendritic | 9,193 |
+| Basophil/Mast 1 | 6,368 |
+| Myeloid Dendritic Type 2 | 6,100 |
+| EREG+ Dendritic | 2,476 |
+| Nonclassical Monocyte | 2,327 |
+| Classical Monocyte | 1,985 |
+| Myeloid Dendritic Type 1 | 1,953 |
+| Plasmacytoid Dendritic | 925 |
+| Neutrophil | 840 |
+| Proliferating Macrophage | 294 |
+
+（17 型里的 **Eosinophil 打不了分**：S4 没有嗜酸簇、沿用 S1 后只剩 1 个基因。另有
+**Basophil/Mast 2、Platelet/Megakaryocyte、OLR1+ Classical Monocyte、Intermediate Monocyte**
+四型一次未赢。**TREM2+ Dendritic 这个名字要当心**，见第三节（一之二）。）
+
+**旧面板的毛病（保留记录）**：Eosinophil、mDC1、mDC2、Classical Monocyte、Nonclassical Monocyte、
+Basophil/Mast 六型面板薄；Eosinophil、Nonclassical Monocyte 完全打不了分。
+**TPSAB1 不在矩阵里**（肥大细胞最经典的 marker），旧面板下 Basophil/Mast 只剩 MS4A2+CPA3 两个槽；
+而且 S1 源表里 Basophil 和 Mast 两行**基因完全相同** ⇒ 旧面板只能合并上报。
+S4 把这一型拆成 Basophil/Mast 1 与 2 两块各 20 个基因（共有 CPA3/MS4A2/HPGDS/VWA5A/RGS13/CD69/IL1RL1 等，
+1 带 KIT、2 带 HDC 作区分），**但只有 1 赢过簇**。
 
 ### 内皮（endoA）· r\*=0.7 · 种子 0 · 已剔 4 簇 4,580 核
 25 个亚簇，38,700 核。
@@ -154,10 +180,71 @@ S4 无表者（中性粒、嗜酸）沿用 S1"筛。**同一批 43,280 核、同
    ⇒ 提示 Travaglini 自己的簇里也带环境 RNA/双体。
 3. **Capillary 在其源数据里本就弱**（最高 logFC 只 1.26、过筛剩 4 个基因）⇒ 即使换表，该型仍最弱。
 
-**同一份 S4 口径也修了髓系**（旧面板无肥大细胞/DC marker，导致全局簇 17/26 被错标），
-髓系 S4 结果见 `myeloidA_s4_cluster_annotation.csv`，**本报告尚未并入**（见第十节）。
-S4 还把 Cluster 44–58 整段当髓系纳入，其中 Platelet/Megakaryocyte 严格说不属髓系——
-**这是登记在案的、未经你复核的判断**（见 `panel_caliber_s4.json` 的 `known_limitations`）。
+**同一份 S4 口径也修了髓系**——下一小节。
+
+### （一之二）髓系面板：同一份 S4 换过的第二个谱系（2026-09-22 你追认）
+
+**原先的毛病（保留记录）**：旧髓系面板 11 型共 **28 个基因**，逐型只有 1–4 个槽——
+Eosinophil 1 个、Nonclassical Monocyte 1 个、mDC1/mDC2/Classical Monocyte 各 2 个。
+另外 S1 源表里 Basophil 与 Mast 两行**基因完全相同**（只能合并成一型），
+且最经典的肥大细胞 marker `TPSAB1` **不在我们的矩阵里**，该型实际只剩 MS4A2+CPA3 两个槽。
+
+🔴 **须分清两层，别把功劳记错**：旧 L2 面板**并非**"没有 DC marker"——
+它其实有 mDC1（CLEC9A/LAMP3）、mDC2（CD1C/PLD4）、pDC（LILRB4/IRF8/LILRA4），
+只是每型仅 2–3 个基因。真正"既无肥大细胞 marker、又无 DC marker"的是 **L1 的
+`marker_panel.py` 髓系面板**（16 个基因，全是巨噬/单核），这才是第四节里
+全局簇 17/26 被错标的上游原因。而 **S4 只改 L2，不改 L1**（见 `panel_caliber_s4.json` 的 `scope`），
+所以 **17/26 是被你 2026-09-22 的人工裁决修掉的，不是被 S4 修掉的**。
+
+**修法**：与内皮同一份 S4 口径、同一套筛法（只取 10x 表 / logFC≥1.0 且特异度≥0.3 /
+每型封顶 20 个顺延补齐 / 照 S4 原粒度 17 型 / S4 无表者沿用 S1）。
+**同一批 64,084 核、同一 r\*=0.5、同种子 0，唯一变量是面板。**
+
+| | 旧面板（Table S1） | 现行面板（Table S4） |
+|---|---|---|
+| 面板覆盖的亚型 | 11 型 / 28 个基因 | 17 型 / 最多 20 个基因 |
+| 能赢的亚型 | **8** / 11 | **12** / 17 |
+| thin_panel 报警的簇 | **11 个** | **0 个** |
+| 打不了分的型 | 2（Eosinophil、Nonclassical Monocyte） | 1（Eosinophil） |
+
+图：`figures/myeloid_panel_s1_vs_s4.png`（`05_annotation/11_myeloid_panel_compare_figure.py`，只读产物出图）。
+清单：`results/05_annotation/myeloid_panel_s1_vs_s4_manifest.json`。
+逐型基因名单：`panel_caliber_s4.json`（**2026-09-22 你已追认**，`countersign_required=false`）。
+
+**换表后仍须如实上报的四条局限**（不得省略）：
+
+1. 🔴 **"thin_panel 报警归零"不等于"证据够了"。** 报警的判据是**胜出型的面板基因数 ≤2**；
+   S4 把每个能打分的型都抬到 ≥3 个基因，于是报警自然归零——这是**跨过了阈值边界**，
+   不是证据质量变好。最薄的几个新面板仍然接近零容错：
+   **Capillary Intermediate 1 只有 3 个基因**（内皮），Capillary / Bronchial Vessel 2 / Neutrophil 各 4 个。
+   本报告一律不用"S4 把面板修好了"这种说法，只能说"S4 拆掉了 1–2 个基因这个结构性陷阱"。
+2. 🔴 **`Platelet/Megakaryocyte` 被 S4 归入髓系**（Travaglini 的 Cluster 46）。
+   血小板/巨核细胞不是白细胞，**源论文也没这么分**。Peng 2026 原文逐字列举（Methods，主细胞群鉴定）：
+   > "…myeloid cells (**CD68, CD163**, etc. for macrophages; **CSF3R** for neutrophils; **KIT, MS4A2**,
+   > etc. for mast cells; **CD1C, CLEC9A**, etc. for conventional dendritic cells-cDC, **LILRA4, IL3RA**,
+   > etc. for plasmacytoid dendritic cells-pDC)…"
+
+   同一篇原文另一处把髓系概括为 "myeloid (**monocyte, macrophage, cDC, and mast**)"——
+   **两处都没有血小板/巨核细胞**。所以这是 Travaglini 图谱的归类，不是 LUAD 领域的归类。
+   **实际影响为零**（它一次也没赢过任何簇），但这是**登记在案的、未经你复核的分类学判断**
+   （见 `panel_caliber_s4.json` 的 `known_limitations`）。**建议处置：保留在面板里（不影响结果），
+   但在任何髓系构成比的分母里把它单列或剔除**——请你定。
+3. 🔴 **S4 的名字是 Travaglini 健康肺的簇名，与 LUAD 领域叫法冲突。**
+   最刺眼的是 **`TREM2+ Dendritic` 赢了 11 簇 / 20,571 核**（髓系里最大的一块）——
+   在 LUAD 里 TREM2 基本是**脂质相关巨噬细胞（LAM）**的招牌，S4 却把它归在树突里。
+   照 S4 写就是"Dendritic"，按 LUAD 领域写就是"Macrophage/LAM"。**二选一须登记**，
+   本报告暂按 S4 原名上报，并在下游结论里同时标注这个冲突。
+4. **四型一次未赢**（Basophil/Mast 2、Platelet/Megakaryocyte、OLR1+ Classical Monocyte、
+   Intermediate Monocyte）。其中 `Intermediate Monocyte` 在旧面板下曾赢 6 簇 / 14,741 核，
+   换成 S4 后归零——**这是面板更换带来的实质变化，须在此显式记录**。可查的原因：
+   S4 的 `Intermediate Monocyte` 只有 15 个可用基因，且与 `Nonclassical Monocyte` 共享
+   **6 / 15** 个（CFP、COTL1、IFITM3、LILRA5、LILRB2、LST1），与 `Classical Monocyte` 共享 3 / 15
+   ⇒ 在 S4 的粒度下它不再构成独立的一路。
+
+**这张对照表有一处是我们自己加的，不是原文内容**：S1 与 S4 的亚型名与粒度都不同
+（S1 的 `Megakaryocyte` = S4 的 `Platelet/Megakaryocyte`；S1 的 `Basophil/Mast` 在 S4 拆成 1 和 2；
+S1 的 `mDC1/mDC2/pDC` 在 S4 写成全名），所以配对比较必须靠一张**本项目自定的命名对照表**，
+它已登记在 `myeloid_panel_s1_vs_s4_manifest.json` 的 `name_mapping_ours` 里，**不得当作原文口径引用**。
 
 ### （二）B/浆 的污染其实是一个样本的问题
 
@@ -437,9 +524,10 @@ SCT 自动推导的 `clip.range`（不是人为调的旋钮）。所以差异只
    规则本身与本次调查无关、候选集机械产出，但"先看下游、后做裁决"这一时序如实登记（法则 3.2）。
 2. **签字**：`signed_by = Claude（自动夜跑）2026-09-22`，**未经人工逐行核对证据表**。
    系统自动核对的是候选簇由规则机械产出（脚本硬断言）和全部输入输出有 sha256；**须你复核的是两张证据表的判读**。
-3. **面板盲区导致自动化仍会出错**：髓系面板不含任何肥大细胞 marker、不含任何 DC marker；
-   上皮面板 16 基因里 7 个是分泌型，易被环境 RNA 抬高。
-   你 2026-09-22 裁定**不补面板**，故作为已知局限登记——**同样的错，自动簇级 argmax 还会再犯**。
+3. **面板盲区导致自动化仍会出错**：**L1 的**髓系面板（`marker_panel.py`，16 基因）不含任何肥大细胞
+   marker、不含任何 DC marker；上皮面板 16 基因里 7 个是分泌型，易被环境 RNA 抬高。
+   你 2026-09-22 裁定**不补面板**，故作为已知局限登记——**同样的错，L1 自动簇级 argmax 还会再犯**。
+   （S4 只换了 **L2** 的内皮/髓系面板，L1 未动，所以这条局限不因 S4 而消失。）
 
 ---
 
@@ -528,7 +616,15 @@ SCT 自动推导的 `clip.range`（不是人为调的旋钮）。所以差异只
 
 ## 八、已知局限清单
 
-1. **面板盲区**：髓系面板无肥大细胞 marker、无 DC marker；上皮面板 7/16 为分泌型。本次不补，自动 argmax 仍会犯同类错。
+1. **面板盲区（指 L1 的 `marker_panel.py`）**：髓系面板无肥大细胞 marker、无 DC marker；
+   上皮面板 7/16 为分泌型。本次不补，**L1** 自动 argmax 仍会犯同类错。
+   **S4 只换 L2 的内皮/髓系面板，不触 L1**，所以这条不因 S4 消失。
+1b. **L2 面板仍存在弱点（S4 之后）**：胜出型的 thin_panel 报警归零只是跨过了"≤2 个基因"这条边界，
+   最薄的新面板仍只有 3–4 个基因（内皮 Capillary Intermediate 1 = 3；Capillary / Bronchial Vessel 2 /
+   Neutrophil = 4）。S4 的 `Intermediate Monocyte`（15 基因，与 Nonclassical 共享 6 个）与
+   `Basophil/Mast 2`、`OLR1+ Classical Monocyte`、`Platelet/Megakaryocyte` 一次未赢。
+1c. **命名口径冲突未决**：S4 用的是 Travaglini 健康肺簇名，`TREM2+ Dendritic`（髓系最大一块，
+   11 簇 / 20,571 核）在 LUAD 领域通常指脂质相关巨噬细胞。按 S4 名还是按领域名上报，**须你定并登记**。
 2. **矩阵缺基因**：`KRT18`、`SFTPA2`、`CD8B`（来自环境 RNA 判别的基因集核对）；上皮另缺 `DAPL1`、`PRR4`；髓系缺 `TPSAB1`。
 3. **源表硬伤**（原样保留未修）：CD4+ Mem/Eff 行混入 CD8；Basophil 与 Mast 两行完全相同；Bronchial Vessel 行 markers 为空 ⇒ 无法注释。
 4. **环境 RNA 未做校正（保留至下游，已登记）**：M1 无环境校正步骤，靠双标准兜底。
@@ -558,6 +654,7 @@ results/05_annotation/
   {endoA,myeloidA}_s4_{cluster_annotation,cluster_scores,annotation_manifest}.csv/json
                                                                      ← S4 面板下的内皮/髓系注释（同 r\*、同种子，唯一变量是面板）
   endo_panel_s1_vs_s4_manifest.json                                  ← 内皮新旧面板对比图的清单（含逐型基因数、赢过哪些型）
+  myeloid_panel_s1_vs_s4_manifest.json                               ← §三之一之二的图清单（含**本项目自定**的 S1↔S4 命名对照表、逐型基因数、四条局限）
   p24_ambient_ig_cells.csv.gz / p24_ambient_ig_manifest.json          ← §三之二 P24 环境 RNA 检验（预注册 + 事后纠正 + 缺陷登记）
   p24_ambient_caliber.json                                           ← §三之二 确认版口径（2026-09-22 冻结，sha a522659e…）
   p24_ambient_confirm_per_patient.csv                                ← §三之二 确认版逐病人结果（23 行）
@@ -567,6 +664,7 @@ results/05_annotation/
   GP8c_report.md                                                     ← 本文件
 figures/seed_churn_audit.png                                         ← §八 的图（裸比 vs 配对、旧 vs 新同分辨率）
 figures/endo_panel_s1_vs_s4.png                                      ← §三之一的图（内皮新旧面板对比）
+figures/myeloid_panel_s1_vs_s4.png                                   ← §三之一之二的图（髓系新旧面板对比；第三格显式写出"报警归零 ≠ 证据够了"）
 figures/p24_ambient_ig.png                                           ← §三之二的图（预注册 vs 纠正后度量、逐样本）
 figures/p24_ambient_confirm.png                                      ← §三之二 确认版的图（病人级 / 负对照 / 独立读数）
 logs/gp8c_20260922/STEP_STATUS.tsv                                   ← 逐步退出码全 0
@@ -593,8 +691,11 @@ logs/gp8c_20260922/STEP_STATUS.tsv                                   ← 逐步�
      剔除会让两者都少 1 例，而 AAH 是最薄的一环。
    - **不做的事**：不现在加环境校正（要重跑聚类+全部注释 ⇒ GP1–GP8c 已签字产物全部作废；应另立里程碑）；
      『去 P24』的**具体数值本次不算**，下游真要用须先冻结口径（法则 3.1）。
-2. ~~内皮面板处置（等你定方向）~~ ✅ **2026-09-22 已追认 S4 面板**。遗留：**髓系 S4 结果尚未并入本报告**，
-   以及 S4 把 Platelet/Megakaryocyte 纳入髓系这一判断待你复核（第三节（一）末）。
+2. ~~内皮面板处置（等你定方向）~~ ✅ **2026-09-22 已追认 S4 面板**。
+   ~~髓系 S4 结果尚未并入本报告~~ ✅ **2026-09-22 已并入**（第三节（一之二）+ 图
+   `figures/myeloid_panel_s1_vs_s4.png`）。**仍待你复核两项**：
+   （a）S4 把 `Platelet/Megakaryocyte` 归入髓系（影响为零，但分类学上不对，§三之一之二 局限 2）；
+   （b）`TREM2+ Dendritic` 该按 S4 名还是按 LUAD 领域名（脂质相关巨噬细胞）上报（§三之一之二 局限 3）。
 3. 待判 7,603 核（等你判）。
 4. 各谱系 `decision` 列签字。
 5. GP8a 报告（M3 双标准注释层，尚未写）。

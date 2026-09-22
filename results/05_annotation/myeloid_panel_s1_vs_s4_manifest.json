@@ -1,0 +1,146 @@
+{
+ "figure": "figures/myeloid_panel_s1_vs_s4.png",
+ "figure_sha256": "7d711aaa16e85f48e2cd1faa51e266889d21f29ed414902044d463888f2d2574",
+ "comparison": "same object (myeloidA), same r*=0.5, same seed 0, same 64084 nuclei, 28 clusters; only the marker panel differs",
+ "name_mapping_ours": {
+  "Neutrophil": "Neutrophil",
+  "Eosinophil": "Eosinophil",
+  "Megakaryocyte": "Platelet/Megakaryocyte",
+  "Macrophage": "Macrophage",
+  "pDC": "Plasmacytoid Dendritic",
+  "mDC1": "Myeloid Dendritic Type 1",
+  "mDC2": "Myeloid Dendritic Type 2",
+  "Classical Monocyte": "Classical Monocyte",
+  "Intermediate Monocyte": "Intermediate Monocyte",
+  "Nonclassical Monocyte": "Nonclassical Monocyte",
+  "Basophil/Mast": "Basophil/Mast 1"
+ },
+ "name_mapping_caveat": "🔴 这张对照表是本项目为画图自定的，不是 Travaglini 原文内容。S1 与 S4 的亚型名与粒度都不同：S1 的 Megakaryocyte = S4 的 Platelet/Megakaryocyte；S1 的 Basophil/Mast 在 S4 拆成 1 和 2；S1 的 mDC1/mDC2/pDC 在 S4 写成全名。",
+ "old_panel": {
+  "source": "Travaglini 2020 Table S1 'Canonical markers' (summary column)",
+  "n_types": 11,
+  "slots_per_type": {
+   "Neutrophil": 4,
+   "Eosinophil": 1,
+   "Megakaryocyte": 4,
+   "Macrophage": 3,
+   "pDC": 3,
+   "mDC1": 2,
+   "mDC2": 2,
+   "Classical Monocyte": 2,
+   "Intermediate Monocyte": 3,
+   "Nonclassical Monocyte": 1,
+   "Basophil/Mast": 3
+  },
+  "total_genes": 28,
+  "thin_panel_types": [
+   "Eosinophil",
+   "mDC1",
+   "mDC2",
+   "Classical Monocyte",
+   "Nonclassical Monocyte",
+   "Basophil/Mast"
+  ],
+  "unscorable_types": [
+   "Eosinophil",
+   "Nonclassical Monocyte"
+  ],
+  "never_won": [
+   "Megakaryocyte"
+  ],
+  "clusters_flagged": 11
+ },
+ "new_panel": {
+  "source": "Travaglini 2020 Table S4 per-cluster enriched markers (same paper)",
+  "n_types": 17,
+  "genes_used_per_type": {
+   "Basophil/Mast 1": 20,
+   "Basophil/Mast 2": 20,
+   "Platelet/Megakaryocyte": 20,
+   "Macrophage": 20,
+   "Proliferating Macrophage": 20,
+   "Plasmacytoid Dendritic": 20,
+   "Myeloid Dendritic Type 1": 20,
+   "Myeloid Dendritic Type 2": 13,
+   "IGSF21+ Dendritic": 20,
+   "EREG+ Dendritic": 20,
+   "TREM2+ Dendritic": 20,
+   "Classical Monocyte": 20,
+   "OLR1+ Classical Monocyte": 20,
+   "Nonclassical Monocyte": 20,
+   "Intermediate Monocyte": 15,
+   "Neutrophil": 4,
+   "Eosinophil": 1
+  },
+  "scorable": {
+   "Basophil/Mast 1": true,
+   "Basophil/Mast 2": true,
+   "Platelet/Megakaryocyte": true,
+   "Macrophage": true,
+   "Proliferating Macrophage": true,
+   "Plasmacytoid Dendritic": true,
+   "Myeloid Dendritic Type 1": true,
+   "Myeloid Dendritic Type 2": true,
+   "IGSF21+ Dendritic": true,
+   "EREG+ Dendritic": true,
+   "TREM2+ Dendritic": true,
+   "Classical Monocyte": true,
+   "OLR1+ Classical Monocyte": true,
+   "Nonclassical Monocyte": true,
+   "Intermediate Monocyte": true,
+   "Neutrophil": true,
+   "Eosinophil": false
+  },
+  "thin_panel_types": [
+   "Eosinophil"
+  ],
+  "unscorable_types": [
+   "Eosinophil"
+  ],
+  "never_won": [
+   "Basophil/Mast 2",
+   "Platelet/Megakaryocyte",
+   "OLR1+ Classical Monocyte",
+   "Intermediate Monocyte"
+  ],
+  "clusters_flagged": 0
+ },
+ "clusters_won_old_by_s4_name": {
+  "Neutrophil": 2,
+  "Macrophage": 6,
+  "Plasmacytoid Dendritic": 2,
+  "Myeloid Dendritic Type 1": 1,
+  "Myeloid Dendritic Type 2": 2,
+  "Classical Monocyte": 7,
+  "Intermediate Monocyte": 6,
+  "Basophil/Mast 1": 1
+ },
+ "clusters_won_new": {
+  "Neutrophil": 1,
+  "Macrophage": 3,
+  "Plasmacytoid Dendritic": 1,
+  "Myeloid Dendritic Type 1": 2,
+  "Myeloid Dendritic Type 2": 2,
+  "Classical Monocyte": 1,
+  "Nonclassical Monocyte": 1,
+  "Basophil/Mast 1": 1,
+  "Proliferating Macrophage": 1,
+  "IGSF21+ Dendritic": 2,
+  "EREG+ Dendritic": 1,
+  "TREM2+ Dendritic": 11
+ },
+ "thin_panel_flag_rule": "flag set when the WINNING type's panel has <=2 genes",
+ "honest_caveat": "新面板零 thin_panel 标记是**阈值边界**的结果（判据是 <=2 个基因），不等于证据变充分：最薄的新面板只有 3–4 个基因（Capillary Intermediate 1 = 3；Capillary / Bronchial Vessel 2 / Neutrophil = 4）。",
+ "inputs": {
+  "myeloidA_cluster_annotation.csv": "bc233579ffc36ff946c343a9bce6b26142ad63800952035ef96ffbdd2ca21678",
+  "myeloidA_s4_cluster_annotation.csv": "0057f39d1fea98bf7f151ebec9fe1bdc824bd1687c9f9f42247a6401a3cbc186",
+  "myeloidA_annotation_manifest.json": "ebc6596fbfd00308f68039286f09364e08b2856db9d402aff8d2ef68555289f5",
+  "myeloidA_s4_annotation_manifest.json": "b83dbb1c478d2f0d5681facd2be06c5776b3c8da489606a30672917c1bce9f51",
+  "panel_caliber_s4.json": "519e5c242c5fc041132fa553b40a62aaf7d4adb4be6f0a2ba37b02cd261d32a6",
+  "myeloidA_rstar.json": "936c180f2902443d3181773fb4bc15ab19cd49761727a7e16ff50fdaa8a2e59b"
+ },
+ "inputs_extra": {
+  "05_annotation/classic_panels.py": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced"
+ },
+ "caveat": "Panel caliber panel_caliber_s4.json is provisional until countersigned; so is every number on the New-panel side."
+}
