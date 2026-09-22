@@ -11,7 +11,7 @@
 但有 **三件事必须放到最前面**，因为它们影响你怎么读后面的所有数字：
 
 1. ~~**内皮的亚型注释在方法上不成立**~~ → **已修复（2026-09-22 你追认 S4 面板）**：原来每型只有 1–2 个基因槽，4 种内皮被压成 2 种——不是数据问题，是面板问题；换成同篇论文 Table S4 的逐簇富集表后，**8 个内皮亚型各自胜出**。详见第三节（一）。**注意**：这份 S4 面板同样修了髓系面板，但髓系的 S4 注释**尚未写进本报告**（见第十节）。
-2. **B/浆 的"27% 污染"其实是一个样本（P24）的问题**，可查、可处置，且**不影响其它五个谱系**。环境 RNA 检验已跑完**预注册失败 → 探索版纠正 → 重冻结口径确认版**三步，确认版**三项全过**（病人级 7.8× 中位、稳健 z=10.1、负对照经验 p=0.005）⇒ **P24 的环境 RNA 假设成立**，详见第三节（二）。**待你定的只剩处置方式**：剔除 / 单列加环境校正 / 保留标注。
+2. **B/浆 的"27% 污染"其实是一个样本（P24）的问题**，可查、可处置，且**不影响其它五个谱系**。环境 RNA 检验已跑完**预注册失败 → 探索版纠正 → 重冻结口径确认版**三步，确认版**三项全过**（病人级 7.8× 中位、稳健 z=10.1、负对照经验 p=0.005）⇒ **P24 的环境 RNA 假设成立**，详见第三节（二）。**原文（PMC12980502）全文没有提这件事**——既没做环境 RNA 校正，也没标记任何人类 snRNA 样本，反而把 P24 当代表案例用（同节末）。**待你定的只剩处置方式**：剔除 / 单列加环境校正 / 保留标注。
 3. **上皮旧版"过关"作废**——在修正后的细胞集上复现不出来。
 
 ---
@@ -274,6 +274,91 @@ S4 还把 Cluster 44–58 整段当髓系纳入，其中 Platelet/Megakaryocyte 
 **🔴 也仍不宣称因果**：本节只说"P24 的环境 RNA 信号是否异常抬高"（已确认），
 **不说**它导致了什么，也不说 P24 的恶性结论因此改变。
 
+---
+
+#### 原文里有没有写这个样本的问题？——**没有**（2026-09-22 核对 PMC 全文）
+
+你 2026-09-22 问"原论文有描述这个样本的问题吗"。核对方式：把 PMC 全文（PMC12980502）HTML 下载到
+`scratch/paper/peng2026_pmc.html` 逐词检索。
+该文件**不入库**（`.gitignore` 的 `scratch/`）——但溯源可复现：检索日期 2026-09-22，
+417,141 字节，sha256 `1260df410125f732b59290794b41f1d7acd33e38317f16e5008f545e5dc939fb`
+（PMC ID 永久有效，重取即可核）。下方引文均逐字来自该文件。
+
+| 检索词 | 全文命中 |
+|---|---|
+| `ambient` / `soup` / `SoupX` / `CellBender` / `DecontX` / `EmptyDrops` | **0 次** |
+| `immunoglobulin` / `IGKC` / `IGHG` | **0 次** |
+| `plasma cell` | 4 次，**全部作为正常生物学群体**（MP11） |
+| `P24` | 8 次，**全部作为代表案例** |
+
+⇒ **原文既没有做环境 RNA 校正，也没有标记任何人类 snRNA 样本。**
+人类 snRNA 队列 75 样本 / 25 例中保留 23 例，**未点名剔除任何一个**（原文里被剔除的只有 Visium spot、Xenium 细胞和**小鼠**样本）。
+
+**原文的 snRNA QC 与聚类全段（逐字引用）**：
+
+> "…cells with low-complexity libraries (in which detected transcripts were aligned to <200 genes such as cell debris,
+> empty drops and low-quality cells) were filtered out and excluded from subsequent analyses, and genes detected in
+> less than 3 cells were also excluded. Nuclei with less than 500 detected genes or with less than 1000 reads count or
+> with a mitochondrial gene fraction that is ≥20% were filtered out using Seurat (v5.1.0). Doublets were identified
+> based on library complexity. First, a python-based software Scrublet was applied to identify the doublets by each
+> sample. Second, based on cluster distribution and marker gene expression, doublets forming distinct clusters with
+> hybrid expression features were also removed. … Clusters co-expressing discrepant lineage markers were identified
+> and removed. Data normalization and scale transformation were performed using method 'SCTransform' in Seurat.
+> Top 3,000 HVGs were selected for PCA and downstream unsupervised clustering. The top 50 PCs were used to calculate
+> the embedding. Harmony (version 1.2.0) was run with default parameters to remove batch effects present in the top
+> 50 PCA space. … 'FindClusters' function with a resolution set to 0.5-0.8."
+
+**原文把浆细胞当成真实现象**（同一段方法里的谱系 marker 定义）：
+
+> "…B and plasma cells (MS4A1, CD79A, etc. for B cells; **MZB1, XBP1**, etc. for plasma cells)…"
+> 结果段："…increased frequencies of B, plasma, CD4+ T, Tfh, Th17, and Treg cells… with disease stage"
+
+（我们用的浆程序基因集里的 **MZB1、XBP1** 与原文一致。）
+
+**P24 在原文里是正面范例，不是问题样本**——图 3K/3E–3G、4E–4F、S6 用 "P24 AAH / P24 LUAD" 讲 IL1B–IL1R1 的空间信号；
+"P24 with clonal evolution pattern 1a" 是演化模式 1a 的范例；P24 还列在 SpatialInferCNV 用全部正常上皮当参考的病人名单里。
+
+**为什么原文没发现这个偏差？（🔴 这是我的推断，原文没有这句话）**
+原文的第二道防线是**簇级**的——"把同时表达矛盾谱系 marker 的**簇**整簇删掉"。
+而我们的发现是环境 RNA 的浆程序信号**弥散在别的谱系的簇内部**，不形成自己的簇 ⇒ **簇级删除抓不到**。
+这也说明该偏差对原文主结论影响有限：P24 在原文里用于讲空间 IL1B–IL1R1，**不是**用于统计 B/浆 细胞比例，
+而"27% 污染"只发生在 B/浆 子集内部。
+
+---
+
+#### 顺带查到的两件事（对我们要紧）
+
+**① 原文的 snRNA 参数现在有原文数值可对标了**（此前只能"推测"，现在可引原文）：
+
+| 环节 | 原文（PMC12980502 方法节） | 本项目（已登记偏差） |
+|---|---|---|
+| 核质控 | <200 基因（低复杂度）删；<500 基因 或 <1000 reads 或线粒体 **≥20%** 删 | 逐样本自适应 MAD（M1） |
+| 双体 | **Scrublet，逐样本** | **scDblFinder**（偏差已登记） |
+| 归一并选 HVG | SCTransform，top **3,000** HVG | scran 池化 + log1p，top **2,000** HVG |
+| 降维/批次 | PCA 前 **50** PC + **Harmony 1.2.0 默认参数** | 30 PC；双臂（Arm A 不校正 / Arm B Harmony on `sample_id`） |
+| 聚类 | Seurat `FindClusters`，分辨率 **0.5–0.8** | Leiden，网格 0.2–2.0 选 r\* |
+| 保留核数 | **401,635** | **413,697** |
+
+两点由此得到支持：
+- 原文明确是 **10x Fixed RNA Profiling（Flex）** ⇒ 我们内皮 S4 面板选 `only_10x=True`（排除 SS2）**是对的**。
+- 我们与原文的核数差 12,062，方向与质控口径差（自适应 MAD vs 固定阈值、scDblFinder vs Scrublet）一致，**不构成矛盾**。
+
+**② P24_LUAD 的核数确实异常大 —— 一个假设（🔴 未验证，不是结论）**：
+
+| 项 | 数值 |
+|---|---|
+| P24_LUAD 保留核数 | **34,523** |
+| 第二名（P4_LUAD） | 21,757（P24 是它的 **1.59 倍**） |
+| 24 个 IAC(LUAD) 样本的中位数 | **5,470** |
+| 原文设计目标（AAH/AIS/MIA/LUAD 亚池化） | "target up to **20,000** cells per sample" ⇒ **P24_LUAD 超过设计目标** |
+| P24_LUAD 双体率 | **29.03%**（全队列最高，队列均值 15.48%） |
+
+这个组合（核数超设计目标 + 双体率最高 + 环境 RNA 信号最高）与"**上样过多 → 环境 RNA 与双体同时抬高**"是一致的。
+**但这是假设**：原文没有说哪个样本上样过载，公开数据也反推不出上样量，本项目无实验记录可查。
+它只能作为"为什么是 P24 而不是别人"的一个待查方向，**不得写进结论**。
+
+
+
 
 
 | | 旧版（2026-09-18 签字） | 新版（2026-09-22） |
@@ -500,6 +585,9 @@ logs/gp8c_20260922/STEP_STATUS.tsv                                   ← 逐步�
    `seed_churn_audit_manifest.json` / `figures/seed_churn_audit.png`。
 7. 五份夜跑签字的 r\* 需你复核确认。
 8. 两个未决的论文偏差：scDblFinder vs Scrublet；QC 阈值自适应 vs 固定。
+   → **2026-09-22 进展**：已从 PMC 全文取出原文的**确切参数**（<500 基因 / <1000 reads / 线粒体 ≥20%、Scrublet 逐样本、
+   SCTransform top 3,000 HVG、PCA 50 PC + Harmony 1.2.0、分辨率 0.5–0.8、保留 **401,635** 核），
+   逐项对照表见 §三（二）末。**偏差本身未改**（R2 优先），但现在可**引原文数值**写，不必再"推测"。
 9. 两臂 RCTD（粗 6 谱系 vs 细亚型）。
 10. M0 缺口：GSM9226176 的 tar 已备好并验过（90,677,930 字节，`gzip -t` 通过），
     但放入只读源目录需要你**单独授权**。
