@@ -226,14 +226,59 @@ Eosinophil 1 个、Nonclassical Monocyte 1 个、mDC1/mDC2/Classical Monocyte �
 
    同一篇原文另一处把髓系概括为 "myeloid (**monocyte, macrophage, cDC, and mast**)"——
    **两处都没有血小板/巨核细胞**。所以这是 Travaglini 图谱的归类，不是 LUAD 领域的归类。
-   **实际影响为零**（它一次也没赢过任何簇），但这是**登记在案的、未经你复核的分类学判断**
-   （见 `panel_caliber_s4.json` 的 `known_limitations`）。**建议处置：保留在面板里（不影响结果），
-   但在任何髓系构成比的分母里把它单列或剔除**——请你定。
-3. 🔴 **S4 的名字是 Travaglini 健康肺的簇名，与 LUAD 领域叫法冲突。**
+   **实际影响为零**（它一次也没赢过任何簇），但这是**登记在案的分类学判断**
+   （见 `panel_caliber_s4.json` 的 `known_limitations`）。
+
+   ✅ **2026-09-22 你已裁定**（登记于 `results/05_annotation/s4_panel_judgments.json`
+   的 `judgment_1_platelet_megakaryocyte`）：**面板保留、不重跑**——改面板要重跑髓系 L2 及全部下游，
+   违反法则 3.2，而它对结果影响为零，不值得回改。约束改落在**报告口径**上：
+   > 凡报髓系亚型构成比，分母须写成「髓系（不含血小板/巨核）」，或把 `Platelet/Megakaryocyte`
+   > 单列一行（本批为 0 核归属，两种写法等价）。**不得默默并入髓系总计。**
+3. 🔴 **S4 的名字是 Travaglini 健康肺的簇名，与 LUAD 领域叫法冲突；而且这个标签底下不是一群细胞。**
    最刺眼的是 **`TREM2+ Dendritic` 赢了 11 簇 / 20,571 核**（髓系里最大的一块）——
    在 LUAD 里 TREM2 基本是**脂质相关巨噬细胞（LAM）**的招牌，S4 却把它归在树突里。
-   照 S4 写就是"Dendritic"，按 LUAD 领域写就是"Macrophage/LAM"。**二选一须登记**，
-   本报告暂按 S4 原名上报，并在下游结论里同时标注这个冲突。
+
+   **但比"名字对不对"更要紧的是：这 11 个簇不是同一群细胞。** 把每个簇**自己的** top-15
+   富集基因读一遍，至少分五类：
+
+   | 类别 | 簇 | 核数 | 判读依据（该簇自身的 top 基因） |
+   |---|---|---|---|
+   | 真的脂质相关巨噬（LAM） | 3, 10, 12, 15, 17 | 10,721 (52%) | APOE/GPNMB/PLD3/LIPA/CTSD/CHIT1/SPP1/C1QB/MMP9/ADAMDEC1 |
+   | 含糊（程序混合） | 5 | 2,573 (13%) | TNFAIP2/ITGAX/NPL/GPNMB，ITGAX 偏 DC |
+   | 干扰素响应**状态**（非细胞类型） | 7 | 2,487 (12%) | CXCL10/GBP1/CXCL9/GBP5/STAT1/TAP1 |
+   | 解离/即早基因伪影 | 14 | 1,312 (6%) | CD83/FOSB/ATF3/EGR2/DUSP1/NR4A2 |
+   | **污染簇（被预注册规则放行）** | 6, 24, 25 | 3,478 (17%) | 6 = AT2×成纤维双体；24 = 免疫球蛋白环境 RNA；25 = T 细胞 |
+
+   图见 `figures/trem2_label_triage.png`（脚本 `05_annotation/12_trem2_label_triage_figure.py`，
+   清单 `trem2_label_triage_manifest.json`）。
+
+   **🔴 上面这张分类表是人工判读，不是计算结果。** 它是逐簇读 top-15 基因 + 污染判据留痕做的
+   观察与推断，**没有独立验证**，登记在清单的 `🔴_honest_boundary` 里，**不得当计算产物引用**。
+   图 (A) 右侧逐簇列出 top 基因，就是为了让这个判读可被核对或推翻。
+
+   **污染簇为什么没被剔掉——不是 bug。** `06_contamination_check.py` 第 70 行（冻结于看结果之前）
+   定的判据是「非上皮谱系**须两条线同时命中才剔**；单线命中如实留痕（`single_line_hold` 列），
+   但不自动剔」。簇 6 与 25 只被 CellTypist 一条线命中 ⇒ 按规则保留。规则先定后看结果，
+   法则 3.2 禁止事后调参 ⇒ 处置是**登记为已登记局限**，不是回改判据。
+
+   **一条 P24 线索**：髓系基线里 P24 占 12.0%、P24_LUAD 占 8.4%。三个污染簇的 P24_LUAD
+   富集是 **4.5x / 7.7x / 2.9x**（cl6/cl24/cl25），而两个非污染簇 cl5、cl14 反而只有 **0.3x**。
+   即污染簇不是随机分布，是被 P24 拉起来的——与第三节（二）已确认的 P24 环境 RNA 是同一件事。
+   ⚠️ 但 **cl17 是真 LAM 却也 P24 高（4.3x）**，其基因是 MMP9/MMP14/ADAMDEC1 真巨噬程序，
+   ⇒ **P24 富集不能一律当污染解释**，此处不声称因果（法则 4）。
+
+   ✅ **2026-09-22 你已裁定**（`s4_panel_judgments.json` 的 `judgment_2_trem2_dendritic_naming`）：
+   > **不改名。** 该标签只装了 52% 的真 LAM，整体改叫 LAM 等于给一个混了双体、环境 RNA、
+   > T 细胞的筐贴上真实生物学名字，比不改更糟。
+   > ① 机器可读产物**照原样保留 S4 名**（不做静默改名）；凡对外写就写成
+   > `TREM2+ Dendritic（S4 原名；实为脂质相关巨噬/LAM 程序）`。
+   > ② 下游**髓系构成比按簇拆分上报**，不得直接引用 20,571 这个数。
+   > ③ 簇 6/24/25（污染，单线保留）+ 簇 14（解离伪影）+ 簇 7（IFN 状态）
+   > **登记为已登记局限**；要回改 `06_contamination_check.py` 的判据须**另立里程碑**，
+   > 不得回头调参。
+   >
+   > **仍待你定**：是否另开一个"TREM2+ 簇分诊"里程碑，把分类**先用独立方法证真、
+   > 并把口径冻在计算之前**再据此拆分。本报告不动现有注释结果。
 4. **四型一次未赢**（Basophil/Mast 2、Platelet/Megakaryocyte、OLR1+ Classical Monocyte、
    Intermediate Monocyte）。其中 `Intermediate Monocyte` 在旧面板下曾赢 6 簇 / 14,741 核，
    换成 S4 后归零——**这是面板更换带来的实质变化，须在此显式记录**。可查的原因：
@@ -601,6 +646,9 @@ SCT 自动推导的 `clip.range`（不是人为调的旋钮）。所以差异只
 | tnkA / bplasmaA / myeloidA r\* | **Claude（自动夜跑）** | 2026-09-22 | 🔴 **未经人工复核** |
 | **S4 面板口径**（内皮 9 型 + 髓系 17 型） | **用户本人（会话内追认）** | 2026-09-22 | ✅ 已追认，`countersign_required=false` |
 | **P24 处置**（保留 + 标注） | **用户本人（会话内裁定）** | 2026-09-22 | ✅ 决定书 `p24_disposition_decision.json`；不改任何已签产物 |
+| **S4 裁定 ①**（`Platelet/Megakaryocyte` 保留在面板，髓系构成比分母单列或剔除） | **用户本人（会话内表态）** | 2026-09-22 | ✅ `s4_panel_judgments.json` 的 `judgment_1` |
+| **S4 裁定 ②**（`TREM2+ Dendritic` 不改名，保留 S4 原名 + 按簇拆分上报构成比） | **用户本人（会话内表态）** | 2026-09-22 | ✅ `s4_panel_judgments.json` 的 `judgment_2` |
+| TREM2+ 簇的五类判读（52% LAM / 17% 污染 / …） | **Claude（人工读数）** | 2026-09-22 | 🔴 **不是计算结果，无独立验证**；图 (A) 已列 top 基因供核对 |
 | **P24 环境 RNA 确认版口径** | Claude（按用户裁定起草并冻结，算前冻结） | 2026-09-22 | 🔴 非独立验证（度量探索阶段已看过），口径内已自陈 |
 | 全局簇裁决（17/26/38/44） | **Claude（自动夜跑）** | 2026-09-22 | 🔴 **未经人工逐行核对** |
 
@@ -623,8 +671,16 @@ SCT 自动推导的 `clip.range`（不是人为调的旋钮）。所以差异只
    最薄的新面板仍只有 3–4 个基因（内皮 Capillary Intermediate 1 = 3；Capillary / Bronchial Vessel 2 /
    Neutrophil = 4）。S4 的 `Intermediate Monocyte`（15 基因，与 Nonclassical 共享 6 个）与
    `Basophil/Mast 2`、`OLR1+ Classical Monocyte`、`Platelet/Megakaryocyte` 一次未赢。
-1c. **命名口径冲突未决**：S4 用的是 Travaglini 健康肺簇名，`TREM2+ Dendritic`（髓系最大一块，
-   11 簇 / 20,571 核）在 LUAD 领域通常指脂质相关巨噬细胞。按 S4 名还是按领域名上报，**须你定并登记**。
+1c. **命名口径冲突，已裁定「不改名、按簇拆分上报」**（2026-09-22，详见 §三（一之二）局限 3
+   与 `s4_panel_judgments.json`）：`TREM2+ Dendritic` 这个 S4 名底下装了 11 簇 / 20,571 核，
+   但按各簇自身 top 基因看**只有 52% 是真的脂质相关巨噬（LAM）**，另含 12% 干扰素响应**状态**、
+   6% 解离伪影、**17% 是三个被预注册规则放行的污染簇**（cl6 AT2×成纤维双体、cl24 IG 环境 RNA、
+   cl25 T 细胞）。⇒ 不得把 20,571 当作一个细胞类型的构成比引用。
+1d. **三个污染簇被"单线不剔"规则放行**（cl6 / cl24 / cl25），依据是
+   `06_contamination_check.py` 第 70 行冻结的「非上皮谱系须两条线同时命中才剔」。
+   这是**先定后看的规则按原样执行的结果，不是 bug**；法则 3.2 禁止事后调参 ⇒ 登记为局限。
+   这三簇的 P24_LUAD 富集显著高于髓系基线（4.5x / 7.7x / 2.9x，基线 = 1x），与 §三（二）的
+   P24 环境 RNA 是同一件事。要回改判据须**另立里程碑**，不得回头改本文件。
 2. **矩阵缺基因**：`KRT18`、`SFTPA2`、`CD8B`（来自环境 RNA 判别的基因集核对）；上皮另缺 `DAPL1`、`PRR4`；髓系缺 `TPSAB1`。
 3. **源表硬伤**（原样保留未修）：CD4+ Mem/Eff 行混入 CD8；Basophil 与 Mast 两行完全相同；Bronchial Vessel 行 markers 为空 ⇒ 无法注释。
 4. **环境 RNA 未做校正（保留至下游，已登记）**：M1 无环境校正步骤，靠双标准兜底。
@@ -661,10 +717,13 @@ results/05_annotation/
   p24_ambient_confirm_null_distribution.csv                          ← §三之二 确认版 200 组负对照的 P24 取值
   p24_ambient_confirm_manifest.json                                  ← §三之二 确认版清单（三项判定 + 输入输出 sha256）
   p24_disposition_decision.json                                      ← P24 处置决定书（2026-09-22 用户裁定「保留 + 标注」，含逐期例数）
+  s4_panel_judgments.json                                            ← S4 面板两项裁定（① 血小板/巨核 保留但构成比单列；② TREM2+ 不改名、按簇拆分）
+  trem2_label_triage_manifest.json                                   ← §三之一之二 局限 3 的图清单（含🔴 人工判读边界与逐簇证据）
   GP8c_report.md                                                     ← 本文件
 figures/seed_churn_audit.png                                         ← §八 的图（裸比 vs 配对、旧 vs 新同分辨率）
 figures/endo_panel_s1_vs_s4.png                                      ← §三之一的图（内皮新旧面板对比）
 figures/myeloid_panel_s1_vs_s4.png                                   ← §三之一之二的图（髓系新旧面板对比；第三格显式写出"报警归零 ≠ 证据够了"）
+figures/trem2_label_triage.png                                       ← §三之一之二 局限 3 的图（TREM2+ 标签下 11 簇的五类拆分 + P24 富集）
 figures/p24_ambient_ig.png                                           ← §三之二的图（预注册 vs 纠正后度量、逐样本）
 figures/p24_ambient_confirm.png                                      ← §三之二 确认版的图（病人级 / 负对照 / 独立读数）
 logs/gp8c_20260922/STEP_STATUS.tsv                                   ← 逐步退出码全 0
@@ -693,9 +752,16 @@ logs/gp8c_20260922/STEP_STATUS.tsv                                   ← 逐步�
      『去 P24』的**具体数值本次不算**，下游真要用须先冻结口径（法则 3.1）。
 2. ~~内皮面板处置（等你定方向）~~ ✅ **2026-09-22 已追认 S4 面板**。
    ~~髓系 S4 结果尚未并入本报告~~ ✅ **2026-09-22 已并入**（第三节（一之二）+ 图
-   `figures/myeloid_panel_s1_vs_s4.png`）。**仍待你复核两项**：
-   （a）S4 把 `Platelet/Megakaryocyte` 归入髓系（影响为零，但分类学上不对，§三之一之二 局限 2）；
-   （b）`TREM2+ Dendritic` 该按 S4 名还是按 LUAD 领域名（脂质相关巨噬细胞）上报（§三之一之二 局限 3）。
+   `figures/myeloid_panel_s1_vs_s4.png`）。
+   **2026-09-22 两项均已裁定**（决定书 `results/05_annotation/s4_panel_judgments.json`）：
+   - （a）`Platelet/Megakaryocyte` 归入髓系（`judgment_1`）：**面板保留、不重跑**；
+     凡报髓系构成比，分母写「髓系（不含血小板/巨核）」或该型单列一行。
+   - （b）`TREM2+ Dendritic` 命名（`judgment_2`）：**不改名**，机器产物保留 S4 原名，
+     对外写成 `TREM2+ Dendritic（S4 原名；实为脂质相关巨噬/LAM 程序）`，
+     下游构成比**按簇拆分**，不得引用 20,571。判读见 `figures/trem2_label_triage.png`。
+   - ⬜ **仍待你定**：是否另开「TREM2+ 簇分诊」里程碑（用独立方法证真 + 口径计算前冻结）。
+2b. **新建决定书**：`results/05_annotation/s4_panel_judgments.json` 记录上面 (a)(b) 两条裁定
+   及其依据（含源论文逐字 marker 定义），judgment 1 已签、judgment 2 已签「不改名」。
 3. 待判 7,603 核（等你判）。
 4. 各谱系 `decision` 列签字。
 5. GP8a 报告（M3 双标准注释层，尚未写）。

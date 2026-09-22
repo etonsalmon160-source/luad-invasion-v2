@@ -1,0 +1,245 @@
+{
+ "figure": "figures/trem2_label_triage.png",
+ "figure_sha256": "81dc6525379cb52cd8f4f2c8a7a198de7054a662b21885649404bf417fb77a1d",
+ "question": "S4 面板下 `TREM2+ Dendritic` 赢了 11 簇 / 20,571 核，是髓系最大一块。这 11 簇是不是同一群细胞？",
+ "answer": "不是。按各簇自身 top-15 富集基因，至少分五类，其中三类（含两个被预注册规则放行的污染簇）不是该细胞类型。",
+ "🔴_honest_boundary": "VERDICT 里的分类是**人工判读**（逐簇读 top-15 基因 + 污染判据留痕），属观察与推断，**不是自动化检验的结果，也没有独立验证**。图 (A) 右侧逐簇列出 top 基因就是为了让判读可被核对或推翻。**不得当作计算产物引用。**",
+ "category_definition": {
+  "lam": "Real lipid-associated macrophage (LAM) program",
+  "amb": "Ambiguous (mixed program)",
+  "ifn": "IFN-response STATE, not a cell type",
+  "art": "Dissociation / immediate-early artifact",
+  "cont": "Contaminant, HELD by the pre-registered rule"
+ },
+ "verdict_per_cluster": {
+  "3": {
+   "category": "lam",
+   "n": 4800,
+   "top_genes_as_read": "APOE GPNMB PSAP PLD3 LIPA CTSD"
+  },
+  "10": {
+   "category": "lam",
+   "n": 2000,
+   "top_genes_as_read": "SPP1 CTSB GPNMB TREM2 APOE CD68"
+  },
+  "12": {
+   "category": "lam",
+   "n": 1753,
+   "top_genes_as_read": "CHIT1 GPNMB CYP27A1 LIPA ACP5 PLA2G7"
+  },
+  "15": {
+   "category": "lam",
+   "n": 1190,
+   "top_genes_as_read": "CHI3L1 LIPA GM2A APOE CTSS GPNMB"
+  },
+  "17": {
+   "category": "lam",
+   "n": 978,
+   "top_genes_as_read": "MMP9 MMP14 ADAMDEC1 CTSB PLA2G2D CTSZ"
+  },
+  "5": {
+   "category": "amb",
+   "n": 2573,
+   "top_genes_as_read": "TNFAIP2 ITGAX NPL GPNMB (ITGAX leans DC)"
+  },
+  "7": {
+   "category": "ifn",
+   "n": 2487,
+   "top_genes_as_read": "CXCL10 GBP1 CXCL9 GBP5 STAT1 TAP1"
+  },
+  "14": {
+   "category": "art",
+   "n": 1312,
+   "top_genes_as_read": "CD83 CXCL8 CCL3 FOSB ATF3 NR4A2 DUSP1"
+  },
+  "6": {
+   "category": "cont",
+   "n": 2569,
+   "top_genes_as_read": "SFTPB + COL1A1 (AT2 x fibroblast doublet)"
+  },
+  "24": {
+   "category": "cont",
+   "n": 558,
+   "top_genes_as_read": "IGKC IGHG1 JCHAIN + COL1A1 (IG ambient)"
+  },
+  "25": {
+   "category": "cont",
+   "n": 351,
+   "top_genes_as_read": "TRAC TRBC2 CD2 ZAP70 (T cell)"
+  }
+ },
+ "myeloid_baseline": {
+  "n_cells": 64084,
+  "p24_frac": 0.12021721490543662,
+  "p24luad_frac": 0.08357780413207665,
+  "note": "P24_LUAD 占全部 64,084 髓系核的 8.4% ⇒ 富集倍数以此为 1x"
+ },
+ "per_cluster_evidence": {
+  "3": {
+   "n_cells": 4800,
+   "n_patients": 23,
+   "win_margin": 0.8084,
+   "p24_frac": 0.20125,
+   "p24luad_frac": 0.14166666666666666,
+   "p24luad_fold": 1.6950273836196166,
+   "iac_frac": 0.518125,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.891,
+   "panel_top_other": "上皮",
+   "single_line_hold": "无"
+  },
+  "10": {
+   "n_cells": 2000,
+   "n_patients": 22,
+   "win_margin": 0.6673,
+   "p24_frac": 0.1085,
+   "p24luad_frac": 0.099,
+   "p24luad_fold": 1.1845250186706497,
+   "iac_frac": 0.754,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.867,
+   "panel_top_other": "成纤维",
+   "single_line_hold": "无"
+  },
+  "12": {
+   "n_cells": 1753,
+   "n_patients": 23,
+   "win_margin": 1.0203,
+   "p24_frac": 0.21962350256702795,
+   "p24luad_frac": 0.11466058185966914,
+   "p24luad_fold": 1.3719023016981025,
+   "iac_frac": 0.4227039361095265,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.811,
+   "panel_top_other": "上皮",
+   "single_line_hold": "无"
+  },
+  "15": {
+   "n_cells": 1190,
+   "n_patients": 22,
+   "win_margin": 0.9274,
+   "p24_frac": 0.23865546218487396,
+   "p24luad_frac": 0.20168067226890757,
+   "p24luad_fold": 2.413088909947848,
+   "iac_frac": 0.49747899159663866,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.935,
+   "panel_top_other": "成纤维",
+   "single_line_hold": "无"
+  },
+  "17": {
+   "n_cells": 978,
+   "n_patients": 23,
+   "win_margin": 0.4788,
+   "p24_frac": 0.37525562372188137,
+   "p24luad_frac": 0.3609406952965235,
+   "p24luad_fold": 4.318619028637493,
+   "iac_frac": 0.8292433537832311,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.838,
+   "panel_top_other": "B/浆",
+   "single_line_hold": "无"
+  },
+  "5": {
+   "n_cells": 2573,
+   "n_patients": 23,
+   "win_margin": 0.3028,
+   "p24_frac": 0.06451612903225806,
+   "p24luad_frac": 0.021764477263894286,
+   "p24luad_fold": 0.2604097761350638,
+   "iac_frac": 0.35833657209483094,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.786,
+   "panel_top_other": "上皮",
+   "single_line_hold": "无"
+  },
+  "7": {
+   "n_cells": 2487,
+   "n_patients": 23,
+   "win_margin": 0.2741,
+   "p24_frac": 0.18536389223964617,
+   "p24luad_frac": 0.18214716525934863,
+   "p24luad_fold": 2.17937246797612,
+   "iac_frac": 0.5798150381986329,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.793,
+   "panel_top_other": "上皮",
+   "single_line_hold": "无"
+  },
+  "14": {
+   "n_cells": 1312,
+   "n_patients": 23,
+   "win_margin": 0.087,
+   "p24_frac": 0.04649390243902439,
+   "p24luad_frac": 0.023628048780487805,
+   "p24luad_fold": 0.2827072214430135,
+   "iac_frac": 0.36051829268292684,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.849,
+   "panel_top_other": "上皮",
+   "single_line_hold": "无"
+  },
+  "6": {
+   "n_cells": 2569,
+   "n_patients": 23,
+   "win_margin": 0.3569,
+   "p24_frac": 0.40599455040871935,
+   "p24luad_frac": 0.3744647722849358,
+   "p24luad_fold": 4.480433246286002,
+   "iac_frac": 0.6726352666407163,
+   "celltypist_main": "上皮",
+   "celltypist_main_frac": 0.392,
+   "panel_top_other": "成纤维",
+   "single_line_hold": "CellTypist"
+  },
+  "24": {
+   "n_cells": 558,
+   "n_patients": 20,
+   "win_margin": 0.5562,
+   "p24_frac": 0.6541218637992832,
+   "p24luad_frac": 0.6397849462365591,
+   "p24luad_fold": 7.654962377636979,
+   "iac_frac": 0.8548387096774194,
+   "celltypist_main": "髓系",
+   "celltypist_main_frac": 0.559,
+   "panel_top_other": "B/浆",
+   "single_line_hold": "无"
+  },
+  "25": {
+   "n_cells": 351,
+   "n_patients": 21,
+   "win_margin": 0.1238,
+   "p24_frac": 0.25925925925925924,
+   "p24luad_frac": 0.24216524216524216,
+   "p24luad_fold": 2.8974827070420797,
+   "iac_frac": 0.5470085470085471,
+   "celltypist_main": "T/NK",
+   "celltypist_main_frac": 0.536,
+   "panel_top_other": "T/NK",
+   "single_line_hold": "CellTypist"
+  }
+ },
+ "held_by_rule": {
+  "clusters": [
+   6,
+   24,
+   25
+  ],
+  "rule": "06_contamination_check.py:70（冻结于看结果之前）：非上皮谱系『须两条线同时命中才剔；单线命中如实留痕，但不自动剔』。簇 6 与 25 是单线命中（仅 CellTypist）⇒ 按规则保留。",
+  "why_not_a_bug": "规则先定后看结果，法则 3.2 禁止事后调参 ⇒ 处置是**登记为已登记局限**，不是回改判据。"
+ },
+ "caveats": [
+  "分类是人工判读，非自动检验（见 _honest_boundary）。",
+  "簇内基因是 top-15 富集，不是差异检验的显著性；未经独立验证。",
+  "`TREM2+ Dendritic` 是 Travaglini 健康肺命名；源论文（彭 2026）全文 TREM2 / SPP1 0 命中，其自身髓系空间 marker 写作 APOE / GPMNB 且称为 myeloid。",
+  "本图不改变任何注释结果，只做判读可视化。"
+ ],
+ "inputs": {
+  "myeloidA_s4_cluster_annotation.csv": "0057f39d1fea98bf7f151ebec9fe1bdc824bd1687c9f9f42247a6401a3cbc186",
+  "myeloidA_s4_cluster_topgenes.csv": "579eeae6f8cedc31fe023e13a091bb83cb80449d0d0edd1cf53e4a5e6b67e460",
+  "myeloidA_contamination.csv": "16873aaf92493555db71a6f1f172dec5ec41dcfc1b644c258b4053596fe4c416"
+ },
+ "inputs_extra": {
+  "results/04_integration/seurat_trad/myeloidA/clusters.csv.gz": "42aa3905839a04ac0e03b9d76e46cc293493109b29fa07e7792d3da9a9a3ca51"
+ }
+}

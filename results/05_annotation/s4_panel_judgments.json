@@ -1,0 +1,89 @@
+{
+  "file_purpose": "登记 S4 面板遗留的、需要人工判断的两件事的处置。区别于 `panel_caliber_s4.json`（那是面板口径本身，已签字，不在本文件里改动以免破坏其 sha256 闸门）。",
+  "created_at": "2026-09-22",
+
+  "judgment_1_platelet_megakaryocyte": {
+    "question": "S4 把 Travaglini 的 Cluster 46（Platelet/Megakaryocyte）归入髓系。血小板/巨核细胞不是白细胞，源论文的髓系定义里也没有它。怎么处置？",
+    "evidence": {
+      "source_paper_verbatim": "…myeloid cells (CD68, CD163, etc. for macrophages; CSF3R for neutrophils; KIT, MS4A2, etc. for mast cells; CD1C, CLEC9A, etc. for conventional dendritic cells-cDC, LILRA4, IL3RA, etc. for plasmacytoid dendritic cells-pDC)…",
+      "source_paper_second_phrasing": "myeloid (monocyte, macrophage, cDC, and mast)",
+      "both_lack": "血小板/巨核细胞",
+      "impact_on_results": "零 —— 它在髓系 L2 里一次也没赢过任何簇（`myeloidA_s4_annotation_manifest.json` 的 never_won 含它）"
+    },
+    "ruling": "保留在面板里（不改口径、不重跑），但在任何**髓系构成比的分母**里把它单列或剔除。",
+    "ruling_reason": "改面板要重跑髓系 L2 与全部下游（违反法则 3.2 不做事后调参），而它对现有注释结果的影响为零 ⇒ 不值得回改。真正会出错的地方是把 12 型核数当髓系构成比相加，所以约束落在**报告口径**上，不落在面板上。",
+    "decided_by": "用户本人（2026-09-22 会话内表态『第一个按你的推荐』）",
+    "decided_at": "2026-09-22",
+    "how_to_apply": "凡报髓系亚型构成比：分母要么写『髓系（不含血小板/巨核）』，要么把 Platelet/Megakaryocyte 单列一行（本批为 0 核归属，故等价于后者）。不得默默并入髓系总计。",
+    "signed_by": "用户本人（会话内表态；非手写签署）",
+    "signed_at": "2026-09-22"
+  },
+
+  "judgment_2_trem2_dendritic_naming": {
+    "question": "S4 用的是 Travaglini 健康肺簇名 `TREM2+ Dendritic`。在 LUAD 领域 TREM2 通常指脂质相关巨噬细胞（LAM）。该按 S4 名还是按领域名上报？",
+    "status": "✅ **已裁定 —— 不改名**（2026-09-22 用户看过 `figures/trem2_label_triage.png` 后表态『落盘』）",
+    "ruling": "不改名。理由：该标签只装了 52% 的真 LAM，整体改叫 LAM 等于给一个混了双体、环境 RNA、T 细胞的筐贴上真实生物学名字，比不改更糟。",
+    "how_to_apply": "① 机器可读产物照原样保留 S4 名（不做静默改名）；对外写就写成 `TREM2+ Dendritic（S4 原名；实为脂质相关巨噬/LAM 程序）`。② 下游髓系构成比**按簇拆分上报**，不得直接引用 20,571 这个数。③ 簇 6/24/25（污染，单线保留）+ 簇 14（解离伪影）+ 簇 7（IFN 状态）登记为已登记局限；要回改 `06_contamination_check.py` 的判据须**另立里程碑**，不得回头调参。",
+    "still_open": "是否另开一个『TREM2+ 簇分诊』里程碑，把上面的人工判读用独立方法证真并把口径冻在计算之前，再据此拆分。本决定不动现有注释结果。",
+    "decided_by": "用户本人（2026-09-22 会话内表态『落盘』，看过分诊图之后）",
+    "decided_at": "2026-09-22",
+    "evidence_gathered": {
+      "panel_genes_are_macrophage": "该型 S4 面板（20 个）实测为 APOE, CCL18, CHIT1, CHI3L1, APOC1, GPNMB, LIPA, FN1, NUPR1, ACP5, IFI27, C1QB, FBP1, TREM2, PLD3, CTSD, CTSZ, C1QC, MMP9, CTSB —— 全是脂质相关巨噬/TREM2+ TAM 程序，**无一个 DC 基因**。对照 cDC2 面板为 FCER1A, CD1C, CLEC10A, CD1E, CST3, GPR183。",
+      "source_paper_vocabulary": "原文 `TREM2` 0 命中、`SPP1` 0 命中、`lipid-associated` 0 命中；原文自己的髓系空间 marker 是 **APOE / GPMNB(=GPNMB)**，且称之为 **myeloid**。⇒ 原文不会用『TREM2+ Dendritic』这个说法。",
+      "the_label_is_not_one_population": "🔴 该型赢了 11 个簇 / 20,571 核，但按各簇**自身**的 top-15 基因看，至少分四类（详见本文件 judgment_2_cluster_audit）"
+    },
+    "judgment_2_cluster_audit": {
+      "note": "依据 `myeloidA_s4_cluster_topgenes.csv` 的 top_genes 列 + `results/04_integration/seurat_trad/myeloidA/clusters.csv.gz` 的 patient/sample 构成。**这是从簇自身标记基因读出的判读，属观察与推断，尚未经独立检验。**",
+      "real_LAM_macrophage": {
+        "clusters": [3, 10, 12, 15, 17],
+        "n_cells": 10721,
+        "why": "top 基因为 APOE / GPNMB / PSAP / PLD3 / LIPA / CTSD / CTSB / CHIT1 / CHI3L1 / SPP1 / C1QB / C1QC / MMP9 / ADAMDEC1 等脂质相关巨噬程序；跨 22–23 个病人、各分期均有，非单样本"
+      },
+      "macrophage_ambiguous": {
+        "clusters": [5],
+        "n_cells": 2573,
+        "why": "top 基因 TNFAIP2 / ITGAX / GPNMB / NPL 混合，ITGAX 偏 DC；跨 23 病人 34% 首病人 P23 ⇒ 可能是同一谱系的另一状态"
+      },
+      "IFN_response_state": {
+        "clusters": [7],
+        "n_cells": 2487,
+        "why": "top 基因 CXCL10 / GBP1 / CXCL9 / GBP5 / STAT1 / TAP1 —— 干扰素响应状态，不是独立细胞类型"
+      },
+      "dissociation_artifact": {
+        "clusters": [14],
+        "n_cells": 1312,
+        "why": "top 基因 CD83 / CXCL8 / CCL3 / CCL4 / FOSB / ATF3 / EGR2 / DUSP1 / NR4A2 / KLF6 —— 即早/解离应激基因主导"
+      },
+      "contaminants_held_by_the_preregistered_rule": {
+        "clusters": [6, 24, 25],
+        "n_cells": 3478,
+        "why": {
+          "cluster_6": "top 基因 SFTPB / SFTPA1 / SLC34A2（AT2）+ COL1A1 / COL1A2 / COL3A1 / DCN / LUM（成纤维）⇒ AT2×成纤维双体。41% 首病人 P24、37% 来自 P24_LUAD",
+          "cluster_24": "top 基因 IGKC / IGHG1 / IGHA1 / IGHG3 / JCHAIN / IGHM + COL1A1 ⇒ 免疫球蛋白/环境 RNA。**65% 首病人 P24、64% 来自 P24_LUAD**，与 §三（二）的 P24 环境 RNA 结论一致",
+          "cluster_25": "top 基因 TRAC / TRBC2 / CD2 / CD96 / ZAP70 / IKZF1 ⇒ T 细胞污染。面板自评 0.50 vs T/NK 0.48（几乎平局）"
+        },
+        "why_not_excluded": "🔴 **不是 bug，是按预注册规则执行的结果**：`06_contamination_check.py` 第 70 行冻结的判据是『非上皮谱系须**两条线同时命中**才剔；单线命中如实留痕（single_line_hold 列）但不自动剔』。簇 6 与 25 是**单线命中**（仅 CellTypist 命中），故按规则保留。规则先定后看，法则 3.2 不许事后改它。",
+        "cost": "代价是这些簇仍被 argmax 归入 `TREM2+ Dendritic`，使该标签的核数从『真 LAM』的约 1.07 万虚增到 2.06 万。"
+      }
+    },
+    "my_recommendation": "① **不要现在改名**：把 `TREM2+ Dendritic` 整体改叫 LAM，等于把一个真实生物学名字安在一个混了双体/环境 RNA 的混合标签上，比不改更糟。② 机器可读产物里**照原样保留 S4 名**（法则 5，不做静默改名），凡对外写就写成 `TREM2+ Dendritic（S4 原名；实为脂质相关巨噬/LAM 程序）`。③ 下游**髓系构成比**里先按簇拆分上报，别直接引用该标签的 20,571 核。④ 单线保留的三个污染簇（6/24/25）与解离伪影簇 14、IFN 状态簇 7 **登记为已登记局限**，回改判据须另立里程碑。",
+    "recommendation_by": "Claude（分析后建议）",
+    "recommendation_at": "2026-09-22",
+    "recommendation_status": "✅ 用户 2026-09-22 采纳（见上方 ruling）",
+    "figure": {
+      "path": "figures/trem2_label_triage.png",
+      "script": "05_annotation/12_trem2_label_triage_figure.py",
+      "manifest": "results/05_annotation/trem2_label_triage_manifest.json",
+      "basis": "各簇自身 top-15 富集基因（myeloidA_s4_cluster_topgenes.csv）+ 逐核 patient/sample（clusters.csv.gz）"
+    },
+    "related": {
+      "gp8c": "results/05_annotation/GP8c_report.md §三（一之二）局限 3 · §八 局限 1c/1d · §七 签字表",
+      "p24_ambient": "results/05_annotation/p24_disposition_decision.json",
+      "source_paper": "results/05_annotation/GP8c_report.md §三（二）末（原文逐字 marker 定义）"
+    }
+  },
+
+  "signed_by": "用户本人（judgment 1：2026-09-22 会话内表态『第一个按你的推荐』；judgment 2：2026-09-22 看过分诊图后表态『落盘』）",
+  "signed_at": "2026-09-22",
+  "note": "judgment 2 的 `judgment_2_cluster_audit` 是 Claude 的人工判读，不是计算产物，无独立验证；见该节的 note 与图的 _honest_boundary。"
+}
