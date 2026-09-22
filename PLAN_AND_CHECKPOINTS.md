@@ -398,7 +398,11 @@
   **下游约束**：髓系 L2 若注释到肥大细胞/DC，**须人工判读**，不得只看面板 argmax。
   口径取「逐基因检出率均值」（R_mean；两个极端读法一个恒 = 1.0、一个结构性不可达，均可证退化），明细见 `PARAMETERS §M3-A.3` 与 `results/05_annotation/GP5_report.md` **§6.8**（旧 §6.7 已作废）。
   ⚠️ **更正我此前的说法**：旧条目写的"需 GP6 注释之后方可算"是**错的** —— 登记口径（「≥1 个 marker 集」＝任一套即可）**不依赖注解**。
-  ⚠️ `results/04_integration/seurat_trad/*/run_manifest.json` 里 `metric3_absent` 的旧文本是 **2026-09-17 的时点记录**，已被本条取代（**这些 manifest 里的 `caliber` 字段仍写着旧口径名 `A_frozen`，待清理**）。
+  ⚠️ `results/04_integration/seurat_trad/*/run_manifest.json` 里 `metric3_absent` 的旧文本是 **2026-09-17 的时点记录**，已被本条取代。
+  🔴 同一批 manifest 的 `caliber` 字段写死为旧口径名 `A_frozen`（根因 = `04_integration/10_seurat_traditional.R:440` 的字符串常量）。
+  **2026-09-22 用户裁定：不改脚本、不重跑，如实登记** —— 9 份里 7 份说错了自己的输入（逐个经哈希核对），
+  引用时 `caliber` / `rstar_status` / `rstar_candidate` **一律视为无效**，口径以 `<tag>_rstar.json` 为准。
+  详见 `results/05_annotation/GP5_report.md` §15.1–§15.2。
 - 诚实记录：`input.n_genes` 18,069 → 变换矩阵 18,047，差 **22 个**基因，由 sctransform v2 内部过滤产生（日志可查，**非静默**）。
 
 **Step 0 · GP0 表达对象重建（论文 QC 口径）— 🔶 已重做 (2026-09-16)，校验由 2026-09-17 审计补做**

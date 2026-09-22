@@ -835,26 +835,73 @@ B·浆的 **15 号簇（756 细胞）**，**模块分最高的 panel 是「上�
 | ↳ 该图**不受影响** | 它画的是**全量 run 按谱系上色**，而 L1 的 `r*` 未变（0.6）、全量 run 未重跑 ⇒ **此图仍有效** |
 | 🔴 **已作废哈希（不得再用于核对）** | 2026-09-21 版：rstar 六份 `c0f41630…`/`6d1f3f23…`/`7db0a946…`/`5e6a8ed8…`/`3ad1abdb…`/`40ae5dfc…`；指标3 `8418c192…`/`65fefaf4…`/`6f55ca65…`；种子 `9a4a65df…`/`be5170af…`。2026-09-18「暂定签字」版与签字前版的 rstar 哈希见 git 历史 |
 
-### 15.1 🔴 登记缺陷：R 侧 `run_manifest.json` 的口径字段仍是旧值
+### 15.1 🔴 登记缺陷：R 侧 `run_manifest.json` 的口径字段是**写死的旧值**
 
-`results/04_integration/seurat_trad/<tag>/run_manifest.json`（10 份，含 `full` 与两份 smoke/两份 lowres）里的 **`caliber` 字段仍写着旧口径名**：
+**症状**：`results/04_integration/seurat_trad/<tag>/run_manifest.json` 的 `subset.caliber` 一律写着
 
 ```
 "标准 A 单口径 = GP6 冻结 A_frozen 标签（seed0, r*=0.6），用户 2026-09-17 裁定；PARAMETERS §M3-A.5"
 ```
 
-**根因**：这是 `04_integration/10_seurat_traditional.R:440` 里**写死的字符串常量**，R 每次运行原样写进 manifest。2026-09-22 L1 口径切到 `A_adjudicated` 后，该字符串**对 5 个已重跑的谱系（tnkA/myeloidA/endoA/bplasmaA/epiA）已不成立**（它们现在切自 `A_adjudicated`）—— 与 `04_metric3_coverage.py` 那处写死散文**是同一类缺陷**（那次已修）。
+**覆盖范围**：带该字段的是 **9 份**（全部 `--mode subset` 的 run）。`full` 与两份 `smoke_*` **无此字段**（非 subset 模式）。
 
-**另外两项附带观察到的不一致，一并登记**：
+**根因**：这是 `04_integration/10_seurat_traditional.R:440` 里**写死的字符串常量**，R 每次运行**原样**写进 manifest
+⇒ 它**永远无法反映真实输入**。2026-09-22 L1 口径切到 `A_adjudicated` 后，这一点就从「描述陈旧」升级为
+**「说错了自己的输入」**。与 `04_metric3_coverage.py` 那处写死散文**是同一类缺陷**（那次已修）。
+
+**逐份核对（2026-09-22）** —— 判据 = manifest 记的 `cells_file_sha256` 与磁盘清单逐个比对，
+再拿清单哈希去 `00_build_lineage_subsets.py` 的 `SOURCES` 两张登记表里**认领它到底出自哪个口径**：
+
+| run | manifest 记的清单 | 磁盘哈希 | 该清单实属口径 | 结论 |
+| :--- | :--- | :---: | :--- | :--- |
+| `epiA` | `epiA_subset_barcodes.txt` | ✅ 一致 | **`A_adjudicated`**（`d12a115a…`） | 🔴 **说错**（写着 `A_frozen`） |
+| `tnkA` | `tnkA_…` | ✅ | **`A_adjudicated`**（`8cb87515…`） | 🔴 说错 |
+| `myeloidA` | `myeloidA_…` | ✅ | **`A_adjudicated`**（`2fd34840…`） | 🔴 说错 |
+| `endoA` | `endoA_…` | ✅ | **`A_adjudicated`**（`9ee8d0c0…`） | 🔴 说错 |
+| `bplasmaA` | `bplasmaA_…` | ✅ | **`A_adjudicated`**（`7e34c5c5…`） | 🔴 说错 |
+| `epiA_lowres` | `epiA_subset_barcodes.txt` | ✅ | **`A_adjudicated`** | 🔴 说错 |
+| `epiA_clean` | `epiA_nocontam_subset_barcodes.txt` | 🔴 **对不上** | 不可考（见下） | 🔴 说错 **＋ 输入已不存在** |
+| `fibroA` | `fibroA_subset_barcodes.txt` | ✅ | 两口径**同值**（`505b82a9…`，该子集未被裁决改动） | ✅ **恰好仍正确** |
+| `fibroA_lowres` | 同上 | ✅ | 两口径同值 | ✅ 恰好仍正确 |
+
+> 即：**9 份里 7 份说错了自己的输入**，2 份（成纤维系）因为该子集在两口径下同值而**碰巧仍然正确**。
+
+**另两条附带的不一致，一并登记**：
 
 | # | 观察到 | 性质 |
 | :--- | :--- | :--- |
-| 1 | 十个 manifest 的 `rstar_status` 全写着「候选，**待 GP5 人工签字**」 | **陈旧**：六个官方 `r*` 已于 2026-09-18/21/22 签字完成 |
-| 2 | `epiA` / `fibroA`（含 `epiA_clean`）的 `rstar_candidate` 是 **`"NA"`**、状态写「区间内无可行解 ⇒ 停在 GP5，不放宽阈值」 | **正确的预注册结论**（R 侧按 0.90 算，两族四档全不过线）⇒ 与 JSON 的 `r*`（0.7 / 0.8，均 `relaxed`）构成**已登记的分叉**，非矛盾。§5.1 讲的是 fibroA 这一对；**epiA 自 2026-09-22 起也属于同一分叉**（旧口径下 epiA 不是分叉 —— 0.5 当时直接过线） |
+| 1 | **9 份** manifest 的 `rstar_status` 仍写「候选，**待 GP5 人工签字**」（`full` 那份是变体「候选（按预注册破平规则更正为 0.6），待 GP5 人工签字」） | **陈旧**：六个官方 `r*` 已于 2026-09-18/21/22 签字完成 |
+| 2 | `epiA` / `epiA_clean` / `fibroA` 三份的 `rstar_candidate` 是 `"NA"`、状态写「区间内无可行解 ⇒ 停在 GP5，不放宽阈值」 | **正确的预注册结论**（R 侧按 0.90 算，两族四档全不过线）⇒ 与 JSON 的 `r*`（上皮 0.7 / 成纤维 0.8，均 `relaxed`）构成**已登记的分叉**，非矛盾。**上皮是 2026-09-22 才成为分叉**（旧口径下 0.5 直接过线，不是分叉） |
 
-**处置（尚未执行，需用户定夺）**：正确修法是**改脚本那一个字符串常量 + 重跑六谱系 R**（约 2 h 30 m，会刷新全部 R 侧产物哈希）。
-**本报告不擅自改脚本、也不手改 manifest** —— 手改会破坏「产物由脚本生成」的可信度；改脚本则牵动已签字产物链。
-⇒ 在修复之前，**引用这些 manifest 的 `caliber` / `rstar_status` 字段时必须先核**：`caliber` 的口径名是旧值，`r*` 以 `<tag>_rstar.json` 为准（`rstar_authoritative_over` 字段已声明此优先级）。
+**连带发现（本次审计新查出，同属登记项）**：`epiA_clean` 那次 run 的**输入在磁盘上已不存在** ——
+它的 manifest 记 `epiA_nocontam_subset_barcodes.txt` = **132,963 核** / sha `78d3781f…`，
+但**同名文件现在是 133,384 核 / sha `d12a115a…`（＝全量上皮清单的副本）**。
+原因：该文件由 `03_subcluster_annotation.py` 在**污染剔除**之后重写，而上皮**最终剔 0 个簇** ⇒ 被覆写成全量清单
+（该文件 mtime `09-22 08:18`，晚于 `epiA_clean` 的 manifest `09-21 22:46`）。
+⇒ **`epiA_clean` 无法从当前树复现**。GP8c 拿它当「上皮净化后仍够不着 0.90」的旁证 —— 引用时**须注明此限**。
+
+---
+
+### 15.2 🔴 用户裁定（2026-09-22）：**不改脚本、不重跑，如实登记**
+
+用户 2026-09-22 就上述缺陷裁定：**不修脚本、不重跑六谱系 R**，按**已知缺陷登记、在报告中就实说明**即可。
+
+裁定依据（只记录，不做引申）：
+
+- 这 9 份 manifest 的 `caliber` 是**产物描述字段**，**不参与任何计算**。`r*` 的权威来源是
+  `<tag>_rstar.json`（其 `rstar_authoritative_over` 字段已声明此优先级）；指标表的 R 侧派生列
+  （`pass_seed` / `pass_aah` / `eligible` / `is_rstar`）**本项目一律不复用**。
+- 修它 = 改一个常量 ＋ **重跑六谱系 R（约 2 h 30 m）**，会**刷新全部 R 侧产物哈希**；
+  而其中五个谱系的产物**已经用户签字**。为一个描述字段去动已签字的产物链，代价与收益不成比例。
+
+**⇒ 由此产生的硬性使用约束**：
+
+1. 引用这 9 份 manifest 的 `caliber` 字段时**一律视为无效**；口径以 `<tag>_rstar.json` 为准，
+   并可回查 `00_build_lineage_subsets.py` 的 `SOURCES`（由 `cells_file_sha256` 认领）。
+2. 这 9 份的 `rstar_status` / `rstar_candidate` 字段**一律视为无效**
+   （「待 GP5 人工签字」已过期；两族的 `"NA"` 是 R 侧预注册口径下的结论，与本项目放宽后的 `r*` 分叉）。
+3. **本缺陷不随本次 PR 关闭。** 若将来因**别的原因**需要重跑 R 侧，届时**顺带**把
+   `10_seurat_traditional.R:440` 改成从 `SOURCES` 现取口径名（并一次性刷新哈希）。
 
 指标表的列含义、R 侧派生列（`pass_seed` / `pass_aah` / `eligible` / `is_rstar`）**一律不复用**
 —— 本项目的 `r*` 是从 `ari_seed_mean` / `ari_xres` / `aah_absorption_rate` 三列**原始值重算**的，
