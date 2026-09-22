@@ -188,7 +188,7 @@ distance="euclidean", genome="hg20", n.cores=1, output.seg="FALSE"
 | 臂 | 状态 |
 | :--- | :--- |
 | CopyKAT（`norm.cell.names`） | 本文件即将执行 |
-| SCEVAN（`norm_cells`） | 🔴 **本机未安装**（`import SCEVAN` → ModuleNotFoundError；R 侧 `infercnv` 亦未装）。⇒ 须**另立一步**：隔离 venv 安装 + 冻结版本号，**不得**装进主环境（见环境约束） |
+| SCEVAN（`norm_cells`） | 🔴 **本机未安装**。⇒ 须**另立一步**：隔离库安装 + 冻结版本，**不得**装进主环境（见环境约束）。<br>**2026-09-22 更正（原写"venv / `import SCEVAN`"，是错的）**：SCEVAN 是 **R 包**（`AntonioDeFalco/SCEVAN`，README: "SCEVAN is an R package"），靠 `devtools::install_github` 装，并依赖同样是 GitHub-only 的 **`yaGST`**（`miccec/yaGST`）。⇒ 隔离手段是**专用 R 库目录**（`.libPaths()`）而非 venv；"冻结版本"只能用 **git commit SHA**，因为两者都不在 CRAN。原先那句 `import SCEVAN` 是拿 Python 去 import 一个 R 包，**该检查本身无意义**。（R 侧 `infercnv` 亦未装。） |
 
 ⇒ 本文件**先跑 CopyKAT 臂**。SCEVAN 臂的安装与运行**另开预注册**，两臂的一致性报告在两者都齐之后做。
 

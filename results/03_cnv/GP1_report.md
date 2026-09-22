@@ -694,6 +694,13 @@ def lesion_ordinal(token): return 2 if token.endswith(SECOND_LESION_SUFFIX) else
       未采纳的替代：numbat（需 BAM，本数据集不提供）、infercnv（更重）、
       infercnvpy（需 Python ≥3.10，本机 3.8.10）。SCEVAN 自身待核项：
       作者自报 F1 0.90 vs copykat 0.63，**是在更密的 scRNA 上、由作者自测**，未独立验证
+- [x] **【2026-09-22 更正】SCEVAN 是 R 包，不是 Python 包。**
+      本行与 [`ANCHOR_PREREG.md`](ANCHOR_PREREG.md) §7 原先把它列在"venv / Python 依赖"下，
+      **属事实错误**。核实：README 原文 "SCEVAN is an R package"；装法
+      `devtools::install_github("AntonioDeFalco/SCEVAN")`，前置依赖
+      `devtools::install_github("miccec/yaGST")`。⇒ 隔离手段改为**专用 R 库目录**，
+      版本冻结改用 **git commit SHA**（两者皆非 CRAN 包，无版本号可钉）。
+      本机实测：R 4.2.2，`devtools`/`remotes` 已有，`yaGST`/`SCEVAN` 未装
 - [ ] GP2 脚本设计要点（来自本门）：① 抽完预测即删中间产物；② 并发上限由**内存**定；
       ③ 逐样本如实上报 not.defined 率，**绝不把它并进 diploid**；
       ④ **全程固定 `n.cores`** 并把该值登记进参数 —— 改核数会改结果（§4.3 专段），
