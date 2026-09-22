@@ -64,6 +64,7 @@ def main():
     norm = {p: [x for x in v if "Normal" in x] for p, v in norm.items()}
 
     cov = collections.Counter(); bad = collections.Counter(); cells = collections.Counter()
+    blk = collections.Counter()
     hours = []
     for (s, st), n in idx.items():
         if "Normal" in s:
@@ -73,6 +74,7 @@ def main():
         an = max((int(idx.get((nn, st), 0)) for nn in norm.get(pat(s), [])), default=0)
         if an < MIN_ANCHOR:
             bad[st] += 1
+            blk[st] += int(n)   # 被挡的是**这一对样本**的核，不是该亚型全部核
         else:
             hours.append((sec(int(n) + an) / 3600, f"{s}|{st}", int(n) + an))
     hours.sort(reverse=True)
@@ -111,32 +113,36 @@ def main():
         ax2.text(okv[i] + bdv[i] + 1.2, i, f"{okv[i]}/{cov[s]}", va="center", fontsize=8.4)
     ax2.set_yticks(y); ax2.set_yticklabels(order, fontsize=9)
     ax2.set_xlabel("number of (sample x subtype) combinations", fontsize=10)
-    ax2.set_title("(B) Under the signed caliber the whole\n"
-                  "epithelium CANNOT be run", fontsize=11, loc="left")
+    ax2.set_title("(B) Under the signed caliber 79/280 combos\n"
+                  "have no usable anchor (prereg G5)", fontsize=11, loc="left")
     ax2.legend(fontsize=7.8, loc="lower right")
     ax2.set_xlim(0, max(cov.values()) * 1.28)
     ax2.grid(axis="x", alpha=0.22)
 
-    # ---- (C) 核数覆盖 ----
+    # ---- (C) 核数覆盖：组合数**高估**损失——少见亚型的核本来就少 ----
     ax3 = fig.add_subplot(gs[0, 2])
     tot = sum(cells.values())
-    run = sum(cells[s] for s in order if s not in ("Serous", "Basal", "Goblet/Mucous",
-                                                   "Ciliated"))
-    ax3.bar([0], [run], color="#2e86c1", label="AT2 + AT1: 100%% runnable")
-    ax3.bar([1], [tot], color="#7f8c8d", alpha=0.45, label="all epithelium")
-    for x, v, lab in ((0, run, f"{run:,}\n({100*run/tot:.1f}%)"),
-                      (1, tot, f"{tot:,}\n(100%)")):
-        ax3.text(x, v * 0.5, lab, ha="center", va="center", fontsize=10,
-                 color="white", fontweight="bold")
-    ax3.set_xticks([0, 1])
-    ax3.set_xticklabels(["AT2 + AT1\n(102/102 runs)", "all 6 subtypes\n(201/280 runs)"],
-                        fontsize=9)
-    ax3.set_ylabel("epithelial nuclei (post 840 floor)", fontsize=10)
-    ax3.set_title("(C) The gap is rare subtypes: 10.7% of nuclei\n"
-                  "sit in partially- or un-anchorable subtypes",
+    okn = [cells[s] - blk[s] for s in order]
+    bdn = [blk[s] for s in order]
+    yy = np.arange(len(order))
+    ax3.barh(yy, okn, color="#2e86c1", label="nuclei in a runnable combo")
+    ax3.barh(yy, bdn, left=okn, color="#c0392b", label="nuclei in a BLOCKED combo")
+    for i, s in enumerate(order):
+        ax3.text(cells[s] + tot * 0.012, i, f"{100*(cells[s]-blk[s])/cells[s]:.0f}% covered",
+                 va="center", fontsize=8.3)
+    ax3.set_yticks(yy); ax3.set_yticklabels(order, fontsize=9)
+    ax3.set_xlabel("lesion epithelial nuclei (post 840 floor)", fontsize=10)
+    unc = sum(bdn)
+    ax3.set_title("(C) 79/280 combos are blocked, yet only\n"
+                  "%.1f%% of nuclei end up uncovered" % (100.0 * unc / tot),
                   fontsize=11, loc="left")
-    ax3.legend(fontsize=8, loc="upper left")
-    ax3.grid(axis="y", alpha=0.22)
+    ax3.legend(fontsize=7.8, loc="upper right")
+    ax3.set_xlim(0, tot * 0.98)
+    ax3.grid(axis="x", alpha=0.22)
+    ax3.text(0.34, 0.52,
+             "combos overstate the loss:\nrare subtypes are sparse per sample",
+             transform=ax3.transAxes, fontsize=8, color="#7b241c",
+             bbox=dict(fc="#fdf2e9", ec="#e67e22", alpha=0.95))
 
     fig.text(0.005, 0.012,
              "Predicted only -- no CopyKAT run was performed for this figure. Cost model "
@@ -153,16 +159,21 @@ def main():
     inv = {
         "figure": os.path.relpath(out, ROOT), "figure_sha256": sha256(out),
         "question": "把 CopyKAT 扩到全量上皮要多久？",
-        "answer": "忠于签字口径（同亚型锚定）挂钟约 6.2 h、CPU 43 h，但 79/280 组合无合格锚定。",
+        "answer": "忠于签字口径（同亚型锚定）挂钟约 6.2 h、CPU 43.4 h。79/280 组合无合格锚定，"
+                  "但被挡的核只占病灶上皮核的 %.1f%%（%d/%d）——组合数高估了损失。"
+                  % (100.0 * unc / tot, unc, tot),
         "single_longest_run_h": hours[0][0], "wall_harmonic_bound_h": hours[0][0],
         "sum_serial_h": sum(hv),
-        "coverage": {s: {"combos": cov[s], "blocked": bad[s], "lesion_nuclei": cells[s]}
-                     for s in order},
+        "coverage": {s: {"combos": cov[s], "blocked": bad[s], "lesion_nuclei": cells[s],
+                         "blocked_nuclei": blk[s]} for s in order},
+        "nuclei_total_lesion_epi": tot, "nuclei_uncovered": unc,
+        "nuclei_uncovered_frac": unc / tot,
         "caveats": [
             "纯预测，未为本图跑任何 CopyKAT。",
             "模型在同 n 不同样本上有 ±43% 的散布（n=393 时 130.6s vs 186.9s）⇒ 挂钟应按区间读，约 5–8 h。",
             "P4 有两个 Normal 样本，配对歧义未消解（本图锚定取两者中核数较多者）。",
             "挂钟受单个最长运行限制，加核不可缩短。",
+            "「79/280 被挡」是**组合数**口径；被挡的核只占 3.4%，因少见亚型每样本本来就没几个核。",
         ],
         "inputs_sha256": {os.path.relpath(p, ROOT): sha256(p) for p in (EST, EPI, CLU, ANN)},
     }
@@ -173,6 +184,8 @@ def main():
     print("清单:", mf)
     print(f"  最长单跑 {hours[0][1]} {hours[0][2]} 核 {hours[0][0]:.2f} h；"
           f"串行合计 {sum(hv):.1f} h；可跑 {len(hv)} 跑")
+    print(f"  被挡核 {unc:,}/{tot:,} = {100.0*unc/tot:.1f}%（组合口径 {sum(bad.values())}"
+          f"/{sum(cov.values())}）")
 
 
 if __name__ == "__main__":

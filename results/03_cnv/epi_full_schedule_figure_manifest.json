@@ -1,8 +1,8 @@
 {
  "figure": "figures/epi_full_schedule.png",
- "figure_sha256": "d7f5d65328ae5a00418414ca75b089800897a9c74aff235e6c05ec5261c8aa9a",
+ "figure_sha256": "d1b9e0dec82d9b812f6997828ce06b3a2fbac9e15feb71da3d3cb082159b5a85",
  "question": "把 CopyKAT 扩到全量上皮要多久？",
- "answer": "忠于签字口径（同亚型锚定）挂钟约 6.2 h、CPU 43 h，但 79/280 组合无合格锚定。",
+ "answer": "忠于签字口径（同亚型锚定）挂钟约 6.2 h、CPU 43.4 h。79/280 组合无合格锚定，但被挡的核只占病灶上皮核的 3.4%（3144/91494）——组合数高估了损失。",
  "single_longest_run_h": 6.228856801818954,
  "wall_harmonic_bound_h": 6.228856801818954,
  "sum_serial_h": 43.36104886955054,
@@ -10,39 +10,49 @@
   "AT2": {
    "combos": 51,
    "blocked": 0,
-   "lesion_nuclei": 61762
+   "lesion_nuclei": 61762,
+   "blocked_nuclei": 0
   },
   "AT1": {
    "combos": 51,
    "blocked": 0,
-   "lesion_nuclei": 20012
+   "lesion_nuclei": 20012,
+   "blocked_nuclei": 0
   },
   "Ciliated": {
    "combos": 51,
    "blocked": 6,
-   "lesion_nuclei": 4479
+   "lesion_nuclei": 4479,
+   "blocked_nuclei": 300
   },
   "Goblet/Mucous": {
    "combos": 50,
    "blocked": 19,
-   "lesion_nuclei": 2301
+   "lesion_nuclei": 2301,
+   "blocked_nuclei": 880
   },
   "Basal": {
    "combos": 50,
    "blocked": 27,
-   "lesion_nuclei": 1581
+   "lesion_nuclei": 1581,
+   "blocked_nuclei": 605
   },
   "Serous": {
    "combos": 27,
    "blocked": 27,
-   "lesion_nuclei": 1359
+   "lesion_nuclei": 1359,
+   "blocked_nuclei": 1359
   }
  },
+ "nuclei_total_lesion_epi": 91494,
+ "nuclei_uncovered": 3144,
+ "nuclei_uncovered_frac": 0.03436290904321595,
  "caveats": [
   "纯预测，未为本图跑任何 CopyKAT。",
   "模型在同 n 不同样本上有 ±43% 的散布（n=393 时 130.6s vs 186.9s）⇒ 挂钟应按区间读，约 5–8 h。",
   "P4 有两个 Normal 样本，配对歧义未消解（本图锚定取两者中核数较多者）。",
-  "挂钟受单个最长运行限制，加核不可缩短。"
+  "挂钟受单个最长运行限制，加核不可缩短。",
+  "「79/280 被挡」是**组合数**口径；被挡的核只占 3.4%，因少见亚型每样本本来就没几个核。"
  ],
  "inputs_sha256": {
   "results/03_cnv/epi_full_cost_estimate.json": "7e4b0e34fcb4c1f9c3752b0ad47f7e4f2f057670c80305284426f33e00f21827",
