@@ -63,6 +63,35 @@ EPI_SUBTYPE <- Sys.getenv("LUAD_EPI_SUBTYPE", "")
 # 与 LUAD_EPI_RULE 互斥：一个改参考，一个改输入，不能同时上，否则归因混淆。
 NORM_REF <- Sys.getenv("LUAD_NORM_REF", "")
 
+# ⚠️ 「锚定 + 同质」臂（2026-09-22；预注册 results/03_cnv/ANCHOR_PREREG.md）。
+# 与上面两个臂都不同：它**同时**改输入（只留一个亚型）与参考（同患者 Normal 的该亚型），
+# 且输入里**同时含** Normal 与病灶两个样本 —— 故必须是**独立分支**，不能复用上面任何一个。
+# ⚠️ 不解除 146-147 行的 NORM_REF×EPI_RULE 互斥守卫（它对归因臂仍然正确）；本臂改为
+# 与新变量互斥。
+ANCHOR_MODE       <- Sys.getenv("LUAD_ANCHOR_MODE", "")
+ANCHOR_REF_SAMPLE <- Sys.getenv("LUAD_ANCHOR_REF_SAMPLE", "")
+ANCHOR_SUBTYPE    <- Sys.getenv("LUAD_ANCHOR_SUBTYPE", "")
+
+is_anchor <- nzchar(ANCHOR_MODE)
+if (is_anchor) {
+  if (ANCHOR_MODE != "sameSubtypeNormal")
+    stop(sprintf("[FAIL] 未知 LUAD_ANCHOR_MODE=%s（当前仅支持 sameSubtypeNormal）", ANCHOR_MODE))
+  if (!nzchar(ANCHOR_REF_SAMPLE))
+    stop("[FAIL] 锚定臂必须给出 LUAD_ANCHOR_REF_SAMPLE（锚定来源样本，如 P11_Normal）")
+  if (!(ANCHOR_SUBTYPE %in% names(ANCHOR_SUBTYPES)))
+    stop(sprintf("[FAIL] 锚定臂必须给出 LUAD_ANCHOR_SUBTYPE ∈ {%s}",
+                 paste(names(ANCHOR_SUBTYPES), collapse = ",")))
+  if (nzchar(EPI_RULE) || nzchar(EPI_SUBTYPE) || nzchar(NORM_REF))
+    stop("[FAIL] 锚定臂与 LUAD_EPI_RULE / LUAD_EPI_SUBTYPE / LUAD_NORM_REF 互斥：本臂同时改输入与参考，叠加会让归因无法拆开")
+  if (identical(ANCHOR_REF_SAMPLE, sample_id))
+    stop("[FAIL] 锚定来源样本不能等于被跑的样本（锚定必须来自同患者的**另一个**样本）")
+  if (!identical(sub("_.*$", "", ANCHOR_REF_SAMPLE), sub("_.*$", "", sample_id)))
+    stop(sprintf("[FAIL] 锚定来源(%s)与被跑样本(%s)不是同一患者 —— 预注册 §2.3 禁止跨患者",
+                 ANCHOR_REF_SAMPLE, sample_id))
+} else if (nzchar(ANCHOR_REF_SAMPLE) || nzchar(ANCHOR_SUBTYPE)) {
+  stop("[FAIL] 设了 LUAD_ANCHOR_REF_SAMPLE / LUAD_ANCHOR_SUBTYPE 却没设 LUAD_ANCHOR_MODE")
+}
+
 out_dir  <- file.path(OUT_ROOT, sample_id)
 json_out <- file.path(OUT_ROOT, sprintf("%s.json", sample_id))
 done_out <- file.path(OUT_ROOT, sprintf("%s.done", sample_id))   # 哨兵：只在成功后落
@@ -106,6 +135,65 @@ if (nrow(Mf) != n_cells_ge_floor)
   stop(sprintf("[FAIL] 地板施加后行数 %d != 过地板细胞数 %d", nrow(Mf), n_cells_ge_floor))
 if (nrow(Mf) == 0L)
   stop(sprintf("[FAIL] %s 过地板后 0 个细胞 —— 不得继续", sample_id))
+
+# ---- 2-anchor. 「锚定 + 同质」臂的输入构造（仅当 LUAD_ANCHOR_MODE 非空）-------
+# 与 2a/2b/2c 都不同：本段**同时**收窄输入（一个亚型）与显式给出参考（另一个样本），
+# 并把**两个样本**拼进同一张矩阵。锚定细胞在矩阵里，故也能被判 —— 这正是 G1 阴性对照。
+#
+# ⚠️ 本段只在锚定臂执行；不设 LUAD_ANCHOR_MODE 时整段跳过，既有各臂逐字节不变。
+anchor <- NULL
+if (is_anchor) {
+  signed <- signed_epi_cnv_barcodes()          # 硬断言签字件 sha256
+
+  # (1) 病灶样本（= 本脚本的 sample_id，Mf 已过地板）
+  A_les <- anchor_narrow(Mf, ANCHOR_SUBTYPE, signed, sprintf("病灶 %s", sample_id))
+
+  # (2) 锚定来源样本：独立读、独立过地板、独立交叉核对（不能用病灶侧的数顶替）
+  Mr <- read_h5ad_sample(ANCHOR_REF_SAMPLE)
+  if (!identical(colnames(Mr), colnames(Mf)))
+    stop("[FAIL] 锚定来源样本与病灶样本的基因向量不一致，无法拼成一张矩阵")
+  n_ref_h5ad <- nrow(Mr)
+  xr <- crosscheck_against_m1(Mr, ANCHOR_REF_SAMPLE)
+  if (xr$max_abs_dev_nCount != 0 || xr$max_abs_dev_nFeature != 0)
+    stop(sprintf("[FAIL] 锚定来源样本与 M1 交叉核对未通过: nCount偏差=%s nFeature偏差=%s",
+                 xr$max_abs_dev_nCount, xr$max_abs_dev_nFeature))
+  nfr <- m1_nfeature(Mr, ANCHOR_REF_SAMPLE)
+  n_ref_ge_floor <- sum(nfr >= FLOOR)
+  Mrf <- apply_coverage_floor(Mr, nfr, FLOOR)
+  rm(nfr); invisible(gc())
+  if (nrow(Mrf) == 0L)
+    stop(sprintf("[FAIL] 锚定来源 %s 过地板后 0 个细胞 —— 基线不可能可靠", ANCHOR_REF_SAMPLE))
+  A_ref <- anchor_narrow(Mrf, ANCHOR_SUBTYPE, signed, sprintf("锚定 %s", ANCHOR_REF_SAMPLE))
+  rm(Mr, Mrf); invisible(gc())
+
+  # (3) G5：锚定细胞数必须 >= copykat 自身的 min.cells=10（与 2c 同一判据、同一常数）
+  if (A_ref$n_usable < 10L)
+    stop(sprintf("[FAIL] %s: 可用锚定细胞仅 %d 个（< copykat 自身的 min.cells=10），基线不可靠",
+                 ANCHOR_REF_SAMPLE, A_ref$n_usable))
+
+  # (4) 拼成一张矩阵：病灶在前、锚定在后（顺序不影响 copykat，但固定下来便于复现）
+  Mf <- rbind(A_les$M, A_ref$M)
+  stopifnot(nrow(Mf) == A_les$n_of_subtype + A_ref$n_of_subtype)
+  norm_ref <- rownames(A_ref$M)                # ← 显式锚定，不是空串
+  anchor <- list(
+    mode = ANCHOR_MODE, subtype_key = ANCHOR_SUBTYPE, subtype_name = A_les$subtype_name,
+    ref_sample = ANCHOR_REF_SAMPLE,
+    ref_n_h5ad = n_ref_h5ad, ref_n_after_floor = n_ref_ge_floor,
+    ref_n_in_signed = A_ref$n_in_signed, ref_n_of_subtype = A_ref$n_of_subtype,
+    ref_n_unmapped_dropped = A_ref$n_unmapped_dropped,
+    ref_n_other_subtype = A_ref$n_other_subtype, ref_n_usable = A_ref$n_usable,
+    les_n_after_floor = A_les$n_after_floor, les_n_in_signed = A_les$n_in_signed,
+    les_n_of_subtype = A_les$n_of_subtype, les_n_unmapped_dropped = A_les$n_unmapped_dropped,
+    les_n_other_subtype = A_les$n_other_subtype, les_n_usable = A_les$n_usable,
+    signed_n_total = length(signed), seed_col = ANCHOR_SEED_COL,
+    epicnv_sha256 = ANCHOR_EPICNV_SHA256,
+    epia_clusters_sha256 = ANCHOR_EPIA_CLUSTERS_SHA256,
+    epia_annot_sha256 = ANCHOR_EPIA_ANNOT_SHA256)
+  cat(sprintf("[ANCHOR] %s: 拼成 %d 细胞（病灶 %d + 锚定 %d）；锚定占 %.3f\n",
+              sample_id, nrow(Mf), A_les$n_of_subtype, A_ref$n_of_subtype,
+              A_ref$n_of_subtype / nrow(Mf)))
+  rm(signed); invisible(gc())
+}
 
 # ---- 2a. 上皮子集（仅当 LUAD_EPI_RULE 非空；默认关闭）------------------------
 # 修正的是**输入对象**：CopyKAT 要求同一谱系。子集施加在地板**之后**，
@@ -166,7 +254,7 @@ n_cells_in <- nrow(Mf)
 
 # ---- 2b. 与预先算好的 tiers 表对撞（跨产物证伪：两个独立实现必须一致）-------
 # ⚠️ 该表只对"全细胞 + 地板 840 + 0.05/0.10"这一条口径有效，故改了输入或参考的臂下自动跳过。
-if (file.exists(TIERS) && DEFAULT_THRESHOLDS && !nzchar(EPI_RULE) && !nzchar(NORM_REF)) {
+if (file.exists(TIERS) && DEFAULT_THRESHOLDS && !nzchar(EPI_RULE) && !nzchar(NORM_REF) && !is_anchor) {
   tr <- read.csv(TIERS, stringsAsFactors = FALSE)
   tr <- tr[tr$sample_id == sample_id, ]
   if (nrow(tr) != 1L) stop(sprintf("[FAIL] tiers 表里 %s 有 %d 行", sample_id, nrow(tr)))
@@ -208,10 +296,13 @@ rss_after_dense <- peak_rss_kb()
 
 n_pred_nd <- ch$n_cells_used - length(ch$survivors)   # 链路预测的 not.defined
 
-cat(sprintf("[GP2] %s: h5ad=%d -floor=%d%s%s → %d cells × %d genes  dense=%.2f GB  rss=%.2f GB  UPDR_eff=%.2f  nd预测=%d\n",
+cat(sprintf("[GP2] %s: h5ad=%d -floor=%d%s%s%s → %d cells × %d genes  dense=%.2f GB  rss=%.2f GB  UPDR_eff=%.2f  nd预测=%d\n",
             sample_id, n_cells_h5ad, n_floor_dropped,
             if (is.null(epi)) "" else sprintf(" -非上皮=%d", epi$n_drop),
             if (is.null(sub)) "" else sprintf(" -非AT2=%d", sub$n_drop),
+            if (is.null(anchor)) "" else sprintf(" [锚定臂: 病灶%s %d + 锚定%s %d]",
+                                                 anchor$subtype_name, anchor$les_n_of_subtype,
+                                                 anchor$ref_sample, anchor$ref_n_of_subtype),
             n_cells_in, nrow(mat_gc),
             prod(dim(mat_gc)) * 8 / 2^30, rss_after_dense / 2^20, ch$up_dr_effective, n_pred_nd))
 
@@ -300,6 +391,38 @@ if (is.null(err) && !is.na(n_judged) && n_judged != ch$n_cells_used)
 
 frac <- if (!is.na(n_judged) && n_judged > 0) cnt$aneuploid / n_judged else NA_real_
 
+# ---- 6b. 锚定臂分侧计分 + G1 锚定纯度（阴性对照）---------------------------
+# 预注册 §4 的可证伪守卫：**锚定细胞（已知正常）被判非整倍体的比例**。
+#   > 0.50 → 基线无意义，该运行 `implausible`，停下报告；> 0.10 → 打旗标单列。
+# ⚠️ 两个阈值是「本项目约定」，无文献出处（预注册 §4 已登记）。整条曲线一并上报。
+# 分侧计分只对锚定臂做：它把"判决"拆成 Normal 侧与病灶侧，是本臂要看的核心量。
+anchor_purity <- NULL
+if (is_anchor && is.null(err) && file.exists(pred_file)) {
+  cn <- as.character(pr$cell.names)
+  if (!all(norm_ref %in% cn))
+    stop(sprintf("[FAIL] %d 个锚定细胞在 prediction.txt 里找不到（cell.names 不匹配）",
+                 sum(!(norm_ref %in% cn))))
+  is_anc <- cn %in% norm_ref
+  lab_a  <- lab[is_anc]                       # 锚定侧
+  lab_l  <- lab[!is_anc]                      # 病灶侧
+  frac_anc <- sum(grepl("aneuploid", lab_a)) / length(lab_a)
+  frac_les <- sum(grepl("aneuploid", lab_l)) / length(lab_l)
+  verdict <- if (frac_anc > 0.50) "stop_anchor_implausible" else
+             if (frac_anc > 0.10) "flag_anchor_purity"     else "ok"
+  anchor_purity <- list(
+    n_anchor_judged = length(lab_a), n_lesion_judged = length(lab_l),
+    n_anchor_aneuploid = sum(grepl("aneuploid", lab_a)),
+    n_lesion_aneuploid = sum(grepl("aneuploid", lab_l)),
+    frac_aneuploid_anchor = frac_anc, frac_aneuploid_lesion = frac_les,
+    lesion_minus_anchor = frac_les - frac_anc,
+    G1_thresholds = "flag>0.10 stop>0.50 (本项目约定, 无文献出处)",
+    G1_verdict = verdict)
+  cat(sprintf("[G1] %s: 锚定侧 %d 核 判非整倍体 %d (%.3f) | 病灶侧 %d 核 判 %d (%.3f) | 差 %+.3f ⇒ %s\n",
+              sample_id, length(lab_a), anchor_purity$n_anchor_aneuploid, frac_anc,
+              length(lab_l), anchor_purity$n_lesion_aneuploid, frac_les,
+              frac_les - frac_anc, verdict))
+}
+
 # ---- 7. 抽完即删中间产物 ----------------------------------------------------
 # 保留：prediction.txt（判定）、final_results_bin_by_cell.txt（CNA 矩阵，下游 M4 要用）
 # 删除：两个 raw_results_*_by_cell.txt（P19 实测 1.5 GB + 3.2 GB）+ heatmap jpeg
@@ -366,6 +489,43 @@ json_write(list(
   norm_ref_epcam_detect = if (is.null(nref)) NULL else nref$epcam_detect,
   norm_ref_ptprc_detect = if (is.null(nref)) NULL else nref$ptprc_detect,
   norm_ref_branch_confirmed = if (is.null(nref)) NULL else logged_known_normal,
+  # ---- 「锚定 + 同质」臂（未开时为 null）----
+  # ⚠️ 计数口径：n_cells_h5ad / n_cells_ge_floor / n_cells_dropped_by_floor 指**病灶样本**；
+  #    锚定来源样本的对应数在 anchor_ref_* 里。合并后的进 copykat 数在 n_cells_in。
+  anchor_mode = if (is.null(anchor)) NULL else anchor$mode,
+  anchor_subtype_key = if (is.null(anchor)) NULL else anchor$subtype_key,
+  anchor_subtype_name = if (is.null(anchor)) NULL else anchor$subtype_name,
+  anchor_seed_col = if (is.null(anchor)) NULL else anchor$seed_col,
+  anchor_ref_sample = if (is.null(anchor)) NULL else anchor$ref_sample,
+  anchor_counts_scope_note = if (is.null(anchor)) NULL else
+    "n_cells_h5ad/n_cells_ge_floor/n_cells_dropped_by_floor = 病灶样本；锚定来源见 anchor_ref_*",
+  anchor_ref_n_h5ad = if (is.null(anchor)) NULL else anchor$ref_n_h5ad,
+  anchor_ref_n_after_floor = if (is.null(anchor)) NULL else anchor$ref_n_after_floor,
+  anchor_ref_n_in_signed = if (is.null(anchor)) NULL else anchor$ref_n_in_signed,
+  anchor_ref_n_of_subtype = if (is.null(anchor)) NULL else anchor$ref_n_of_subtype,
+  anchor_ref_n_other_subtype = if (is.null(anchor)) NULL else anchor$ref_n_other_subtype,
+  anchor_ref_n_unmapped_dropped = if (is.null(anchor)) NULL else anchor$ref_n_unmapped_dropped,
+  anchor_ref_n_usable = if (is.null(anchor)) NULL else anchor$ref_n_usable,
+  anchor_les_n_after_floor = if (is.null(anchor)) NULL else anchor$les_n_after_floor,
+  anchor_les_n_in_signed = if (is.null(anchor)) NULL else anchor$les_n_in_signed,
+  anchor_les_n_of_subtype = if (is.null(anchor)) NULL else anchor$les_n_of_subtype,
+  anchor_les_n_other_subtype = if (is.null(anchor)) NULL else anchor$les_n_other_subtype,
+  anchor_les_n_unmapped_dropped = if (is.null(anchor)) NULL else anchor$les_n_unmapped_dropped,
+  anchor_les_n_usable = if (is.null(anchor)) NULL else anchor$les_n_usable,
+  anchor_signed_n_total = if (is.null(anchor)) NULL else anchor$signed_n_total,
+  anchor_epicnv_sha256 = if (is.null(anchor)) NULL else anchor$epicnv_sha256,
+  anchor_epia_clusters_sha256 = if (is.null(anchor)) NULL else anchor$epia_clusters_sha256,
+  anchor_epia_annot_sha256 = if (is.null(anchor)) NULL else anchor$epia_annot_sha256,
+  # ---- G1 锚定纯度（阴性对照；未开锚定臂时为 null）----
+  anchor_n_judged = if (is.null(anchor_purity)) NULL else anchor_purity$n_anchor_judged,
+  lesion_n_judged = if (is.null(anchor_purity)) NULL else anchor_purity$n_lesion_judged,
+  anchor_n_aneuploid = if (is.null(anchor_purity)) NULL else anchor_purity$n_anchor_aneuploid,
+  lesion_n_aneuploid = if (is.null(anchor_purity)) NULL else anchor_purity$n_lesion_aneuploid,
+  frac_aneuploid_anchor = if (is.null(anchor_purity)) NULL else anchor_purity$frac_aneuploid_anchor,
+  frac_aneuploid_lesion = if (is.null(anchor_purity)) NULL else anchor_purity$frac_aneuploid_lesion,
+  lesion_minus_anchor_frac = if (is.null(anchor_purity)) NULL else anchor_purity$lesion_minus_anchor,
+  G1_thresholds = if (is.null(anchor_purity)) NULL else anchor_purity$G1_thresholds,
+  G1_verdict = if (is.null(anchor_purity)) NULL else anchor_purity$G1_verdict,
   n_cells_in = n_cells_in,
   # ---- 基因集四段 ----
   n_genes_raw = n_genes_raw,
@@ -408,13 +568,24 @@ if (is.null(err) && !is.na(n_judged) && n_judged == ch$n_cells_used) {
   writeLines(c(sprintf("sample_id=%s", sample_id),
                sprintf("finished_at=%s", format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")),
                sprintf("n_judged=%d", n_judged),
+               if (is.null(anchor_purity)) NULL else
+                 sprintf("G1_verdict=%s frac_aneuploid_anchor=%.4f frac_aneuploid_lesion=%.4f",
+                         anchor_purity$G1_verdict, anchor_purity$frac_aneuploid_anchor,
+                         anchor_purity$frac_aneuploid_lesion),
                sprintf("json=%s", json_out)), done_out)
 } else {
   cat(sprintf("[GP2] %s: **未完成**（error=%s）→ 不落哨兵，队列不会跳过它\n",
               sample_id, if (is.null(err)) "判定数不符" else err))
 }
 
-cat(sprintf("[GP2] %s: copykat=%.1fs 峰值RSS=%.2f GB  判定 %d = aneuploid %s + diploid %s + not.defined %s  释放 %.0f MB  err=%s\n",
+cat(sprintf("[GP2] %s: copykat=%.1fs 峰值RSS=%.2f GB  判定 %d = aneuploid %s + diploid %s + not.defined %s%s  释放 %.0f MB  err=%s\n",
             sample_id, wall_copykat, rss_final / 2^20, n_judged,
-            cnt$aneuploid, cnt$diploid, cnt$not_defined, freed_mb,
-            if (is.null(err)) "无" else err))
+            cnt$aneuploid, cnt$diploid, cnt$not_defined,
+            if (is.null(anchor_purity)) "" else
+              sprintf("  [锚定侧 %.3f / 病灶侧 %.3f ⇒ %s]",
+                      anchor_purity$frac_aneuploid_anchor, anchor_purity$frac_aneuploid_lesion,
+                      anchor_purity$G1_verdict),
+            freed_mb, if (is.null(err)) "无" else err))
+if (!is.null(anchor_purity) && anchor_purity$G1_verdict != "ok")
+  cat(sprintf("[G1] ⚠️ %s ⇒ %s：预注册 §5 规定该情形**停下报告**，不得据此宣称任何恶性结论\n",
+              sample_id, anchor_purity$G1_verdict))

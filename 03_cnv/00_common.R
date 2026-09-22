@@ -268,6 +268,103 @@ subtype_at2 <- function(M) {
        sftpc_detect_out = if ("SFTPC" %in% colnames(Xn)) mean(Xn[!keep, "SFTPC"] > 0) else NA_real_)
 }
 
+# ===========================================================================
+# 「锚定 + 同质」臂的输入构造（2026-09-22；预注册 results/03_cnv/ANCHOR_PREREG.md）
+#
+# 方向由用户 2026-09-17 签字（docs/PARAMETERS_AND_SOURCES.md §M2 末行）：
+#   锚定来源 = 同患者 Normal 样本的同一亚型细胞 ⇒ GP2 依赖 GP8a 的产物。
+# 本段只把该方向落到可执行常数上，不重新讨论方向。
+#
+# 三个输入件都**硬断言 sha256**（预注册 §9.1）：哈希不符即停，绝不"大致相符就继续"。
+# 其中只有 epiCNV_subset_barcodes.txt 是**用户签字的冻结件**；另两份是 GP8a 产物，
+# 此处冻结是为本臂可复现，不改变它们各自的签字状态。
+# ===========================================================================
+ANCHOR_EPICNV         <- "/home/eto/luad_v2/results/05_annotation/epiCNV_subset_barcodes.txt"
+ANCHOR_EPICNV_SHA256  <- "db5368c22e1a7ec5c4557660e0f45ea1336ed6b6d3ca395d27daac7de36d9784"
+ANCHOR_EPIA_CLUSTERS  <- "/home/eto/luad_v2/results/04_integration/seurat_trad/epiA/clusters.csv.gz"
+ANCHOR_EPIA_CLUSTERS_SHA256 <- "13e58cb384d2af31cd740d46bfc4516fb0078a1efe1306a25682a7f18bde566f"
+ANCHOR_EPIA_ANNOT     <- "/home/eto/luad_v2/results/05_annotation/epiA_cluster_annotation.csv"
+ANCHOR_EPIA_ANNOT_SHA256 <- "589b69cc03c89afc991d18baaa19fecc935325d11b58f2dccddc2a55ab7c8e4e"
+
+# 亚型标签列 = GP8a 上皮 L2 的**现行口径** r*=0.7 与**现行注释种子** 0
+# （见 project_l2_rstar_caliber：上皮 r*=0.7、注释种子 0）。写成常量，不靠默认。
+ANCHOR_SEED_COL <- "harmony_res0.7_seed0"
+# 亚型键 → epiA 注释表里的 argmax 名。只允许预注册写明的两个（§2.4）。
+ANCHOR_SUBTYPES <- c(at2 = "AT2", at1 = "AT1")
+
+stop_if_sha_mismatch <- function(p, want) {
+  if (!file.exists(p)) stop("[FAIL] 输入件缺失: ", p)
+  got <- digest::digest(file = p, algo = "sha256")
+  if (!identical(got, want))
+    stop(sprintf("[FAIL] 签字冻结件哈希不符，拒绝在其上跑 CNV\n  %s\n  期望 %s\n  实测 %s",
+                 p, want, got))
+  invisible(got)
+}
+
+# 签字冻结的上皮 CNV 参考集（128,091 核）→ barcode 字符向量
+signed_epi_cnv_barcodes <- function(p = ANCHOR_EPICNV) {
+  stop_if_sha_mismatch(p, ANCHOR_EPICNV_SHA256)
+  b <- readLines(p, warn = FALSE)
+  b <- b[nzchar(b)]
+  if (anyDuplicated(b)) stop("[FAIL] epiCNV 签字集里有重复 barcode")
+  if (!all(grepl("\\|", b))) stop("[FAIL] epiCNV 签字集 barcode 不含 '|' 分隔符")
+  b
+}
+
+# GP8a 上皮 L2 的亚型标签：barcode → 亚型名（簇号经 epiA_cluster_annotation 的 argmax 映射）。
+# 挂不上标签的返回 NA（**不填补、不猜**，交调用方计数上报）。
+epi_l2_subtype <- function(barcodes) {
+  stop_if_sha_mismatch(ANCHOR_EPIA_CLUSTERS, ANCHOR_EPIA_CLUSTERS_SHA256)
+  stop_if_sha_mismatch(ANCHOR_EPIA_ANNOT,    ANCHOR_EPIA_ANNOT_SHA256)
+  cl <- read.csv(ANCHOR_EPIA_CLUSTERS, stringsAsFactors = FALSE)
+  need <- c("cell_barcode", ANCHOR_SEED_COL)
+  if (!all(need %in% colnames(cl)))
+    stop(sprintf("[FAIL] epiA clusters 缺列: %s",
+                 paste(setdiff(need, colnames(cl)), collapse = ",")))
+  if (anyDuplicated(cl$cell_barcode)) stop("[FAIL] epiA clusters 里 cell_barcode 重复")
+  an <- read.csv(ANCHOR_EPIA_ANNOT, stringsAsFactors = FALSE)
+  if (!all(c("cluster", "argmax") %in% colnames(an)))
+    stop("[FAIL] epiA_cluster_annotation.csv 缺 cluster/argmax 列")
+  if (anyDuplicated(an$cluster)) stop("[FAIL] epiA_cluster_annotation.csv 里 cluster 重复")
+  mp <- setNames(as.character(an$argmax), as.character(an$cluster))
+
+  m   <- match(barcodes, cl$cell_barcode)
+  out <- rep(NA_character_, length(barcodes))
+  hit <- !is.na(m)
+  k   <- as.character(cl[[ANCHOR_SEED_COL]][m[hit]])
+  lab <- unname(mp[k])
+  if (anyNA(lab))
+    stop("[FAIL] 有簇号在 epiA_cluster_annotation.csv 里找不到 argmax（两张表不同源）")
+  out[hit] <- lab
+  names(out) <- barcodes
+  out
+}
+
+# 把一个样本的（已过地板的）矩阵收窄到「签字集 ∩ 指定亚型」，逐段返回计数。
+# ⚠️ 顺序固定：先签字集（用户签字的细胞来源），再亚型（GP8a 标签）。两段的丢弃量分别计数。
+anchor_narrow <- function(M, subtype_key, signed, side_label) {
+  want <- unname(ANCHOR_SUBTYPES[subtype_key])
+  if (is.na(want)) stop(sprintf("[FAIL] 未知亚型键=%s（仅 %s）",
+                                subtype_key, paste(names(ANCHOR_SUBTYPES), collapse = "/")))
+  n_floor <- nrow(M)
+  in_signed <- rownames(M) %in% signed
+  n_signed  <- sum(in_signed)
+  Ms <- M[in_signed, , drop = FALSE]
+  lab <- epi_l2_subtype(rownames(Ms))
+  keep <- !is.na(lab) & lab == want
+  n_unmapped <- sum(is.na(lab))
+  Mk <- Ms[keep, , drop = FALSE]
+  if (nrow(Mk) == 0L)
+    stop(sprintf("[FAIL] %s: 签字集∩%s 后 0 个细胞 —— 不得继续", side_label, want))
+  # 过 min.gene.per.cell 的可用数（copykat 会先剔这一批，只有活下来的才真正参与分段）
+  n_usable <- sum(Matrix::rowSums(Mk > 0) >= MIN_GENE_PER_CELL)
+  cat(sprintf("[ANCHOR] %s subtype=%s: %d 过地板 → %d 在签字集内 → %d 是 %s（挂不上标签 %d，剔除）→ 可用 %d\n",
+              side_label, subtype_key, n_floor, n_signed, nrow(Mk), want, n_unmapped, n_usable))
+  list(M = Mk, n_after_floor = n_floor, n_in_signed = n_signed, n_of_subtype = nrow(Mk),
+       n_unmapped_dropped = n_unmapped, n_usable = n_usable, subtype_name = want,
+       n_other_subtype = n_signed - nrow(Mk) - n_unmapped)
+}
+
 # ---- hg20 注释表的静默丢弃清单 ---------------------------------------------
 # annotateGenes.hg20() 内部一句 mat <- mat[rownames(mat) %in% shar, ] 会把不在
 # full.anno 里的基因**静默丢掉**。这里显式算出来上报，绝不默不作声。
