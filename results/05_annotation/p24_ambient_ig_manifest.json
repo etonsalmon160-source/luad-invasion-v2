@@ -1,0 +1,320 @@
+{
+ "question": "P24 被剔出 B/浆 的细胞：真浆细胞，还是环境 RNA（免疫球蛋白汤）？",
+ "authorized_by": "用户 2026-09-22 会话内（\"跑，看 IG 是不是假象\"）",
+ "genes": {
+  "IG_CONST": [
+   "IGHG1",
+   "IGHG3",
+   "IGHA1",
+   "IGHA2",
+   "IGHM",
+   "IGHD",
+   "IGHE",
+   "IGKC",
+   "IGLC1",
+   "IGLC7",
+   "IGLL1"
+  ],
+  "PLASMA_PROGRAM": [
+   "MZB1",
+   "XBP1",
+   "PRDM1",
+   "SDC1",
+   "DERL3",
+   "TNFRSF17",
+   "CD27",
+   "IRF4",
+   "POU2AF1",
+   "JCHAIN"
+  ],
+  "B_PROGRAM": [
+   "MS4A1",
+   "CD79A",
+   "CD79B",
+   "CD19",
+   "CD37",
+   "CD74",
+   "BANK1",
+   "FCRL1",
+   "CD22",
+   "TCL1A"
+  ],
+  "note": "JCHAIN 故意排除在 IG_CONST 之外（它是浆程序基因）"
+ },
+ "PartA_preregistered": {
+  "T1_ig_positivity": {
+   "pre_registered_verdict_supports_H1": false,
+   "n_lineages_with_fold_ge": 0,
+   "threshold_fold": 2.0,
+   "min_lineages": 3,
+   "table": [
+    {
+     "A_readopted": "T/NK",
+     "other": 0.591769,
+     "p24": 0.958904,
+     "fold": 1.620403
+    },
+    {
+     "A_readopted": "上皮",
+     "other": 0.566468,
+     "p24": 0.951834,
+     "fold": 1.680298
+    },
+    {
+     "A_readopted": "内皮",
+     "other": 0.472544,
+     "p24": 0.859726,
+     "fold": 1.819357
+    },
+    {
+     "A_readopted": "成纤维",
+     "other": 0.508243,
+     "p24": 0.944269,
+     "fold": 1.857909
+    },
+    {
+     "A_readopted": "髓系",
+     "other": 0.627426,
+     "p24": 0.954713,
+     "fold": 1.521636
+    }
+   ]
+  },
+  "T2_program_any": {
+   "pre_registered_verdict_supports_H1": false,
+   "kept_plasma_pos_rate": 0.9715033820641501,
+   "p24_excl_plasma_pos_rate": 0.9663993890798015,
+   "other_excl_plasma_pos_rate": 0.9229785874081176,
+   "threshold_fold": 0.5
+  }
+ },
+ "metric_defect": {
+  "detected_how": "先按预注册跑完，发现两个度量都饱和；再看 Part B 才有区分力",
+  "T1": "IG 阳性率在全队列本就高（非B谱系其他病人 0.45–0.63），2× 的杆几乎够不到；P24 在 5 个谱系**一律** 1.5–1.9× ⇒ 形态像环境 RNA，但过不了预注册的 2×。",
+  "T2": "'任一浆程序基因 >0' 被 XBP1/PRDM1/IRF4/CD27 这类广谱基因撑到 ~0.95，保留细胞与 P24 被剔细胞无差别 ⇒ 该度量无区分力。",
+  "consequence": "Part A 的两个判定（均=不支持 H1）**照实上报，但不据此下结论**；结论改由 Part B 的有区分力度量给出，且明确标为**事后/探索性**。"
+ },
+ "PartB_exploratory": {
+  "B1_per_lineage": {
+   "metric": "fraction of cells with >= 3/10 plasma-program genes",
+   "rationale": "Part A 的度量饱和；真浆细胞该指标 0.80（中位 7/10），能区分",
+   "exploratory_verdict_supports_H1": true,
+   "n_lineages_with_fold_ge": 5,
+   "threshold_fold": 3.0,
+   "min_lineages": 4,
+   "kept_plasma_ge3_rate": 0.8030984071568842,
+   "kept_plasma_det_median": 7.0,
+   "excluded_all_plasma_ge3_rate": 0.540934624118561,
+   "table": [
+    {
+     "A_readopted": "T/NK",
+     "other": 0.053096,
+     "p24": 0.448363,
+     "fold": 8.444403
+    },
+    {
+     "A_readopted": "上皮",
+     "other": 0.08772,
+     "p24": 0.505003,
+     "fold": 5.756987
+    },
+    {
+     "A_readopted": "内皮",
+     "other": 0.011965,
+     "p24": 0.129484,
+     "fold": 10.821505
+    },
+    {
+     "A_readopted": "成纤维",
+     "other": 0.014466,
+     "p24": 0.24823,
+     "fold": 17.159206
+    },
+    {
+     "A_readopted": "髓系",
+     "other": 0.044344,
+     "p24": 0.334309,
+     "fold": 7.53906
+    }
+   ]
+  },
+  "B2_per_sample": {
+   "p24_samples": [
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_AAH",
+     "n": 7151,
+     "ig_pos": 0.847853,
+     "ig_umi_frac_med": 0.000522,
+     "plasma_ge3": 0.222766,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1853.0
+    },
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_LUAD",
+     "n": 24885,
+     "ig_pos": 0.999799,
+     "ig_umi_frac_med": 0.007924,
+     "plasma_ge3": 0.458549,
+     "plasma_det_med": 2.0,
+     "nFeature_med": 1925.0
+    },
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_Normal",
+     "n": 6380,
+     "ig_pos": 0.838871,
+     "ig_umi_frac_med": 0.000545,
+     "plasma_ge3": 0.231818,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1787.0
+    }
+   ],
+   "other_patients_median": {
+    "ig_pos": 0.4523973709687678,
+    "plasma_ge3": 0.03110021853069684,
+    "nFeature_med": 1178.25
+   },
+   "other_patients_plasma_ge3_range": [
+    0.0,
+    0.16374615202462703
+   ],
+   "note": "P24 的 Normal 与 AAH 两样本同样抬高 ⇒ 不是肿瘤生物学，更像样本处理/环境 RNA。"
+  },
+  "B3_doublet_confound": {
+   "note": "本 h5ad 已剔双体，doublet_class 无常量 ⇒ 双体率取自 M1 表",
+   "table": [
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_LUAD",
+     "n": 24885,
+     "ig_pos": 0.9998,
+     "ig_umi_frac_med": 0.00792,
+     "plasma_ge3": 0.45855,
+     "plasma_det_med": 2.0,
+     "nFeature_med": 1925.0,
+     "m1_doublet_n": 16840
+    },
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_Normal",
+     "n": 6380,
+     "ig_pos": 0.83887,
+     "ig_umi_frac_med": 0.00054,
+     "plasma_ge3": 0.23182,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1787.0,
+     "m1_doublet_n": 1305
+    },
+    {
+     "patient_id": "P24",
+     "sample_id": "P24_AAH",
+     "n": 7151,
+     "ig_pos": 0.84785,
+     "ig_umi_frac_med": 0.00052,
+     "plasma_ge3": 0.22277,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1853.0,
+     "m1_doublet_n": 1651
+    },
+    {
+     "patient_id": "P10",
+     "sample_id": "P10_LUAD",
+     "n": 8446,
+     "ig_pos": 0.99905,
+     "ig_umi_frac_med": 0.00466,
+     "plasma_ge3": 0.16375,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1214.0,
+     "m1_doublet_n": 3447
+    },
+    {
+     "patient_id": "P25",
+     "sample_id": "P25_LUAD",
+     "n": 6294,
+     "ig_pos": 0.99889,
+     "ig_umi_frac_med": 0.00697,
+     "plasma_ge3": 0.15983,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1124.0,
+     "m1_doublet_n": 3853
+    },
+    {
+     "patient_id": "P25",
+     "sample_id": "P25_Normal",
+     "n": 6827,
+     "ig_pos": 0.96748,
+     "ig_umi_frac_med": 0.00238,
+     "plasma_ge3": 0.13344,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1080.0,
+     "m1_doublet_n": 3254
+    },
+    {
+     "patient_id": "P21",
+     "sample_id": "P21_LUAD",
+     "n": 1896,
+     "ig_pos": 0.94726,
+     "ig_umi_frac_med": 0.00193,
+     "plasma_ge3": 0.11762,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1182.0,
+     "m1_doublet_n": 298
+    },
+    {
+     "patient_id": "P5",
+     "sample_id": "P5_LUAD",
+     "n": 9674,
+     "ig_pos": 0.98046,
+     "ig_umi_frac_med": 0.00274,
+     "plasma_ge3": 0.11629,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1216.0,
+     "m1_doublet_n": 3252
+    },
+    {
+     "patient_id": "P7",
+     "sample_id": "P7_LUAD1",
+     "n": 5109,
+     "ig_pos": 0.75298,
+     "ig_umi_frac_med": 0.00073,
+     "plasma_ge3": 0.1147,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1212.0,
+     "m1_doublet_n": 1253
+    },
+    {
+     "patient_id": "P11",
+     "sample_id": "P11_LUAD",
+     "n": 4579,
+     "ig_pos": 0.99803,
+     "ig_umi_frac_med": 0.00385,
+     "plasma_ge3": 0.1081,
+     "plasma_det_med": 1.0,
+     "nFeature_med": 1124.0,
+     "m1_doublet_n": 1596
+    }
+   ]
+  }
+ },
+ "conclusion": {
+  "provisional_verdict": "支持 H1（环境 RNA）",
+  "strength": "P24 三个样本（含 Normal/AAH）在**非 B/浆**的 5 个谱系里，浆细胞程序均显著抬高；P24_LUAD 最高。形状是「全局均一抬高 + 含正常样本」 ⇒ 典型环境 RNA，非真细胞。",
+  "not_a_confirmatory_result": "Part B 的阈值是看到 Part A 缺陷后才定的 ⇒ 只作探索性。若要作结论，须先把该度量重新冻结为口径再跑一次。",
+  "next": "是否据此对 P24 单独加环境校正 / 标记，等你定。"
+ },
+ "inputs": {
+  "h5ad": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+  "gp8c_cell_assignment.csv.gz": "2b3d62ffdf943e114bea908a6e869de58c265d605af06427f31d23c3ea579e3e",
+  "bplasmaA_excluded_cells.csv.gz": "d40fa28194bd96e1583296ac1fa44d994b66edb35c4acba16005ce1cc458e033",
+  "bplasmaA_nocontam_subset_barcodes.txt": "16e0607fb8344bf6d4ee97a5119a0a0644e8109c0535dea2c16513ba6f427c53"
+ },
+ "outputs": {
+  "cells_csv": "results/05_annotation/p24_ambient_ig_cells.csv.gz",
+  "manifest": "results/05_annotation/p24_ambient_ig_manifest.json",
+  "figure": "figures/p24_ambient_ig.png"
+ },
+ "caveat": "IG_CONST 只用恒定区基因；本矩阵缺 IGHG2/IGHG4/IGLC2/IGLC3/IGLL5。检出率基于原始计数（>0），不受归一化影响。",
+ "figure_sha256": "80ec04700e9f786b2d2510b873fb2a2e4d8ce3fa57d52a337f4395a470fe45ac"
+}

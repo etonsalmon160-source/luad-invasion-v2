@@ -1,0 +1,87 @@
+{
+ "figure": "figures/endo_panel_s1_vs_s4.png",
+ "figure_sha256": "1e4ff95b198e3729e3774ac22a9973b7972e3ed871c5dcd2b1dc3ab5e1129c7f",
+ "comparison": "same object (endoA), same r*=0.7, same seed 0, same 43,280 nuclei; only the marker panel differs",
+ "old_panel": {
+  "source": "Travaglini 2020 Table S1 'Canonical markers' (summary column)",
+  "subtypes": [
+   "Artery",
+   "Vein",
+   "Capillary",
+   "Lymphatic"
+  ],
+  "slots_per_type": {
+   "Artery": 2,
+   "Vein": 1,
+   "Capillary": 1,
+   "Lymphatic": 2
+  },
+  "subtypes_that_ever_win": [
+   "Artery",
+   "Lymphatic"
+  ],
+  "n_subtypes_that_ever_win": 2
+ },
+ "new_panel": {
+  "source": "Travaglini 2020 Table S4 per-cluster enriched markers (same paper)",
+  "subtypes": [
+   "Artery",
+   "Vein",
+   "Capillary Aerocyte",
+   "Capillary",
+   "Capillary Intermediate 1",
+   "Capillary Intermediate 2",
+   "Bronchial Vessel 1",
+   "Bronchial Vessel 2",
+   "Lymphatic"
+  ],
+  "genes_used_per_type": {
+   "Artery": 13,
+   "Vein": 20,
+   "Capillary Aerocyte": 11,
+   "Capillary": 4,
+   "Capillary Intermediate 1": 3,
+   "Capillary Intermediate 2": 0,
+   "Bronchial Vessel 1": 6,
+   "Bronchial Vessel 2": 4,
+   "Lymphatic": 20
+  },
+  "scorable": {
+   "Artery": true,
+   "Vein": true,
+   "Capillary Aerocyte": true,
+   "Capillary": true,
+   "Capillary Intermediate 1": true,
+   "Capillary Intermediate 2": false,
+   "Bronchial Vessel 1": true,
+   "Bronchial Vessel 2": true,
+   "Lymphatic": true
+  },
+  "subtypes_that_ever_win": [
+   "Artery",
+   "Bronchial Vessel 1",
+   "Bronchial Vessel 2",
+   "Capillary",
+   "Capillary Aerocyte",
+   "Capillary Intermediate 1",
+   "Lymphatic",
+   "Vein"
+  ],
+  "n_subtypes_that_ever_win": 8
+ },
+ "pre_existing_flags_old": [
+  "Artery",
+  "Vein",
+  "Capillary",
+  "Lymphatic"
+ ],
+ "inputs": {
+  "endoA_cluster_annotation.csv": "673b3323b00ce5225c8f07b2467e9f5cb26e5bc497772707889815dbb1b10a34",
+  "endoA_s4_cluster_annotation.csv": "00f9fae5485e3a74d57acb894d058e3f5a3329404342b29a9263bb9fe1bc137d",
+  "panel_caliber_s4.json": "ce2617c5bde17d8452ede56278129a3cb324d4f5d0a59b3a9acc10b8318388c9"
+ },
+ "inputs_extra": {
+  "05_annotation/classic_panels.py": "2d90ca6af08f2281fa78502ba88b7afd50189ce275a213a52054981335163ced"
+ },
+ "caveat": "Panel caliber panel_caliber_s4.json is provisional until countersigned; so is every number on the New-panel side."
+}

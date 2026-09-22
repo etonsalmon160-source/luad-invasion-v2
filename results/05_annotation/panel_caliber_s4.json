@@ -15,7 +15,7 @@
   },
   "generator": {
     "file": "05_annotation/build_panels_s4.py",
-    "sha256": "924a421cf9ede0b0409cecbb80b2ec8ce57f87f26c23c261aa08e05702391a6f"
+    "sha256": "d0bb544d7022b2d6da14ab178242c7056ba6e1ec3232db3374aa4f18ad109931"
   },
   "rule": {
     "only_10x": true,
@@ -706,13 +706,20 @@
     "核对本登记的口径与用户 2026-09-22 的裁定是否逐条一致（5 项：10x-only / 过筛 / 封顶 / 粒度 / 回退）。",
     "签字前可先看 inventory 里的逐型基因名单是否生物学合理。"
   ],
-  "signed_by": "Claude（自动夜跑 2026-09-22，代冻口径文件；五项口径由用户会话内选定，待追认）",
-  "signed_at": "2026-09-22T08:51:16",
+  "signed_by": "用户本人（会话内追认，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+  "signed_at": "2026-09-22T13:34:47",
   "sign_scope": {
     "caliber_chosen_by": "用户（2026-09-22 会话内，AskUserQuestion 五项：10x-only / 过筛 logFC≥1.0 且特异度≥0.3 / 每型封顶 20 且顺延补齐 / 照 S4 原粒度 / S4 无表者沿用 S1）",
-    "frozen_by": "Claude（自动夜跑 2026-09-22，代冻口径文件；五项口径由用户会话内选定，待追认）",
-    "countersign_required": true,
-    "countersign_note": "🔴 若 frozen_by 不是用户本人，本口径下的结果一律标**探索性（provisional）**，直到用户追认为止。追认方式：把 countersigned_by/countersigned_at 填上。"
+    "frozen_by": "用户本人（会话内追认，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+    "countersign_required": false,
+    "countersign_note": "✅ 已追认（2026-09-22）。用户会话内确认：五项口径（10x-only / logFC≥1.0 且特异度≥0.3 / 每型封顶 20 顺延补齐 / 照 S4 原粒度 / S4 无表者沿用 S1）照原样接受；内皮 Capillary Intermediate 2 不可打分一项照实上报、从亚型结论中剔除。⇒ 本口径下的结果由「探索性（provisional）」升为可用。",
+    "countersigned_by": "用户本人（会话内追认，2026-09-22；非手写签署，账号 etonsalmon160-source）",
+    "countersigned_at": "2026-09-22T13:34:47"
   },
-  "sign_note": "🔴 签字方式：`python3 05_annotation/build_panels_s4.py --sign \"<署名>\"`。未签字前 03_subcluster_annotation.py --panel s4 会 SystemExit。🔴 签的是**这一份具体面板**（panel_module_sha256）；签字后改面板即失效。"
+  "sign_note": "🔴 签字方式：`python3 05_annotation/build_panels_s4.py --sign \"<署名>\"`。未签字前 03_subcluster_annotation.py --panel s4 会 SystemExit。🔴 签的是**这一份具体面板**（panel_module_sha256）；签字后改面板即失效。",
+  "post_sign_notes": [
+    "🔴 本文件的 `generator.sha256` 曾记 924a421c…（夜跑 08:51 写入时该脚本的实际内容），而现在的 `05_annotation/build_panels_s4.py` 是 d0bb544d…（2026-09-22 13:13 由提交 868e590 入库）。⇒ 夜跑之后、入库之前，生成器脚本被改过一次，旧版正文在磁盘与 git 中均已不存在，无法逐行对比。",
+    "🔴 该改动**不影响面板本身**：用现行脚本重跑，`panel_module.sha256` 仍为 dc61f7b5…（与 endoA_s4 / myeloidA_s4 两次注释所用的面板哈希逐字节相同）。⇒ 判定为**面板中性**的改动（不改变任何类型的基因名单）。溯源上记为**已知缺陷**：夜跑那版生成器的正文不可复核。",
+    "🔴 `signed_by`/`signed_at`/`sign_scope.*` 与本节三行均为**签字后手工补写**（生成器每次重写本文件，这些字段会被抹掉）。面板哈希 dc61f7b5… 是签字锚点；补写未触动任何面板或 inventory 字段。"
+  ]
 }
