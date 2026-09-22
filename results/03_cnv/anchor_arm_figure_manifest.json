@@ -1,0 +1,81 @@
+{
+ "figure": "figures/anchor_arm_p11.png",
+ "figure_sha256": "2ecbedbcd99a380f28eaa8020dac7be383db2a4d7f8c93971883432804229a54",
+ "question": "显式锚定 + 单亚型输入同时满足时，CopyKAT 的判决方向对不对、稳不稳？",
+ "answer": "方向对了（IAC 病灶 30.6% > 锚定 0.0%）；但样本量只够冒烟，不足以判方法可用。",
+ "not_a_malignancy_call": true,
+ "preregistration": "results/03_cnv/ANCHOR_PREREG.md",
+ "per_run": {
+  "P11_LUAD": {
+   "n_cells_used": 728,
+   "n_judged": 728,
+   "n_pred_aneuploid": 175,
+   "n_pred_diploid": 509,
+   "n_pred_not_defined": 44,
+   "anchor_n_judged": 157,
+   "lesion_n_judged": 571,
+   "anchor_n_aneuploid": 0,
+   "lesion_n_aneuploid": 175,
+   "frac_aneuploid_anchor": 0,
+   "frac_aneuploid_lesion": 0.306479859894921,
+   "G1_verdict": "ok",
+   "norm_ref_epcam_detect": 0.407643312101911,
+   "norm_ref_ptprc_detect": 0,
+   "norm_ref_n": 157,
+   "norm_ref_n_usable": 157,
+   "anchor_ref_n_of_subtype": 157,
+   "anchor_les_n_of_subtype": 571,
+   "param_coverage_floor": 840
+  },
+  "P11_AAH": {
+   "n_cells_used": 585,
+   "n_judged": 585,
+   "n_pred_aneuploid": 0,
+   "n_pred_diploid": 568,
+   "n_pred_not_defined": 17,
+   "anchor_n_judged": 157,
+   "lesion_n_judged": 428,
+   "anchor_n_aneuploid": 0,
+   "lesion_n_aneuploid": 0,
+   "frac_aneuploid_anchor": 0,
+   "frac_aneuploid_lesion": 0,
+   "G1_verdict": "ok",
+   "norm_ref_epcam_detect": 0.407643312101911,
+   "norm_ref_ptprc_detect": 0,
+   "norm_ref_n": 157,
+   "norm_ref_n_usable": 157,
+   "anchor_ref_n_of_subtype": 157,
+   "anchor_les_n_of_subtype": 428,
+   "param_coverage_floor": 840
+  }
+ },
+ "unplanned_control": {
+  "source": "results/03_cnv/anchor_firstrun_UNPLANNED_control/P11_LUAD_copykat_prediction.txt",
+  "source_sha256": "1b90b853c9491f09ddf27c71e47b35c60537f963fc38759828054672925f5d40",
+  "n_lesion": 571,
+  "n_aneuploid_lesion": 56,
+  "frac_lesion": 0.09807355516637478,
+  "n_anchor": 157,
+  "n_aneuploid_anchor": 0,
+  "frac_anchor": 0.0
+ },
+ "reproducibility_check": {
+  "outroot": "results/03_cnv/anchor_at2_repeat",
+  "verdict": "reproducible",
+  "cell_by_cell_disagreements": 0,
+  "cna_matrix_sha256_identical": true,
+  "cna_matrix_sha256": "a28e2259ea4a79f56aa0274be08e9ebb1ad01e87360e1d61655df878e7bd07c5",
+  "note": "不在预注册里，是额加的可复现性核实；同输入重跑逐细胞判定与 CNA 矩阵字节全同。"
+ },
+ "caveats": [
+  "🔴 首跑那次不是登记过的臂：实现 bug 使锚定在 2c 被清零，copykat 因此走了自动猜基线。它只作**意外对照**，不得当预注册臂引用。",
+  "🔴 `frac_aneuploid_of_judged` 这条 JSON 字段在锚定臂里是**混算**的（分母含锚定细胞），单独引用会误导；必须用 frac_aneuploid_anchor / _lesion 分侧值。",
+  "两次运行的锚定侧结果逐档相同（151 diploid / 6 not.defined / 0 aneuploid）⇒ 自洽，但不等于证明了全局可复现（需同输入重跑，见 anchor_at2_repeat）。",
+  "P11 一对是冒烟与设计验证，不是全量结果，不得据单点判『方法可用/不可用』。",
+  "不产生任何恶性判定，不命名肿瘤细胞。"
+ ],
+ "inputs_sha256": {
+  "results/03_cnv/anchor_at2/P11_LUAD.json": "db4bdd618e041758bfbab10359bfcd48febee3c8c98d02b8f0957d10811a12f5",
+  "results/03_cnv/anchor_at2/P11_AAH.json": "97f1746706bc2faf17968ae70f9103a1f494fa65efa8b315eafb71a69f99d4fa"
+ }
+}

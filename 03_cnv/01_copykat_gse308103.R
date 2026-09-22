@@ -136,65 +136,6 @@ if (nrow(Mf) != n_cells_ge_floor)
 if (nrow(Mf) == 0L)
   stop(sprintf("[FAIL] %s 过地板后 0 个细胞 —— 不得继续", sample_id))
 
-# ---- 2-anchor. 「锚定 + 同质」臂的输入构造（仅当 LUAD_ANCHOR_MODE 非空）-------
-# 与 2a/2b/2c 都不同：本段**同时**收窄输入（一个亚型）与显式给出参考（另一个样本），
-# 并把**两个样本**拼进同一张矩阵。锚定细胞在矩阵里，故也能被判 —— 这正是 G1 阴性对照。
-#
-# ⚠️ 本段只在锚定臂执行；不设 LUAD_ANCHOR_MODE 时整段跳过，既有各臂逐字节不变。
-anchor <- NULL
-if (is_anchor) {
-  signed <- signed_epi_cnv_barcodes()          # 硬断言签字件 sha256
-
-  # (1) 病灶样本（= 本脚本的 sample_id，Mf 已过地板）
-  A_les <- anchor_narrow(Mf, ANCHOR_SUBTYPE, signed, sprintf("病灶 %s", sample_id))
-
-  # (2) 锚定来源样本：独立读、独立过地板、独立交叉核对（不能用病灶侧的数顶替）
-  Mr <- read_h5ad_sample(ANCHOR_REF_SAMPLE)
-  if (!identical(colnames(Mr), colnames(Mf)))
-    stop("[FAIL] 锚定来源样本与病灶样本的基因向量不一致，无法拼成一张矩阵")
-  n_ref_h5ad <- nrow(Mr)
-  xr <- crosscheck_against_m1(Mr, ANCHOR_REF_SAMPLE)
-  if (xr$max_abs_dev_nCount != 0 || xr$max_abs_dev_nFeature != 0)
-    stop(sprintf("[FAIL] 锚定来源样本与 M1 交叉核对未通过: nCount偏差=%s nFeature偏差=%s",
-                 xr$max_abs_dev_nCount, xr$max_abs_dev_nFeature))
-  nfr <- m1_nfeature(Mr, ANCHOR_REF_SAMPLE)
-  n_ref_ge_floor <- sum(nfr >= FLOOR)
-  Mrf <- apply_coverage_floor(Mr, nfr, FLOOR)
-  rm(nfr); invisible(gc())
-  if (nrow(Mrf) == 0L)
-    stop(sprintf("[FAIL] 锚定来源 %s 过地板后 0 个细胞 —— 基线不可能可靠", ANCHOR_REF_SAMPLE))
-  A_ref <- anchor_narrow(Mrf, ANCHOR_SUBTYPE, signed, sprintf("锚定 %s", ANCHOR_REF_SAMPLE))
-  rm(Mr, Mrf); invisible(gc())
-
-  # (3) G5：锚定细胞数必须 >= copykat 自身的 min.cells=10（与 2c 同一判据、同一常数）
-  if (A_ref$n_usable < 10L)
-    stop(sprintf("[FAIL] %s: 可用锚定细胞仅 %d 个（< copykat 自身的 min.cells=10），基线不可靠",
-                 ANCHOR_REF_SAMPLE, A_ref$n_usable))
-
-  # (4) 拼成一张矩阵：病灶在前、锚定在后（顺序不影响 copykat，但固定下来便于复现）
-  Mf <- rbind(A_les$M, A_ref$M)
-  stopifnot(nrow(Mf) == A_les$n_of_subtype + A_ref$n_of_subtype)
-  norm_ref <- rownames(A_ref$M)                # ← 显式锚定，不是空串
-  anchor <- list(
-    mode = ANCHOR_MODE, subtype_key = ANCHOR_SUBTYPE, subtype_name = A_les$subtype_name,
-    ref_sample = ANCHOR_REF_SAMPLE,
-    ref_n_h5ad = n_ref_h5ad, ref_n_after_floor = n_ref_ge_floor,
-    ref_n_in_signed = A_ref$n_in_signed, ref_n_of_subtype = A_ref$n_of_subtype,
-    ref_n_unmapped_dropped = A_ref$n_unmapped_dropped,
-    ref_n_other_subtype = A_ref$n_other_subtype, ref_n_usable = A_ref$n_usable,
-    les_n_after_floor = A_les$n_after_floor, les_n_in_signed = A_les$n_in_signed,
-    les_n_of_subtype = A_les$n_of_subtype, les_n_unmapped_dropped = A_les$n_unmapped_dropped,
-    les_n_other_subtype = A_les$n_other_subtype, les_n_usable = A_les$n_usable,
-    signed_n_total = length(signed), seed_col = ANCHOR_SEED_COL,
-    epicnv_sha256 = ANCHOR_EPICNV_SHA256,
-    epia_clusters_sha256 = ANCHOR_EPIA_CLUSTERS_SHA256,
-    epia_annot_sha256 = ANCHOR_EPIA_ANNOT_SHA256)
-  cat(sprintf("[ANCHOR] %s: 拼成 %d 细胞（病灶 %d + 锚定 %d）；锚定占 %.3f\n",
-              sample_id, nrow(Mf), A_les$n_of_subtype, A_ref$n_of_subtype,
-              A_ref$n_of_subtype / nrow(Mf)))
-  rm(signed); invisible(gc())
-}
-
 # ---- 2a. 上皮子集（仅当 LUAD_EPI_RULE 非空；默认关闭）------------------------
 # 修正的是**输入对象**：CopyKAT 要求同一谱系。子集施加在地板**之后**，
 # 使"全细胞 vs 仅上皮"的对照除这一个变量外完全一致。
@@ -249,6 +190,77 @@ if (nzchar(NORM_REF)) {
               sample_id, nref$n, nref$n_usable, MIN_GENE_PER_CELL,
               nref$epcam_detect, nref$ptprc_detect))
 }
+
+# ---- 2-anchor. 「锚定 + 同质」臂的输入构造（仅当 LUAD_ANCHOR_MODE 非空）-------
+# 与 2a/2b/2c 都不同：本段**同时**收窄输入（一个亚型）与显式给出参考（另一个样本），
+# 并把**两个样本**拼进同一张矩阵。锚定细胞在矩阵里，故也能被判 —— 这正是 G1 阴性对照。
+#
+# ⚠️ 本段只在锚定臂执行；不设 LUAD_ANCHOR_MODE 时整段跳过，既有各臂逐字节不变。
+# 🔴 **必须放在 2c 之后**：2c 开头有一句无条件的 `norm_ref <- character(0)`，
+#    放在它之前会被清零（2026-09-22 首跑踩过：锚定传递静默失效 → G1 拿到 length 0 → 崩）。
+#    锚定臂下 2a/2b/2c 全不执行，故 Mf 到这里仍是地板后的病灶矩阵，位置等价。
+anchor <- NULL
+if (is_anchor) {
+  signed <- signed_epi_cnv_barcodes()          # 硬断言签字件 sha256
+
+  # (1) 病灶样本（= 本脚本的 sample_id，Mf 已过地板）
+  A_les <- anchor_narrow(Mf, ANCHOR_SUBTYPE, signed, sprintf("病灶 %s", sample_id))
+
+  # (2) 锚定来源样本：独立读、独立过地板、独立交叉核对（不能用病灶侧的数顶替）
+  Mr <- read_h5ad_sample(ANCHOR_REF_SAMPLE)
+  if (!identical(colnames(Mr), colnames(Mf)))
+    stop("[FAIL] 锚定来源样本与病灶样本的基因向量不一致，无法拼成一张矩阵")
+  n_ref_h5ad <- nrow(Mr)
+  xr <- crosscheck_against_m1(Mr, ANCHOR_REF_SAMPLE)
+  if (xr$max_abs_dev_nCount != 0 || xr$max_abs_dev_nFeature != 0)
+    stop(sprintf("[FAIL] 锚定来源样本与 M1 交叉核对未通过: nCount偏差=%s nFeature偏差=%s",
+                 xr$max_abs_dev_nCount, xr$max_abs_dev_nFeature))
+  nfr <- m1_nfeature(Mr, ANCHOR_REF_SAMPLE)
+  n_ref_ge_floor <- sum(nfr >= FLOOR)
+  Mrf <- apply_coverage_floor(Mr, nfr, FLOOR)
+  rm(nfr); invisible(gc())
+  if (nrow(Mrf) == 0L)
+    stop(sprintf("[FAIL] 锚定来源 %s 过地板后 0 个细胞 —— 基线不可能可靠", ANCHOR_REF_SAMPLE))
+  A_ref <- anchor_narrow(Mrf, ANCHOR_SUBTYPE, signed, sprintf("锚定 %s", ANCHOR_REF_SAMPLE))
+  rm(Mr, Mrf); invisible(gc())
+
+  # (3) G5：锚定细胞数必须 >= copykat 自身的 min.cells=10（与 2c 同一判据、同一常数）
+  if (A_ref$n_usable < 10L)
+    stop(sprintf("[FAIL] %s: 可用锚定细胞仅 %d 个（< copykat 自身的 min.cells=10），基线不可靠",
+                 ANCHOR_REF_SAMPLE, A_ref$n_usable))
+
+  # (4) 拼成一张矩阵：病灶在前、锚定在后（顺序不影响 copykat，但固定下来便于复现）
+  Mf <- rbind(A_les$M, A_ref$M)
+  stopifnot(nrow(Mf) == A_les$n_of_subtype + A_ref$n_of_subtype)
+  norm_ref <- rownames(A_ref$M)                # ← 显式锚定，不是空串
+
+  # (5) 复用 2c 的那套 nref 结构，使 G3（日志守卫）与 JSON 的既有字段一并生效。
+  #     EPCAM/PTPRC 检出率用来核对"锚定细胞确实是 AT2 而非混入免疫/基质"。
+  nref <- list(mode = ANCHOR_MODE,
+               n = length(norm_ref), n_usable = A_ref$n_usable,
+               epcam_detect = if ("EPCAM" %in% colnames(A_ref$M)) mean(A_ref$M[, "EPCAM"] > 0) else NA_real_,
+               ptprc_detect = if ("PTPRC" %in% colnames(A_ref$M)) mean(A_ref$M[, "PTPRC"] > 0) else NA_real_)
+
+  anchor <- list(
+    mode = ANCHOR_MODE, subtype_key = ANCHOR_SUBTYPE, subtype_name = A_les$subtype_name,
+    ref_sample = ANCHOR_REF_SAMPLE,
+    ref_n_h5ad = n_ref_h5ad, ref_n_after_floor = n_ref_ge_floor,
+    ref_n_in_signed = A_ref$n_in_signed, ref_n_of_subtype = A_ref$n_of_subtype,
+    ref_n_unmapped_dropped = A_ref$n_unmapped_dropped,
+    ref_n_other_subtype = A_ref$n_other_subtype, ref_n_usable = A_ref$n_usable,
+    les_n_after_floor = A_les$n_after_floor, les_n_in_signed = A_les$n_in_signed,
+    les_n_of_subtype = A_les$n_of_subtype, les_n_unmapped_dropped = A_les$n_unmapped_dropped,
+    les_n_other_subtype = A_les$n_other_subtype, les_n_usable = A_les$n_usable,
+    signed_n_total = length(signed), seed_col = ANCHOR_SEED_COL,
+    epicnv_sha256 = ANCHOR_EPICNV_SHA256,
+    epia_clusters_sha256 = ANCHOR_EPIA_CLUSTERS_SHA256,
+    epia_annot_sha256 = ANCHOR_EPIA_ANNOT_SHA256)
+  cat(sprintf("[ANCHOR] %s: 拼成 %d 细胞（病灶 %d + 锚定 %d）；锚定占 %.3f；EPCAM检出率=%.3f PTPRC检出率=%.3f\n",
+              sample_id, nrow(Mf), A_les$n_of_subtype, A_ref$n_of_subtype,
+              A_ref$n_of_subtype / nrow(Mf), nref$epcam_detect, nref$ptprc_detect))
+  rm(signed); invisible(gc())
+}
+
 # 进入后续链路的细胞数。EPI 关闭时恒等于 n_cells_ge_floor —— 三个守卫据此统一。
 n_cells_in <- nrow(Mf)
 
@@ -405,6 +417,11 @@ if (is_anchor && is.null(err) && file.exists(pred_file)) {
   is_anc <- cn %in% norm_ref
   lab_a  <- lab[is_anc]                       # 锚定侧
   lab_l  <- lab[!is_anc]                      # 病灶侧
+  # 两侧都必须非空，否则下面的比例是 0/0 = NaN，if(NaN) 会报一句看不懂的错
+  # （2026-09-22 首跑踩过：锚定传递被清零，这里 length(lab_a)=0 → 崩在 if 上）
+  if (length(lab_a) == 0L || length(lab_l) == 0L)
+    stop(sprintf("[FAIL] 锚定臂分侧失败：锚定侧 %d 核、病灶侧 %d 核（两侧都必须非空）",
+                 length(lab_a), length(lab_l)))
   frac_anc <- sum(grepl("aneuploid", lab_a)) / length(lab_a)
   frac_les <- sum(grepl("aneuploid", lab_l)) / length(lab_l)
   verdict <- if (frac_anc > 0.50) "stop_anchor_implausible" else
@@ -483,7 +500,7 @@ json_write(list(
   subtype_sftpc_detect_in = if (is.null(sub)) NULL else sub$sftpc_detect_in,
   subtype_sftpc_detect_out = if (is.null(sub)) NULL else sub$sftpc_detect_out,
   # ---- 传统锚定参考（关闭时全为 null）----
-  norm_ref_mode = if (is.null(nref)) NULL else NORM_REF,
+  norm_ref_mode = if (is.null(nref)) NULL else nref$mode,
   norm_ref_n = if (is.null(nref)) NULL else nref$n,
   norm_ref_n_usable = if (is.null(nref)) NULL else nref$n_usable,
   norm_ref_epcam_detect = if (is.null(nref)) NULL else nref$epcam_detect,
