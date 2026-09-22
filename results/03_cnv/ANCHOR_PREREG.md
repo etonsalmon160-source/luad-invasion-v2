@@ -12,7 +12,8 @@
 **不是**：不是新路线。**方向由用户 2026-09-17 签字**（同文件 §M2 末行「路线决策」）：
 
 > 在单细胞层面解决，不走空间模态。**双臂互证：CopyKAT ＋ SCEVAN**，喂**同一个显式锚定**
-> （CopyKAT 走 `norm.cell.names`，SCEVAN 走 `norm_cells`），报两者一致性。
+> （CopyKAT 走 `norm.cell.names`，SCEVAN 走 `norm_cell`——⚠️ 2026-09-22 实测更正：
+> README 写的是 `norm_cells`，但 v1.0.3 代码里真名是 `norm_cell`／`norm_cell_names`，见 §7），报两者一致性。
 > **锚定来源 = 同患者 Normal 样本的同一亚型细胞** ⇒ GP2 依赖 GP8a 的产物。
 > **AAH/AIS 单独标低置信度**并写明原因。
 
@@ -167,7 +168,7 @@ distance="euclidean", genome="hg20", n.cores=1, output.seg="FALSE"
 按 `GP1_report.md` §9.9 与 §M2 工具可用性行：
 
 - **inferCNV (R)** —— 可行，须强制指定参考（本机未装，需安装）
-- **SCEVAN** —— 只用计数矩阵、支持 `norm_cells`（本机未装）
+- **SCEVAN** —— 只用计数矩阵、支持显式正常细胞（本机已装，见 §7）
 
 ⇒ **不得**回头再调地板 / `KS.cut` / `LOW.DR` / 上皮或亚型定义来凑结果。
 
@@ -188,9 +189,9 @@ distance="euclidean", genome="hg20", n.cores=1, output.seg="FALSE"
 | 臂 | 状态 |
 | :--- | :--- |
 | CopyKAT（`norm.cell.names`） | 本文件即将执行 |
-| SCEVAN（`norm_cells`） | 🔴 **本机未安装**。⇒ 须**另立一步**：隔离库安装 + 冻结版本，**不得**装进主环境（见环境约束）。<br>**2026-09-22 更正（原写"venv / `import SCEVAN`"，是错的）**：SCEVAN 是 **R 包**（`AntonioDeFalco/SCEVAN`，README: "SCEVAN is an R package"），靠 `devtools::install_github` 装，并依赖同样是 GitHub-only 的 **`yaGST`**（`miccec/yaGST`）。⇒ 隔离手段是**专用 R 库目录**（`.libPaths()`）而非 venv；"冻结版本"只能用 **git commit SHA**，因为两者都不在 CRAN。原先那句 `import SCEVAN` 是拿 Python 去 import 一个 R 包，**该检查本身无意义**。（R 侧 `infercnv` 亦未装。） |
+| SCEVAN（真名 `norm_cell`） | ✅ **2026-09-22 已隔离安装完成**（`03_cnv/09_install_scevan_isolated.R`，日志 `logs/scevan_install.log`）：装进专用 R 库 **`/home/eto/Rlibs/SCEVAN`**（`.libPaths()` 前置加载），主库（Seurat/harmony/scran/copykat）装后复核未受影响。<br>版本冻结（两者均非 CRAN，只能用 git SHA）：**`yaGST` 2017.8.25 @ `56227df`**、**`SCEVAN` 1.0.3 @ `5a49b88a`**。<br>**2026-09-22 更正（原写"venv / `import SCEVAN`"，是错的）**：SCEVAN 是 **R 包**（`AntonioDeFalco/SCEVAN`，README: "SCEVAN is an R package"），靠 `devtools::install_github` 装，并依赖同样是 GitHub-only 的 **`yaGST`**（`miccec/yaGST`）。⇒ 隔离手段是**专用 R 库目录**而非 venv。原先那句 `import SCEVAN` 是拿 Python 去 import 一个 R 包，**该检查本身无意义**。<br>🔴 **参数名二次更正**：README 写的 `norm_cells` **在 1.0.3 里不存在**；`formals()` 实测真名为 **`pipelineCNA(norm_cell=)`** 与 **`classifyTumorCells(norm_cell_names=)`**（`FIXED_NORMAL_CELLS` 两者都有）。照 README 字面名调用会直接报 unused argument。<br>⚠️ **只装了，没跑**——SCEVAN 臂的**运行**仍须另开预注册。（R 侧 `infercnv` 亦未装。） |
 
-⇒ 本文件**先跑 CopyKAT 臂**。SCEVAN 臂的安装与运行**另开预注册**，两臂的一致性报告在两者都齐之后做。
+⇒ 本文件**先跑 CopyKAT 臂**。SCEVAN 臂**已具备运行条件（装好且版本已冻结）**，但其运行与判读**另开预注册**；两臂的一致性报告在两者都齐之后做。
 
 ---
 

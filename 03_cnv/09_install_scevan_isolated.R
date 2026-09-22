@@ -47,10 +47,18 @@ for (p in c("yaGST", "SCEVAN")) {
               tryCatch(as.character(utils::packageVersion(p)), error = function(e) "NA")))
 }
 cat("  SCEVAN 取自:", find.package("SCEVAN"), "\n")
-cat("  norm_cells 参数存在:", "norm_cells" %in% names(formals(SCEVAN::SCEVAN)),
-    "\n")
+# 🔴 2026-09-22 实测更正：README 写的 `norm_cells` **在本版本不存在**。
+#    v1.0.3 的真实参数名是 pipelineCNA(norm_cell=) 与 classifyTumorCells(norm_cell_names=)。
+#    若照 README 的字面名去调，会直接报 "unused argument"。此处按**代码里的真名**核验。
+p_args <- names(formals(SCEVAN::pipelineCNA))
+c_args <- names(formals(SCEVAN::classifyTumorCells))
+cat("  pipelineCNA 有 `norm_cell`:", "norm_cell" %in% p_args, "\n")
+cat("  classifyTumorCells 有 `norm_cell_names`:",
+    "norm_cell_names" %in% c_args, "\n")
 cat("  FIXED_NORMAL_CELLS 存在:",
-    "FIXED_NORMAL_CELLS" %in% names(formals(SCEVAN::SCEVAN)), "\n")
+    "FIXED_NORMAL_CELLS" %in% p_args, "\n")
+cat("  不存在 `norm_cells`（README 的叫法）:",
+    !("norm_cells" %in% c(p_args, c_args)), "\n")
 
 # 主库完好性核对：装完后项目依赖的包仍可加载
 cat("\n===== 主库未受影响的核对 =====\n")

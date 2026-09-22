@@ -1,0 +1,53 @@
+{
+ "figure": "figures/epi_full_schedule.png",
+ "figure_sha256": "d7f5d65328ae5a00418414ca75b089800897a9c74aff235e6c05ec5261c8aa9a",
+ "question": "把 CopyKAT 扩到全量上皮要多久？",
+ "answer": "忠于签字口径（同亚型锚定）挂钟约 6.2 h、CPU 43 h，但 79/280 组合无合格锚定。",
+ "single_longest_run_h": 6.228856801818954,
+ "wall_harmonic_bound_h": 6.228856801818954,
+ "sum_serial_h": 43.36104886955054,
+ "coverage": {
+  "AT2": {
+   "combos": 51,
+   "blocked": 0,
+   "lesion_nuclei": 61762
+  },
+  "AT1": {
+   "combos": 51,
+   "blocked": 0,
+   "lesion_nuclei": 20012
+  },
+  "Ciliated": {
+   "combos": 51,
+   "blocked": 6,
+   "lesion_nuclei": 4479
+  },
+  "Goblet/Mucous": {
+   "combos": 50,
+   "blocked": 19,
+   "lesion_nuclei": 2301
+  },
+  "Basal": {
+   "combos": 50,
+   "blocked": 27,
+   "lesion_nuclei": 1581
+  },
+  "Serous": {
+   "combos": 27,
+   "blocked": 27,
+   "lesion_nuclei": 1359
+  }
+ },
+ "caveats": [
+  "纯预测，未为本图跑任何 CopyKAT。",
+  "模型在同 n 不同样本上有 ±43% 的散布（n=393 时 130.6s vs 186.9s）⇒ 挂钟应按区间读，约 5–8 h。",
+  "P4 有两个 Normal 样本，配对歧义未消解（本图锚定取两者中核数较多者）。",
+  "挂钟受单个最长运行限制，加核不可缩短。"
+ ],
+ "inputs_sha256": {
+  "results/03_cnv/epi_full_cost_estimate.json": "7e4b0e34fcb4c1f9c3752b0ad47f7e4f2f057670c80305284426f33e00f21827",
+  "results/05_annotation/epiCNV_subset_barcodes.txt": "db5368c22e1a7ec5c4557660e0f45ea1336ed6b6d3ca395d27daac7de36d9784",
+  "results/04_integration/seurat_trad/epiA/clusters.csv.gz": "13e58cb384d2af31cd740d46bfc4516fb0078a1efe1306a25682a7f18bde566f",
+  "results/05_annotation/epiA_cluster_annotation.csv": "589b69cc03c89afc991d18baaa19fecc935325d11b58f2dccddc2a55ab7c8e4e"
+ }
+}
