@@ -1,0 +1,43 @@
+{
+  "decision": "P24 保留 + 标注（不剔除、不现在加环境校正）",
+  "base_finding": "P24 的三样本（Normal/AAH/IAC）在结构上不可能造浆细胞的五个谱系里都有异常高的浆细胞程序信号，确认版三项全过 ⇒ 是环境 RNA（样本处理/上机），不是肿瘤生物学。详见 GP8c §三（二）。",
+  "decided_by": "用户本人（2026-09-22 会话内表态『p24先保存标注吧』）",
+  "decided_at": "2026-09-22",
+  "why_not_drop": {
+    "note": "剔除是最省事的选项，但代价集中在最薄的一期。逐期同阶段例数（去 P24 后）：",
+    "per_stage_after_dropping_p24": {
+      "Normal": {"patients_full": 23, "patients_without_p24": 22, "samples_without_p24": 23},
+      "AAH": {"patients_full": 8, "patients_without_p24": 7, "samples_without_p24": 8},
+      "AIS": {"patients_full": 12, "patients_without_p24": 12, "samples_without_p24": 14},
+      "MIA": {"patients_full": 4, "patients_without_p24": 4, "samples_without_p24": 4},
+      "IAC": {"patients_full": 23, "patients_without_p24": 22, "samples_without_p24": 23}
+    },
+    "p24_share_of_stage_nuclei": {"Normal": 0.069, "AAH": 0.208, "IAC": 0.184},
+    "triplet_complete_patients": {
+      "definition": "同时拥有 Normal + AAH + IAC 三个样本的病人",
+      "all": ["P24", "P4", "P6", "P9", "P11", "P20", "P22", "P25"],
+      "n": 8,
+      "n_without_p24": 7
+    },
+    "conclusion": "剔除 P24 会让 AAH 期从 8 例降到 7 例、三期齐全的病人从 8 例降到 7 例（-12.5%），而 AAH 是 Normal→AAH→AIS→MIA→IAC 链上最薄的一环。故不剔除。"
+  },
+  "why_not_correct_now": "现在加环境校正要回改表达对象 → 重跑聚类 → 重跑全部注释，GP1–GP8c 已签字产物全部作废。若要做，应作为独立里程碑，而不是塞进本分支。",
+  "flag_rule": {
+    "flag": "patient_id == \"P24\"",
+    "note": "无需给已签字的产物加列——`patient_id` 本来就存在于各产物的 obs，逐细胞文件名里也含 sample_id（P24_Normal / P24_AAH / P24_LUAD）。因此本条标注是**纯规则**，不改动任何已签字文件。",
+    "samples": ["P24_Normal", "P24_AAH", "P24_LUAD"]
+  },
+  "mandatory_reporting": {
+    "rule": "凡结论涉及 B/浆 分区、谱系构成比例、或跨分期细胞比例，**必须双报（含 P24 / 去 P24）**。",
+    "why": "P24 占 B/浆 子集 36.4%（全库平均 11.7%），是 B/浆 剔除率的唯一主要来源（去掉后 26.7% → 15.7%）。只在 B/浆 分区内效应最大，其余五个谱系富集倍数 0.63–1.33×（无明显富集）。",
+    "not_required_for": "不涉及上述内容的结论（如某个上皮亚型的 marker 表达）无需双报，附一句标注即可。"
+  },
+  "sensitivity_numbers_not_yet_computed": "『去 P24』的具体数值**本次不算**。下游真要用时，须先冻结一份口径（口径先冻结、再计算，法则 3.1），再跑对照。",
+  "related": {
+    "evidence": "results/05_annotation/GP8c_report.md §三（二）",
+    "caliber": "results/05_annotation/p24_ambient_caliber.json",
+    "confirm_manifest": "results/05_annotation/p24_ambient_confirm_manifest.json"
+  },
+  "signed_by": "用户本人（2026-09-22 会话内表态『p24先保存标注吧』；非手写签署）",
+  "signed_at": "2026-09-22"
+}
