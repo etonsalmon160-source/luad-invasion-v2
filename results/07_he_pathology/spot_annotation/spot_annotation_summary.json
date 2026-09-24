@@ -1,0 +1,62 @@
+{
+  "script": "07_he_pathology/04_spot_annotation.py",
+  "status": "RAW PROBABILITIES — 只产出测量值，未施加任何类别判定",
+  "model": "vinid/plip (CLIP ViT-B/32)",
+  "frozen": {
+    "crop": 448,
+    "batch": 512,
+    "n_threads": 20,
+    "min_tissue_frac": 0.1,
+    "white_thresh": 230,
+    "prompt_template": "a histopathology image of {}",
+    "labels": [
+      "lung adenocarcinoma",
+      "normal lung tissue",
+      "lung tissue with atypical adenomatous hyperplasia",
+      "lung tissue with adenocarcinoma in situ",
+      "fibrous stroma",
+      "lymphoid tissue",
+      "an empty glass slide"
+    ],
+    "neoplastic_idx": [
+      0,
+      2,
+      3
+    ],
+    "nonepi_idx": [
+      4,
+      5,
+      6
+    ]
+  },
+  "why_prompt_set_unchanged": "沿用 03_cohort_screen.py 的 7 提示词；增删会重新归一化 softmax，使那边已验证的 Spearman rho=0.695 (p=2.8e-09) 失效",
+  "n_slides_run": 56,
+  "n_slides_skipped": 0,
+  "n_slides_failed": 0,
+  "n_spot_this_run": 639650,
+  "pending_rule": {
+    "note": "类别归属规则属口径，未经签字不得施加。本脚本只落盘原始概率。",
+    "argmax_ruled_out": {
+      "evidence": "P4 逐 spot 实测（n=791）：腺癌在 Normal 与 LUAD 上被选为 argmax 的比例均为 0.0%；LUAD 的 argmax 有 66.2% 落在「AAH」、22.8% 落在「空玻璃片」；「空玻璃片」在 Normal 真组织上也占 21.5%",
+      "conclusion": "argmax 不可用于打标签 —— 腺癌永远不是 argmax，且空片提示词系统性抢票"
+    },
+    "candidate": {
+      "epithelium_normal": "normal_score 高（且非背景）",
+      "epithelium_lesion": "neoplastic_score 高",
+      "non_epithelial": "nonepi_score（stroma+lymphoid+empty）高",
+      "background": "由 tissue_frac 与 empty 提示词共同判定"
+    },
+    "open_questions": [
+      "三档还是五档？两两之间的分界用哪个分数、阈值多少？",
+      "阈值必须用 P4_Normal 正常区与已知病变区定标后再冻结，不得回头看结果凑（法则 3.2）",
+      "低组织占比 spot（tissue_frac 接近 0.10）是否单独一档？"
+    ]
+  },
+  "caveats": [
+    "PLIP 给不了 WHO 细分级（AAH/AIS/MIA）；实测 AAH 会抢 LUAD 的 argmax",
+    "细分级在原文由病理学家逐 spot 给出；我们无此数据，不得冒充",
+    "deposited H&E 5.66um/px，PLIP 原生约 0.5um/px（差约 11 倍）",
+    "crop 448px 覆盖约 2.5mm 视野，远大于 spot 直径 55um ⇒ 是邻域分类",
+    "零样本模型未在肺 FFPE 上微调；本注释是 R 侧 CNV 的锚定输入，不是金标准"
+  ]
+}

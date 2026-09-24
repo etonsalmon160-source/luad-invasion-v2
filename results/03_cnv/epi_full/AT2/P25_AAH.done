@@ -1,0 +1,5 @@
+sample_id=P25_AAH
+finished_at=2026-09-23T03:29:17+0800
+n_judged=1289
+G1_verdict=ok frac_aneuploid_anchor=0.0352 frac_aneuploid_lesion=0.0774
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT2/P25_AAH.json

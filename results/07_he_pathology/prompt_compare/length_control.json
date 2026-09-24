@@ -1,0 +1,27 @@
+{
+  "set": "D_naive_terms_lengthened+naive_template",
+  "labels": [
+    "lung adenocarcinoma, a malignant neoplasm of the lung",
+    "normal lung tissue, without any pathological change",
+    "lung tissue with atypical adenomatous hyperplasia, a precursor lesion",
+    "lung tissue with adenocarcinoma in situ, a non-invasive neoplastic lesion",
+    "fibrous stroma, a type of connective tissue",
+    "lymphoid tissue, a type of immune tissue",
+    "an empty glass slide, containing no tissue specimen"
+  ],
+  "auc_LUAD_vs_Normal_aggregate": 0.790087875,
+  "auc_LUAD_vs_Normal_adenoca_probe": 0.7562115104166667,
+  "corr_lesion_vs_empty": -0.7944153820929521,
+  "corr_lesion_vs_tissuefrac": 0.718202455573695,
+  "corr_lesion_vs_empty_within_slide": {
+    "GSM9226174_P4_Normal": -0.8491142318522228,
+    "GSM9226175_P4_AAH": -0.8181686319968539,
+    "GSM9226176_P4_AAH-1": -0.8615969236143329,
+    "GSM9226177_P4_LUAD": -0.868200197844657
+  },
+  "mean_lesion_by_stage": {
+    "Normal": 0.1993674337863922,
+    "AAH": 0.19902044534683228,
+    "LUAD": 0.4915049374103546
+  }
+}

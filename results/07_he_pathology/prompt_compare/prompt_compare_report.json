@@ -1,0 +1,175 @@
+{
+  "consistency_vs_04": {
+    "GSM9226174_P4_Normal": {
+      "n_matched": 4000,
+      "max_abs_diff_lesion_score": 6.440744247437902e-06
+    },
+    "GSM9226175_P4_AAH": {
+      "n_matched": 4000,
+      "max_abs_diff_lesion_score": 5.355912780724559e-06
+    },
+    "GSM9226176_P4_AAH-1": {
+      "n_matched": 4000,
+      "max_abs_diff_lesion_score": 5.706221771262232e-06
+    },
+    "GSM9226177_P4_LUAD": {
+      "n_matched": 4000,
+      "max_abs_diff_lesion_score": 5.496578216579451e-06
+    }
+  },
+  "sets": {
+    "A_naive_terms+naive_template": {
+      "auc_LUAD_vs_Normal": 0.8079036875,
+      "auc_AAH_vs_Normal": 0.3228399375,
+      "mean_lesion_by_stage": {
+        "Normal": 0.1950996369123459,
+        "AAH": 0.19148242473602295,
+        "LUAD": 0.46492499113082886
+      },
+      "mean_normal_by_stage": {
+        "Normal": 0.3456984758377075,
+        "AAH": 0.2649070918560028,
+        "LUAD": 0.15280407667160034
+      },
+      "corr_lesion_vs_empty": -0.7808780406007128,
+      "corr_lesion_vs_tissuefrac": 0.7543529156203244,
+      "corr_lesion_vs_empty_within_slide": {
+        "GSM9226174_P4_Normal": -0.8250013019811748,
+        "GSM9226175_P4_AAH": -0.8399490419415554,
+        "GSM9226176_P4_AAH-1": -0.8871210823657253,
+        "GSM9226177_P4_LUAD": -0.8543858773318056
+      },
+      "argmax_by_stage": {
+        "Normal": {
+          "an empty glass slide": 0.55875,
+          "normal lung tissue": 0.42725,
+          "lung tissue with atypical adenomatous hyperplasia": 0.014
+        },
+        "AAH": {
+          "an empty glass slide": 0.628375,
+          "normal lung tissue": 0.267875,
+          "lung tissue with atypical adenomatous hyperplasia": 0.078,
+          "fibrous stroma": 0.02575
+        },
+        "LUAD": {
+          "lung tissue with atypical adenomatous hyperplasia": 0.578,
+          "an empty glass slide": 0.3035,
+          "fibrous stroma": 0.09,
+          "normal lung tissue": 0.0285
+        }
+      }
+    },
+    "C_naive_terms+PLIP_template": {
+      "auc_LUAD_vs_Normal": 0.6750294270833334,
+      "auc_AAH_vs_Normal": 0.3046623046875,
+      "mean_lesion_by_stage": {
+        "Normal": 0.8853631615638733,
+        "AAH": 0.8085896968841553,
+        "LUAD": 0.8939283490180969
+      },
+      "mean_normal_by_stage": {
+        "Normal": 0.04564471170306206,
+        "AAH": 0.044456034898757935,
+        "LUAD": 0.019331252202391624
+      },
+      "corr_lesion_vs_empty": -0.9473078962899092,
+      "corr_lesion_vs_tissuefrac": 0.45233249728475894,
+      "corr_lesion_vs_empty_within_slide": {
+        "GSM9226174_P4_Normal": -0.9594772747717513,
+        "GSM9226175_P4_AAH": -0.9616948940798342,
+        "GSM9226176_P4_AAH-1": -0.9865704773197154,
+        "GSM9226177_P4_LUAD": -0.8761070305565504
+      },
+      "argmax_by_stage": {
+        "Normal": {
+          "lung tissue with atypical adenomatous hyperplasia": 0.89125,
+          "lung tissue with adenocarcinoma in situ": 0.05575,
+          "lung adenocarcinoma": 0.036,
+          "an empty glass slide": 0.017
+        },
+        "AAH": {
+          "lung tissue with atypical adenomatous hyperplasia": 0.834125,
+          "an empty glass slide": 0.09275,
+          "lung tissue with adenocarcinoma in situ": 0.067,
+          "lung adenocarcinoma": 0.006125
+        },
+        "LUAD": {
+          "lung tissue with atypical adenomatous hyperplasia": 0.9645,
+          "lung tissue with adenocarcinoma in situ": 0.024,
+          "an empty glass slide": 0.006,
+          "fibrous stroma": 0.00525,
+          "lung adenocarcinoma": 0.00025
+        }
+      }
+    },
+    "B_report_terms+PLIP_template": {
+      "auc_LUAD_vs_Normal": 0.82087359375,
+      "auc_AAH_vs_Normal": 0.2836054453125,
+      "mean_lesion_by_stage": {
+        "Normal": 0.2683265507221222,
+        "AAH": 0.23380880057811737,
+        "LUAD": 0.4271174967288971
+      },
+      "mean_normal_by_stage": {
+        "Normal": 0.34097856283187866,
+        "AAH": 0.267600417137146,
+        "LUAD": 0.06147308275103569
+      },
+      "corr_lesion_vs_empty": -0.20439916744946401,
+      "corr_lesion_vs_tissuefrac": 0.5012819137258632,
+      "corr_lesion_vs_empty_within_slide": {
+        "GSM9226174_P4_Normal": -0.07083722134808575,
+        "GSM9226175_P4_AAH": 0.1015949436025793,
+        "GSM9226176_P4_AAH-1": -0.23249785651945068,
+        "GSM9226177_P4_LUAD": -0.10811152366284095
+      },
+      "argmax_by_stage": {
+        "Normal": {
+          "morphologically normal pneumocytes lining empty alveoli": 0.59975,
+          "fibrotic lung tissue with collagen deposition": 0.201,
+          "localized proliferation of thickened alveolar septa lined by atypical type II pneumocytes": 0.139,
+          "dense lymphocytic infiltrate": 0.02375,
+          "invasive adenocarcinoma with desmoplastic stroma": 0.022,
+          "an empty glass slide": 0.0145
+        },
+        "AAH": {
+          "fibrotic lung tissue with collagen deposition": 0.41775,
+          "morphologically normal pneumocytes lining empty alveoli": 0.403375,
+          "localized proliferation of thickened alveolar septa lined by atypical type II pneumocytes": 0.068875,
+          "an empty glass slide": 0.0515,
+          "dense lymphocytic infiltrate": 0.039875,
+          "invasive adenocarcinoma with desmoplastic stroma": 0.017,
+          "monotonous enlarged cuboidal type II pneumocytes": 0.001625
+        },
+        "LUAD": {
+          "fibrotic lung tissue with collagen deposition": 0.47475,
+          "invasive adenocarcinoma with desmoplastic stroma": 0.36175,
+          "localized proliferation of thickened alveolar septa lined by atypical type II pneumocytes": 0.135,
+          "dense lymphocytic infiltrate": 0.01675,
+          "morphologically normal pneumocytes lining empty alveoli": 0.01,
+          "monotonous enlarged cuboidal type II pneumocytes": 0.0015,
+          "an empty glass slide": 0.00025
+        }
+      }
+    }
+  },
+  "provenance": {
+    "B_term_1": "原文:\"invasive adenocarcinoma occupying at least 50% of the ST ROI\" + \"predominant invasive histologic pattern\"",
+    "B_term_2": "原文 Normal 纳入标准:\"morphologically normal pneumocytes lining empty alveoli\"",
+    "B_term_3": "原文 AAH 判据:\"localized proliferations of thickened alveolar septa lined discontinuously by mild to moderate atypical type II pneumocytes or Clara cells\"",
+    "B_term_4": "原文 AIS 判据:\"neoplastic epithelial cells continuously lining mildly thickened alveolar walls in a lepidic pattern\"",
+    "B_term_5": "原文 RPII 判据:\"monotonous, cuboidal-shaped, enlarged type II pneumocytes with a proportional increase of nucleus and cytoplasm\"",
+    "B_term_6": "原文 LUAD 排除标准提到 \"extensive ... fibrosis\"",
+    "B_term_7": "原文正常片排除标准提到 \"extensive inflammation\"",
+    "B_term_8": "非病理术语，保留作对照（A 套里它系统性抢票 22%）"
+  },
+  "frozen": {
+    "crop": 448,
+    "batch": 256,
+    "min_tissue_frac": 0.1,
+    "white_thresh": 230,
+    "n_threads": 6,
+    "n_per_slide": 4000,
+    "seed": 0
+  }
+}

@@ -1,0 +1,5 @@
+sample_id=P4_LUAD
+finished_at=2026-09-23T04:11:53+0800
+n_judged=7157
+G1_verdict=ok frac_aneuploid_anchor=0.0000 frac_aneuploid_lesion=0.1620
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT2_anchorB/P4_LUAD.json

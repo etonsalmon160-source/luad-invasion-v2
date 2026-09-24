@@ -1,0 +1,5 @@
+sample_id=P16_AIS
+finished_at=2026-09-23T04:03:27+0800
+n_judged=580
+G1_verdict=stop_anchor_implausible frac_aneuploid_anchor=0.5251 frac_aneuploid_lesion=0.7456
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT1/P16_AIS.json

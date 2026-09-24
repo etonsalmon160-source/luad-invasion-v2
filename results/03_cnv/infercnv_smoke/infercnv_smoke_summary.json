@@ -1,0 +1,56 @@
+{
+  "script": "03_cnv/17_analyze_infercnv_smoke.R",
+  "expr_dim": [7668, 19748],
+  "gene_retention": 0.4244,
+  "threshold1_pass": false,
+  "ref_median_residual": 1.0008,
+  "threshold2_pass": true,
+  "auroc_holdout_vs_luad": 0.5,
+  "auroc_strong": 0.8,
+  "auroc_weak": 0.6,
+  "threshold3_verdict": "分不开",
+  "group_stats": [
+    {
+      "group": "Normal",
+      "n": 7255,
+      "median": 0.0012,
+      "mean": 0.0012,
+      "p90": 0.0012,
+      "_row": "Normal"
+    },
+    {
+      "group": "Normal_holdout",
+      "n": 1280,
+      "median": 0.0012,
+      "mean": 0.0012,
+      "p90": 0.0012,
+      "_row": "Normal_holdout"
+    },
+    {
+      "group": "P4_AAH",
+      "n": 1009,
+      "median": 0.0012,
+      "mean": 0.0012,
+      "p90": 0.0012,
+      "_row": "P4_AAH"
+    },
+    {
+      "group": "P4_AAH1",
+      "n": 2702,
+      "median": 0.0012,
+      "mean": 0.0012,
+      "p90": 0.0012,
+      "_row": "P4_AAH1"
+    },
+    {
+      "group": "P4_LUAD",
+      "n": 7502,
+      "median": 0.0012,
+      "mean": 0.0012,
+      "p90": 0.0012,
+      "_row": "P4_LUAD"
+    }
+  ],
+  "score_definition": "median over autosomal genes of |log2(residual)|",
+  "caveats": ["snRNA 从未在 inferCNV 上验证过", "inferCNV 是可视化工具；2026 基准警告它分亚克隆而非逐细胞判决", "参考定义偏离已签口径（同患者 Normal 全部上皮，而非同亚型）—— 冒烟口径，不得引用", "单患者单次跑，不得推及全体", "Normal_holdout 与 LUAD 仍共享患者级样本批次，本设计无法排除", "环境 RNA / 内含子滞留会抬高残差"]
+}
