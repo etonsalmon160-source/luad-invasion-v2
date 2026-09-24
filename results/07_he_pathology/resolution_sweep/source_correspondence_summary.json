@@ -1,0 +1,19 @@
+{
+  "n_slides": 4,
+  "median_ncc_by_orientation": {
+    "as-is": 0.35995,
+    "flip-LR": 0.11705,
+    "flip-UD": 0.08045,
+    "rot180": 0.14550000000000002,
+    "rot90": 0.0935,
+    "rot270": 0.08125,
+    "transpose": 0.09535,
+    "antitranspose": 0.11349999999999999
+  },
+  "n_best_is_as_is": 4,
+  "median_mirror_ncc": 0.11705,
+  "median_field_ratio": 1.3,
+  "median_field_mm_aligned": 14.742,
+  "median_um_per_px_aligned": 2.457,
+  "hires_um_per_px": 5.67
+}
