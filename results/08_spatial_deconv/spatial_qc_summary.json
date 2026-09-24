@@ -1,0 +1,1043 @@
+{
+ "n_slides": 56,
+ "n_spots": 639816,
+ "paper_thresholds": {
+  "nUMI_min": 500,
+  "nFeature_min": 200,
+  "mt_max_pct": 15.0
+ },
+ "paper_reported_drop_pct": 1.05,
+ "n_drop_or": 31773,
+ "n_drop_and": 99,
+ "drop_pct_or": 4.966,
+ "drop_pct_and": 0.015,
+ "n_fail_umi": 31657,
+ "n_fail_gen": 9562,
+ "n_fail_mt": 225,
+ "median_nUMI": 4825.0,
+ "median_nFeature": 2994.0,
+ "median_pct_mt": 1.03126007089913,
+ "per_slide_median_nFeature_median": 3149.0,
+ "per_slide_median_nFeature_range": [
+  733.5,
+  8209.5
+ ],
+ "per_slide_drop_pct_or_mean": 4.968771837632689,
+ "per_slide_drop_pct_or_median": 2.6011320780685723,
+ "nUMI_cutoff_to_reproduce_paper_drop_pct": 173.0,
+ "per_slide": {
+  "GSM9226168_P1_AAH": {
+   "n_spot": 10108,
+   "median_nUMI": 4100.5,
+   "median_nFeature": 2697.0,
+   "median_pct_mt": 1.9986244107569946,
+   "drop_pct_or": 2.3545706371191137
+  },
+  "GSM9226169_P1_LUAD": {
+   "n_spot": 6603,
+   "median_nUMI": 3819.0,
+   "median_nFeature": 2467.0,
+   "median_pct_mt": 3.1759728407590595,
+   "drop_pct_or": 12.6912009692564
+  },
+  "GSM9226170_P2_AAH": {
+   "n_spot": 11782,
+   "median_nUMI": 2693.0,
+   "median_nFeature": 1850.0,
+   "median_pct_mt": 2.6204088035757453,
+   "drop_pct_or": 3.140383636054999
+  },
+  "GSM9226171_P2_LUAD": {
+   "n_spot": 10995,
+   "median_nUMI": 1940.0,
+   "median_nFeature": 1411.0,
+   "median_pct_mt": 3.47672362993518,
+   "drop_pct_or": 4.356525693497044
+  },
+  "GSM9226172_P3_AIS": {
+   "n_spot": 9954,
+   "median_nUMI": 14511.5,
+   "median_nFeature": 5915.5,
+   "median_pct_mt": 3.3053635882455734,
+   "drop_pct_or": 1.024713682941531
+  },
+  "GSM9226173_P3_LUAD": {
+   "n_spot": 14336,
+   "median_nUMI": 12749.5,
+   "median_nFeature": 5639.0,
+   "median_pct_mt": 3.79352267714919,
+   "drop_pct_or": 2.866908482142857
+  },
+  "GSM9226174_P4_Normal": {
+   "n_spot": 12453,
+   "median_nUMI": 2882.0,
+   "median_nFeature": 2054.0,
+   "median_pct_mt": 0.25455008318693695,
+   "drop_pct_or": 4.609331084879146
+  },
+  "GSM9226175_P4_AAH": {
+   "n_spot": 12441,
+   "median_nUMI": 3795.0,
+   "median_nFeature": 2516.0,
+   "median_pct_mt": 2.0597738287560583,
+   "drop_pct_or": 6.2374407201993405
+  },
+  "GSM9226176_P4_AAH-1": {
+   "n_spot": 12295,
+   "median_nUMI": 1242.0,
+   "median_nFeature": 976.0,
+   "median_pct_mt": 0.2898550724637681,
+   "drop_pct_or": 15.071167141114275
+  },
+  "GSM9226177_P4_LUAD": {
+   "n_spot": 12978,
+   "median_nUMI": 12847.5,
+   "median_nFeature": 5730.5,
+   "median_pct_mt": 2.440201391929812,
+   "drop_pct_or": 0.30821390044691016
+  },
+  "GSM9226178_P5_AIS": {
+   "n_spot": 10499,
+   "median_nUMI": 2614.0,
+   "median_nFeature": 1941.0,
+   "median_pct_mt": 2.327837051406401,
+   "drop_pct_or": 8.229355176683493
+  },
+  "GSM9226179_P5_LUAD": {
+   "n_spot": 12084,
+   "median_nUMI": 29900.0,
+   "median_nFeature": 8209.5,
+   "median_pct_mt": 1.5613839632705258,
+   "drop_pct_or": 0.024826216484607744
+  },
+  "GSM9226180_P6_AAH": {
+   "n_spot": 11229,
+   "median_nUMI": 1901.0,
+   "median_nFeature": 1472.0,
+   "median_pct_mt": 0.3580729166666667,
+   "drop_pct_or": 3.6601656425327276
+  },
+  "GSM9226181_P6_LUAD": {
+   "n_spot": 11724,
+   "median_nUMI": 11618.5,
+   "median_nFeature": 5442.0,
+   "median_pct_mt": 2.3646655269051933,
+   "drop_pct_or": 0.46912316615489597
+  },
+  "GSM9226182_P7_LUAD": {
+   "n_spot": 13616,
+   "median_nUMI": 9264.5,
+   "median_nFeature": 4858.0,
+   "median_pct_mt": 1.8758905971661952,
+   "drop_pct_or": 0.05875440658049354
+  },
+  "GSM9226183_P7_LUAD-1": {
+   "n_spot": 13074,
+   "median_nUMI": 8708.5,
+   "median_nFeature": 4608.0,
+   "median_pct_mt": 2.578602514549526,
+   "drop_pct_or": 2.141655193513844
+  },
+  "GSM9226184_P8_AIS": {
+   "n_spot": 5108,
+   "median_nUMI": 1340.5,
+   "median_nFeature": 1092.5,
+   "median_pct_mt": 1.0223953261927945,
+   "drop_pct_or": 16.40563821456539
+  },
+  "GSM9226185_P8_LUAD": {
+   "n_spot": 12642,
+   "median_nUMI": 861.0,
+   "median_nFeature": 733.5,
+   "median_pct_mt": 0.9154420754357571,
+   "drop_pct_or": 29.560196171491853
+  },
+  "GSM9226186_P9_AAH": {
+   "n_spot": 10979,
+   "median_nUMI": 1427.0,
+   "median_nFeature": 1138.0,
+   "median_pct_mt": 1.2254901960784317,
+   "drop_pct_or": 11.77702887330358
+  },
+  "GSM9226187_P9_AIS": {
+   "n_spot": 11029,
+   "median_nUMI": 1751.0,
+   "median_nFeature": 1380.0,
+   "median_pct_mt": 0.9456264775413712,
+   "drop_pct_or": 15.060295584368482
+  },
+  "GSM9226188_P9_LUAD": {
+   "n_spot": 12127,
+   "median_nUMI": 3429.0,
+   "median_nFeature": 2306.0,
+   "median_pct_mt": 0.4690431519699812,
+   "drop_pct_or": 2.5315411890822133
+  },
+  "GSM9226189_P10_MIA": {
+   "n_spot": 12180,
+   "median_nUMI": 2332.0,
+   "median_nFeature": 1771.0,
+   "median_pct_mt": 0.4975124378109453,
+   "drop_pct_or": 10.09031198686371
+  },
+  "GSM9226190_P10_LUAD": {
+   "n_spot": 13441,
+   "median_nUMI": 21565.0,
+   "median_nFeature": 7302.0,
+   "median_pct_mt": 1.1184451778511184,
+   "drop_pct_or": 0.3050368276169928
+  },
+  "GSM9226191_P11_AAH": {
+   "n_spot": 10928,
+   "median_nUMI": 2659.5,
+   "median_nFeature": 1907.0,
+   "median_pct_mt": 0.47260742673895784,
+   "drop_pct_or": 3.7701317715959006
+  },
+  "GSM9226192_P11_LUAD": {
+   "n_spot": 11794,
+   "median_nUMI": 7591.0,
+   "median_nFeature": 4032.0,
+   "median_pct_mt": 0.1864050164272527,
+   "drop_pct_or": 0.6867898931660167
+  },
+  "GSM9226193_P12_AIS": {
+   "n_spot": 12427,
+   "median_nUMI": 3675.0,
+   "median_nFeature": 2362.0,
+   "median_pct_mt": 0.4410585404971933,
+   "drop_pct_or": 8.344733242134064
+  },
+  "GSM9226194_P12_LUAD": {
+   "n_spot": 14177,
+   "median_nUMI": 3880.0,
+   "median_nFeature": 2435.0,
+   "median_pct_mt": 0.8189018660222849,
+   "drop_pct_or": 7.984764054454398
+  },
+  "GSM9226195_P13_MIA": {
+   "n_spot": 13713,
+   "median_nUMI": 5009.0,
+   "median_nFeature": 3129.0,
+   "median_pct_mt": 0.2642926693559605,
+   "drop_pct_or": 5.49113979435572
+  },
+  "GSM9226196_P13_LUAD": {
+   "n_spot": 4880,
+   "median_nUMI": 8390.0,
+   "median_nFeature": 4218.0,
+   "median_pct_mt": 0.2493876647119175,
+   "drop_pct_or": 1.6188524590163935
+  },
+  "GSM9226197_P14_AIS": {
+   "n_spot": 12335,
+   "median_nUMI": 2951.0,
+   "median_nFeature": 2060.0,
+   "median_pct_mt": 0.9854771784232366,
+   "drop_pct_or": 1.0376976084312932
+  },
+  "GSM9226198_P14_LUAD": {
+   "n_spot": 11488,
+   "median_nUMI": 4531.0,
+   "median_nFeature": 2838.0,
+   "median_pct_mt": 0.2386634844868735,
+   "drop_pct_or": 0.9749303621169917
+  },
+  "GSM9226199_P15_MIA": {
+   "n_spot": 13250,
+   "median_nUMI": 4250.0,
+   "median_nFeature": 2781.5,
+   "median_pct_mt": 0.9337407388564514,
+   "drop_pct_or": 3.79622641509434
+  },
+  "GSM9226200_P15_LUAD": {
+   "n_spot": 14231,
+   "median_nUMI": 6057.0,
+   "median_nFeature": 3596.0,
+   "median_pct_mt": 0.6858370517269873,
+   "drop_pct_or": 1.1594406577190641
+  },
+  "GSM9226201_P16_AIS": {
+   "n_spot": 13454,
+   "median_nUMI": 1031.0,
+   "median_nFeature": 822.5,
+   "median_pct_mt": 0.5845460656148777,
+   "drop_pct_or": 24.899658094247066
+  },
+  "GSM9226202_P16_LUAD": {
+   "n_spot": 7736,
+   "median_nUMI": 6579.5,
+   "median_nFeature": 3540.0,
+   "median_pct_mt": 0.6891162972257651,
+   "drop_pct_or": 6.385729058945191
+  },
+  "GSM9226203_P17_AIS": {
+   "n_spot": 14336,
+   "median_nUMI": 1675.0,
+   "median_nFeature": 1270.0,
+   "median_pct_mt": 0.400293550384003,
+   "drop_pct_or": 18.240792410714285
+  },
+  "GSM9226204_P17_LUAD": {
+   "n_spot": 13515,
+   "median_nUMI": 7131.0,
+   "median_nFeature": 3743.0,
+   "median_pct_mt": 0.483933410762679,
+   "drop_pct_or": 0.4365519792822789
+  },
+  "GSM9226205_P18_MIA": {
+   "n_spot": 13006,
+   "median_nUMI": 1903.0,
+   "median_nFeature": 1464.0,
+   "median_pct_mt": 1.4381431232904824,
+   "drop_pct_or": 10.810395202214362
+  },
+  "GSM9226206_P18_LUAD": {
+   "n_spot": 11971,
+   "median_nUMI": 9277.0,
+   "median_nFeature": 4556.0,
+   "median_pct_mt": 1.302121433796635,
+   "drop_pct_or": 0.03341408403642135
+  },
+  "GSM9226207_P19_AIS": {
+   "n_spot": 13899,
+   "median_nUMI": 5430.0,
+   "median_nFeature": 3343.0,
+   "median_pct_mt": 0.3803982993958379,
+   "drop_pct_or": 2.604503921145406
+  },
+  "GSM9226208_P19_LUAD": {
+   "n_spot": 12572,
+   "median_nUMI": 6286.5,
+   "median_nFeature": 3714.0,
+   "median_pct_mt": 0.8720812291652177,
+   "drop_pct_or": 0.3818008272351257
+  },
+  "GSM9226209_P20_AAH": {
+   "n_spot": 12304,
+   "median_nUMI": 13516.5,
+   "median_nFeature": 5870.0,
+   "median_pct_mt": 1.0493120236824063,
+   "drop_pct_or": 0.3576072821846554
+  },
+  "GSM9226210_P20_LUAD": {
+   "n_spot": 13604,
+   "median_nUMI": 18588.5,
+   "median_nFeature": 6619.5,
+   "median_pct_mt": 0.6770272356003944,
+   "drop_pct_or": 0.27932960893854747
+  },
+  "GSM9226211_P21_AIS": {
+   "n_spot": 13372,
+   "median_nUMI": 9538.5,
+   "median_nFeature": 4757.0,
+   "median_pct_mt": 1.3406360296626156,
+   "drop_pct_or": 0.14208794495961713
+  },
+  "GSM9226212_P21_AIS-1": {
+   "n_spot": 12926,
+   "median_nUMI": 7764.5,
+   "median_nFeature": 4204.0,
+   "median_pct_mt": 2.335816925869188,
+   "drop_pct_or": 1.6323688689463096
+  },
+  "GSM9226213_P21_LUAD": {
+   "n_spot": 13348,
+   "median_nUMI": 14674.5,
+   "median_nFeature": 5480.5,
+   "median_pct_mt": 3.5093747619694646,
+   "drop_pct_or": 1.0413545100389572
+  },
+  "GSM9226214_P22_AAH": {
+   "n_spot": 7943,
+   "median_nUMI": 5210.0,
+   "median_nFeature": 3169.0,
+   "median_pct_mt": 1.6985552518547442,
+   "drop_pct_or": 1.5611230013848671
+  },
+  "GSM9226215_P22_AIS": {
+   "n_spot": 12886,
+   "median_nUMI": 6001.5,
+   "median_nFeature": 3548.0,
+   "median_pct_mt": 1.4358305633215287,
+   "drop_pct_or": 3.1196647524445136
+  },
+  "GSM9226216_P22_LUAD": {
+   "n_spot": 12229,
+   "median_nUMI": 8712.0,
+   "median_nFeature": 4535.0,
+   "median_pct_mt": 0.8071249652101308,
+   "drop_pct_or": 0.7768419331098209
+  },
+  "GSM9226217_P23_AIS": {
+   "n_spot": 9996,
+   "median_nUMI": 3395.0,
+   "median_nFeature": 2297.0,
+   "median_pct_mt": 1.1266565178967984,
+   "drop_pct_or": 3.6914765906362543
+  },
+  "GSM9226218_P23_AIS-1": {
+   "n_spot": 10826,
+   "median_nUMI": 4052.5,
+   "median_nFeature": 2687.0,
+   "median_pct_mt": 0.8533747090768037,
+   "drop_pct_or": 1.8104563088860153
+  },
+  "GSM9226219_P23_LUAD": {
+   "n_spot": 10894,
+   "median_nUMI": 5280.5,
+   "median_nFeature": 3249.5,
+   "median_pct_mt": 1.3585198830080432,
+   "drop_pct_or": 2.5977602349917386
+  },
+  "GSM9226220_P24_AAH": {
+   "n_spot": 6738,
+   "median_nUMI": 5776.5,
+   "median_nFeature": 3330.5,
+   "median_pct_mt": 1.0184238404248318,
+   "drop_pct_or": 6.337192045117246
+  },
+  "GSM9226221_P24_LUAD": {
+   "n_spot": 6276,
+   "median_nUMI": 20204.0,
+   "median_nFeature": 6788.5,
+   "median_pct_mt": 0.8907393544883715,
+   "drop_pct_or": 0.14340344168260039
+  },
+  "GSM9226222_P25_AAH": {
+   "n_spot": 9294,
+   "median_nUMI": 4117.0,
+   "median_nFeature": 2574.0,
+   "median_pct_mt": 0.8799345746514973,
+   "drop_pct_or": 2.7329459866580588
+  },
+  "GSM9226223_P25_LUAD": {
+   "n_spot": 3791,
+   "median_nUMI": 19100.0,
+   "median_nFeature": 6245.0,
+   "median_pct_mt": 1.7316017316017316,
+   "drop_pct_or": 0.3956739646531258
+  }
+ },
+ "slide_meta": {
+  "GSM9226168_P1_AAH": {
+   "n_barcodes": 10108,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "b4c6d5ad6733ffa137187e06dc430e8c0b611535c5fea62c6776772443b73c2e",
+   "features_sha": "8147a70370cd3b9ba3d9f16e5548582b81d46f5fb9d92ba4a9613231fe748173",
+   "barcodes_sha": "8cf6f7f167ddcc47d2958e80bceb2642500babecc2fcf0856839a5525d99cdb7",
+   "seconds": 7.0
+  },
+  "GSM9226169_P1_LUAD": {
+   "n_barcodes": 6603,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "253b5994674bb1e9360a4c14f51e66cf6731bb694e0dcd060fd37807a9bf84c8",
+   "features_sha": "a2f34cb497670f27b46ed2f39e6463cbe8d2a78c782d44ef39225a8e4826e348",
+   "barcodes_sha": "9a36e796cbecb6718616d98f9ac91b70bec2b4c1e7b5861d97d51848aabd0cf1",
+   "seconds": 6.0
+  },
+  "GSM9226170_P2_AAH": {
+   "n_barcodes": 11782,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "fd4fa900f00539621dbc00381df0b66b87a78939725e4f2370601390d9a1789d",
+   "features_sha": "f1a3435fff69eeef05ce721236996c2e959a6dba53c6941aa057dda75cdbb8a9",
+   "barcodes_sha": "95bcd53f594048ad5f649b20bbb6048d2443fc60ea34d9eebde6b7f1e4106b1a",
+   "seconds": 7.1
+  },
+  "GSM9226171_P2_LUAD": {
+   "n_barcodes": 10995,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "09b78132aac68ba02086043608b3179af03876744cd6f578c4b3665d8b7858fe",
+   "features_sha": "1dfccaa07609306c1329e5722697d03714375882c0699b8f7d58de92d9d582a1",
+   "barcodes_sha": "364f0f966e59c034967356e718c86a46c2c13ab190a00ba10f44460869a9a856",
+   "seconds": 5.1
+  },
+  "GSM9226172_P3_AIS": {
+   "n_barcodes": 9954,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "dc68383b279694e4074cf2ce7b4176a414355c4a14131d04478aaf672789368f",
+   "features_sha": "85000fa30010edd46ab4df149f11ce7a06a6e26c02e41b29789ada96d3fde494",
+   "barcodes_sha": "2dcaf23606a9673eaa1f609a47363238d8122826110633607689e5f73acc8082",
+   "seconds": 13.6
+  },
+  "GSM9226173_P3_LUAD": {
+   "n_barcodes": 14336,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "554d3f0a01a40fb045ed4e124e804483e94826d298978855b0a19d8ec97ecb5f",
+   "features_sha": "98e3d63f3b72371313bff601d8286189f0319be8552d4679d55f7146ac174b40",
+   "barcodes_sha": "3d69b8dd4352e2167b2642c192f1e5f40ce5a1918ca99a0654ea876daa675cc7",
+   "seconds": 22.9
+  },
+  "GSM9226174_P4_Normal": {
+   "n_barcodes": 12453,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "89be227107577b68deb0da857760880b027df5249a8bb20c708ff7e1f68d9434",
+   "features_sha": "38406161adb09c61a9ce8ddbcb4afa709e6f55804c705296792013e4f3aa299e",
+   "barcodes_sha": "0a88b2d322d753c63ed94e09c9a724d6b68dc636dd0de564c1bbd0cb86765a4d",
+   "seconds": 6.3
+  },
+  "GSM9226175_P4_AAH": {
+   "n_barcodes": 12441,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "3828de248911f5ddf71521e015784564d465351ab9af0820768c6b9ab70b04c2",
+   "features_sha": "b745e0ff31846c155c182e2b5e90ca08d35426e06ae66586c83bf7a8f0af52ab",
+   "barcodes_sha": "633a77ab04ea2c97a40960172f65799f20cca112cbb2ed820e998dfa5a3eeee8",
+   "seconds": 8.4
+  },
+  "GSM9226176_P4_AAH-1": {
+   "n_barcodes": 12295,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "94a62d6177cb8045b4354bdea26da0160a7eb1ea9049fc09c6020b5d19b4afd3",
+   "features_sha": "8c2122d47d85aa09566125f13f832fe21a88e04e69bc443ca393bce8ae466827",
+   "barcodes_sha": "7c052d14a69d4251340b1bfd16a644d0c4a5fdb7f157c298880bf0505542a906",
+   "seconds": 3.6
+  },
+  "GSM9226177_P4_LUAD": {
+   "n_barcodes": 12978,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "2e43a2ecde2dcfcc2321f6adfc716e3a54a984cbe8038692525e2403987abd23",
+   "features_sha": "da64b3ecb0461b5f271ef54b05ec1fd396f1a6d99dda2f2f879eaf884f2efe63",
+   "barcodes_sha": "852c4f3270b37afd3fd8d9b812cfcefb5b0c495d390320f674ccb33f7d3cec1c",
+   "seconds": 22.2
+  },
+  "GSM9226178_P5_AIS": {
+   "n_barcodes": 10499,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "1b874e481b0771b0f40104c1da735028f88385f1c448cd57d6beaa14f869c941",
+   "features_sha": "6dacc296de6ff2a421654b402401cfa4168f5c855cab7d847b44c92d05ce42eb",
+   "barcodes_sha": "3c49606bdada7421abc8db52891bf6bdc283f63b8b10bbc81fb4a202edc9b2d5",
+   "seconds": 6.6
+  },
+  "GSM9226179_P5_LUAD": {
+   "n_barcodes": 12084,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "35001dd492020d82c639c57129d4974f97521c4dcc971f15b0523850037d62db",
+   "features_sha": "66bb75fd06fed00329aa18942844073b89861484ec105c1cce3e891ecf76d1e5",
+   "barcodes_sha": "5d2cb43b708d510f34bdb2ca4e16e7780cff357aa75c4d290d6318c6b48a26e4",
+   "seconds": 26.9
+  },
+  "GSM9226180_P6_AAH": {
+   "n_barcodes": 11229,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "f56d4ab5f3efb93b5af7a227de1b4561cc50a7f5eea5d823a60105ad7fef0322",
+   "features_sha": "deab277f8b63cace361461f2de1b88638e96cc071d031de11f607e700744854e",
+   "barcodes_sha": "6b40ff93e064e391725dd6616e8ab5d4b97347145260e1895425d335720a3b00",
+   "seconds": 5.6
+  },
+  "GSM9226181_P6_LUAD": {
+   "n_barcodes": 11724,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 0,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 0,
+   "matrix_sha": "aaced318495a184f0cad5be5f96babde6c702d98fae0990ab1deab03799ce902",
+   "features_sha": "8a9bf806f9d05b081f5f31465e1a89f4099e2537d203c8ad25db9c911da5806c",
+   "barcodes_sha": "528b9128fd0c7b589e8669a83b2d06742e5bd131db2ffb6c08c051bcca1bf60e",
+   "seconds": 16.1
+  },
+  "GSM9226182_P7_LUAD": {
+   "n_barcodes": 13616,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "5883a1852f329641236fd80597e7234da24d51bb6a9432943982c07b5c3a76c3",
+   "features_sha": "925718d0583c7cc1c4937becd77a5a194be9361837e6af4f07e470eedb6e1356",
+   "barcodes_sha": "8af9c08a2bf95d45d64b7aec079665edf4c336734f6644a72f3134dfa7f50789",
+   "seconds": 15.5
+  },
+  "GSM9226183_P7_LUAD-1": {
+   "n_barcodes": 13074,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "bf62e1b64f9fc1b7979e362f8ae862310d40e5fe9f8896a10588c601c8ed52ab",
+   "features_sha": "38291e0d95c3fe2f9bc4e2ca71519051fdb65c35e9a1c8e77adb2863ec67b4cd",
+   "barcodes_sha": "2b699b2d20cc665459cae549eee02d21c3e0d5b9cd2fa7a38eaba2ee35864c2b",
+   "seconds": 14.4
+  },
+  "GSM9226184_P8_AIS": {
+   "n_barcodes": 5108,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "fa4855c6035170200af6167f5e8e7adaec47396e6462aa0e8145fe725ff87335",
+   "features_sha": "50092a6f18ce68cfbda514ef1806f6ecc675b81bf6e770c9208ca79eeab29cf4",
+   "barcodes_sha": "434c31422ac54fc745173a725e5eaf2cb66f7589108316a002bbf7ccdb8a1a12",
+   "seconds": 2.1
+  },
+  "GSM9226185_P8_LUAD": {
+   "n_barcodes": 12642,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "a97d792389dad9fa9f045d2af513ae705e588ac61be8fc3a0049e8dec5c923ad",
+   "features_sha": "95afa8de2770ed0422c6ba0b7c54f714f91a3e97bf640c8c5f0cee201fc4773a",
+   "barcodes_sha": "4c64c32c0910ca8e2254365667a955ecd46eb035636a6b602806bcd1525b0ba5",
+   "seconds": 6.0
+  },
+  "GSM9226186_P9_AAH": {
+   "n_barcodes": 10979,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "1c7b47e73d94a9b7cf79416fb7e55954f311c69bea47d32e489ab8a694a91f04",
+   "features_sha": "fb86d74b8a08833cb9ec49b32d964a3c9b57f5d3ac0e04fa98ce0d3595c334b6",
+   "barcodes_sha": "eab2295d46a485690c60a904c4e409f88df3922c08df32c8691d65ca8e224d5f",
+   "seconds": 3.4
+  },
+  "GSM9226187_P9_AIS": {
+   "n_barcodes": 11029,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "d3d443431f252e0cd3d757dd1a2e30753e44795e7422bb0badb16dc8090294b7",
+   "features_sha": "5c81cd18dc2ad1e31ebedce28afd5198d2a22b8442c91ca81c12e5e169277b60",
+   "barcodes_sha": "18e3c8baa30cbf2b9e355f8fc9113551b8bde41c47d5ed9b2efc91eddc73fc17",
+   "seconds": 4.3
+  },
+  "GSM9226188_P9_LUAD": {
+   "n_barcodes": 12127,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "558b42a1d98299927e5b71dbe132833773006d889298025757bba85fb0823f3e",
+   "features_sha": "a73575cf8fd05a3aa54f6e2204b2551e231bcbe8f0fcc4376772c5283a32de42",
+   "barcodes_sha": "d8b86df9f7ca0f5537ab07032a56da1a5b9c198f8297e16d0c176188c2536785",
+   "seconds": 7.3
+  },
+  "GSM9226189_P10_MIA": {
+   "n_barcodes": 12180,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "c680467d0a20a00ad37b377ee3cec84400629f171d803f2211584db9daca978f",
+   "features_sha": "6b094f0d2d8ff4721465a49235fc0f780c561ca6419d92e87e01a81822cf7ace",
+   "barcodes_sha": "e305951b346ebe54cd6f0716d22cd322c8d9dbe02f21cdeeffb8430fab1f538f",
+   "seconds": 5.8
+  },
+  "GSM9226190_P10_LUAD": {
+   "n_barcodes": 13441,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "2d654e49e2d88eb4e94532f6f7f04967a4614cc1a72c156b69054068af488a69",
+   "features_sha": "0d318865c6246b7409859e56edb80b221925fdd3d95dbaea47ad4fcf9048eab6",
+   "barcodes_sha": "c31d7507fad89a2f51c9420efadab022d8579c0ce5a68e9db96ba9e4282beeac",
+   "seconds": 22.2
+  },
+  "GSM9226191_P11_AAH": {
+   "n_barcodes": 10928,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "f3563d371ca2e7da48628b371ae4ba00ebbe5b47fe05c4dc6574e4cbb0a25d7a",
+   "features_sha": "ce7acb0350cd58dc50e209a3fe5bee9f417cd0b852f3c5a8ad252a173c035ae6",
+   "barcodes_sha": "74e1e83c2dfe12422e79b0dfcc77889c3c36ef917abc468c2c1d2b23ff90535d",
+   "seconds": 5.6
+  },
+  "GSM9226192_P11_LUAD": {
+   "n_barcodes": 11794,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "8e83ffbe28d5c0c909bcc9650a0a218e82c707c8f5ff905ae4823e4de05744b2",
+   "features_sha": "2f1a502bf7a69acf8018215d94202c0557c469a74c05c19dfbe573dfa26f26c5",
+   "barcodes_sha": "9a3f1a8bdba44162b05bf78315b1c1252acac669bdd6c198304df64185cff632",
+   "seconds": 12.0
+  },
+  "GSM9226193_P12_AIS": {
+   "n_barcodes": 12427,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "4dd9aee40e65f84b132d56fbc87a2d3f1b23aea0bfa733066a2c7dddcced1e60",
+   "features_sha": "cb12c41704450095d9cbaa267e5071c065babafdf00e825d64cfb6f644dbf231",
+   "barcodes_sha": "a4819c875ae85075f343b78bce637d8811c0287561d9667236b8ec41e56ac52a",
+   "seconds": 7.7
+  },
+  "GSM9226194_P12_LUAD": {
+   "n_barcodes": 14177,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "30fc6f449bec71a7e9c870272dfd84ddc343b311820bdc304b954264daa3bf89",
+   "features_sha": "b47834015649ddbe40bf34b6f04ac5891373edd87f87eb61671f166c649814dd",
+   "barcodes_sha": "ce56d5b9c85bda45fc4d6e34c8081d084bc63fe59131a314dc26a7360a16b0e6",
+   "seconds": 10.4
+  },
+  "GSM9226195_P13_MIA": {
+   "n_barcodes": 13713,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "6045025bb1973234f17f93ae1da3b81d55083d6d63dad7335556c3ca8912f236",
+   "features_sha": "a44612465d4632f63930e5b41b963b7a9fa5f73659b9e99c6258cf8b3743fc28",
+   "barcodes_sha": "b15c4772aa3acff79c78640a11f923958297ea3bbb66ceffabf70b5bafbe6434",
+   "seconds": 10.8
+  },
+  "GSM9226196_P13_LUAD": {
+   "n_barcodes": 4880,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "550e6c11284a10deac5440203d7580ae478841be7aa84f75c7ccdb63fd8d8bbc",
+   "features_sha": "590b51abea2fe16712dfeecc980516aa9739bab54bdb55a0375198d235e540d0",
+   "barcodes_sha": "983a309ffe15b91cfe7aaec8de386e3dbf32a540fbc868937d0654ab9903d598",
+   "seconds": 5.2
+  },
+  "GSM9226197_P14_AIS": {
+   "n_barcodes": 12335,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "428ee6790ab835c5ab8751f0218702f7748eea5d095c8505480a9ec1e0f154c6",
+   "features_sha": "23587bd48006fbe9b2808dd97e9ce9259b0371dfb4c60316a2666f7607ea4e3f",
+   "barcodes_sha": "19280aa1af172bd96ff4916902120270467baf3fb86ef1bcb3cf9abb3deeb2b4",
+   "seconds": 7.0
+  },
+  "GSM9226198_P14_LUAD": {
+   "n_barcodes": 11488,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "7c24f4a0de84b30f9e834463df8454e81f7e0a26041f4a9a0f7ca6a0dad2167e",
+   "features_sha": "eaee1296d9f1df320f54c6766e0aa7fbc2a33b8fe19b9fddba52ac6c25e24e6e",
+   "barcodes_sha": "c9fb2d33fc1b3f56d495b85ccfca9ef3a1222df7b36c5b911286ce5ec2e69747",
+   "seconds": 8.4
+  },
+  "GSM9226199_P15_MIA": {
+   "n_barcodes": 13250,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "0f5c757a3dc2887632a2561e5ef9ff378bc89dd5e0ad8b37a971c75147ba2f5f",
+   "features_sha": "9d62afed732fbd13f2ce21fe35c586ad190109f96132d51d228432711edec650",
+   "barcodes_sha": "bfbfe8cf75f9551eab98f43224cb6bf639c2a6ad7f17eed4a16ab08eff3c95f0",
+   "seconds": 9.1
+  },
+  "GSM9226200_P15_LUAD": {
+   "n_barcodes": 14231,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "28c9e888af7e280778356e09e13a3cf235fa5a8689e9fb7fcfb131988559b7df",
+   "features_sha": "1a2803a18984567f716f8809fece47006342087da78572227daf6e21e4cd865f",
+   "barcodes_sha": "ef12e950e1ea70b4dc1a6a6e2e7cea6ac02f8a418f861eec92596fde6b210862",
+   "seconds": 16.3
+  },
+  "GSM9226201_P16_AIS": {
+   "n_barcodes": 13454,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "964ef8b32407df57275998c970646a548704b1bff4a2f3449c0ece41c04187df",
+   "features_sha": "64d9ade6fa6a888fcfccbd88e36d31aa82688017c66f3afc283ed2fd7c56fe27",
+   "barcodes_sha": "d9d50abdae62abc9be0b62a41ddccd52e6e502601fdc787376535250bc04b96f",
+   "seconds": 4.6
+  },
+  "GSM9226202_P16_LUAD": {
+   "n_barcodes": 7736,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "0c8187610eb8d6f13d9234afacdc362b54b79c70aa197e1bc8e32ffc12d35bbf",
+   "features_sha": "0bcfbafbe8f3495f762e366b37f70ca6d780a1b62240458872844e8b2fc247ad",
+   "barcodes_sha": "ab753f97b554de2e18a6098bc65d561af451731dc5bfaadc36d3d6c8493a4b24",
+   "seconds": 7.0
+  },
+  "GSM9226203_P17_AIS": {
+   "n_barcodes": 14336,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "d8033d5d0a8d62cee519355a198e5037836f4b15a6ba8dad11fdcdb2893686a5",
+   "features_sha": "74ceac37fea192f132a2afd5558557581b3c6bd66d25e56d6ef2cc1337be1553",
+   "barcodes_sha": "7850f7f0c61b911e8a19a1e8b703ce47a69c8662a504aa46f300c965de9b8545",
+   "seconds": 5.1
+  },
+  "GSM9226204_P17_LUAD": {
+   "n_barcodes": 13515,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "976045985e1d1f0be9723d8bcb485aefe0cf87eac39ef3d5187ec974d498dc36",
+   "features_sha": "bd196be6675936e3988357417511854e4539f126bbd18dea0f0a49597025a2ba",
+   "barcodes_sha": "7fe9b245cc630993d5cecd200452d49b84fab0d5c49594a966b591c59aefe322",
+   "seconds": 11.4
+  },
+  "GSM9226205_P18_MIA": {
+   "n_barcodes": 13006,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "cd97c9ecb6cd3a3e69d392702a15f8a8e6b17e4992a212685aba82d6921f5318",
+   "features_sha": "875ed60d7ded0799041091ed6e960c23d8d83909a2eb6d11851cbcc4b856d092",
+   "barcodes_sha": "272dde05cad64141cd921d85cdde42a806f170d1a22232775bd56db0652497ab",
+   "seconds": 5.6
+  },
+  "GSM9226206_P18_LUAD": {
+   "n_barcodes": 11971,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "461b52f659be8144fe64dcd82aae9bae48bd989031a0020b727b1e70f2355c74",
+   "features_sha": "1351ee09166d2a2f37bd271d70ad52ef47b887b737a19cdf143ff117717f7ee9",
+   "barcodes_sha": "bb3656ba67df803891a13212ebe6f405a6d5086bd88716f4189fd89fdf671c41",
+   "seconds": 16.0
+  },
+  "GSM9226207_P19_AIS": {
+   "n_barcodes": 13899,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "0390694cdff0281133b34980c8186b00726faa3103d5b0eacf2233f69910038d",
+   "features_sha": "8bdc5cdb32fddd3d7dde5db803b985bbbb67f9d3690a948b14593f1f05774fa5",
+   "barcodes_sha": "8d23765deb3dcc33d3ce17d66397fabaa9000e4696ed5a4f65190662c0b8084b",
+   "seconds": 11.7
+  },
+  "GSM9226208_P19_LUAD": {
+   "n_barcodes": 12572,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "29d416dc015a3dea4508ca1166f29ccbc699b41e2ab7c9a6e4f4489821e89e66",
+   "features_sha": "138c3eaf447eb12cdc4e3c4ae7f35f0426b8a64f09fa71aebc3e2301ed6fa204",
+   "barcodes_sha": "6e4a30fdb0db5469242beb3a4bf6e84f8b463637ad7fb283a8ccc2a1a16baeea",
+   "seconds": 13.3
+  },
+  "GSM9226209_P20_AAH": {
+   "n_barcodes": 12304,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "21f904b70aa5c792b6c0dba3293d797ea478d0c510f7e590b8bbb15cf275becc",
+   "features_sha": "842d70ad05658efae31379acb56b1974355f787fc1b870b6da780addd599f1b9",
+   "barcodes_sha": "6b13d6994f4646e7d51c96933c516a9a57e4210198d1e9b011371b6c74fc7058",
+   "seconds": 16.2
+  },
+  "GSM9226210_P20_LUAD": {
+   "n_barcodes": 13604,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "00f1094ae738d0ef0591f983788af2d8c9617a1abae1b9b8d057f8ed71495128",
+   "features_sha": "83255aec76131e5a99167227fa8588c460929eba3d2a4f9b32bd64de6295dc76",
+   "barcodes_sha": "f9c7291f333c659b80cc955195ad6fa34723cf557243e33b4045bb09acfed9b5",
+   "seconds": 23.9
+  },
+  "GSM9226211_P21_AIS": {
+   "n_barcodes": 13372,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "d3987ea62f51e7df0f2aeb507133949a2ad464634c85ae23a3e1956a70384b08",
+   "features_sha": "ff196d3db86043cba4309fe1df8df78afe7551b60797ea6b521688067ea256f9",
+   "barcodes_sha": "70151a8e5e68e74f73e1fda28818b65d08e4728882aefbe5a7e4e40df55eb6c1",
+   "seconds": 14.2
+  },
+  "GSM9226212_P21_AIS-1": {
+   "n_barcodes": 12926,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "9fa558ba6218880f8499dd251494b50420087410e4309b9d51f3f8cacb2d1928",
+   "features_sha": "b04d3d623c76697cfea540a93f2956c75ad311edf796b16de7d9d640cefa2376",
+   "barcodes_sha": "d155e4dbf96f2053e181d5b89b576bd691b0e85da9433ab9dbb676e1936081e0",
+   "seconds": 13.3
+  },
+  "GSM9226213_P21_LUAD": {
+   "n_barcodes": 13348,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "d936ea8e1dceee888293e2097742b6a66f24fa8721ea1257f7522581877bfbba",
+   "features_sha": "3a8014a13644f5704492b55fc163aa2b61b1ac417ad507931b0678d89d5a4450",
+   "barcodes_sha": "54391993456c4fdb5682676c6357a8ea9d2156e969fd9bcf858b7f11a95becd6",
+   "seconds": 16.8
+  },
+  "GSM9226214_P22_AAH": {
+   "n_barcodes": 7943,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "2bfa9714cc20e00fa45a30f884e449f60c43302116e88772d68ade80c9a81cae",
+   "features_sha": "d3614916e70aceb894414fdb3712a581515e38372937b18abf086602d2624290",
+   "barcodes_sha": "7852a434fdf5651fa823999d58cb4e1890b3287cb8ab28fa4b2e770d7f4e21a8",
+   "seconds": 6.0
+  },
+  "GSM9226215_P22_AIS": {
+   "n_barcodes": 12886,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "f854c3f2076c508256145d25a35144bfef9fb8e651b9473d9e90532c71a04fbe",
+   "features_sha": "f5220a5f3dc1003bb62a360e81322edf48d2ac74f7b5fcfae9925a7ce98d1659",
+   "barcodes_sha": "86e77ecd13f906f5af027616761596e93d9da86293c1342a92d76a3601c5b50b",
+   "seconds": 10.4
+  },
+  "GSM9226216_P22_LUAD": {
+   "n_barcodes": 12229,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "bb0c05b308bae3ebf02300e6c1548d7695bef82c354f9ff0e089cee7120eca0f",
+   "features_sha": "dca233c72f8d8740a4095df0fa8718fa93d02a13790d8b68f886b058e99a0d23",
+   "barcodes_sha": "a47b62836e18a13b52fe98873f8e304ad8e43f45d46fdac5a323478f130d7cda",
+   "seconds": 15.1
+  },
+  "GSM9226217_P23_AIS": {
+   "n_barcodes": 9996,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "2f4e600461b9fad9cdbe71a5d082f2c2850ccb057e66f8395da9f33aa62d4973",
+   "features_sha": "58ee61670fcd11f2f31240ebb594181e29ba2603c6df90886802994dfa430c65",
+   "barcodes_sha": "aafb161cdefeef0dafeb4fbb54123d83dd7f050a6425a9b583aade1c62c1f8df",
+   "seconds": 6.0
+  },
+  "GSM9226218_P23_AIS-1": {
+   "n_barcodes": 10826,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "825b126c81792dac4c7352416363b0f6dfd6078820603ec67cdda01d76ad6ca7",
+   "features_sha": "6e1479e19be1fdb70adb78c60a8e8989e6b5d3bf242158697e3e5dbaeeaefa9d",
+   "barcodes_sha": "701281ff437c96f0e537d3e2499338a4a5ef3a46126f8a9b84724f7b2f721d59",
+   "seconds": 7.6
+  },
+  "GSM9226219_P23_LUAD": {
+   "n_barcodes": 10894,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "5cf5406604d57ce7e2d1698f20b2b4a3f0cbfbe097d80516e51777e5cde8cc4c",
+   "features_sha": "5eabca86c32c0abe41cf7aaa2562410c667962e0f101f343f6babaa63cefea5d",
+   "barcodes_sha": "8dd423c70b8b3f997255e27429cdb957d05bf97fded5eb99b99dc4167b465c4d",
+   "seconds": 9.0
+  },
+  "GSM9226220_P24_AAH": {
+   "n_barcodes": 6738,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "82da4f41fc5ce5d1d2a17eb0bbe45536368571c1464ddc34d7b38af5ad950ec7",
+   "features_sha": "16af1bfaa902693c47cf4c358d6ff03d19591e689017b84a908b538d2c5aec64",
+   "barcodes_sha": "ccee26736950d41fe347979446767d9d1e823bbc71803ec83dc44d7c2e3e1c83",
+   "seconds": 5.6
+  },
+  "GSM9226221_P24_LUAD": {
+   "n_barcodes": 6276,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "167ab3af5f13c70f156c8a398f6d09d9b3a12ddffe216cfe30317bd6780bd90c",
+   "features_sha": "51c0d061ed40b14cab08d83894cd2ddc6a817705a085973819279e8e3318854e",
+   "barcodes_sha": "a50c02ff70aeed4bdb5de521cb7f3c2c8fd42563da5efc50f9a4f9714d866c6c",
+   "seconds": 9.6
+  },
+  "GSM9226222_P25_AAH": {
+   "n_barcodes": 9294,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "8481739412a27a594a87c02d0d1cc4b5152864a44f38b96ae97a3b60fabd95e3",
+   "features_sha": "2c6c7ddde4259f3fa3b77cfec8183fbf35e80245d43cd1f7e3b3606381c3d591",
+   "barcodes_sha": "1cc5adcfe1b533233ceaf0de51f2a2be41668b6be67b97d00c3e6679c6a93e0b",
+   "seconds": 5.4
+  },
+  "GSM9226223_P25_LUAD": {
+   "n_barcodes": 3791,
+   "n_genes_GE": 18085,
+   "n_genes_antibody": 35,
+   "n_MT_genes": 11,
+   "n_antibody_rows": 35,
+   "matrix_sha": "ad77f5c1e89be933e6f432381b0c525fde3d40372f93f41dc6bff453e3e95317",
+   "features_sha": "7d6568ac3b332574dff6b2e4057dde8c91f559fcdf12006897a4021ce72f39b5",
+   "barcodes_sha": "a7a4f67561a448370cc839f0095dd761404075eaaba338f9e93d2abd93bdd92c",
+   "seconds": 5.0
+  }
+ },
+ "not_reproducible_from_paper": [
+  "病理学家逐 spot 剔除 \"Space\"/\"Foreign body\"/\"Tissue artifacts\" 这一步——我们无逐 spot 病理注释"
+ ]
+}

@@ -1,0 +1,95 @@
+{
+  "A_hires": {
+    "n_slide": 56,
+    "n_spot": 13778,
+    "rho_neoplastic_vs_stage": 0.6981777627645752,
+    "neoplastic_mean": 0.39990726176516284,
+    "argmax_neoplastic_frac": 0.39556096748889047,
+    "empty_mean": 0.33470128044219954,
+    "neoplastic_mean_Normal": 0.1965938359498977,
+    "neoplastic_mean_AAH": 0.22888775271448222,
+    "neoplastic_mean_AIS": 0.2481007027838911,
+    "neoplastic_mean_MIA": 0.30569061636924744,
+    "neoplastic_mean_LUAD": 0.5763182784072481,
+    "label": "A hires"
+  },
+  "B_cytassist": {
+    "n_slide": 56,
+    "n_spot": 13778,
+    "rho_neoplastic_vs_stage": 0.2283213209647314,
+    "neoplastic_mean": 0.10743155549945572,
+    "argmax_neoplastic_frac": 0.025204636173489028,
+    "empty_mean": 0.4538418304707323,
+    "neoplastic_mean_Normal": 0.077055238187313,
+    "neoplastic_mean_AAH": 0.09214577044952996,
+    "neoplastic_mean_AIS": 0.10084420908242461,
+    "neoplastic_mean_MIA": 0.11366311646997926,
+    "neoplastic_mean_LUAD": 0.11765526930013524,
+    "label": "B cytassist"
+  },
+  "C_cytassist_contrasthmatched": {
+    "n_slide": 56,
+    "n_spot": 13778,
+    "rho_neoplastic_vs_stage": 0.5403787107213244,
+    "neoplastic_mean": 0.07289233462818494,
+    "argmax_neoplastic_frac": 0.021108092171809915,
+    "empty_mean": 0.7624649229858603,
+    "neoplastic_mean_Normal": 0.0106027526780962,
+    "neoplastic_mean_AAH": 0.04584770336408501,
+    "neoplastic_mean_AIS": 0.047691688008074176,
+    "neoplastic_mean_MIA": 0.03679659264162177,
+    "neoplastic_mean_LUAD": 0.10585281718522307,
+    "label": "C cyto+contrast"
+  },
+  "D_cytassist_at_hires_pixel_density": {
+    "n_slide": 56,
+    "n_spot": 13778,
+    "rho_neoplastic_vs_stage": 0.21525352993269725,
+    "neoplastic_mean": 0.10595527547411618,
+    "argmax_neoplastic_frac": 0.024195663331403383,
+    "empty_mean": 0.4520134880606617,
+    "neoplastic_mean_Normal": 0.0760367289185524,
+    "neoplastic_mean_AAH": 0.09132484143430532,
+    "neoplastic_mean_AIS": 0.09982774393366912,
+    "neoplastic_mean_MIA": 0.11234354414045805,
+    "neoplastic_mean_LUAD": 0.11561241731620749,
+    "label": "D cyto@hires px"
+  },
+  "baseline_check": {
+    "expected_rho": 0.695,
+    "got_rho": 0.6981777627645752,
+    "reproduced": true
+  },
+  "A_vs_B_cytassist": {
+    "n_paired": 56,
+    "median_delta": -0.23572582751512527,
+    "p": 9.893602234325464e-11,
+    "arm": "B_cytassist",
+    "n_slide_arm_gt_A": 2,
+    "n_slide_arm_lt_A": 54
+  },
+  "A_vs_C_cytassist_contrasthmatched": {
+    "n_paired": 56,
+    "median_delta": -0.29064228758215915,
+    "p": 7.547498213151496e-11,
+    "arm": "C_cytassist_contrasthmatched",
+    "n_slide_arm_gt_A": 0,
+    "n_slide_arm_lt_A": 56
+  },
+  "A_vs_D_cytassist_at_hires_pixel_density": {
+    "n_paired": 56,
+    "median_delta": -0.23732380568981176,
+    "p": 9.893602234325464e-11,
+    "arm": "D_cytassist_at_hires_pixel_density",
+    "n_slide_arm_gt_A": 2,
+    "n_slide_arm_lt_A": 54
+  },
+  "sensitivity_dot_clean": {
+    "rule": "dot_frac_max <= 0.05",
+    "A_hires": 0.6758126847311566,
+    "B_cytassist": 0.2058009126251894,
+    "C_cytassist_contrasthmatched": 0.47665765733605936,
+    "D_cytassist_at_hires_pixel_density": 0.1891861995499588,
+    "n_slide_per_arm": 44
+  }
+}

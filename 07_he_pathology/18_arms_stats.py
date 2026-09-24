@@ -105,12 +105,16 @@ def main():
             st, p = wilcoxon(x, y)
         except ValueError:
             st, p = np.nan, np.nan
+        # ⚠️ 键名用 `arm` 不用 `B`：本循环比的是 A 与**每一个**臂（B/C/D），
+        #    原先写死 `n_slide_B_gt_A` 会让 A_vs_C / A_vs_D 两块里的键名谎报自己是 B
+        #    （2026-09-25 更正；数值一直是对的，只有键名误导）
         res[f'A_vs_{a}'] = {'n_paired': len(common), 'median_delta': float(np.median(d)),
                             'p': float(p),
-                            'n_slide_B_gt_A': int((d > 0).sum()),
-                            'n_slide_B_lt_A': int((d < 0).sum())}
+                            'arm': a,
+                            'n_slide_arm_gt_A': int((d > 0).sum()),
+                            'n_slide_arm_lt_A': int((d < 0).sum())}
         print(f'  A vs {SHORT[a]:20s} 中位差 {np.median(d):+.3f}  '
-              f'B>A {int((d>0).sum()):2d} 张 / B<A {int((d<0).sum()):2d} 张  p={p:.2e}')
+              f'臂>A {int((d>0).sum()):2d} 张 / 臂<A {int((d<0).sum()):2d} 张  p={p:.2e}')
 
     # 敏感性：`cytassist_image.tiff` 上烧录的 spot 点阵会污染裁窗。逐切片记录了污染率，
     # 剔掉污染最重的切片看 rho 是否还稳（只有切片级污染率，故只能做切片级剔除）。
