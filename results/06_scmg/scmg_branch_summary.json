@@ -1,0 +1,252 @@
+{
+  "script": "06_scmg/02_analyze_scmg_branch.py",
+  "prereg": "results/06_scmg/SCMG_BRANCH_PREREG.md",
+  "inputs": {
+    "query_h5ad_sha256": "a276cd1af69a4620ff9e3d64f4b93f33461e646537c5f2c9da1aff8c9150b9de",
+    "embedder_model_pt_sha256": "01bd51e6d8a54486e5d3bc412c980466031c5f0e91c8ec2fe0474c4c3150f599",
+    "embedder_state_sha256": "e585faae3fb2f7805880cebdfcb18c9550a636381e8af211ee3bfcab3742119f",
+    "standard_genes_sha256": "44c436d39ea978a4787132a1ddd92469aa3fbdef793b69d99f15f7c5dd09de78",
+    "ref_manifold_sha256": "27669cfbf96a7274c8bf2a6ea23e16b8f744ecc22143229f8c4b34f5f3133d4b",
+    "scmg_git_commit": "29f44c98c5621d575a058b549e0fdde0ba31a730"
+  },
+  "frozen_params": {
+    "device": "cpu",
+    "batch_size": 8192,
+    "pre_normalized": false,
+    "emb_key": "X_scmg",
+    "n_jobs": 20
+  },
+  "gene_coverage": 0.8912502075377718,
+  "n_genes_mapped": 16104,
+  "n_genes_unmapped": 1965,
+  "latent_shape": [
+    413697,
+    512
+  ],
+  "S1_coverage_pass": true,
+  "S1_finite": true,
+  "S1_non_degenerate": true,
+  "S1_pass": true,
+  "S2_lung_fraction": 0.4965711619857045,
+  "S2_threshold": 0.1,
+  "S2_pass": true,
+  "S2_lung_fraction_by_stage": {
+    "AAH": 0.56,
+    "AIS": 0.5704,
+    "IAC": 0.424,
+    "MIA": 0.5331,
+    "Normal": 0.5482
+  },
+  "S3_auroc": 0.5709753246736938,
+  "S3_strong": 0.8,
+  "S3_weak": 0.6,
+  "S3_verdict": "未被保留（全糊一块）",
+  "S3_per_patient": [
+    {
+      "patient": "P10",
+      "auroc": 0.779382913812237,
+      "n_iac": 10516,
+      "n_normal": 970
+    },
+    {
+      "patient": "P11",
+      "auroc": 0.7839742095114314,
+      "n_iac": 5798,
+      "n_normal": 827
+    },
+    {
+      "patient": "P12",
+      "auroc": 0.46050833651723555,
+      "n_iac": 1664,
+      "n_normal": 906
+    },
+    {
+      "patient": "P13",
+      "auroc": 0.718301479883989,
+      "n_iac": 1904,
+      "n_normal": 452
+    },
+    {
+      "patient": "P14",
+      "auroc": 0.4730764918554586,
+      "n_iac": 2078,
+      "n_normal": 661
+    },
+    {
+      "patient": "P15",
+      "auroc": 0.6631308768654003,
+      "n_iac": 3322,
+      "n_normal": 1035
+    },
+    {
+      "patient": "P16",
+      "auroc": 0.5421777388778037,
+      "n_iac": 1812,
+      "n_normal": 1082
+    },
+    {
+      "patient": "P17",
+      "auroc": 0.717720596389852,
+      "n_iac": 5379,
+      "n_normal": 5899
+    },
+    {
+      "patient": "P18",
+      "auroc": 0.6155066081043532,
+      "n_iac": 8499,
+      "n_normal": 4862
+    },
+    {
+      "patient": "P19",
+      "auroc": 0.43599656467184184,
+      "n_iac": 13262,
+      "n_normal": 3481
+    },
+    {
+      "patient": "P20",
+      "auroc": 0.571177324243136,
+      "n_iac": 7309,
+      "n_normal": 1272
+    },
+    {
+      "patient": "P21",
+      "auroc": 0.5472857807618161,
+      "n_iac": 2205,
+      "n_normal": 3070
+    },
+    {
+      "patient": "P22",
+      "auroc": 0.5090250299577095,
+      "n_iac": 5009,
+      "n_normal": 2149
+    },
+    {
+      "patient": "P23",
+      "auroc": 0.5211343028083626,
+      "n_iac": 18932,
+      "n_normal": 5287
+    },
+    {
+      "patient": "P24",
+      "auroc": 0.7220513342691625,
+      "n_iac": 34523,
+      "n_normal": 6536
+    },
+    {
+      "patient": "P25",
+      "auroc": 0.8052331102273839,
+      "n_iac": 9118,
+      "n_normal": 7394
+    },
+    {
+      "patient": "P3",
+      "auroc": 0.4727106333098442,
+      "n_iac": 1759,
+      "n_normal": 1002
+    },
+    {
+      "patient": "P4",
+      "auroc": 0.49392804718924505,
+      "n_iac": 21757,
+      "n_normal": 27978
+    },
+    {
+      "patient": "P5",
+      "auroc": 0.7708119071033316,
+      "n_iac": 11127,
+      "n_normal": 11955
+    },
+    {
+      "patient": "P6",
+      "auroc": 0.6097278256026235,
+      "n_iac": 3669,
+      "n_normal": 941
+    },
+    {
+      "patient": "P7",
+      "auroc": 0.6314151879308233,
+      "n_iac": 11589,
+      "n_normal": 4764
+    },
+    {
+      "patient": "P8",
+      "auroc": 0.737785847017331,
+      "n_iac": 3767,
+      "n_normal": 280
+    },
+    {
+      "patient": "P9",
+      "auroc": 0.5531131910305486,
+      "n_iac": 3089,
+      "n_normal": 1703
+    }
+  ],
+  "reference_cell_type_composition_top8_by_stage": {
+    "Normal": {
+      "type II pneumocyte": 15.02,
+      "type I pneumocyte": 8.71,
+      "alveolar type 1 fibroblast cell": 3.1,
+      "fibroblast": 2.99,
+      "macrophage": 2.75,
+      "T cell": 2.42,
+      "CD8-positive, alpha-beta cytotoxic T cell": 2.29,
+      "activated CD8-positive, alpha-beta T cell": 2.25
+    },
+    "AAH": {
+      "type II pneumocyte": 17.52,
+      "type I pneumocyte": 8.28,
+      "macrophage": 3.03,
+      "CD8-positive, alpha-beta cytotoxic T cell": 2.82,
+      "fibroblast": 2.77,
+      "alveolar type 1 fibroblast cell": 2.77,
+      "T cell": 2.66,
+      "activated CD8-positive, alpha-beta T cell": 2.65
+    },
+    "AIS": {
+      "type II pneumocyte": 14.68,
+      "type I pneumocyte": 8.78,
+      "alveolar type 1 fibroblast cell": 3.38,
+      "macrophage": 3.17,
+      "alveolar macrophage": 3.05,
+      "epithelial cell of alveolus of lung": 2.67,
+      "fibroblast": 2.55,
+      "capillary endothelial cell": 2.41
+    },
+    "MIA": {
+      "type II pneumocyte": 12.0,
+      "type I pneumocyte": 10.14,
+      "fibroblast": 4.0,
+      "alveolar type 1 fibroblast cell": 3.15,
+      "embryonic fibroblast": 2.98,
+      "myofibroblast cell": 2.68,
+      "macrophage": 2.33,
+      "capillary endothelial cell": 2.21
+    },
+    "IAC": {
+      "type II pneumocyte": 10.1,
+      "plasma cell": 5.55,
+      "type I pneumocyte": 5.5,
+      "macrophage": 3.73,
+      "T cell": 3.2,
+      "activated CD8-positive, alpha-beta T cell": 2.72,
+      "fibroblast": 2.68,
+      "CD8-positive, alpha-beta cytotoxic T cell": 2.52
+    }
+  },
+  "figure_subsample": {
+    "seed": 0,
+    "n_ref": 20000,
+    "n_per_stage": 4000,
+    "note": "仅影响图，不影响任何门槛"
+  },
+  "caveats": [
+    "snRNA（核）投到以 scRNA（全细胞）为主的参照流形；SCMG 与 2026 基准均未在 snRNA 上验证",
+    "参照流形无肿瘤态 ⇒ SCMG 不能给恶性标签，只能给\"最像的正常/发育细胞状态\"",
+    "参照是全身泛组织图谱（331 组织），肺仅占 11.89%",
+    "分期↔样本嵌套；S3 用留一患者缓解，但同患者内仍共享技术批次",
+    "单数据集无 ground truth ⇒ 本腿不关闭 GP9（GP9 须与 M3-A 做 scIB 对照）",
+    "SCMG 的 797 类全局状态标签 ≠ LUAD 亚型标签，报告不得混用",
+    "偏离 pyproject 固定版本（用主环境现有版本），未改任何数值口径",
+    "本腿不是「迁徙分析」；迁徙需亚型边界，属未签字的 R4 边界问题"
+  ]
+}

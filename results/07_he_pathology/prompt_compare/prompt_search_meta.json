@@ -1,0 +1,44 @@
+{
+  "n_pairs": 1344,
+  "n_img": 16000,
+  "templates": [
+    "An H&E image patch of [] .",
+    "a histopathology image of []",
+    "An H&E image patch of []  tissue.",
+    "a histopathology image of []  tissue",
+    "a micrograph of []",
+    "a photomicrograph of []",
+    "a histology image showing []",
+    "H&E stained []"
+  ],
+  "tumor_terms": [
+    "invasive adenocarcinoma with desmoplastic stroma",
+    "invasive adenocarcinoma",
+    "neoplastic epithelial cells continuously lining alveolar walls in a lepidic pattern",
+    "solid sheets of tumor cells replacing alveoli",
+    "adenocarcinoma cells forming glands",
+    "tumor cells replacing normal alveolar architecture",
+    "atypical epithelial cells lining distorted alveoli",
+    "malignant epithelium with enlarged hyperchromatic nuclei",
+    "solid tumor growth pattern",
+    "gland-forming malignant epithelium",
+    "carcinoma cells",
+    "malignant tumor tissue",
+    "dense cellular tumor with loss of alveolar spaces",
+    "invasive malignant epithelium"
+  ],
+  "normal_terms": [
+    "morphologically normal pneumocytes lining empty alveoli",
+    "normal lung parenchyma with patent alveolar spaces",
+    "thin alveolar walls lined by normal pneumocytes",
+    "aerated lung tissue with open alveolar spaces",
+    "empty alveoli lined by flat pneumocytes",
+    "normal lung with thin alveolar septa",
+    "intact alveolar spaces",
+    "unremarkable lung parenchyma",
+    "normal lung tissue",
+    "alveolar spaces lined by normal epithelium",
+    "open alveolar spaces with thin septa",
+    "healthy lung tissue"
+  ]
+}

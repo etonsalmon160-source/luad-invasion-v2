@@ -1,0 +1,91 @@
+{
+  "script": "03_cnv/13_run_malig_probe.py",
+  "tool": "scMalignantFinder (pretrained)",
+  "pretrain_dir": "/home/eto/luad_v2/tools/scMalignantFinder_pretrain",
+  "input_h5ad": "/home/eto/luad_v2/results/03_cnv/malig_probe/malig_probe_input.h5ad",
+  "n_cells": 133384,
+  "score_col": "malignancy_probability",
+  "pred_col": "scMalignantFinder_prediction",
+  "pos_stage": "IAC",
+  "neg_stage": "Normal",
+  "desc_stages": [
+    "AAH",
+    "AIS",
+    "MIA"
+  ],
+  "auroc_strong": 0.8,
+  "auroc_weak": 0.6,
+  "per_patient_auroc_median": 0.6613713341355981,
+  "n_patients_with_auroc": 23,
+  "n_patients_total": 23,
+  "verdict": "弱信号，只能作佐证，不足以定恶性",
+  "stage_score_describe": {
+    "AAH": {
+      "count": 11891.0,
+      "mean": 0.0098952544,
+      "std": 0.0622148394,
+      "min": 5.033466383e-21,
+      "25%": 4.38318e-05,
+      "50%": 0.0002028178,
+      "75%": 0.001115512,
+      "max": 0.9722587871
+    },
+    "AIS": {
+      "count": 28525.0,
+      "mean": 0.0148341973,
+      "std": 0.0754394161,
+      "min": 2.594900897e-20,
+      "25%": 3.49273e-05,
+      "50%": 0.0002271859,
+      "75%": 0.0017181308,
+      "max": 0.9989557386
+    },
+    "IAC": {
+      "count": 56134.0,
+      "mean": 0.1613234983,
+      "std": 0.3031523306,
+      "min": 2.063966781e-19,
+      "25%": 0.0001299303,
+      "50%": 0.0022562481,
+      "75%": 0.1230045806,
+      "max": 0.9999999677
+    },
+    "MIA": {
+      "count": 4583.0,
+      "mean": 0.0161983552,
+      "std": 0.0733190386,
+      "min": 5e-10,
+      "25%": 6.67555e-05,
+      "50%": 0.0005575474,
+      "75%": 0.0035045155,
+      "max": 0.9812684274
+    },
+    "Normal": {
+      "count": 32251.0,
+      "mean": 0.0136855964,
+      "std": 0.0793505156,
+      "min": 0.0,
+      "25%": 4.15001e-05,
+      "50%": 0.0002072491,
+      "75%": 0.0013289042,
+      "max": 0.9956080461
+    }
+  },
+  "caveats": [
+    "样本级批次混淆无法排除：Normal 与 IAC 样本在解离/环境RNA/批次上不同",
+    "IAC 样本内的瘤旁正常上皮被误标为正类，拉低表观性能",
+    "无逐细胞真值 ⇒ 只回答'能不能分开两个样本群'，不回答'每个核是否恶性'",
+    "该工具及同类前辈均未在 snRNA 上验证过；无 AAH/AIS 前例",
+    "上皮亚型标签来自 r*=0.7（放宽产物）⇒ 亚型相关结论为探索性",
+    "版本偏差：本机 scanpy 1.9.8 / sklearn 1.3.2，官方 pin 1.9.3 / 1.2.2"
+  ],
+  "env": {
+    "venv": "/home/eto/venvs/scmalig",
+    "python": "3.8.10",
+    "scMalignantFinder": "1.2.0",
+    "install": "pip install --no-deps（主环境未改）",
+    "scanpy": "1.9.8",
+    "sklearn": "1.3.2",
+    "joblib": "1.4.2"
+  }
+}

@@ -1,0 +1,47 @@
+# LUAD v2 导出包 · 2026-09-24
+
+## git log
+6ed5247 M0: 修复 GSM9226176 空间切片截断，门 FAIL → PASS（用户授权写入只读源目录）
+31189bb GP2 全量上皮臂：作业清单 + 运行器 + SCEVAN 第二臂预注册
+f042757 裁定：锚定覆盖缺口「认覆盖不足」（用户 2026-09-22）
+8918f73 更正排期图 (C)：组合数口径**高估**了缺口
+2f566cd SCEVAN 隔离安装完成 + 全量上皮排期图；并更正上一条提交里的错误数字
+51b721b 全量上皮排期估算 + 更正 SCEVAN 是 R 包（不是 Python 包）
+8edd498 锚定臂 P11 冒烟：方向首次正确（IAC 病灶 30.6% vs 锚定 0%），单点不足以判方法可用
+815e475 M2: 「锚定+同质」臂实现（预注册之后、首跑之前）
+97e3b69 M2: CopyKAT 各臂对照图（判决不由 CNV 决定的证据）
+281870a S4 面板两项裁定落盘 + TREM2+ 标签分诊图
+e1b65a9 GP8c：髓系 S4 面板结果并入 §三（一之二），并出新旧面板对照图
+d977d9f P24 处置裁定：保留 + 标注（用户 2026-09-22 决定）
+fd61fa8 GP8c §三（二）：核对原文，P24 的问题原文没有描述；补原文 QC 参数与 P24 核数异常
+bcd099f P24 环境 RNA：重冻结口径 + 确认版三项全过
+34e271d 内皮 S4 面板追认 + P24 环境 RNA 证伪测试
+2f15e3c 上皮「换种子改标签率」重算：查清 51.36% 的真实身份，并补旧/新同分辨率对比
+6f42711 GP5 §15.1–15.2: R 侧口径缺陷逐份核实，并按用户裁定登记（不改脚本、不重跑）
+868e590 GP5: L1 口径切 A_adjudicated，六谱系 r* 重选并全部签字；指标3 重算（唯髓系不过线，登记缺陷）
+d5d612f GP8a 上皮亚型面板定稿：缺槽处置两级裁定落地 + 更正文档里的错误计数
+687dbe3 种子代表性复核：七对象里三个种子0掉队，按预注册判据换种子
+
+## git status
+?? 03_cnv/12_build_malig_probe_input.py
+?? 03_cnv/13_run_malig_probe.py
+?? 03_cnv/14_build_gene_order.py
+?? 03_cnv/15_build_infercnv_input.py
+?? 03_cnv/16_run_infercnv_smoke.R
+?? 03_cnv/17_analyze_infercnv_smoke.R
+?? 03_cnv/18_analyze_infercnv_chrstat.R
+?? 06_scmg/
+?? 07_he_pathology/
+?? exports/
+?? figures/anchor_vs_lesion_aneuploid_99runs.png
+?? models/
+?? results/03_cnv/epi_full/
+?? results/03_cnv/infercnv_smoke/
+?? results/03_cnv/malig_probe/
+?? results/06_scmg/
+?? results/07_he_pathology/
+
+## 本机环境
+R: Rscript (R) version 4.2.2 Patched (2022-11-10 r83330)
+Python: Python 3.8.10
+CPU/MEM: 20 核 / 256 GB

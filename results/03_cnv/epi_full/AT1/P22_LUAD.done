@@ -1,0 +1,5 @@
+sample_id=P22_LUAD
+finished_at=2026-09-23T04:10:06+0800
+n_judged=489
+G1_verdict=flag_anchor_purity frac_aneuploid_anchor=0.1337 frac_aneuploid_lesion=0.1798
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT1/P22_LUAD.json

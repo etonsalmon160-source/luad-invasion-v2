@@ -1,0 +1,5 @@
+sample_id=P23_AIS1
+finished_at=2026-09-22T22:28:29+0800
+n_judged=4099
+G1_verdict=ok frac_aneuploid_anchor=0.0000 frac_aneuploid_lesion=0.0144
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT2/P23_AIS1.json
