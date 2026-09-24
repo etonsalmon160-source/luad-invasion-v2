@@ -1,0 +1,54 @@
+{
+  "script": "07_he_pathology/03_cohort_screen.py",
+  "status": "SCREEN — 判断是否值得立预注册，非结论",
+  "model": "vinid/plip",
+  "crop": 448,
+  "n_spot_per_slide": 250,
+  "seed": 0,
+  "data": "data/visium_spatial（自只读源拷入；源有两套布局，已归一）",
+  "n_slides": 56,
+  "n_patients": 25,
+  "stage_of_slide_from": "目录名 (= GEO 提交方标题分期)；Normal 仅 1 张",
+  "per_stage": {
+    "Normal": {
+      "n": 1,
+      "neoplastic_mean": 0.19659484922885895,
+      "neoplastic_median": 0.19659484922885895,
+      "normal_mean": 0.34833428263664246
+    },
+    "AAH": {
+      "n": 11,
+      "neoplastic_mean": 0.22846398265524345,
+      "neoplastic_median": 0.19962377846240997,
+      "normal_mean": 0.22675436531955545
+    },
+    "AIS": {
+      "n": 14,
+      "neoplastic_mean": 0.248194547103984,
+      "neoplastic_median": 0.2072271779179573,
+      "normal_mean": 0.2634436913899013
+    },
+    "MIA": {
+      "n": 4,
+      "neoplastic_mean": 0.30569156259298325,
+      "neoplastic_median": 0.2933116853237152,
+      "normal_mean": 0.24377055652439594
+    },
+    "LUAD": {
+      "n": 26,
+      "neoplastic_mean": 0.5753068002657249,
+      "neoplastic_median": 0.5936430096626282,
+      "normal_mean": 0.1454056166828825
+    }
+  },
+  "spearman_rho": 0.6950750749497068,
+  "spearman_p": 2.786535854906345e-09,
+  "caveats": [
+    "Normal 只有 1 张切片（P4_Normal）⇒ 队列级 Normal 对照 n=1，不可作统计",
+    "切片级分期来自目录名/GEO 标题，未经我们冻结的病理复核",
+    "同患者多病灶 ⇒ 观测不独立，未按患者聚类",
+    "PLIP 是零样本模型，未在肺 FFPE 上微调",
+    "deposited H&E 5.66um/px，PLIP 原生约 0.5um/px（差约 11 倍）",
+    "PLIP 无法区分 AAH/AIS/MIA —— 只能给\"非正常\"这个粗轴"
+  ]
+}

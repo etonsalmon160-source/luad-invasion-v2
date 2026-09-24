@@ -1,0 +1,5 @@
+sample_id=P6_AAH
+finished_at=2026-09-23T04:02:37+0800
+n_judged=551
+G1_verdict=ok frac_aneuploid_anchor=0.0870 frac_aneuploid_lesion=0.1186
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT2/P6_AAH.json

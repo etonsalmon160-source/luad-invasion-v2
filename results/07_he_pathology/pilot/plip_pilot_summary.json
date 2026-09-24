@@ -1,0 +1,48 @@
+{
+  "script": "07_he_pathology/01_plip_pilot.py",
+  "status": "PILOT — 判定路线可行性，非分析结果",
+  "model": "vinid/plip (CLIP ViT-B/32, 151.3M)",
+  "image": "spatial/tissue_hires_image.png + tissue_hires_scalef",
+  "frozen": {
+    "crop": 224,
+    "n_spot_per_slide": 400,
+    "seed": 0,
+    "min_tissue_frac": 0.1,
+    "white_thresh": 230,
+    "prompt_template": "a histopathology image of {}",
+    "labels": [
+      "lung adenocarcinoma",
+      "normal lung tissue",
+      "lung tissue with atypical adenomatous hyperplasia",
+      "lung tissue with adenocarcinoma in situ",
+      "fibrous stroma",
+      "lymphoid tissue",
+      "an empty glass slide"
+    ]
+  },
+  "per_stage": {
+    "Normal": {
+      "n_spot": 391,
+      "adenoca_mean": 0.007124252263349397,
+      "adenoca_median": 0.005457303952425718,
+      "normal_mean": 0.4610810529516862,
+      "argmax_adenoca_frac": 0.0
+    },
+    "LUAD": {
+      "n_spot": 400,
+      "adenoca_mean": 0.024447428560233676,
+      "adenoca_median": 0.019741096533834934,
+      "normal_mean": 0.18371584387961776,
+      "argmax_adenoca_frac": 0.0
+    }
+  },
+  "LUAD_minus_Normal_mean_prob": 0.017323176296884277,
+  "LUAD_minus_Normal_argmax_frac": 0.0,
+  "verdict": "无分离信号（试点不通过）",
+  "caveats": [
+    "deposited H&E is hires 1951x2000 = 5.66 um/px，PLIP 原生训练尺度约 0.5 um/px ⇒ 差约 11 倍",
+    "crop 224px 覆盖约 1.27mm 视野，远大于 spot 直径 55um ⇒ 这是\"邻域\"分类不是 spot 分类",
+    "染色偏淡（全片色度均值 6.6），低对比",
+    "同一患者单例对照，非队列证据"
+  ]
+}

@@ -1,0 +1,58 @@
+LUAD v2 导出包清单 2026-09-24
+内容: 图 + 结果表(CSV/JSON/TSV) + 代码 + 文档
+不含: 空转原始数据 data/visium_spatial (9.6G)、models/、tools/、scratch/、infercnv 中间态
+
+文件数: 1220
+
+--- 图 (PNG/PDF) ---
+figures/anchor_arm_p11.png
+figures/myeloid_panel_s1_vs_s4.png
+figures/cnv_arm_instability.png
+figures/anchor_vs_lesion_aneuploid_99runs.png
+figures/p24_ambient_ig.png
+figures/trem2_label_triage.png
+figures/endo_panel_s1_vs_s4.png
+figures/seed_churn_audit.png
+figures/p24_ambient_confirm.png
+figures/epi_full_schedule.png
+results/05_annotation/figures/bplasma_why_excluded.png
+results/05_annotation/figures/independent_adjudication.png
+results/05_annotation/figures/rstar_candidates_by_lineage.png
+results/05_annotation/figures/epiA_coarse_vs_fine_types.png
+results/05_annotation/figures/epiA_resolution_decision.png
+results/05_annotation/figures/lowres_stability_decision.png
+results/05_annotation/figures/umap_full_run_by_lineage.png
+results/06_scmg/figures/scmg_2_stage_composition.png
+results/06_scmg/figures/scmg_1_global_manifold_projection.png
+results/07_he_pathology/spot_annotation/QA_cytassist.png
+results/07_he_pathology/spot_annotation/QA_crop_resolution.png
+results/07_he_pathology/spot_annotation/QA_text_space.png
+results/07_he_pathology/prompt_compare/prompt_compare_figure.png
+results/07_he_pathology/prompt_compare/prompt_search_figure.png
+results/07_he_pathology/pilot/figures/plip_pilot_p4_tumor_vs_normal.png
+results/07_he_pathology/pilot/figures/plip_cohort_screen_by_stage.png
+results/07_he_pathology/pilot/figures/plip_pilot_cropsweep.png
+results/03_cnv/malig_probe/figures/malig_probe_score_by_stage.png
+results/03_cnv/infercnv_smoke/infercnv_out/infercnv.preliminary.png
+results/03_cnv/infercnv_smoke/infercnv_out/infercnv.png
+results/03_cnv/infercnv_smoke/infercnv_out/infercnv_subclusters.png
+results/03_cnv/infercnv_smoke/figures/infercnv_smoke_score_by_group.png
+results/03_cnv/infercnv_smoke/figures/v2_1_score_range_by_group.png
+results/03_cnv/infercnv_smoke/figures/v2_2_chr_profile_by_group.png
+
+--- 顶层分布 ---
+    991 results
+    117 logs
+     27 05_annotation
+     23 03_cnv
+     11 01_qc
+     10 figures
+     10 07_he_pathology
+      8 docs
+      8 04_integration
+      6 00_ingest
+      4 02_expression
+      2 06_scmg
+      1 STARTUP_PROMPT.md
+      1 README.md
+      1 PLAN_AND_CHECKPOINTS.md

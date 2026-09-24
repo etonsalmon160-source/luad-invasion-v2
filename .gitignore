@@ -88,3 +88,29 @@ results/_superseded/
 # 一次性诊断脚本与外部数据落地（含 90 MB 的 `GSM9226176` 空间 tar）。**不是交付物**，
 # 其中已验证可用的脚本应在定稿后再迁入正式目录（如 `04_integration/`）。
 scratch/
+
+# ── infercnv 产物 + 模型权重（2026-09-24 补）───────────────────────────────
+# 漏洞：前面覆盖了 .gz/.rds/.h5*/.npz/.npy/.bin，但 **不认识 infercnv 的产物格式**。
+# `results/03_cnv/infercnv_smoke/infercnv_out/` 与 `..._ABORTED_dgeMatrix/` 合计 20.4 GB，
+# 其中 **24 个文件 >100 MB**（最大 `expr.infercnv.preliminary.dat` 2.5 GB）——
+# 一次 `git add -A` 就会把 20.6 GB 全部暂存，push 被 GitHub 按单文件 100 MB 上限硬拒。
+# 这些都是 `16_run_infercnv_smoke.R` 可重建的中间对象（表达矩阵 / 逐步调参快照 / 参考与
+# 观测表）⇒ 不入库。**保留**同目录的 3 张 .png 与 6 个 <1 MB 的 groupings/thresholds 文本，
+# 它们是小体积的结论证据，所以这里按**文件名**排除而不是整目录排除
+# （gitignore 无法在整目录排除后重新包含其中的文件）。
+results/**/*.infercnv_obj
+results/**/expr.infercnv*.dat
+results/**/infercnv.*observations.txt
+results/**/infercnv.*references.txt
+
+# 模型权重：PLIP 的 `pytorch_model.bin` 单文件 577 MB，可由 hf-mirror 重新下载
+# （见 docs 里的模型来源），且是 HF 目录布局 ⇒ 不入库。
+# **保留**同目录的 config.json / tokenizer.json 等小文件：它们是「用的哪个模型、
+# 哪个版本」的凭证，没有它们无法复现 04/11 两个打分脚本。
+models/**/*.bin
+models/**/*.safetensors
+models/**/*.pt
+models/**/*.pth
+models/**/*.ckpt
+models/**/*.onnx
+models/**/.cache/

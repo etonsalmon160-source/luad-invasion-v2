@@ -1,0 +1,5 @@
+sample_id=P24_AAH
+finished_at=2026-09-23T03:43:02+0800
+n_judged=858
+G1_verdict=stop_anchor_implausible frac_aneuploid_anchor=0.5820 frac_aneuploid_lesion=0.5448
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT1/P24_AAH.json

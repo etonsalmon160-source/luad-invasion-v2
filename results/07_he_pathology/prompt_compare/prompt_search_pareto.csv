@@ -1,0 +1,31 @@
+template,tumor_term,normal_term,auc_train,auc_test,dens_test,dens_all
+a micrograph of [],carcinoma cells,empty alveoli lined by flat pneumocytes,0.6308654195490506,0.6145872796291473,0.0018007574258662137,0.00024338280546584007
+a histopathology image of [],malignant epithelium with enlarged hyperchromatic nuclei,open alveolar spaces with thin septa,0.6207038165687542,0.6172951656453717,0.0023910255902391962,0.0015152435174205037
+a histology image showing [],malignant tumor tissue,aerated lung tissue with open alveolar spaces,0.6735737194141892,0.6677888688535785,0.002664834761474746,0.0027578091797961168
+An H&E image patch of []  tissue.,adenocarcinoma cells forming glands,healthy lung tissue,0.7005589703412067,0.6919098090688302,0.0032403399490183054,0.0020336596185826076
+a histology image showing [],malignant epithelium with enlarged hyperchromatic nuclei,healthy lung tissue,0.707809767193178,0.7000873769956981,0.0063582958222866606,0.00160520607422956
+An H&E image patch of [] .,malignant epithelium with enlarged hyperchromatic nuclei,normal lung with thin alveolar septa,0.7291162996081029,0.7235745916295114,0.007348280414254556,0.006134234051832441
+a histopathology image of []  tissue,malignant epithelium with enlarged hyperchromatic nuclei,healthy lung tissue,0.7464597446613596,0.7382760978183992,0.01755655264215178,0.021527502085032284
+a histopathology image of [],malignant epithelium with enlarged hyperchromatic nuclei,healthy lung tissue,0.7551239085249362,0.7462346542307242,0.0322098662521716,0.036941732725847984
+An H&E image patch of []  tissue.,malignant epithelium with enlarged hyperchromatic nuclei,healthy lung tissue,0.7557588774129024,0.7483819449537572,0.03838938936368773,0.04390853759914863
+a histology image showing [],carcinoma cells,morphologically normal pneumocytes lining empty alveoli,0.7594657940632984,0.74996969413415,0.05067448331439252,0.05371408761755269
+An H&E image patch of [] .,neoplastic epithelial cells continuously lining alveolar walls in a lepidic pattern,aerated lung tissue with open alveolar spaces,0.75638457818541,0.756059740069244,0.06491524064123555,0.05473370527550874
+a histopathology image of [],malignant epithelium with enlarged hyperchromatic nuclei,aerated lung tissue with open alveolar spaces,0.774804566338699,0.771232609954655,0.08193210600477599,0.08940026509016356
+An H&E image patch of [] .,malignant epithelium with enlarged hyperchromatic nuclei,normal lung tissue,0.7996340124184509,0.7931393673618892,0.08424317736436462,0.08782226287755325
+An H&E image patch of []  tissue.,malignant epithelium with enlarged hyperchromatic nuclei,normal lung tissue,0.8114317055227258,0.8048883909566285,0.12103958943426642,0.12509130843859836
+a photomicrograph of [],carcinoma cells,morphologically normal pneumocytes lining empty alveoli,0.8240413267327875,0.8158954477133191,0.13787179195868202,0.1449309427767577
+a histopathology image of []  tissue,malignant epithelium with enlarged hyperchromatic nuclei,normal lung tissue,0.8271332524329833,0.8183280097855491,0.15313059859921443,0.1573363773629058
+a histopathology image of [],malignant epithelium with enlarged hyperchromatic nuclei,normal lung with thin alveolar septa,0.8292678024021307,0.8222029034621186,0.1602906181687469,0.16740453876992034
+a histopathology image of [],malignant epithelium with enlarged hyperchromatic nuclei,normal lung tissue,0.83316988496827,0.8236951406925586,0.16351089840694225,0.16859723259736933
+a histopathology image of [],carcinoma cells,morphologically normal pneumocytes lining empty alveoli,0.8895400872768134,0.8850335387725408,0.19596552109102322,0.2042798375632573
+a histopathology image of []  tissue,carcinoma cells,morphologically normal pneumocytes lining empty alveoli,0.9009443179861579,0.8973384790080245,0.24801035547986208,0.2554879821288605
+An H&E image patch of []  tissue.,malignant tumor tissue,morphologically normal pneumocytes lining empty alveoli,0.9068768592869401,0.9005125021180386,0.27196406728255784,0.2838097181292305
+a micrograph of [],malignant epithelium with enlarged hyperchromatic nuclei,morphologically normal pneumocytes lining empty alveoli,0.9233442408754373,0.9165379404993429,0.28487484760832754,0.2948503669585733
+a photomicrograph of [],malignant epithelium with enlarged hyperchromatic nuclei,morphologically normal pneumocytes lining empty alveoli,0.944223574955163,0.9401650089062996,0.30892301335150474,0.32133788005137265
+a photomicrograph of [],invasive malignant epithelium,morphologically normal pneumocytes lining empty alveoli,0.950355195375993,0.9513652813640422,0.3672825424962265,0.37993530211722204
+a photomicrograph of [],gland-forming malignant epithelium,morphologically normal pneumocytes lining empty alveoli,0.9553945374963236,0.9581052384890397,0.36880937185550267,0.3794295997369697
+a histopathology image of [],gland-forming malignant epithelium,morphologically normal pneumocytes lining empty alveoli,0.9571192308040852,0.9596347363389671,0.44603220055132453,0.4556230368009486
+a photomicrograph of [],invasive adenocarcinoma with desmoplastic stroma,morphologically normal pneumocytes lining empty alveoli,0.9695793264180834,0.9664586141578552,0.4566291250423082,0.466348943443522
+a photomicrograph of [],malignant tumor tissue,morphologically normal pneumocytes lining empty alveoli,0.9695715823927226,0.969482583189391,0.4709465796828879,0.483596495087913
+a photomicrograph of [],invasive adenocarcinoma,morphologically normal pneumocytes lining empty alveoli,0.9691787790637802,0.9699090149624148,0.5129036915982977,0.5216863135905262
+a histopathology image of [],invasive adenocarcinoma with desmoplastic stroma,morphologically normal pneumocytes lining empty alveoli,0.9727442848680921,0.9710573501629941,0.5648234293554293,0.5740467096944738

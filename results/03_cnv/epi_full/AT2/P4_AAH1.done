@@ -1,0 +1,5 @@
+sample_id=P4_AAH1
+finished_at=2026-09-23T01:26:58+0800
+n_judged=5884
+G1_verdict=flag_anchor_purity frac_aneuploid_anchor=0.4985 frac_aneuploid_lesion=0.5020
+json=/home/eto/luad_v2/results/03_cnv/epi_full/AT2/P4_AAH1.json
