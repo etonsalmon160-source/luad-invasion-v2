@@ -1,0 +1,47 @@
+{
+  "q_field": 1.3,
+  "um_aligned_native": 2.457,
+  "up_factor": 2.3077,
+  "hires_nyquist": 0.08818,
+  "control": "fft ideal upsample (zero power > Nyquist)",
+  "psd_ratio_below_nyquist": 0.7361,
+  "psd_ratio_above_nyquist": 0.0,
+  "band_rho": {
+    "0.005-0.020": 0.8423,
+    "0.020-0.045": 0.4862,
+    "0.045-0.070": -0.1656,
+    "0.070-0.088": -0.3917
+  },
+  "jpeg_block_ratio": 1.103,
+  "subpixel_band": {
+    "fine": {
+      "band": "0.045-0.088",
+      "rho_integer": -0.2194,
+      "rho_subpixel": 0.6984,
+      "shift": [
+        0.8,
+        1.0
+      ]
+    },
+    "mid": {
+      "band": "0.020-0.045",
+      "rho_integer": 0.4833,
+      "rho_subpixel": 0.8416,
+      "shift": [
+        0.8,
+        0.9
+      ]
+    },
+    "coarse": {
+      "band": "0.005-0.020",
+      "rho_integer": 0.8475,
+      "rho_subpixel": 0.9169,
+      "shift": [
+        0.8,
+        0.9
+      ]
+    }
+  },
+  "median_pixel_rho": 0.8679,
+  "example_slide": "GSM9226168_P1_AAH"
+}

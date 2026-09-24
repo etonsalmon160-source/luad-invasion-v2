@@ -114,3 +114,33 @@ models/**/*.pth
 models/**/*.ckpt
 models/**/*.onnx
 models/**/.cache/
+
+# ── H&E 分辨率/源审计的脚手架（2026-09-24）─────────────────────────────────
+# 审计过程产物：`resolution_sweep/` 目录 258 MB 里绝大多数是逐张切片的诊断图
+# （`reg8_*`/`reg9_*`/`ver7_*`/`focus_*`/`checker_*` ...）与 `_tmp_*.py` 一次性脚本。
+# 结论已固化为库内的 CSV/JSON/MD 与少数几张图 ⇒ 其余不入库，本地留档备查。
+07_he_pathology/_tmp_*.py
+07_he_pathology/_pp_*
+07_he_pathology/*.log
+results/07_he_pathology/resolution_sweep/*.png
+# 例外：这三张是结论的证据图，体积小且 PR/文档直接引用（必须写在上一行之后）。
+!results/07_he_pathology/resolution_sweep/spectrum_cyto_vs_hires.png
+!results/07_he_pathology/resolution_sweep/registration_all56_checker.png
+!results/07_he_pathology/resolution_sweep/aligned_detail.png
+# `embeds/` 是逐切片的 PLIP 嵌入 .npy。上面 `results/**/*.npy` 其实已覆盖，
+# 但它是**目录**而非文件、且目录名是 `embeds/` 不是 `embeddings/`（那条不匹配）
+# ⇒ 两条并列，防止将来有人改了扩展名就漏掉。
+results/07_he_pathology/resolution_sweep/embeds/
+# （`resolution_sweep/per_slide/*/` 里的逐 spot 分数是 `.csv.gz`，已被上面
+#   `results/**/*.gz` 挡住，无需另列。）
+# 逐张切片的抛光中间日志（`registration_final.csv` 已含最终值）
+results/07_he_pathology/resolution_sweep/_polish*.csv
+# 四臂对照的分片中间产物：合并后的 `plip_source_arms.csv` 才是交付物
+results/07_he_pathology/source_arms/_arms_*.csv
+results/07_he_pathology/source_arms/cyto_raw.png
+results/07_he_pathology/source_arms/armdump_GSM9226185_P8_LUAD.png
+# `registration_56_summary.csv`（v7 抛光**之前**的配准汇总）**故意不入库**：
+# 它的 `s` 是抛光前的旧值（P25 0.9733 / P15 1.4312 / P5 1.4963），抛光后已被
+# `resolution_sweep/registration_final.csv` 取代（s/s_pred 收敛到 0.995–1.000）。
+# 两者并存会让同一张切片出现两个互相矛盾的尺度数 ⇒ 只留最终版。
+results/07_he_pathology/registration_56_summary.csv

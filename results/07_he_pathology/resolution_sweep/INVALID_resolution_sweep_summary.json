@@ -1,0 +1,116 @@
+{
+  "script": "07_he_pathology/14_resolution_sweep.py",
+  "status": "RAW MEASUREMENTS — 只产出测量值，不施加任何类别判定、不判恶性",
+  "prereg": "results/07_he_pathology/resolution_sweep/PREREG.md",
+  "arms_run": [
+    "F1P0",
+    "F1P1",
+    "F2P0",
+    "F2P1",
+    "H448"
+  ],
+  "model": "vinid/plip (CLIP ViT-B/32)",
+  "frozen": {
+    "RNG_SEED": 0,
+    "N_PER_SLIDE": 1000,
+    "INPUT": 224,
+    "BATCH": 512,
+    "N_THREADS": 18,
+    "MIN_TISSUE_FRAC": 0.1,
+    "WHITE_THRESH": 230,
+    "FLATTEN_SIGMA": 32,
+    "template_A": "a histopathology image of {}",
+    "labels_A": [
+      "lung adenocarcinoma",
+      "normal lung tissue",
+      "lung tissue with atypical adenomatous hyperplasia",
+      "lung tissue with adenocarcinoma in situ",
+      "fibrous stroma",
+      "lymphoid tissue",
+      "an empty glass slide"
+    ],
+    "template_B": "An H&E image patch of {}.",
+    "labels_B": [
+      "invasive adenocarcinoma with desmoplastic stroma",
+      "morphologically normal pneumocytes lining empty alveoli",
+      "localized proliferation of thickened alveolar septa lined by atypical type II pneumocytes",
+      "neoplastic epithelial cells continuously lining alveolar walls in a lepidic pattern",
+      "monotonous enlarged cuboidal type II pneumocytes",
+      "fibrotic lung tissue with collagen deposition",
+      "dense lymphocytic infiltrate",
+      "an empty glass slide"
+    ]
+  },
+  "arms": [
+    {
+      "name": "F1P0",
+      "src": "aligned",
+      "crop": 224,
+      "flat": false
+    },
+    {
+      "name": "F1P1",
+      "src": "aligned",
+      "crop": 224,
+      "flat": true
+    },
+    {
+      "name": "F2P0",
+      "src": "aligned",
+      "crop": 1350,
+      "flat": false
+    },
+    {
+      "name": "F2P1",
+      "src": "aligned",
+      "crop": 1350,
+      "flat": true
+    },
+    {
+      "name": "H448",
+      "src": "hires",
+      "crop": 448,
+      "flat": false
+    }
+  ],
+  "geometry": {
+    "F1": "aligned 224px @1.897um/px = 425um 视野 ⇒ 1.90 um/px",
+    "F2": "aligned 1350px @1.897um/px = 2560um 视野 ⇒ 11.4 um/px",
+    "H448": "hires 448px @5.69um/px = 2550um 视野 ⇒ 11.4 um/px（旧基线）"
+  },
+  "spot_filter_rule": "一律用 F1 裁框（aligned 224px）量 tissue_frac，五臂同一 spot 集",
+  "color_caveat": "H&E 必须保留颜色：实测把裁框转灰度再复制成三通道后，PLIP 把它读成「空玻璃片」（empty 0.888 vs 真彩 0.370，neoplastic 0.038 vs 0.221）。P1 的压平是三通道减同一个亮度背景，通道间差值逐像素不变 ⇒ 色相保留。",
+  "pending_reading": "判读由 15_resolution_sweep_analysis.py 出；H448 rho 必须 ∈ [0.60,0.78]",
+  "filtered_log": [
+    {
+      "gsm_dir": "GSM9226168_P1_AAH",
+      "arm": "F1P0",
+      "n": 710,
+      "clamped_frac": 0.0
+    },
+    {
+      "gsm_dir": "GSM9226168_P1_AAH",
+      "arm": "F1P1",
+      "n": 710,
+      "clamped_frac": 0.0
+    },
+    {
+      "gsm_dir": "GSM9226168_P1_AAH",
+      "arm": "F2P0",
+      "n": 710,
+      "clamped_frac": 0.018309859154929577
+    },
+    {
+      "gsm_dir": "GSM9226168_P1_AAH",
+      "arm": "F2P1",
+      "n": 710,
+      "clamped_frac": 0.018309859154929577
+    },
+    {
+      "gsm_dir": "GSM9226168_P1_AAH",
+      "arm": "H448",
+      "n": 710,
+      "clamped_frac": 0.018309859154929577
+    }
+  ]
+}
