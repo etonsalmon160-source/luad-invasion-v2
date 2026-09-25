@@ -407,7 +407,10 @@ for (i in seq_along(SLIDES)) {
     set.seed(ARGS$seed)
     n_before <- ncol(cnt); tot_before <- sum(cnt)
     cnt <- as(cnt, "CsparseMatrix")
-    cnt@x <- rbinom(length(cnt@x), size = as.integer(cnt@x), prob = ARGS$thin)
+    ## ⚠️ `rbinom()` 返回 integer，直接塞进 `@x` 会把矩阵的存储类型从 double 改成 integer，
+    ##    下一步 `drop0()` 就会报 "REAL() can only be applied to a 'numeric'"。
+    ##    ⇒ 必须显式转回 double（2026-09-25 实跑逮到，见 §12.5 第 6 项）。
+    cnt@x <- as.numeric(rbinom(length(cnt@x), size = as.integer(cnt@x), prob = ARGS$thin))
     cnt <- drop0(cnt)
     cnt <- cnt[, colSums(cnt) > 0, drop = FALSE]   # 全零 spot 去掉（否则与坐标对不齐）
     keep_bc    <- colnames(cnt)
