@@ -1,0 +1,44 @@
+{
+  "_what": "RCTD 参考口径签字文件。00_build_rctd_reference.py 读本文件；signed 不为 true 或缺字段 ⇒ 硬停不跑。",
+  "signed": true,
+  "signed_by": "用户（项目负责人）",
+  "signed_at": "2026-09-25",
+  "attribution": "用户 2026-09-25 口头裁定；由 Claude 按其原话代笔落盘，未代其决定任何未答复项。",
+  "user_words": [
+    "其实我想要的是粗版和细版29全谱系",
+    "S4 面板 ⇒ 39 型（现行 L2 面板）",
+    "两个都跑：先 PREREG_v2，再 RCTD"
+  ],
+
+  "caliber": "d",
+  "coarse_caliber": "a",
+  "panels": { "myeloidA": "s4", "endoA": "s4" },
+  "expect_n_types": { "a": 6, "d": 39 },
+
+  "slides": "all_56",
+  "slide_list": [
+    "GSM9226168_P1_AAH", "GSM9226169_P1_LUAD", "GSM9226170_P2_AAH", "GSM9226171_P2_LUAD",
+    "GSM9226172_P3_AIS", "GSM9226173_P3_LUAD", "GSM9226174_P4_Normal", "GSM9226175_P4_AAH",
+    "GSM9226176_P4_AAH-1", "GSM9226177_P4_LUAD", "GSM9226178_P5_AIS", "GSM9226179_P5_LUAD",
+    "GSM9226180_P6_AAH", "GSM9226181_P6_LUAD", "GSM9226182_P7_LUAD", "GSM9226183_P7_LUAD-1",
+    "GSM9226184_P8_AIS", "GSM9226185_P8_LUAD", "GSM9226186_P9_AAH", "GSM9226187_P9_AIS",
+    "GSM9226188_P9_LUAD", "GSM9226189_P10_MIA", "GSM9226190_P10_LUAD", "GSM9226191_P11_AAH",
+    "GSM9226192_P11_LUAD", "GSM9226193_P12_AIS", "GSM9226194_P12_LUAD", "GSM9226195_P13_MIA",
+    "GSM9226196_P13_LUAD", "GSM9226197_P14_AIS", "GSM9226198_P14_LUAD", "GSM9226199_P15_MIA",
+    "GSM9226200_P15_LUAD", "GSM9226201_P16_AIS", "GSM9226202_P16_LUAD", "GSM9226203_P17_AIS",
+    "GSM9226204_P17_LUAD", "GSM9226205_P18_MIA", "GSM9226206_P18_LUAD", "GSM9226207_P19_AIS",
+    "GSM9226208_P19_LUAD", "GSM9226209_P20_AAH", "GSM9226210_P20_LUAD", "GSM9226211_P21_AIS",
+    "GSM9226212_P21_AIS-1", "GSM9226213_P21_LUAD", "GSM9226214_P22_AAH", "GSM9226215_P22_AIS",
+    "GSM9226216_P22_LUAD", "GSM9226217_P23_AIS", "GSM9226218_P23_AIS-1", "GSM9226219_P23_LUAD",
+    "GSM9226220_P24_AAH", "GSM9226221_P24_LUAD", "GSM9226222_P25_AAH", "GSM9226223_P25_LUAD"
+  ],
+  "n_max_cells": 10000,
+
+  "who_mapping": "a",
+  "who_mapping_meaning": "本臂不产出 WHO 列。WHO 分级不在本臂的回答范围内（RCTD_PREREG.md §6）。",
+
+  "two_versions_note": "粗、细两版**共用同一细胞宇宙**（六谱系重聚类划分的并集 413,697 减去跨谱系污染簇 14,118 = 399,579），差别只剩粒度。粗版=caliber a（6 谱系名）；细版=caliber d（S4 面板展开 ⇒ 39 型）。两版各跑一次，输出分别落 reference_a / reference_d，互不覆盖。",
+  "slashes_not_29": "用户最初按预注册里写的「29 型」提要求，随后在追问中改选 **S4 面板**：2026-09-22 裁定的 S4 面板把髓系 8→12 型、内皮 2→8 型 ⇒ 细版是 **39** 型而非 29 型。故细版用 caliber d（S4），**不用** caliber c（旧 L2 面板，29 型）。caliber c 作为另一套口径保留在脚本里，本次不跑。",
+  "s4_same_clustering": "S4 与旧 L2 面板**共用同一套和谐聚类**：簇 id 逐个相同（髓系 28/28、内皮 29/29），excluded 集合相同，仅 argmax 改变（髓系 23/28 簇、内皮 24/29 簇的 argmax 变了）⇒ 交换的只是注释表，clusters.csv.gz 与 harmony_res{r*}_seed{seed} 列两种面板下同一列。已实测。",
+  "note": "本文件不含任何恶性判定，也不给任何切片标 WHO。本臂只出「每个 spot 的各类型比例」。"
+}
