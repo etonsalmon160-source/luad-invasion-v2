@@ -8,13 +8,17 @@
 ##
 ## 本脚本**不做**的事（边界，别越）
 ##   - 不做恶性判定。权重不是恶性标签（RCTD_PREREG §1.1 / R2 边界）。
-##   - 不做门控（上皮权重 > 0.5 的筛选在下一支脚本）。
+##   - 不做门控（取上皮 spot 子集的是下一支脚本；口径已签为 `argmax == 上皮`，
+##     见 SPATIAL_CNV_PREREG §12。**不是**「上皮权重 > 0.5」，那条已作废）。
 ##   - 不调用 spacexr 的行归一化函数（§M5 / G4 明文禁止）：本文件**不含**该函数名。
 ##
 ## 用法
 ##   Rscript 08_spatial_deconv/01_run_rctd.R --caliber a                  # 全 56 张
 ##   Rscript 08_spatial_deconv/01_run_rctd.R --caliber a --smoke GSM9226168_P1_AAH
 ##   Rscript 08_spatial_deconv/01_run_rctd.R --caliber a --max-cores 4
+##   # 尺度不变性实验（RCTD_PREREG §13.3）：计数减半重跑，只用于单张
+##   Rscript 08_spatial_deconv/01_run_rctd.R --caliber a --smoke GSM9226168_P1_AAH \
+##       --thin 0.5 --out results/08_spatial_deconv/rctd_a_thin50
 ## ============================================================================
 
 suppressMessages({
@@ -44,7 +48,7 @@ SCRIPT_DIR <- if (is.na(SELF)) file.path(ROOT, "08_spatial_deconv") else dirname
 ## ============================================================================
 parse_args <- function(a) {
   out <- list(caliber = NULL, smoke = NA_character_, max_cores = 4L,
-              seed = 1L, out = NULL, slides = NULL)
+              seed = 1L, out = NULL, slides = NULL, thin = NA_real_)
   i <- 1L
   while (i <= length(a)) {
     k <- a[i]
@@ -54,7 +58,11 @@ parse_args <- function(a) {
     else if (k == "--seed")    { out$seed <- as.integer(a[i + 1L]); i <- i + 2L }
     else if (k == "--out")     { out$out <- a[i + 1L]; i <- i + 2L }
     else if (k == "--slides")  { out$slides <- strsplit(a[i + 1L], ",")[[1]]; i <- i + 2L }
+    else if (k == "--thin")    { out$thin <- as.numeric(a[i + 1L]); i <- i + 2L }
     else stop("未知参数: ", k)
+  }
+  if (!is.na(out$thin) && (out$thin <= 0 || out$thin > 1)) {
+    stop("--thin 必须落在 (0, 1] 区间", call. = FALSE)
   }
   out
 }
@@ -390,6 +398,27 @@ for (i in seq_along(SLIDES)) {
   cnt <- sl$counts[inter, keep_bc, drop = FALSE]
   colnames(cnt) <- keep_bc
 
+  ## ---- 尺度不变性实验：计数二项稀释（**仅 --thin 时启用**，见 RCTD_PREREG §13.3）----
+  ## 逐 spot 独立地对**每一个 count** 以概率 p 保留 ⇒ 保持该 spot 的构成（期望不变），
+  ## 只把深度按 p 缩小。用来直接检验「权重与 argmax 是否随测序深度移动」。
+  ## 与 §1.3 那个合成实验**同构**（固定构成、只变深度），但发生在**真实切片**上。
+  ## ⚠️ 默认关闭 ⇒ 56 张全跑的路径一字未变。
+  if (!is.na(ARGS$thin)) {
+    set.seed(ARGS$seed)
+    n_before <- ncol(cnt); tot_before <- sum(cnt)
+    cnt <- as(cnt, "CsparseMatrix")
+    cnt@x <- rbinom(length(cnt@x), size = as.integer(cnt@x), prob = ARGS$thin)
+    cnt <- drop0(cnt)
+    cnt <- cnt[, colSums(cnt) > 0, drop = FALSE]   # 全零 spot 去掉（否则与坐标对不齐）
+    keep_bc    <- colnames(cnt)
+    n0_in_filt <- length(keep_bc)
+    n0_not_filt <- n0 - n0_in_filt
+    cat(sprintf("[%s] 二项稀释 p=%.2f：spot %d → %d，计数总量 %d → %d（保留 %.1f%%）\n",
+                slide, ARGS$thin, n_before, ncol(cnt),
+                as.integer(tot_before), as.integer(sum(cnt)),
+                100 * sum(cnt) / tot_before))
+  }
+
   ## ---- 坐标 ----
   pos <- read_positions(file.path(SUP_DIR, slide))
   rownames(pos) <- pos$barcode
@@ -431,17 +460,30 @@ for (i in seq_along(SLIDES)) {
     stop(sprintf("G3 越界：%s nrow(weights)=%d ≠ N2=%d ⇒ 硬停", slide, nrow(w), n2),
          call. = FALSE)
 
-  ## ---- G5：权重不随深度漂移（逐张） ----
+  ## ---- G5：**已由硬门改为「只报告」**（2026-09-25 晚用户签字，诊断与裁定见 RCTD_PREREG §13）
+  ## 原判据 |Spearman(输入总UMI, 权重行和)| <= 0.5 **不再是闸门**。理由：
+  ##   ① rho(输入总UMI, n_genes) = +0.999 ⇒ 这个 rho 量的是「mRNA 总量 vs 分到的细胞质量」；
+  ##   ② 深度在空间上高度成团（邻居相关 +0.827）、行和也成团（+0.629）⇒ 两者都是**组织密度**
+  ##      结构，不是技术伪影。§1.3 的合成实验是**固定构成、只变深度**；真实切片里深度变化
+  ##      恰恰**因为**密度变化 ⇒ 该判据无法区分「技术漂移」与「密处细胞多」；
+  ##   ③ 0.5 落在实测区间内（P1_AAH 0.437 / P1_LUAD 0.521），且 rho 随 x 离散度上升
+  ##      （同一张内 P25–P75 只 0.348，P10–P90 0.457）⇒ **跨切片不可比**，0.5 是在掷硬币；
+  ##   ④ 它守的是 §1.3 支撑的**绝对阈值**门控，而该口径已废、改为 `argmax == 上皮`；
+  ##      后者对权重**整体缩放免疫**（实测 ×0.5 / ×2.0 → argmax 变化 0 个 spot）。
+  ## ⇒ 逐张**记录** rho 与「是否越过 0.5 参考线」，供审计与后续诊断；不再据此停止。
   ## spot 集合 = N2；原始总 UMI 取 RCTD 的**输入**（originalSpatialRNA@counts），不取内部量
   bc_n2 <- rownames(w)
   umi_in <- colSums(obj@originalSpatialRNA@counts)[bc_n2]
   rho <- suppressWarnings(cor(as.numeric(umi_in), as.numeric(rowSums(w)),
                              method = "spearman"))
-  if (!is.finite(rho) || abs(rho) > 0.5) {
-    stop(sprintf("G5 越界：%s |Spearman(输入总UMI, 权重行和)| = %.3f > 0.5 ⇒ 硬停。\n",
-                 slide, rho),
-         "  按 RCTD_PREREG §1.3/§11，门控口径（SPATIAL_CNV_PREREG §2.2 ③）须回来重签。",
-         call. = FALSE)
+  ## 非有限值仍硬停 —— 那不是阈值问题，是算坏了
+  if (!is.finite(rho)) {
+    stop(sprintf("%s: G5 rho 非有限值 ⇒ 硬停（不是阈值问题）", slide), call. = FALSE)
+  }
+  g5_over_ref <- abs(rho) > 0.5
+  if (g5_over_ref) {
+    cat(sprintf("[%s] 注：G5 参考线 0.5 被越过（|rho| = %.3f）—— **不硬停**，见 RCTD_PREREG §13\n",
+                slide, abs(rho)))
   }
 
   ## ---- 落盘：逐 spot 权重 ----
@@ -467,6 +509,7 @@ for (i in seq_along(SLIDES)) {
     weight_min = wmin, weight_rowsum_min = min(rowSums(w)),
     weight_rowsum_max = max(rowSums(w)),
     g5_rho = rho,
+    g5_over_ref_0.5 = g5_over_ref,
     weight_min_by_type = as.list(apply(w, 2, min)),
     weight_median_by_type = as.list(apply(w, 2, median)),
     weight_max_by_type = as.list(apply(w, 2, max)),
@@ -506,7 +549,11 @@ manifest <- list(
     G2 = "min(weights) >= 0，逐张判，越界硬停",
     G3 = "N0→N1→N2 三层分别计数，逐张上报；差值分别报",
     G4 = paste0("源码自检：不出现 ", "行归一化函数", " 调用（本文件不含该名）"),
-    G5 = "逐张 |Spearman(输入原始总UMI, 权重行和)| <= 0.5，越界硬停"
+    G5 = paste("**已由硬门改为只报告**（RCTD_PREREG §13，2026-09-25 用户签字）：",
+               "逐张记录 rho = Spearman(输入原始总UMI, 权重行和) 与是否越过 0.5 参考线；",
+               "越线不停止。原判据被证为混淆（深度=RCTD输入的同位组织密度，非技术伪影），",
+               "且其支撑的绝对阈值门控已被 argmax==上皮 取代，后者对权重整体缩放免疫。"),
+    thin = if (is.na(ARGS$thin)) "未启用" else sprintf("计数二项稀释 p = %.3f（尺度不变性实验专用）", ARGS$thin)
   ),
   slides = SLIDES,
   per_slide = summary_rows,
@@ -528,6 +575,7 @@ flat <- rbindlist(lapply(summary_rows, function(r)
              N1 = r$n1_entered, N2 = r$n2_weights,
              N0_N1 = r$n0_minus_n1, N1_N2 = r$n1_minus_n2,
              gene_int = r$gene_intersection, g5_rho = round(r$g5_rho, 3),
+             g5_over_0.5 = r$g5_over_ref_0.5,
              w_min = round(r$weight_min, 4),
              rowsum_min = round(r$weight_rowsum_min, 4),
              mins = round(r$elapsed_sec / 60, 1))))
