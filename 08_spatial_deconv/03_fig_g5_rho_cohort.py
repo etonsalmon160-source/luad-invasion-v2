@@ -41,6 +41,25 @@ M["stage"] = M.slide.str.split("_").str[2]
 STAGE_COLOR = {"Normal": "#7f8c8d", "AAH": "#3498db", "AIS": "#27ae60",
                "MIA": "#f39c12", "LUAD": "#c0392b"}
 
+PRE = ["AAH", "AIS", "MIA"]
+
+
+def partial_spearman(x, y, z):
+    """秩变换后的偏相关：x ~ y，控制 z。"""
+    from scipy.stats import rankdata
+    rx, ry, rz = (rankdata(v) for v in (x, y, z))
+
+    def resid(a, b):
+        b = np.c_[np.ones(len(b)), b]
+        return a - b @ np.linalg.lstsq(b, a, rcond=None)[0]
+    return float(np.corrcoef(resid(rx, rz), resid(ry, rz))[0, 1])
+
+
+RATIO = M.loc[M.stage == "LUAD", "med_umi"].median() / M.loc[M.stage.isin(PRE), "med_umi"].median()
+IS_LUAD = (M.stage == "LUAD").values.astype(float)
+RAW = spearmanr(M.g5_rho, IS_LUAD).correlation
+PARTIAL = partial_spearman(M.g5_rho.values, IS_LUAD, np.log10(M.med_umi.values))
+
 # ---- (a) 两张最极端的切片 -------------------------------------------------
 lo = M.loc[M.g5_rho.idxmin()].slide      # rho 最负
 hi = M.loc[M.g5_rho.idxmax()].slide      # rho 最正
@@ -87,22 +106,36 @@ ax[1].set_title("(b) rho tracks the diagnosis\n"
                 "precursor ~ -0.08  vs  LUAD ~ -0.44  (p = 4e-5)", fontsize=10)
 ax[1].legend(fontsize=7, frameon=False)
 
-# ---- (c) 混淆：rho vs 该张深度中位 ---------------------------------------
+# ---- (c) 混淆：rho vs 该张深度中位，并按深度四分位分层看分期还剩下多少 ----
 for st in order:
     m = M[M.stage == st]
     if not len(m):
         continue
-    ax[2].scatter(m.med_umi, m.g5_rho, s=34, color=STAGE_COLOR[st],
-                  alpha=0.85, linewidths=0, label=st)
+    ax[2].scatter(m.med_umi, m.g5_rho, s=30, color=STAGE_COLOR[st],
+                  alpha=0.45, linewidths=0, label=st)
 rho_d = spearmanr(M.med_umi, M.g5_rho)
+
+# 深度四分位分层：每层里两期的中位，用大点连线 —— 前驱平、LUAD 一直更低
+M["q"] = pd.qcut(M.med_umi, 4, labels=False)
+for st, lab in ((["AAH", "AIS", "MIA"], "precursor (AAH/AIS/MIA)"), (["LUAD"], "LUAD")):
+    xs, ys = [], []
+    for _, g in M[M.stage.isin(st)].groupby("q"):
+        if len(g) < 1:
+            continue
+        xs.append(g.med_umi.median()); ys.append(g.g5_rho.median())
+    ax[2].plot(xs, ys, "-o", color=STAGE_COLOR[st[0]], lw=2.4, ms=9,
+               markeredgecolor="black", markeredgewidth=0.8,
+               label=f"{lab} — depth-quartile median")
 ax[2].set_xscale("log")
 ax[2].axhline(0, color="#7f8c8d", lw=1.0, ls=":")
 ax[2].set_xlabel("median total UMI of the slide (log scale)")
 ax[2].set_ylabel("G5 rho")
-ax[2].set_title(f"(c) The confound, in the open\n"
-                f"rho vs depth: Spearman {rho_d.correlation:+.3f} (p={rho_d.pvalue:.1e})\n"
-                f"but LUAD slides are also 2.6x deeper", fontsize=10)
-ax[2].legend(fontsize=7, frameon=False)
+ax[2].set_title("(c) The confound, in the open\n"
+                f"rho vs depth: Spearman {rho_d.correlation:+.3f} (p={rho_d.pvalue:.1e}); "
+                f"LUAD is {RATIO:.2f}x deeper\n"
+                f"but within every depth quartile LUAD still sits below precursor\n"
+                f"partial rho(LUAD | depth) = {PARTIAL:+.3f}  vs  raw {RAW:+.3f}", fontsize=9)
+ax[2].legend(fontsize=6.5, frameon=False, loc="lower left")
 
 for a_ in ax:
     a_.spines[["top", "right"]].set_visible(False)
@@ -122,6 +155,16 @@ print(f"|rho|>0.5 的 {int((M.g5_rho.abs()>0.5).sum())} 张 (23%)")
 print(f"前驱三期合并 中位 {pre.median():+.3f} (n={len(pre)})  vs LUAD 中位 {lu.median():+.3f} (n={len(lu)})")
 print(f"rho vs 深度中位 Spearman {rho_d.correlation:+.3f} p={rho_d.pvalue:.2e}")
 print(f"LUAD 深度中位 {M[M.stage=='LUAD'].med_umi.median():.0f}  "
-      f"vs 前驱三期 {M[M.stage.isin(['AAH','AIS','MIA'])].med_umi.median():.0f}")
+      f"vs 前驱三期 {M[M.stage.isin(PRE)].med_umi.median():.0f}  ⇒ 深 {RATIO:.2f} 倍")
 print()
-print("⚠️ 两者在本队列里缠在一起 ⇒ 本图**不**判定哪个是原因")
+print("深度四分位分层（每层两期的中位）：")
+for q, g in M.groupby("q"):
+    a = g[g.stage.isin(PRE)].g5_rho
+    b = g[g.stage == "LUAD"].g5_rho
+    from scipy.stats import mannwhitneyu
+    pv = mannwhitneyu(a, b).pvalue if len(a) and len(b) else np.nan
+    print(f"  Q{int(q)+1} 深度 {g.med_umi.min():.0f}-{g.med_umi.max():.0f}  "
+          f"前驱 n={len(a)} 中位 {a.median():+.3f} | LUAD n={len(b)} 中位 {b.median():+.3f} | p={pv:.3f}")
+print()
+print(f"偏 Spearman (LUAD | log10 深度) = {PARTIAL:+.3f}   未控制 {RAW:+.3f}")
+print(f"⇒ 深度只解释了一部分；控制深度后分期效应仍在。但 n 小、且是事后观察 ⇒ 不判因。")
