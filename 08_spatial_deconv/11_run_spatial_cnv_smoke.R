@@ -50,16 +50,22 @@ P_WINDOW_LENGTH     <- 101                  # [未登记] infercnv 默认
 P_ANALYSIS_MODE     <- "samples"            # [已签 §13] 不取工具默认（见上🔴）
 P_NO_PLOT           <- TRUE                 # [已签 §13] 关绘图：图不是结果，不影响任何判定
 P_HCLUST_METHOD     <- "ward.D2"            # [未登记] infercnv 默认
-P_CHR_EXCLUDE       <- c("chrX", "chrY", "chrM")   # [未登记] infercnv 默认
-## 🔴 实测登记（2026-09-25）：上面这个 chr_exclude **默认值**会静默丢掉 743 个基因。
-##    本次基因账（逐项核对过，不是估的）：
+P_CHR_EXCLUDE       <- c("chrM")   # [已签 §14.3] 原文 Step1/Step3 两处**都显式写了** c("chrM")
+## 🔴 2026-09-27 改签（§14.3 第 1 项）：本行**原来**是 infercnv 默认 c("chrX","chrY","chrM")，
+##    被当成「未登记项取默认」处理。核原文源码后确认：原文**记了这个参数**（在代码里，不是
+##    方法段里），两处 CreateInfercnvObject 都是 c("chrM")。⇒ 照原文，chrX/chrY 放回管线。
+##    与 §13 那处 analysis_mode 是同一类错、方向相反：那个原文没记（取默认有理），
+##    这个原文记了（取默认即偏离）。
+##    ⚠️ 配套守卫（§14.3）：参考与观测**跨患者**时 chrX/Y 会把男女剂量差算成 CNV
+##       ⇒ manifest 记 ref_same_patient / ref_slides；跨患者借锚者的 chrX/Y 结论降级待定。
+##    改签后的基因账（逐项算，不是估的）：
 ##      矩阵 18,082 唯一 symbol
 ##        − 67   位置表里没有（未匹配上 GENCODE/HGNC，见 gene_order_spatial_unmatched.txt）
 ##        = 18,015 位置表行数
-##        − 743  chrX 716 ＋ chrY 16 ＋ chrM 11（就是本行这个默认值干的）
-##        = 17,272 进 inferCNV 的常染色体基因
-##    `03_cnv/16_run_infercnv_smoke.R` 当年**没写**这个参数 ⇒ 也吃了同一个默认。
-##    显式写出来只为可审计；**没有**改行为。
+##        − 11   chrM（就是本行）
+##        = 18,004 进 inferCNV
+##    （改签前是 − 743 = chrX 716 ＋ chrY 16 ＋ chrM 11 ⇒ 进管线 17,272。差值 732。）
+##    `03_cnv/16_run_infercnv_smoke.R` 当年**没写**这个参数 ⇒ 吃了默认，属另一臂的历史，不改。
 
 ## 口径（已签 §11 / §12.1）
 CAL_REFERENCE  <- "a"          # [已签 §11 第 1 项] 粗版 6 谱系
@@ -229,7 +235,7 @@ obj <- CreateInfercnvObject(raw_counts_matrix = mat,
                             gene_order_file   = GENEORD,
                             annotations_file  = annf,
                             ref_group_names   = c(P_REF_GROUP),
-                            chr_exclude       = P_CHR_EXCLUDE,   # 显式＝默认值，见上方 gene 账
+                            chr_exclude       = P_CHR_EXCLUDE,   # [已签 §14.3] 照原文 c("chrM")，见上方 gene 账
                             delim             = "\t")
 ## 基因账逐项在运行时**算出来**（不是照抄注释），防止哪天悄悄变了
 go_tab  <- read.delim(GENEORD, header = FALSE, stringsAsFactors = FALSE)
@@ -237,7 +243,7 @@ n_sym   <- nrow(mat)
 n_ord   <- nrow(go_tab)
 n_sexmt <- sum(go_tab[[2]] %in% P_CHR_EXCLUDE)
 stopifnot(n_ord - n_sexmt == nrow(obj@expr.data))
-step("基因账：矩阵 %d − 未匹配 %d = 位置表 %d − 性染色体/MT %d（%s）= 进管线 %d",
+step("基因账：矩阵 %d − 未匹配 %d = 位置表 %d − 按 chr_exclude 剔 %d（%s）= 进管线 %d",
      n_sym, n_sym - n_ord, n_ord, n_sexmt, paste(P_CHR_EXCLUDE, collapse = "/"),
      nrow(obj@expr.data))
 
@@ -268,10 +274,22 @@ manifest <- list(
   params_signed = list(cutoff = P_CUTOFF, cluster_by_groups = P_CLUSTER_BY_GROUPS,
                        HMM = P_HMM, denoise = P_DENOISE, ref_group = P_REF_GROUP,
                        threads = P_THREADS),
+  params_signed_later = list(analysis_mode = P_ANALYSIS_MODE,   # [已签 §13.1] samples，不取默认
+                             no_plot = P_NO_PLOT,               # [已签 §13.1]
+                             chr_exclude = P_CHR_EXCLUDE),      # [已签 §14.3] 原文代码逐字
   params_unregistered_default = list(window_length = P_WINDOW_LENGTH,
-                                     analysis_mode = P_ANALYSIS_MODE,
-                                     hclust_method = P_HCLUST_METHOD,
-                                     chr_exclude = P_CHR_EXCLUDE),
+                                     hclust_method = P_HCLUST_METHOD),
+  ## §14.3 的守卫：chrX/chrY 已放回管线 ⇒ 必须记下参考与观测**是否同患者**。
+  ## 本脚本的锚只从**本患者**良性切片取（上面 for 循环里 ref_bc 只被本患者切片填充）
+  ## ⇒ 结构上必然同患者、性别恒定、chrX/Y 无性别混淆。
+  ## ⚠️ 借锚路径（§11.2 跨患者借队列良性端）**尚未实现**，见预注册 §14.6。
+  chr_xy = list(kept = setdiff(c("chrX", "chrY"), P_CHR_EXCLUDE),
+                dropped = P_CHR_EXCLUDE,
+                n_dropped_from_gene_order = n_sexmt,
+                ref_same_patient = TRUE,
+                ref_slides = names(ref_bc),
+                obs_slides = slides,
+                rule = "跨患者借锚时 chrX/Y 结论降级待定；本脚本只做同患者锚"),
   gene_account = list(n_symbols_matrix = n_sym, n_unmatched = n_sym - n_ord,
                       n_in_gene_order = n_ord, n_dropped_sex_mt = n_sexmt,
                       n_into_infercnv = nrow(obj@expr.data)),
