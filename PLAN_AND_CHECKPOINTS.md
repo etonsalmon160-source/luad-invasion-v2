@@ -112,6 +112,14 @@
 - **M7**：CMap 指标纠正为 **NCS**，或直接**砍掉**（无 LINCS 数据不产出）。
 - **SCMG 分支收缩**：仅做 **zero-shot 跨数据集 scRNA 整合 + 全局流形 + 状态刻画**，与标准分支 **scIB 对照**。
   **删除所有「状态逆转 / 逆转因子 / CausalGenePredictor 因果」表述**（经核实：SCMG 无此能力；参照流形无肿瘤态）。
+  > 🔴 **2026-10-03 更正（用户裁定：「**之前是这个认识不足**」）**：上面这条**的事实前提有误**，已核对——
+  > ① `CausalGenePredictor` **真实存在**（`tools/SCMG/scmg/model/causal_prediction.py`，MIT License，
+  >    Copyright 2025 Xingjie Pan），且**会输出负向基因**（`perturbation_sign`）；② 伪批量扰动库
+  >    **已在本机**（`~/scmg_workspace/hf_data/pseudo_bulk_perturbation_database.h5ad`，4.43 GB，
+  >    20,345 扰动 × 18,108 基因，`obs` 含 `perturbed_gene` / `perturbation_sign`）。
+  > ⇒ **原文不删**（法则 3.2），但**该限制对"扰动库签名逆向"这条用法不再适用**；
+  > 「不得称因果 / 不得称药」的**措辞约束仍然有效**，且**必须带零模型**。
+  > 落地方案见 `10_niche/TARGET_REVERSAL_PREREG.md`（**待签**）。
   靶点候选改由**标准分支**产出（SCENIC+/regulon + CellRank 命运关联 + TCGA 生存），用词限定为 **「候选调控因子/靶点」**，不得称因果。
 
 **D. 文档修正**
@@ -253,6 +261,9 @@
 - **过门**：每个候选给出 `genetic_support ∈ {supported, not_supported, not_testable}`（阈值见手册，**不得事后调参**）；`not_testable` **如实标缺，不替代**；措辞 = **genetically supported candidate target**，**不得称因果**。
 
 **M7c · CMap（可选）**：仅当获得**真实 LINCS 数据**且用对指标（**NCS**，非负 Tau）时才执行；否则**拒绝产出表**（现无 LINCS 数据 → 默认不产出）。
+  > 🟡 **2026-10-03 进展**：**真实 LINCS 正在下载**（GSE70138 Phase II Level5 5.00 GB ＋ GSE92742 Phase I Level5 19.86 GB
+  > ＋ 元数据，共 ~25 GB → `~/lincs_data/`）。落地后本节**门开**。
+  > 另：SCMG 扰动库**作为第二套扰动库**解禁（见上），用于**交叉验证**，指标口径须另行写死。
 
 - **总过门**：DESeq2 设计/截断有出处；靶点措辞限定；MR 输入/输出有哈希与来源记录。
 
@@ -275,6 +286,10 @@
 - **标准/主流分支**：scVI（`batch=sample_id`）/scANVI + scArches、Harmony、Seurat、RCTD、SpaGCN、Squidpy、DESeq2、CellRank、SCENIC+…
 - **纯 SCMG 分支**：**zero-shot 跨数据集 scRNA 整合 → 全局流形 → 细胞状态刻画**（**不掺传统算法**）。
   ~~条件扩散轨迹 → CausalGenePredictor 因果~~ —— **已删除**（能力不存在，见铁律 6）。
+  > 🔴 **2026-10-03 更正**：此删除所依据的「能力不存在」**经核实为误**
+  > （`CausalGenePredictor` 真实存在，见上文 2026-10-03 更正块）。
+  > **条件扩散轨迹仍不做**（那是流形那条路的限制，确实缺肿瘤态）；
+  > 但**「拿扰动库对签名做逆向排序」是另一条用法，已解禁**，见 `10_niche/TARGET_REVERSAL_PREREG.md`。
 - 两分支**对照**（scIB 完整口径）；工具源码见 [`tools/`](tools/)。
 - 靶点/调控因子候选**只由标准分支产出**，且措辞为「候选」。
 
