@@ -264,11 +264,12 @@ A~De~Falco, F~Caruso, XD~Su, A~Iavarone, and M~Ceccarelli.
 \newblock \emph{Nature Communications}, 14\penalty0 (1):\penalty0 1074, 2023.
 \newblock \doi{10.1038/s41467-023-36790-9}.
 
-\bibitem[Davidson-Pilon(2019)]{davidsonpilon2019lifelines}
-C~Davidson-Pilon.
-\newblock {lifelines: survival analysis in Python}.
-\newblock \emph{Journal of Open Source Software}, 4\penalty0 (40):\penalty0 1317, 2019.
-\newblock \doi{10.21105/joss.01317}.
+\bibitem[Therneau and Grambsch(2000)]{therneau2000survival}
+TM~Therneau and PM~Grambsch.
+\newblock \emph{{Modeling Survival Data: Extending the Cox Model}}.
+\newblock Springer, New York, 2000.
+\newblock ISBN 0-387-98784-3.
+\newblock R \texttt{survival} package, version 3.4-0.
 
 \bibitem[Duan et~al.(2020)Duan, Evans, Miller, Schork, Cummings, and Girke]{duan2020signaturesearch}
 Y~Duan, DS~Evans, RA~Miller, NJ~Schork, SR~Cummings, and T~Girke.

@@ -64,8 +64,12 @@ atlas was built with Seurat \citep{hao2024seurat} using the regularised negative
 variance-stabilising transform \citep{hafemeister2019sctransform} with \texttt{glmGamPoi}
 \citep{ahlmanneltze2021glmgampoi} for parameter fitting, and integrated across samples with
 Harmony \citep{korsunsky2019harmony}. Doublets were called with scDblFinder
-\citep{germain2021scdblfinder} and the sensitivity arm used Scrublet
-\citep{wolock2019scrublet}. The atlas was clustered per lineage, yielding 39 second-level
+\citep{germain2021scdblfinder}. An independent second caller was attempted but could not
+serve as a cross-check: Scrublet \citep{wolock2019scrublet} reached a maximum score of
+0.495 against its automatic threshold of 0.556 on these nuclei and therefore called zero
+doublets in all 75 samples, a consequence of how sparse these profiles are rather than
+evidence against the scDblFinder calls. The atlas was clustered per lineage, yielding 39
+second-level
 (L2) subtypes. Endothelial and myeloid marker panels were rebuilt before downstream
 analysis: the published table provided six canonical genes per endothelial subtype, which
 we expanded to as many as twenty genes per subtype across nine endothelial types; the
@@ -148,9 +152,9 @@ pre-registered but not run.
 \subsection{Prognostic analysis}
 
 Survival analysis used TCGA-LUAD \citep{tcga2014luad} (483 patients, 177 deaths;
-disease-free survival: 381 patients, 143 events, censored at last follow-up), fitted with
-\texttt{lifelines} \citep{davidsonpilon2019lifelines}. For each domain, the top-30 marker
-genes
+disease-free survival: 381 patients, 143 events, censored at last follow-up), with Cox
+proportional-hazards models fitted in R's \texttt{survival} package
+\citep{therneau2000survival}. For each domain, the top-30 marker genes
 were standardised across samples and averaged into a signature score. Univariate Cox models
 were fitted both continuously (hazard ratio per standard deviation) and on a median split
 (reference group: low). Hazard ratios for the adjusted models controlled for stage, age and
