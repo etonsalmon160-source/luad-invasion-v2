@@ -328,8 +328,7 @@
 3. **共享库 root 属主**（`/usr/local/lib/R/site-library`、`/usr/local/lib/python3.8/dist-packages`）→ **禁止把社区 DL 包 pip 进共享环境**：
    - 曾装 `cellcharter` **静默把 torch 降到 1.12.1**，搞坏 `scvi`/`pytorch-lightning`（已手工回滚 torch→2.4.1+cu118、pytorch-lightning→1.5.10.post0、torchmetrics→0.7.3）。
    - `scvi-tools 0.15.5` **保持**（pin `pytorch-lightning>=1.5,<1.6`）；装包一律进**个人库**（`~/.local/lib/python3.8/site-packages`、`~/R/.../4.2`）。
-4. **网络**：`http(s)_proxy=127.0.0.1:7890` 指向**死端口**；出网须**绕代理**（`curl --noproxy '*'` / Python `ProxyHandler({})`）。`github.com` 被墙、`api.github.com`/`codeload.github.com` 通（故 `remotes::install_github` 在**清空代理变量**下可用）。
-5. **R 可装**：**CopyKAT**（先装 `RcppEigen`(Eigen 4.0) 到个人库，再 `transport`）、`coloc`、`ieugwasr`、`TwoSampleMR`。
+4. **R 可装**：**CopyKAT**（先装 `RcppEigen`(Eigen 4.0) 到个人库，再 `transport`）、`coloc`、`ieugwasr`、`TwoSampleMR`。
 
 **对本计划的直接影响**：
 - M-1 §B 里"升级 scvi-tools 至 1.5.x"**不能在共享环境做** → 必须建**隔离 env（micromamba）**，或改用 **scvi 0.15.5 的可用能力**（无 SysVI/scArches surgery）并如实标注。

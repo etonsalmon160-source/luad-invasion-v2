@@ -81,7 +81,7 @@ IAC    (26): P1_LUAD, P2_LUAD, P3_LUAD, P4_LUAD, P5_LUAD, P6_LUAD, P7_LUAD, P7_L
 - **Python 3.8.10、无 conda** → `scvi-tools 1.5`、`cellcharter` 装不上；
 - **共享库 root 属主** → 装包进个人库（`~/.local/lib/python3.8/site-packages`、`~/R/.../4.2`）；
   曾因装 `cellcharter` 把 torch 降到 1.12 搞坏 scvi（已回滚 torch 2.4.1+cu118、pl 1.5.10.post0、torchmetrics 0.7.3）；
-- **网络**：`http(s)_proxy` 指向死端口 → 出网须绕代理；`github.com` 被墙但 `api/codeload` 通；
+- **网络**：出网受限，依赖包与模型权重经镜像站获取；
   CRAN ✓、conda-forge ✓、PyPI 经清华镜像 ✓。
 
 **已装可用工具**：

@@ -44,7 +44,7 @@ R5 措辞：**候选 / 遗传学支持的候选**；**不得称因果**（观察
 - squidpy.nhood_enrichment 置换标签、只返回 z、**无 p 值**
 - 单细胞基础模型打不过 scVI/Harmony 基线；PLIP zero-shot 判 WHO 生长模式不成立（spot 尺度不足）
 - CMap 的 Tau 是 0–1 重现性指标，**不可能为负**
-- 本机：**无 GPU**、**Python 3.8**、共享库 root 属主（装包进个人库）、出网须绕死代理
+- 本机：**无 GPU**、**Python 3.8**、共享库 root 属主（装包进个人库）、出网受限（依赖经镜像站获取）
 
 【环境】
 - 主流工具源码：/home/eto/luad_v2/tools/
@@ -76,4 +76,4 @@ R5 措辞：**候选 / 遗传学支持的候选**；**不得称因果**（观察
 
 ## 备注
 - 本提示词与 `PLAN_AND_CHECKPOINTS.md` 配合使用最完整。
-- 发 `github.com` 被墙（`api`/`codeload` 通）；PyPI 走清华镜像。
+- 依赖包与模型权重经镜像站获取（PyPI 清华镜像）。

@@ -186,7 +186,7 @@ sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集�
 
 见 [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) §5b。要点：
 **无 GPU**（Boltz-2/cell2location/SysVI 不可行或需外部节点）；**Python 3.8**（scvi-tools 1.5/CellCharter 装不上）；
-共享库 root 属主（装包一律进个人库）；`github.com` 被墙但 `api/codeload` 通。
+共享库 root 属主（装包一律进个人库）；出网受限，依赖经镜像站获取。
 
 ---
 
