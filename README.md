@@ -1,11 +1,11 @@
-# Sequencing depth is tissue density in the LUAD invasion sequence
+# Paired single-nucleus and spatial transcriptomics of the LUAD invasion sequence
 
 Code, analysis and derived results for the manuscript:
 
-> **Sequencing depth is tissue density in the lung adenocarcinoma invasion sequence:
-> niche domains and *in-silico* reversal of the disease state**
+> **Paired single-nucleus and spatial transcriptomics of the lung adenocarcinoma invasion
+> sequence reveal niche domains and candidate reversal compounds**
 > Zhiyang Li, Jiaxuan Yang
-> Guangdong Medical University · Monash University Malaysia
+> Guangdong Medical University (Zhanjiang) · Monash University Malaysia
 
 This repository is the complete analytical record behind that paper. It is a self-contained
 study; the directory it was originally developed in is retained only as a read-only data
