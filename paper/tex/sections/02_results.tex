@@ -1,0 +1,384 @@
+\section{Results}
+
+\subsection{A single-nucleus atlas of the LUAD invasion sequence}
+
+Paired single-nucleus RNA sequencing and Visium spatial transcriptomics were obtained from
+23 patients spanning the five stages of the sequence, with the spatial arm covering 56
+sections from 25 patients and sharing 23 patients with the single-cell arm
+(Fig.~\ref{fig:1}a). Quality control retained 399,579 nuclei. The atlas resolves into six
+lineages (epithelial, fibroblast, endothelial, myeloid, T/NK, B/plasma;
+Fig.~\ref{fig:1}a) and, on per-lineage sub-clustering, into 39 second-level (L2) subtypes
+(Supplementary Table~S1; Fig.~\ref{fig:1}f).
+
+Two properties of the reference annotation affected the analyses that follow and are
+recorded here.
+
+\emph{Endothelial and myeloid panels were rebuilt.} The published marker table supplies six
+canonical genes per endothelial subtype, which is insufficient to discriminate between
+closely related endothelial states. Under that panel the \emph{Artery} subtype was assigned
+to 16 clusters across the cohort; under an expanded panel of up to 20 genes per subtype
+across nine endothelial types it was assigned to four, with the remainder reassigned to
+\emph{Lymphatic}, \emph{Vein} and \emph{Capillary}. The endothelial and myeloid panels were
+therefore rebuilt before any downstream analysis. Analyses that depend on endothelial
+subtype proportions inherit the corrected panels.
+
+\emph{The L2 nomenclature is not a set of unique identifiers.} The 39 names map onto 67
+distinct lineage--subtype combinations. The clearest case is \emph{Basophil/Mast 1}, which
+the reference assigns predominantly to epithelial cells (6,360 cells) and only marginally
+to myeloid cells (8 cells), so the name misrepresents the content. Subtype composition is
+accordingly reported at the lineage level (Fig.~\ref{fig:1}e).
+
+A second difficulty concerns the coverage rather than the nomenclature of the reference. The
+39-subtype reference contains no exhaustion programme, and exhausted T cells were
+consequently absorbed into the nearest available label. One cluster carries LAG3, TIGIT,
+HAVCR2, ENTPD1, GZMB and PRF1 while lacking CCR7, SELL, TCF7 and LEF1, an exhausted rather
+than a naive phenotype, yet the reference assigns it to \emph{CD8+ Naive T}. Deconvolution
+cannot recover a state absent from the reference, so the T-cell composition reported here is
+a composition in the reference's vocabulary. Functional exhaustion was therefore measured
+independently, by projecting an exhaustion signature
+\citep{thommen2018,wherry2015exhaustion} onto the spots.
+
+One AAH sample (P24) carried a plasma-cell programme confined to a single patient and not
+tracking disease stage. A patient-level rank of B/plasma content, comparison against a
+matched negative-control gene set, and an independent readout from a separate region of the
+same block each identified it as ambient RNA rather than a tumour-associated infiltrate. The
+sample was retained with an annotation, and all conclusions that depend on B/plasma content
+are reported both with and without it. The source study does not describe ambient-RNA
+correction, and P24 is one of its representative samples.
+
+\input{sections/_fig1}
+
+\subsection{Spatial deconvolution resolves seven recurring niche domains}
+
+BANKSY applied per section yielded 434 spatial domains, which collapsed to seven archetypes
+($K^{*}=7$; cross-seed stability 0.945) across the 56 sections (Fig.~\ref{fig:2}d).
+Stability falls to 0.814 at $K=8$, so the domains cannot be subdivided further without
+becoming seed-dependent. We therefore treat $K^{*}=7$ as the resolution limit of this
+cohort. A purely descriptive optimum exists at $K=6$ (stability 0.966) and was not adopted.
+
+Identities were assigned from each archetype's RCTD composition (Fig.~\ref{fig:2}a,c) and
+its marker genes (Fig.~\ref{fig:2}g). Six of the seven are ordinary lung structures: airway
+epithelium (D1), peribronchovascular interstitium carrying an inflammatory CAF programme
+(D2) \citep{ohllund2017,elyada2019}, alveolar wall (D4), AT2 epithelium (D5), vascular and
+airway smooth muscle (D6), and lymphocyte aggregates (D7). Only D3 is restricted to
+invasive disease. On the stage axis (Fig.~\ref{fig:2}d), D3 accounts for 17\% of spots in
+IAC and \textbf{0\% in every precursor stage}, whereas D7 is present in all five stages.
+The presence of lymphoid aggregates before invasion argues against the assumption that
+immune aggregation accompanies malignancy.
+
+Two caveats attach to the domain labels. The published marker table for these domains is
+itself depth-confounded (see below), and the identity of D3 was revised twice during the
+study, from an immune-infiltrate reading to a hypoxic/invasive reading and then to its
+current ECM/interstitial reading; the earlier names should not be used. The domain
+definition is also method-sensitive: BANKSY, RCTD composition and marker-based clustering
+return 7, 6 and 5 domains respectively, with an adjusted Rand index of only 0.225--0.247
+against an RCTD-aligned partition. Domain boundaries are therefore quantitative but not
+unique. The composition underlying each label is given in Table~\ref{tab:domains}.
+
+\input{sections/_fig2}
+
+\input{sections/_tab_domains}
+
+\subsection{Sequencing depth is a proxy for tissue density}
+
+The seven domains differ in sequencing depth by a factor of 1.00 to 7.95. Depth matching
+removes a large and predictable fraction of each domain's marker genes: across the seven
+domains, the fraction of a domain's top-150 up-genes surviving per-slide depth matching
+falls monotonically with depth (Spearman $\rho=-0.89$; Fig.~\ref{fig:3}f), with two
+independent estimators (decile matching and per-gene regression on $\log_{10}$(nUMI))
+agreeing almost gene-for-gene. D3 is the sole outlier; it is both the deepest domain and the
+only one restricted to invasive disease, and 16 of its 150 markers survive matching.
+
+This resembles a standard technical confound, and treating it as one would be an error. The
+same quantity is independently visible in the images: the PLIP-derived neoplastic score
+correlates with the fraction of a spot occupied by tissue at $\rho=0.754$ across four
+sections of one patient. Deep spots are therefore deep because they are dense, and dense
+because they contain tumour. Removing depth as a covariate removes part of the biological
+signal; the operation is closer to over-adjustment than to deconfounding, and neither the
+unadjusted nor the adjusted estimate is correct on its own.
+
+This coupling is the binding constraint of the study and recurs in four places. In the
+spatial copy-number arm it determines which comparisons survive. In the prognosis arm it is
+the reason one domain's apparent prognostic effect shrinks when its signature is replaced by
+a depth-balanced version. In the developmental analysis it accounts for a trajectory running
+opposite to that of the source study. It also prevents interpretation of the
+stage-dependence of the four spatial programmes. Before matching, their scores are almost a
+mirror of depth (per-spot $r=-0.30$ to $-0.69$ for the T-cell programme; sections differ
+2.4-fold in median depth). After matching into depth deciles the stage ordering is identical
+across all ten deciles but does not follow disease progression: AAH and AIS are both
+precursor stages yet occupy opposite ends of the ordering. That comparison is consequently
+reported as a negative control (Fig.~\ref{fig:2}e).
+
+Because the revised identity of D3 is an ECM/interstitial programme, that programme was
+tested directly rather than accepted from the domain analysis. Within each patient,
+fibroblasts were scored against the cohort fibroblast mean and standard deviation per gene,
+and the mean of a 22-gene ECM set was compared between invasive and precursor fibroblasts.
+The programme is higher in invasive disease in \textbf{20 of the 22 patients with both
+stages} (median within-patient difference $+0.402$; 300 random gene sets of matched size
+drawn from expressed genes give $P=0.0033$ on both the count and the median). Eight of the
+22 genes were added by us rather than drawn from the depth-balanced D3 ranking; restricting
+the panel to the 14 data-derived genes gives 20 of 22 ($+0.347$, $P=0.0033$), restricting it
+to the eight hand-added genes also gives 20 of 22 ($+0.450$, $P=0.0033$), and removing any
+single gene leaves the count at 20 of 22 in all 22 leave-one-out variants. The ECM programme
+is therefore not an artefact of gene selection, although the result describes a tissue-level
+programme in fibroblasts and does not identify which ECM component is responsible.
+
+\subsection{Copy-number inference: three failures and one surviving signal}
+
+Malignant-cell identification is where the analytical failures of this study concentrate,
+and they are reported in full because they constrain the interpretation of the spatial
+results.
+
+\paragraph{Single-cell inference.} Across six tool families, comprising CopyKAT
+\citep{gao2021copykat} in default and floored configurations, two anchor-based arms, inferCNV
+v1 and v2 \citep{patel2014infercnv}, and a supervised expression-based classifier
+\citep{scmalignantfinder2025}, no configuration produced a usable malignant/non-malignant
+separator, and each failure was traced to a specific cause. The clearest was an instability
+check: the same set of 3,890 normal cells, used as the reference in three separate runs,
+produced aneuploid calls of 0\%, 13.6\% and 49.8\%. The most misleading was an AUROC of
+exactly 0.5000 from inferCNV v1, where all 19,748 cells carried a single identical score
+value because the per-cell statistic reduced to the constant reference baseline; the ROC was
+a degeneracy rather than evidence of an absent difference. A second version produced AUROC
+0.652 but failed its own control, the normal cells scoring 0.0826 against a threshold of
+0.05.
+
+\paragraph{Cohort-level spatial copy number.} All 25 cases ran successfully at the Visium
+level. The cohort-level claim that invasive sections carry more copy-number signal shrank by
+71\% after depth balancing, and the matched comparison was not significant ($p=0.092$,
+confidence interval including zero). A random subsample reproduced the pre-matching result
+index by index, confirming that the original effect was driven by sequencing depth rather
+than by sample size. No cohort-level copy-number difference is therefore reported.
+
+\paragraph{One comparison survives by design.} Comparing each domain against the remaining
+spots of the same section removes depth by construction, since every spot in the comparison
+shares one cDNA library (Fig.~\ref{fig:3}c). Under this design the copy-number score is
+elevated in D5 (AT2; median $\Delta=+0.044$, positive in 40 of 46 sections, $p<0.001$) and
+in D3 (12 of 12 sections, $p=0.0005$); D4, D6 and D2 are significantly lower, and D1 and D7
+show no effect. Restricted to precursor sections, D5 remains positive in 17 of 20, so the
+signal is present before invasion. This is consistent with AT2 as the cell of origin in this
+disease and with an independent supervised classifier whose signal was likewise confined to
+AT2.
+
+The score is a continuous quantity and not a malignancy call; no malignant label is assigned
+to any spot or domain. Within D5, splitting spots into high and low copy-number groups
+produces spatially coherent patches, but the split is not separable from RNA content: the
+correlation between score and total UMI within D5 is $r=0.740$, and splitting by spot counts
+alone reproduces roughly 75\% of the difference in AT2 content between the two groups. A
+``D5-high'' subdomain therefore cannot be described as a tumour subdomain.
+
+\subsection{Prognostic association of the niche domains}
+
+The domain marker signatures were tested for prognostic information in an independent cohort
+(TCGA-LUAD; 483 patients, 177 deaths; 381 patients and 143 events for disease-free survival).
+Using each domain's top-30 markers standardised across samples, the associations are
+consistent between a continuous parameterisation and a median split (Fig.~\ref{fig:2}f) and
+between overall and disease-free survival. A high D7 (lymphoid) signature is associated with
+better outcome (continuous HR 0.77, $p<0.001$; median split HR 0.60) and a high D3 signature
+with worse (HR 1.46, $p<0.001$; HR 2.03); D4 and D5 are protective on overall survival.
+
+The D3 result requires qualification. Its signature is drawn from the raw marker table,
+which the depth analysis shows to be dominated by depth for this domain. Replacing it with
+the depth-balanced signature reduces the adjusted hazard ratio from 2.30 to 1.30
+($p=0.09$), and the connectivity-map signal for the same signature falls within the random
+range. The direction and its robustness are therefore reported, but not the point estimate,
+and D3 is not treated as an established prognostic feature.
+
+\subsection{\emph{In-silico} reversal of the disease state}
+
+To ask whether the disease state can be reversed, a query signature was derived from the
+single-cell data and used against two perturbation libraries.
+
+\paragraph{Query construction.} For each patient the difference in mean expression between
+invasive and precursor cells was computed and the median taken across patients, giving a
+16,104-gene axis. This axis was filtered against an independent survival signal (per-gene
+adjusted Cox models in TCGA-LUAD), retaining a gene only where the direction of disease
+change agreed with the direction of prognostic effect, so that a gene rising in disease is
+retained only if higher expression also predicts worse outcome, and conversely
+(Fig.~\ref{fig:3}a). The filter removes 9,270 of 18,069 genes (51\% of the full set; 44\% of
+the 15,792 genes with survival data), of which 6,993 change in disease but are protective
+and 2,277 lack survival annotation. It is applied because a reversal query that ignores it
+would target protective programmes as readily as harmful ones.
+
+\paragraph{Scoring schemes.} The signature was scored against the LINCS library using the
+CMap weighted-KS statistic ($\tau$) and two correlation-based scores. The library was rebuilt
+and held locally rather than queried through the CLUE scoring service, which was retired on
+2026-01-31 (Methods), so the version queried is fixed and re-runnable and every scoring path
+is cross-validated against the official implementation. The two correlation scores are
+nearly redundant (Spearman $\rho=0.950$; 433 of 1,826 compounds shared in their top 500),
+whereas the CMap statistic shares only about a third of its ranking with them
+($\rho=0.36$--$0.38$; 18--19 of 50 in the top 50) (Fig.~\ref{fig:3}h). This reflects the
+statistics rather than the implementation: CMap-type scores use only the membership of the
+query's gene sets and discard the perturbation values, and are therefore systematically
+different from value-based correlations. Requiring a compound to rank in the top 100 under
+all three schemes is consequently a stricter filter than it appears, and yields
+\textbf{34 compounds} (chance expectation 5.5), of which 16 (47\%) target PI3K/mTOR, with
+smaller groups against HSP90, the proteasome and cell-cycle kinases (Fig.~\ref{fig:3}d;
+Supplementary Table~S2).
+
+\input{sections/_tab_compounds}
+
+\paragraph{Reproducibility and modality independence.} Splitting patients at random into
+halves, deriving the axis independently in each half and scoring both against LINCS
+reproduces the ranking with a median Spearman $\rho$ of 0.962 across four splits, against a
+permutation null of $\pm0.045$ (Fig.~\ref{fig:3}e, left); the top-500 lists share 438
+compounds on average against a chance expectation of 137. One split is weaker ($\rho=0.752$)
+and all four are reported. A second query axis was derived from the spatial data, after
+depth balancing, by comparing invasive and precursor spots within nUMI deciles, and scored
+against the same library with the same statistic. The two axes agree at Spearman
+$\rho=0.735$ (top-100 overlap 52, chance expectation 5.5) (Fig.~\ref{fig:3}e, right). Since
+the two axes derive from different platforms and different pairing strategies, this is a
+stronger reproducibility check than repeating the scoring scheme within one modality.
+
+\paragraph{Positive control.} Before the candidate list was examined, the pipeline was
+verified against an official benchmark with a known answer, the epiblast-to-nascent-mesoderm
+transition, using the authors' own implementation, manifold and standard deviations
+\citep{pan2026scmg}. The known regulators are recovered at the top of the ranking: TBXT 1st
+of 8,450, MSGN1 2nd, MIXL1 3rd, POU5F1 7th, SNAI1 9th, EOMES 11th, NANOG 12th and EVX1 15th
+(Fig.~\ref{fig:3}b). This establishes that an empty result from the pipeline indicates the
+query or the data rather than a broken method. Numerical identity with the official
+implementations was confirmed separately: the weighted-KS implementation reproduces the
+reference to a maximum absolute difference of $6.6\times10^{-14}$ with 2000 of 2000 signs
+agreeing, and the vectorised causal score reproduces the authors' Python at Spearman
+1.00000000. Table~\ref{tab:validation} collects these and the other numerical agreements
+reported below.
+
+\paragraph{The reversal acts on specific domains.} Using each domain's own depth-balanced
+signature as a query, 26 of the 34 candidates fall in the top 100 for D3 and 21 for D5,
+against a chance expectation of 1.9; the remaining five domains are at or near chance
+(Fig.~\ref{fig:3}g). The compounds therefore act on the ECM/interstitial and AT2 domains
+rather than on the tissue as a whole.
+
+\input{sections/_fig3}
+
+\subsection{Gating of the candidate gene list}
+
+The same disease axis was scored against a gene-perturbation library of 20,345 perturbations
+\citep{pan2026scmg} using the authors' causal predictor. The gating framework applied to the
+resulting ranking is described here because it converts an ungoverned list into a short one
+and because it exposes a failure mode that a naive ranking conceals.
+
+A gene-perturbation score is informative only if the effect depends on the cell type being
+perturbed. Every perturbation was therefore scored on a K562 control axis, and those whose
+effect was as strong there as on the target axis were removed. Of 9,878 scored entries, 20
+were flagged as generalising, 48 were specific to the non-K562 reference, 1,898 were neutral
+and 7,912 lacked K562 data and are reported as untested. Applying this gate together with
+the survival-direction filter leaves 25 entries supported by all four scoring routes, 111 by
+three and 7 by two.
+
+To test whether the candidates act on a compartment rather than on the tissue as a whole,
+the disease axis was rebuilt for each of 31 subtypes separately and every perturbation
+re-ranked within each axis. Of 1,748 entries reaching the top 100 in at least one cell-type
+axis, only two reach it in twenty or more of the 31. One is \emph{SFTPC} knockdown, which
+ranks in the top 100 in 22 of 31 axes but fails the direction check, since lowering a
+transcript whose high expression is protective does not describe a therapeutic direction.
+The other is \emph{STAT1} knockdown (21 of 31 axes; hazard ratio 1.08, consistent with the
+required direction). The remaining candidates are largely axis-specific. The headline number
+of the ungated ranking is misleading for this reason: ubiquity across cell types is not
+evidence of a target, and the entry that appears most broadly reproducible does not survive
+the direction filter.
+
+\subsection{Analyses that did not work}
+
+Six further negative results are reported, each with the reason it is believed to have
+failed.
+
+\paragraph{Gene-level prediction on the pooled axis.} Applied to the tissue-pooled disease
+axis, the pipeline produced a maximum causal score of 0.083 against 1.279 for the official
+benchmark on the same implementation, and the distribution on our axis has no high tail,
+whereas the benchmark's does. Since the method is demonstrably functional, the pooled axis
+has no detectable match to the expression shifts recorded in the library. The
+compartment-resolved query does rank, but its survivor count is one. A separate,
+self-implemented cosine projection, which omits the causal score's gene-shift term, also
+ranked genes, but its significance saturates at the permutation floor (237 of 2,439 genes at
+the minimum attainable $p$) and it cannot discriminate.
+
+\paragraph{A developmental trajectory that runs the wrong way.} Using the source study's
+approach (monocle3 \citep{cao2019monocle3} with CytoTRACE \citep{gulati2020cytotrace}), the
+score is highest rather than lowest in invasive disease: medians are Normal 0.288, AAH
+0.374, AIS 0.288, MIA 0.277 and IAC 0.453, a non-monotonic profile with IAC highest. The
+reversal is robust, with 22 of 23 patients showing a positive per-patient slope and a
+depth-balanced audit finding IAC highest within every depth stratum. The measurement is
+nevertheless ambiguous in a way that cannot be resolved. CytoTRACE is constructed from the
+number of detected genes, so a high score in invasive disease is equally consistent with
+greater transcriptional disorder and with a less differentiated state; two readings fit the
+same numbers. Because the analysis measures a stage axis rather than a subtype axis, no
+AIC/KAC or tumour labels being available, it can be interpreted neither as evidence against
+the source study's trajectory nor as evidence for a different one.
+
+\paragraph{A spectral mechanism that was an artefact of construction.} An initial attempt to
+read the trajectory from the spectrum of an optimal-transport operator
+\citep{schiebinger2019wot,lange2022cellrank} was abandoned after inspection. Under the stage
+partition the coupling matrix is block upper triangular, so transport does not enter the
+spectrum; in small independent checks with known row sums the eigenvalue union differed by
+$0.000\times10^{0}$ and the number of near-zero eigenvalues equalled the cell count of the
+first four stages. The apparent spectral gap was set by a coupling-weight parameter and not
+by the data. The result was, on inspection, a property of how the matrix was assembled.
+
+\paragraph{H\&E imaging at this resolution.} A pathology-language model
+\citep{huang2023plip} was applied to the H\&E images to ask whether the morphological sequence
+could be read directly from the histology. Across twelve independent configurations (six
+feature arms crossed with two prompt sets) the best correlation was 0.729, and no setting
+exceeded 0.74. The ceiling is set by the model architecture: PLIP takes a 224-pixel input
+yielding 49 tokens, so one token spans about 181~$\mu$m of tissue, against the finest
+available colour source at 5.670~$\mu$m per pixel. Above that scale the discriminative power
+did not vary with detail, and finer sources cannot be tested in this cohort because none
+exists.
+
+For the use this study would make of it, the decisive result is that the model did not
+resolve the precursor stages. Per-stage means for AAH, AIS and MIA all fell within 0.15 to
+0.22 and interleaved with one another, so the three stages that define the sequence are not
+separated by this model. What increased with image detail was only the contrast between
+invasive disease and everything else, with the benign end depressed, rather than a gradient
+across stages.
+
+A search over 1,344 template-and-term combinations identifies what the model is in fact
+measuring. The highest raw discrimination, an AUC of 0.972, came from the term
+``invasive adenocarcinoma with desmoplastic stroma'', but that term also correlated most
+strongly with tissue density ($\rho=0.574$), and projecting the density direction out of its
+embedding reduced the AUC to 0.759. A weaker prompt chosen to be density-neutral retained
+more of its discrimination under the same projection (raw AUC 0.833, $\rho=0.129$;
+projected 0.791). Two independent measurements agree: the lesion score correlates at
+$\rho=0.718$ with the tissue fraction of a spot and at $\rho=-0.794$ with an empty-slide
+control; and the model does not merely fail to rank precursor lesions above normal lung, it
+inverts the comparison, with AAH versus Normal AUCs of 0.28 to 0.32 across prompt sets.
+Tumour tissue is itself denser than normal lung, so removing density also removes part of the
+true signal and the projected values are a lower bound rather than a target. The relevant
+point is that performance here is not separable from how much tissue a spot contains.
+
+To establish that the ceiling reflects resolution rather than the choice of image, every
+section was registered from the high-resolution image into the CytAssist frame (56 of 56
+passing; Methods) and the same spots were re-scored from four image sources matched by
+physical size. The finer source did not improve performance: slice-level correlation was
+0.698 for the baseline image, 0.228 for CytAssist, 0.540 for CytAssist contrast-matched to
+the baseline, and 0.215 for CytAssist downsampled to the baseline's pixel density. Because
+downsampling and raw CytAssist perform alike, the difference is not one of pixel density but
+of white balance and contrast between the two products, and matching the contrast recovers
+most of it.
+
+The conclusion is correspondingly narrow. At this image scale the model cannot perform the
+task this study would require of it, which is to place a lesion on the precursor-to-invasive
+axis. That is not a statement that histological detail is uninformative in general: testing
+that would require a finer colour source than this cohort provides.
+
+\paragraph{The ligand layer.} NicheNet was used with fibroblasts as receivers, the ten most
+abundant non-fibroblast cell types of the ECM/interstitial domain as senders, and the same
+data-derived target set. Only five ligands passed the expression and network gates, and none
+produced a ligand--target link in the output matrix. Their ligand activities were
+correspondingly flat, the best corrected area under the precision--recall curve being 0.093
+against a baseline of zero. Since NicheNet's own baseline correction was applied, the
+failure lies in the candidate set rather than in the scoring: with five ligands the sender
+panel is too thin for the network to resolve anything. Ligand-level inference is the natural
+next step, and this is the specific reason it was not pursued here.
+
+\paragraph{A finer spatial resolution that measured sections.} One attempt to ask whether the
+RCTD composition space supports more than seven domains pooled spots from all 56 sections
+into a single $k$-means and cross-validated the result. It returned a clean optimum, but the
+clusters tracked section identity rather than niche. Pooling across sections makes
+between-section differences the dominant axis of variation, so the bootstrap measured
+whether clusters mixed across sections are stable and not whether the composition space
+supports a finer partition. The analysis was superseded by a per-section clustering with the
+same $K$ scan, which is the version reported above.
+
+\input{sections/_tab_negatives}
+
+\input{sections/_tab_validation}

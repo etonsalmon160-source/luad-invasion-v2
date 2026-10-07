@@ -1,0 +1,32 @@
+\documentclass[twocolumn,10pt]{article}
+\usepackage{luad_biorxiv}
+\graphicspath{{figs/}}
+
+\begin{document}
+
+\twocolumn[%
+  \frontblock{%
+    Sequencing depth is tissue density in the lung adenocarcinoma invasion
+    sequence: niche domains and \emph{in-silico} reversal of the disease state}%
+  {Zhiyang Li\textsuperscript{1,$\ast$}\quad Jiaxuan Yang\textsuperscript{2}}%
+  {\textsuperscript{1}Guangdong Medical University, Dongguan, Guangdong, China\\[0.2em]
+   \textsuperscript{2}Monash University Malaysia, Bandar Sunway, Selangor, Malaysia}%
+  {\textsuperscript{$\ast$}Correspondence: Zhiyang Li, \texttt{eto-1024@gdmu.edu.cn}}%
+  \frontabstract{\input{sections/00_abstract}}%
+]%
+
+\input{sections/01_intro}
+\input{sections/02_results}
+\input{sections/03_discussion}
+\input{sections/04_limitations}
+\input{sections/05_methods}
+
+% 把前面所有尚未落位的浮动体（表 6 等）强制在这里排空，
+% 否则它们会漂到文献区里，看起来像"表在引用里面"。
+\FloatBarrier
+
+\input{sections/06_backmatter}
+
+\bibliography{refs}
+
+\end{document}

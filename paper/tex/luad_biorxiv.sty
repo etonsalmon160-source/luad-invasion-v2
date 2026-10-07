@@ -1,0 +1,104 @@
+% luad_biorxiv.sty —— bioRxiv 风格双栏版式（复刻 bioRxiv.cls 的几何规格）
+%   A4；正文区 170×247 mm；左边距 20 mm；上边距 25 mm；栏间距 7 mm；双栏
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{luad_biorxiv}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{times}          % Times 正文（bioRxiv.cls 的 times 选项）
+\RequirePackage{helvet}         % Helvetica 用于标题/页眉
+\RequirePackage{geometry}
+\geometry{a4paper, textwidth=170mm, textheight=247mm, left=20mm, top=25mm,
+          columnsep=7mm}
+\RequirePackage{xcolor}
+\RequirePackage{titlesec}
+\RequirePackage{caption}
+\RequirePackage{booktabs}
+\RequirePackage{etoolbox}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{makecell}
+\RequirePackage{siunitx}
+\RequirePackage{placeins}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{graphicx}
+\RequirePackage{lineno}
+\RequirePackage[hidelinks]{hyperref}
+% numbers：必须显式开启，否则 natbib 默认走作者-年制，
+% 会与数字制的文献表对不上（正文出现 (Peng et al., 2026)，表里却是编号）。
+\RequirePackage[numbers,round,sort,compress]{natbib}
+% 数字制 + 按正文首次引用顺序排列（Nature / Vancouver 惯例）；
+% plainnat 是字母序，与数字引用号对不上，故改 unsrtnat。
+\bibliographystyle{unsrtnat}
+
+% ── 章节标题：无衬线加粗、字号递降（bioRxiv 观感）──
+\titleformat{\section}{\normalfont\sffamily\bfseries\large}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\sffamily\bfseries\normalsize}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalfont\sffamily\bfseries\small}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.4ex plus .3ex}{0.7ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus .2ex}{0.5ex}
+
+% ── 题名区 ──
+\newcommand{\papertitle}[1]{%
+  \begin{center}\begin{minipage}{\textwidth}\centering
+  {\sffamily\bfseries\fontsize{17}{20}\selectfont #1\par}\end{minipage}\end{center}\vspace{0.6em}}
+\newcommand{\paperauthors}[1]{%
+  \begin{center}\begin{minipage}{\textwidth}\centering
+  {\normalsize #1\par}\end{minipage}\end{center}\vspace{0.3em}}
+\newcommand{\paperaffil}[1]{%
+  \begin{center}\begin{minipage}{\textwidth}\centering
+  {\footnotesize\itshape #1\par}\end{minipage}\end{center}\vspace{0.8em}}
+\newcommand{\papercorr}[1]{\begin{center}{\footnotesize #1\par}\end{center}\vspace{0.6em}}
+\newenvironment{paperabstract}%
+  {\begin{center}\begin{minipage}{0.86\textwidth}\small
+   \noindent\textbf{Abstract}\quad\ignorespaces}%
+  {\end{minipage}\end{center}\vspace{1.0em}}
+
+% ── 图注 / 表注 ──
+
+% ── 整宽前言区（标题/作者/单位/摘要）——必须用 \twocolumn[] 才不挤进单栏 ──
+\newcommand{\frontblock}[4]{%
+  \begin{center}
+    {\sffamily\bfseries\fontsize{17}{20}\selectfont #1\par}\vspace{0.9em}
+    {\normalsize #2\par}\vspace{0.45em}
+    {\footnotesize\itshape #3\par}\vspace{0.35em}
+    {\footnotesize #4\par}
+  \end{center}\vspace{0.9em}}
+\newcommand{\frontabstract}[1]{%
+  \begin{center}\begin{minipage}{0.90\textwidth}\small
+  \noindent\textbf{Abstract}\quad #1
+  \end{minipage}\end{center}\vspace{1.1em}}
+
+\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false}
+\captionsetup[table]{position=top,skip=5pt}
+% 跨栏图（整幅大图用 \begin{figure*}）
+\newcommand{\figfull}[2]{\begin{figure*}[t]\centering
+  \includegraphics[width=\textwidth]{#1}\caption{#2}\end{figure*}}
+
+% ── 表格统一版式 ──
+%   规则：一律 booktabs 三线；表内 footnotesize；列间距紧凑；数值列用 siunitx 对齐小数点；
+%        首尾去掉外侧留白（@{}）；字距/行距统一，避免各行疏密不一。
+\newcommand{\tabfont}{\footnotesize}
+\newcommand{\tabheadfont}{\footnotesize\itshape}
+\AtBeginEnvironment{tabular}{%
+  \setlength{\tabcolsep}{4.5pt}%
+  \renewcommand{\arraystretch}{1.12}%
+  \tabfont}
+\AtBeginEnvironment{tabularx}{%
+  \setlength{\tabcolsep}{4.5pt}%
+  \renewcommand{\arraystretch}{1.12}%
+  \tabfont}
+% 数值列：统一三位小数、按小数点对齐、负号随宽度自适应
+\sisetup{%
+  detect-all,
+  round-mode=places,
+  round-precision=3,
+  table-format=-1.3,
+  table-number-alignment=center,
+  table-space-text-post={$^{*}$},
+  group-separator={,},
+  output-decimal-marker={.}}
+% 组内小标题（机制分组、阶段分组）——第一个参数是该表的列数
+\newcommand{\tabgroup}[2]{\addlinespace[2pt]\multicolumn{#1}{@{}l}{\itshape #2}\\}
+% 表注
+\newcommand{\tabnote}[1]{\par\vspace{2pt}{\footnotesize\raggedright #1\par}}

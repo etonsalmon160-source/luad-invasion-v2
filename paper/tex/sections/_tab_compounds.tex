@@ -1,0 +1,52 @@
+\begin{table*}[!ht]
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrS[table-format=-1.3]S[table-format=-1.3]S[table-format=-1.3]rr@{}}
+\toprule
+\multicolumn{1}{@{}l}{\tabheadfont Compound} & \multicolumn{1}{l}{\tabheadfont Mechanism} & \multicolumn{1}{c}{\tabheadfont CMap $\tau$} & \multicolumn{1}{c}{\tabheadfont Cor-Sp $\rho$} & \multicolumn{1}{c}{\tabheadfont Cor-Pr $\rho$} & \multicolumn{1}{c}{\tabheadfont Rank CMap} & \multicolumn{1}{c@{}}{\tabheadfont Rank Cor-Sp} \\
+\midrule
+AZD-2014 & PI3K / mTOR & -0.355 & -0.186 & -0.112 & 1 & 15 \\
+lacidipine & PI3K / mTOR & -0.330 & -0.188 & -0.113 & 2 & 14 \\
+AZD-8055 & PI3K / mTOR & -0.329 & -0.176 & -0.111 & 3 & 23 \\
+PKI-179 & PI3K / mTOR & -0.322 & -0.223 & -0.152 & 5 & 2 \\
+GDC-0941 & PI3K / mTOR & -0.311 & -0.111 & -0.071 & 7 & 61 \\
+MLN-0128 & PI3K / mTOR & -0.311 & -0.205 & -0.128 & 8 & 8 \\
+NVP-AUY922 & HSP90 & -0.304 & -0.135 & -0.091 & 9 & 46 \\
+GDC-0980 & PI3K / mTOR & -0.302 & -0.215 & -0.137 & 10 & 5 \\
+BIIB-021 & JAK2 & -0.294 & -0.170 & -0.118 & 13 & 28 \\
+taselisib & PI3K / mTOR & -0.291 & -0.146 & -0.116 & 14 & 41 \\
+okadaic acid & phosphatase & -0.286 & -0.179 & -0.142 & 18 & 20 \\
+XL-888 & cell-cycle kinase & -0.280 & -0.223 & -0.134 & 20 & 3 \\
+JW-7-24-1 & mTOR & -0.279 & -0.094 & -0.065 & 22 & 87 \\
+torin-2 & PI3K / mTOR & -0.277 & -0.237 & -0.153 & 23 & 1 \\
+midostaurin & kinase & -0.276 & -0.109 & -0.059 & 24 & 62 \\
+NVP-BEZ235 & PI3K / mTOR & -0.274 & -0.199 & -0.124 & 26 & 10 \\
+bortezomib & proteasome & -0.271 & -0.180 & -0.106 & 29 & 19 \\
+pentobarbital & GABA-A & -0.266 & -0.163 & -0.093 & 30 & 33 \\
+PI-103 & PI3K / mTOR & -0.264 & -0.155 & -0.093 & 31 & 36 \\
+TAK-285 & HER2 / EGFR & -0.261 & -0.117 & -0.081 & 32 & 57 \\
+voxtalisib & PI3K / mTOR & -0.257 & -0.093 & -0.063 & 35 & 91 \\
+torin-1 & PI3K / mTOR & -0.250 & -0.149 & -0.094 & 40 & 39 \\
+PF-03814735 & Aurora kinase & -0.242 & -0.119 & -0.067 & 42 & 55 \\
+AT-13387 & HSP90 & -0.237 & -0.154 & -0.089 & 48 & 37 \\
+OSI-027 & mTOR & -0.236 & -0.093 & -0.062 & 51 & 89 \\
+WYE-125132 & mTOR & -0.217 & -0.172 & -0.107 & 69 & 25 \\
+MG-132 & proteasome & -0.214 & -0.184 & -0.109 & 72 & 16 \\
+NVP-TAE226 & FAK & -0.213 & -0.164 & -0.101 & 73 & 32 \\
+GSK-2110183 & PI3K / mTOR & -0.209 & -0.101 & -0.081 & 77 & 79 \\
+dinaciclib & CDK & -0.208 & -0.177 & -0.102 & 82 & 22 \\
+GSK-2126458 & PI3K / mTOR & -0.208 & -0.218 & -0.139 & 83 & 4 \\
+YM-155 & survivin & -0.205 & -0.140 & -0.075 & 87 & 42 \\
+tanespimycin & HSP90 & -0.205 & -0.183 & -0.118 & 88 & 17 \\
+SB-939 & cell-cycle kinase & -0.199 & -0.102 & -0.059 & 94 & 77 \\
+\bottomrule
+\end{tabular*}
+\caption{\textbf{The 34 compounds common to all three scoring schemes.} Compounds rank in
+the top 100 under each of the CMap weighted-KS statistic ($\tau$) and the two correlation
+scores, applied to the prognosis-filtered patient-internal disease axis against the LINCS
+library (1{,}826 compounds). Rows are ordered by CMap rank. Values are medians across the
+cell lines in which a compound was profiled; more negative indicates stronger reversal. The
+chance expectation for a compound to appear in all three top-100 lists is 5.5. Mechanisms
+are annotated from library metadata, curated for incompletely annotated compounds; the
+assignment plays no part in selection.}
+\label{tab:compounds}
+\end{table*}

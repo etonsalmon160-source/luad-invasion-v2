@@ -1,0 +1,100 @@
+\section{Limitations}
+
+\begin{enumerate}\itemsep2pt
+
+\item \textbf{Depth and density are not separable.} Every analysis in this paper is
+affected by the fact that sequencing depth proxies tissue density. Where the choice is
+consequential we report both adjusted and unadjusted estimates rather than selecting one.
+
+\item \textbf{No per-cell malignant label.} We do not assign malignant status to any cell,
+spot or domain. The copy-number score is reported as a continuous quantity throughout, and
+no downstream statistic multiplies it into any other measurement.
+
+\item \textbf{Domain identity is method-sensitive.} BANKSY, RCTD composition and
+marker-based clustering resolve 7, 6 and 5 domains respectively, with an adjusted Rand
+index of 0.225--0.247 against an RCTD-aligned partition. The seven domains are a working
+description, not a unique decomposition.
+
+\item \textbf{The deconvolution reference bounds what deconvolution can report.} The
+39-subtype reference has no exhaustion programme, so exhausted T cells are reported under a
+naive label. T-cell composition in this paper is a composition in the reference's
+vocabulary; functional states not present in the reference are invisible to it, and were
+measured separately by signature projection.
+
+\item \textbf{The $K^{*}=7$ partition failed its pre-specified stability gate.} Across
+seedings the cross-seed adjusted Rand index never reached 0.90. We report the partition as
+exploratory and do not use it as a primary result; the consequences are confined to
+descriptions of domain composition. The companion spatial-coherence criterion we also
+applied is passed by every configuration tested, including one using no spatial
+information, and therefore carries no weight in this cohort.
+
+\item \textbf{One clinical stage is represented by one section.} The Normal arm of the
+spatial cohort consists of a single Visium section; MIA is represented by four. Estimates
+for these stages should not be quoted on their own. Nuclei are more balanced (92,337
+normal nuclei across 23 patients), so the imbalance is specific to the spatial arm.
+
+\item \textbf{Two domain identities were revised during the study.} The D3 domain was
+first described as an immune infiltrate, then as a hypoxic/invasive programme, and finally
+as ECM/interstitial-enriched after depth matching showed the first two readings to be
+driven by depth. Earlier names for this domain should not be used.
+
+\item \textbf{The marker panel for one analysis was hand-curated.} A 22-gene ECM panel
+used in the early spatial analyses overlaps the depth-balanced marker set by only 14
+genes; the remaining eight were added by us. A sensitivity analysis shows the finding is
+unchanged when those eight are removed, or when any single gene is removed, but the panel
+itself is not drawn from a single published source.
+
+\item \textbf{Stage comparisons may be contaminated by sample type.} Patient-internal
+pairing removes between-patient variation but not the systematic difference between a
+precursor lesion and an invasive carcinoma, which is present in every paired comparison.
+The consistency of a signal across 22 patients does not protect against this, since every
+patient contributes the same kind of contrast.
+
+\item \textbf{The prognostic analysis is exploratory.} Domain marker signatures were used
+without a signed pre-registration of the parameterisation, and one domain's result changes
+substantially when its signature is replaced by a depth-balanced version. Only the
+direction and its robustness are reported for that domain.
+
+\item \textbf{The compound candidates are untested.} They act in cancer cell lines, have
+not been assessed in lung fibroblasts or primary tissue, and have no experimental
+validation. They are candidate perturbations.
+
+\item \textbf{The gene-level candidate list rests on one entry.} After the specificity gate,
+the direction filter and the compartment decomposition, only two perturbations rank in the
+top 100 across twenty or more of the 31 subtype axes, and one of the two fails the
+direction check. The surviving gene-level claim therefore rests on a single perturbation
+(\emph{STAT1} knockdown), which we report as an observation rather than as a target.
+
+\item \textbf{The ligand layer produced nothing.} NicheNet passed only five ligands, none of
+which yielded a ligand--target link, so no ligand-level conclusion can be drawn from this
+cohort. The failure is traceable to a thin sender panel and is not evidence that no ligand
+effect exists.
+
+\item \textbf{The perturbation libraries are not independent.} The gene-level and
+compound-level libraries share the query signature, and the three compound scoring schemes
+share both the query and the library. Agreement between them is a robustness check, not
+independent corroboration. The two libraries are reported side by side and are not used to
+validate one another.
+
+\item \textbf{The pooled gene-perturbation query produced no signal.} Its positive control
+passes, so the null reflects the query rather than the method, but we cannot distinguish
+between ``this cohort's pooled disease axis is not represented in the library'' and ``no
+single-gene perturbation of this magnitude exists in the library''. Splitting the query by
+compartment recovers a ranking, so the null is specific to the pooled parameterisation
+rather than to the library.
+
+\item \textbf{The developmental analysis is ambiguous by construction.} The score we use
+is derived from the number of detected genes, so a high value in invasive disease is
+equally consistent with greater transcriptional disorder. Two readings fit the same
+numbers and we cannot separate them with the available labels.
+
+\item \textbf{The imaging analysis is bounded by resolution, not by biology.} The
+H\&E-based classifier ceiling is set by the model architecture against the available image
+scale, and the model does not separate the precursor stages from one another at all. The
+negative result concerns what this pipeline can extract at this resolution, not what is
+present in the tissue; a finer colour source would be needed to test the latter.
+
+\item \textbf{No orthogonal validation.} No result in this paper has been reproduced in an
+independent cohort, with a different perturbation library, or experimentally.
+
+\end{enumerate}

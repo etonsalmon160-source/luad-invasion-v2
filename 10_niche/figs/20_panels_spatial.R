@@ -30,10 +30,39 @@ cat("代表切片:\n"); print(REP)
 W <- S[slide %in% REP$slide]
 W[, stage := factor(stage, levels = STAGE_LEVELS)]
 
+## ── 比例尺：逐切片自标定（相邻 spot 中心距 = 100 µm）──
+## 每张切片的 tissue_hires_scalef 不同（0.035–0.043）⇒ 必须逐张算，不能用统一 µm/px
+px100 <- function(sl) {
+  f <- sprintf("%s/data/visium_spatial/%s/spatial/tissue_positions.csv", ROOT, sl)
+  d <- fread(f, header = FALSE, skip = 1,
+             col.names = c("barcode", "in_tissue", "array_row", "array_col", "px", "py"))
+  d <- d[in_tissue == 1]
+  setorder(d, array_row, array_col)                 # 同一 array_row 内相邻列 = 1 个物理步长
+  dd <- d[, .(g = abs(diff(py))), by = array_row][g > 0]   # 切片朝向不同，diff 可为负 ⇒ 取绝对值
+  median(dd$g)
+}
+RG <- W[, .(x0 = min(x), x1 = max(x), y0 = min(y), y1 = max(y)), by = stage]
+SB <- merge(data.table(stage = REP$stage, slide = REP$slide), RG, by = "stage")
+SB[, p100 := sapply(slide, px100)]
+SB[, xa := x0 + 0.055 * (x1 - x0)]
+SB[, xb := xa + 10 * p100]   # 1 mm
+SB[, yb := y0 + 0.055 * (y1 - y0)]
+SB[, xt := xb + 0.022 * (x1 - x0)]   # 文字放条右边
+cat("比例尺（1 mm 的像素长度 = 10 × 相邻 spot 间距）:\n"); print(SB[, .(stage, slide, px_1mm = round(10 * p100, 1), panel_w = round(x1 - x0, 0))])
+SEG <- list(
+  geom_segment(data = SB, aes(x = xa, xend = xb, y = yb, yend = yb),
+               colour = "black", linewidth = 1.5, inherit.aes = FALSE),
+  geom_segment(data = SB, aes(x = xa, xend = xb, y = yb, yend = yb),
+               colour = "white", linewidth = 0.8, inherit.aes = FALSE),
+  geom_text(data = SB, aes(x = xt, y = yb, label = "1 mm"),
+            size = 2.4, inherit.aes = FALSE, colour = "black", fontface = "bold",
+            hjust = 0, vjust = 0.5))
+
+
 sp_plot <- function(var, title, pal, mid = NULL, fmt = "%.2f") {
   d <- copy(W); d[, v := get(var)]
   ggplot(d, aes(x, y, colour = v)) +
-    geom_point(size = 0.32, stroke = 0) +
+    geom_point(size = 0.32, stroke = 0) + SEG +
     scale_colour_gradientn(colours = pal, name = NULL,
                            guide = guide_colourbar(barwidth = unit(2.4, "cm"),
                                                    barheight = unit(0.25, "cm"))) +
@@ -50,14 +79,21 @@ sp_plot <- function(var, title, pal, mid = NULL, fmt = "%.2f") {
 
 ## P4a · 生态位域类型
 d <- W[!is.na(archetype)]; d[, arch := factor(paste0("D", archetype), levels = ARCH_LEVELS)]
-p <- ggplot(d, aes(x, y, colour = arch)) + geom_point(size = 0.32, stroke = 0) +
-  scale_colour_manual(values = ARCH_COL, name = NULL) + coord_fixed() +
+DOMLAB <- c(D1 = "Airway", D2 = "iCAF", D3 = "ECM/interstitial", D4 = "Alveolar-cap.",
+             D5 = "AT2", D6 = "Vascular", D7 = "Lymphoid")
+p <- ggplot(d, aes(x, y, colour = arch)) + geom_point(size = 0.32, stroke = 0) + SEG +
+  scale_colour_manual(values = ARCH_COL, name = NULL,
+                      labels = function(x) paste0(x, "  ", DOMLAB[x]),
+                      guide = guide_legend(nrow = 2, byrow = TRUE,
+                                           override.aes = list(size = 2.6, shape = 15))) +
+  coord_fixed() +
   facet_wrap(~stage, nrow = 1) + labs(x = NULL, y = NULL, title = "Niche domain archetype (K*=7)") +
   theme_paper(7) + theme(axis.text = element_blank(), axis.ticks = element_blank(),
     panel.grid = element_blank(), panel.border = element_rect(linewidth = 0.3, colour = "grey60"),
     panel.spacing = unit(2, "pt"), strip.text = element_text(colour = "white", face = "bold", size = 7.5),
     strip.background = element_rect(fill = "grey30", linewidth = 0),
-    legend.position = "bottom", legend.key.size = unit(0.26, "cm"))
+    legend.position = "bottom", legend.key.size = unit(0.30, "cm"),
+    legend.text = element_text(size = 6.4), legend.margin = margin(t = -2))
 save_fig(p, "P4a_spatial_domain_archetype", 8.6, 2.5)
 
 ## P4b–P4e · 各签名

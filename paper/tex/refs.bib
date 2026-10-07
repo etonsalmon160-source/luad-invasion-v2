@@ -1,0 +1,677 @@
+% ═══════════════════════════════════════════════════════════════════════════
+% refs.bib — 本稿引用
+%
+% 每条都标了来源，分两类：
+%   [repo]  —— 逐字来自仓库已登记的出处（docs/PARAMETERS_AND_SOURCES.md 等），未改一字
+%   [web ]  —— 仓库里没有记录，由检索查证后补入；后方 URL 是核验页面
+% 凡查不到、仓库也没记的字段一律留空并标 TODO，**不凭记忆填**。
+% ═══════════════════════════════════════════════════════════════════════════
+
+% ─────────────────────────────────────────────────────────────────────────
+% 源论文与本队列数据
+% ─────────────────────────────────────────────────────────────────────────
+
+% [repo] docs/PARAMETERS_AND_SOURCES.md:29
+@article{peng2026,
+  author  = {Peng, F and Sinjab, A and Dai, Y and Treekitkarnmongkol, W and Yang, S and Wang, L and others},
+  title   = {{Multimodal spatial-omics reveal co-evolution of alveolar progenitors and proinflammatory niches in progression of lung precursor lesions}},
+  journal = {Cancer Cell},
+  year    = {2026},
+  volume  = {44},
+  number  = {2},
+  pages   = {321--339.e13},
+  doi     = {10.1016/j.ccell.2025.10.004},
+  pmid  = {41202811},
+  pmcid = {12980502}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=25079552&retmode=json
+@article{tcga2014luad,
+  author  = {{Cancer Genome Atlas Research Network}},
+  title   = {{Comprehensive molecular profiling of lung adenocarcinoma}},
+  journal = {Nature},
+  year    = {2014},
+  volume  = {511},
+  number  = {7511},
+  pages   = {543--550},
+  doi     = {10.1038/nature13385},
+  pmid  = {25079552}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 肺图谱与 marker 面板出处
+% ─────────────────────────────────────────────────────────────────────────
+
+% [repo] 05_annotation/marker_panel.py:41-44
+@article{travaglini2020,
+  author  = {Travaglini, KJ and Nabhan, AN and Penland, L and others},
+  title   = {{A molecular cell atlas of the human lung from single-cell RNA sequencing}},
+  journal = {Nature},
+  year    = {2020},
+  volume  = {587},
+  number  = {7835},
+  pages   = {619--625},
+  doi     = {10.1038/s41586-020-2922-4},
+  pmcid = {7704697}
+}
+
+% [repo] 05_annotation/marker_panel.py:45-50
+@article{habermann2020,
+  author  = {Habermann, AC and Gutierrez, AJ and Bui, LT and others},
+  title   = {{Single-cell RNA sequencing reveals profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary fibrosis}},
+  journal = {Science Advances},
+  year    = {2020},
+  volume  = {6},
+  number  = {28},
+  pages   = {eaba1972},
+  doi     = {10.1126/sciadv.aba1972}
+}
+
+% [repo] 05_annotation/marker_panel.py:59-64（原登记为 UNVERIFIED，无 marker 表）
+@article{vieirabraga2019,
+  author  = {Vieira Braga, FA and Kar, G and Berg, M and others},
+  title   = {{A cellular census of human lungs identifies novel cell states in health and in asthma}},
+  journal = {Nature Medicine},
+  year    = {2019},
+  volume  = {25},
+  number  = {7},
+  pages   = {1153--1163},
+  doi     = {10.1038/s41591-019-0468-5}
+}
+
+% [repo] 05_annotation/marker_panel.py:154-159
+@article{sikkema2023,
+  author  = {Sikkema, L and Ram{\'i}rez-Su{\'a}stegui, C and Strobl, DC and others},
+  title   = {{An integrated cell atlas of the lung in health and disease}},
+  journal = {Nature Medicine},
+  year    = {2023},
+  volume  = {29},
+  number  = {6},
+  pages   = {1563--1577},
+  doi     = {10.1038/s41591-023-02327-2}
+}
+
+% [repo] docs/PARAMETERS_AND_SOURCES.md:457
+@article{han2024,
+  author  = {Han, G and Sinjab, A and Rahal, Z and others},
+  title   = {{An atlas of epithelial cell states and plasticity in lung adenocarcinoma}},
+  journal = {Nature},
+  year    = {2024},
+  volume  = {627},
+  pages   = {656--663},
+  doi     = {10.1038/s41586-024-07113-9}
+}
+
+% [repo] 05_annotation/epi_subtype_panel.py:26-29（DOI 来自仓库）
+@article{sinjab2021,
+  author  = {Sinjab, A and Han, G and Treekitkarnmongkol, W and Hara, K and Brennan, PM and Dang, M and others},
+  title   = {{Resolving the Spatial and Cellular Architecture of Lung Adenocarcinoma by Multiregion Single-Cell Sequencing}},
+  journal = {Cancer Discovery},
+  year    = {2021},
+  volume  = {11},
+  number  = {10},
+  pages   = {2506--2523},
+  doi     = {10.1158/2159-8290.CD-20-1285},
+  pmid  = {33972311}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 单细胞处理
+% ─────────────────────────────────────────────────────────────────────────
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=37231261&retmode=json
+%   注：Seurat v5 的规范引文是 2024 Nat Biotechnol，不是 2021 Cell（那是 v4/多模态）
+@article{hao2024seurat,
+  author  = {Hao, Y and Stuart, T and Kowalski, MH and Choudhary, S and Hoffman, P and Hartman, A and others},
+  title   = {{Dictionary learning for integrative, multimodal and scalable single-cell analysis}},
+  journal = {Nature Biotechnology},
+  year    = {2024},
+  volume  = {42},
+  number  = {2},
+  pages   = {293--304},
+  doi     = {10.1038/s41587-023-01767-y},
+  pmid  = {37231261}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=31870423&retmode=json
+@article{hafemeister2019sctransform,
+  author  = {Hafemeister, C and Satija, R},
+  title   = {{Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression}},
+  journal = {Genome Biology},
+  year    = {2019},
+  volume  = {20},
+  number  = {1},
+  pages   = {296},
+  doi     = {10.1186/s13059-019-1874-1},
+  pmid  = {31870423}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33295604&retmode=json
+@article{ahlmanneltze2021glmgampoi,
+  author  = {Ahlmann-Eltze, C and Huber, W},
+  title   = {{glmGamPoi: fitting Gamma-Poisson generalized linear models on single cell count data}},
+  journal = {Bioinformatics},
+  year    = {2021},
+  volume  = {36},
+  number  = {24},
+  pages   = {5701--5702},
+  doi     = {10.1093/bioinformatics/btaa1009},
+  pmid  = {33295604}
+}
+
+% [web] https://pubmed.ncbi.nlm.nih.gov/31740819/
+@article{korsunsky2019harmony,
+  author  = {Korsunsky, I and Millard, N and Fan, J and Slowikowski, K and Zhang, F and Wei, K and others},
+  title   = {{Fast, sensitive and accurate integration of single-cell data with Harmony}},
+  journal = {Nature Methods},
+  year    = {2019},
+  volume  = {16},
+  number  = {12},
+  pages   = {1289--1296},
+  doi     = {10.1038/s41592-019-0619-0},
+  pmid  = {31740819}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=35814628&retmode=json
+@article{germain2021scdblfinder,
+  author  = {Germain, PL and Lun, A and Garcia Meixide, C and Macnair, W and Robinson, MD},
+  title   = {{Doublet identification in single-cell sequencing data using scDblFinder}},
+  journal = {F1000Research},
+  year    = {2021},
+  volume  = {10},
+  pages   = {979},
+  doi     = {10.12688/f1000research.73600.2},
+  pmid  = {35814628}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=35549406&retmode=json
+@article{dominguezconde2022celltypist,
+  author  = {Dom{\'i}nguez Conde, C and Xu, C and Jarvis, LB and Rainbow, DB and Wells, SB and Gomes, T and others},
+  title   = {{Cross-tissue immune cell analysis reveals tissue-specific features in humans}},
+  journal = {Science},
+  year    = {2022},
+  volume  = {376},
+  number  = {6594},
+  pages   = {eabl5197},
+  doi     = {10.1126/science.abl5197},
+  pmid  = {35549406},
+  internalnote = {source of the CellTypist tool}
+}
+
+% [repo] docs/PARAMETERS_AND_SOURCES.md:63（作者年份来自仓库）
+@article{wolock2019scrublet,
+  author  = {Wolock, SL and Lopez, R and Klein, AM},
+  title   = {{Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data}},
+  journal = {Cell Systems},
+  year    = {2019},
+  volume  = {8},
+  number  = {4},
+  pages   = {281--291.e9},
+  doi     = {10.1016/j.cels.2018.11.005},
+  pmid  = {30954476},
+  internalnote = {DOI-year reads 2018, article is 2019}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 空间分域 / 反卷积 / 空间统计
+% ─────────────────────────────────────────────────────────────────────────
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=38413725&retmode=json
+%   注：仓库只写"Singhal 2024, Nat Genet"，无 DOI/卷/页；此处补齐为正式发表版
+@article{singhal2024banksy,
+  author  = {Singhal, V and Chou, N and Lee, J and Yue, Y and Liu, J and Chock, WK and others},
+  title   = {{BANKSY unifies cell typing and tissue domain segmentation for scalable spatial omics data analysis}},
+  journal = {Nature Genetics},
+  year    = {2024},
+  volume  = {56},
+  number  = {3},
+  pages   = {431--441},
+  doi     = {10.1038/s41588-024-01664-3},
+  pmid  = {38413725}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33603203&retmode=json
+%   注：仓库写 "2021" 是 online-first 年；可引期号是 2022;40(4):517-526
+@article{cable2022rctd,
+  author  = {Cable, DM and Murray, E and Zou, LS and Goeva, A and Macosko, EZ and Chen, F and others},
+  title   = {{Robust decomposition of cell type mixtures in spatial transcriptomics}},
+  journal = {Nature Biotechnology},
+  year    = {2022},
+  volume  = {40},
+  number  = {4},
+  pages   = {517--526},
+  doi     = {10.1038/s41587-021-00830-w},
+  pmid  = {33603203}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=35102346&retmode=json
+@article{palla2022squidpy,
+  author  = {Palla, G and Spitzer, H and Klein, M and Fischer, D and Schaar, AC and Kuemmerle, LB and others},
+  title   = {{Squidpy: a scalable framework for spatial omics analysis}},
+  journal = {Nature Methods},
+  year    = {2022},
+  volume  = {19},
+  number  = {2},
+  pages   = {171--178},
+  doi     = {10.1038/s41592-021-01358-2},
+  pmid  = {35102346}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 拷贝数 / 恶性判别
+% ─────────────────────────────────────────────────────────────────────────
+
+% [repo] 08_spatial_deconv/SPATIAL_CNV_PREREG.md:714-724
+@article{cabrejas2026fastcnv,
+  author  = {Cabrejas, G and Sroussi, M and Croizer, H and Cazelles, A and Sala{\"u}n, N and Jerman, L and others},
+  title   = {{FastCNV: fast and accurate copy number variation prediction from high-definition spatial transcriptomics and scRNA-seq data}},
+  journal = {Genome Medicine},
+  year    = {2026},
+  doi     = {10.1186/s13073-026-01731-w},
+  internalnote = {CC BY-NC-ND 4.0}
+}
+
+% [repo] results/03_cnv/malig_probe/MALIG_PROBE_PREREG.md:24-26（DOI/PMID 来自仓库）
+% [web] 标题与作者经 PubMed 记录补全：
+%   https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=40148533&retmode=json
+@article{scmalignantfinder2025,
+  author  = {Yu, Q and Li, YY and Chen, Y},
+  title   = {{scMalignantFinder distinguishes malignant cells in single-cell and spatial transcriptomics by leveraging cancer signatures}},
+  journal = {Communications Biology},
+  year    = {2025},
+  volume  = {8},
+  number  = {1},
+  pages   = {504},
+  doi     = {10.1038/s42003-025-07942-y},
+  pmid  = {40148533},
+  pmcid = {11950360}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33462507&retmode=json
+@article{gao2021copykat,
+  author  = {Gao, R and Bai, S and Henderson, YC and Lin, Y and Schalck, A and Yan, Y and others},
+  title   = {{Delineating copy number and clonal substructure in human tumors from single-cell transcriptomes}},
+  journal = {Nature Biotechnology},
+  year    = {2021},
+  volume  = {39},
+  number  = {5},
+  pages   = {599--608},
+  doi     = {10.1038/s41587-020-00795-2},
+  pmid  = {33462507}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=24925914&retmode=json
+@article{patel2014infercnv,
+  author  = {Patel, AP and Tirosh, I and Trombetta, JJ and Shalek, AK and Gillespie, SM and Wakimoto, H and others},
+  title   = {{Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma}},
+  journal = {Science},
+  year    = {2014},
+  volume  = {344},
+  number  = {6190},
+  pages   = {1396--1401},
+  doi     = {10.1126/science.1254257},
+  pmid  = {24925914},
+  internalnote = {canonical citation for inferCNV}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=36841879&retmode=json
+@article{defalco2023scevan,
+  author  = {De Falco, A and Caruso, F and Su, XD and Iavarone, A and Ceccarelli, M},
+  title   = {{A variational algorithm to detect the clonal copy number substructure of tumors from scRNA-seq data}},
+  journal = {Nature Communications},
+  year    = {2023},
+  volume  = {14},
+  number  = {1},
+  pages   = {1074},
+  doi     = {10.1038/s41467-023-36790-9},
+  pmid  = {36841879}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=36163550&retmode=json
+@article{gao2023numbat,
+  author  = {Gao, T and Soldatov, R and Sarkar, H and Kurkiewicz, A and Biederstedt, E and Loh, PR and others},
+  title   = {{Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes}},
+  journal = {Nature Biotechnology},
+  year    = {2023},
+  volume  = {41},
+  number  = {3},
+  pages   = {417--426},
+  doi     = {10.1038/s41587-022-01468-y},
+  pmid  = {36163550},
+  internalnote = {not used, requires BAM}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=29898899&retmode=json
+@article{fan2018honeybadger,
+  author  = {Fan, J and Lee, HO and Lee, S and Ryu, DE and Lee, S and Xue, C and others},
+  title   = {{Linking transcriptional and genetic tumor heterogeneity through allele analysis of single-cell RNA-seq data}},
+  journal = {Genome Research},
+  year    = {2018},
+  volume  = {28},
+  number  = {8},
+  pages   = {1217--1227},
+  doi     = {10.1101/gr.228080.117},
+  pmid  = {29898899},
+  internalnote = {not used, requires BAM}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=31900397&retmode=json
+@article{serinharmanci2020caspER,
+  author  = {Serin Harmanci, A and Harmanci, AO and Zhou, X},
+  title   = {{CaSpER identifies and visualizes CNV events by integrative analysis of single-cell or bulk RNA-sequencing data}},
+  journal = {Nature Communications},
+  year    = {2020},
+  volume  = {11},
+  number  = {1},
+  pages   = {89},
+  doi     = {10.1038/s41467-019-13779-x},
+  pmid  = {31900397},
+  internalnote = {not used, requires BAM}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 轨迹 / 发育轴
+% ─────────────────────────────────────────────────────────────────────────
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=31974247&retmode=json
+@article{gulati2020cytotrace,
+  author  = {Gulati, GS and Sikandar, SS and Wesche, DJ and Manjunath, A and Bharadwaj, A and Berger, MJ and others},
+  title   = {{Single-cell transcriptional diversity is a hallmark of developmental potential}},
+  journal = {Science},
+  year    = {2020},
+  volume  = {367},
+  number  = {6476},
+  pages   = {405--411},
+  doi     = {10.1126/science.aax0249},
+  pmid  = {31974247}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=30787437&retmode=json
+%   注：monocle3 的方法学引文是 2019 Nature，不是 Nature Biotechnology
+@article{cao2019monocle3,
+  author  = {Cao, J and Spielmann, M and Qiu, X and Huang, X and Ibrahim, DM and Hill, AJ and others},
+  title   = {{The single-cell transcriptional landscape of mammalian organogenesis}},
+  journal = {Nature},
+  year    = {2019},
+  volume  = {566},
+  number  = {7745},
+  pages   = {496--502},
+  doi     = {10.1038/s41586-019-0969-x},
+  pmid  = {30787437}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=35027767&retmode=json
+@article{lange2022cellrank,
+  author  = {Lange, M and Bergen, V and Klein, M and Setty, M and Reuter, B and Bakhti, M and others},
+  title   = {{CellRank for directed single-cell fate mapping}},
+  journal = {Nature Methods},
+  year    = {2022},
+  volume  = {19},
+  number  = {2},
+  pages   = {159--170},
+  doi     = {10.1038/s41592-021-01346-6},
+  pmid  = {35027767}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=30712874&retmode=json
+@article{schiebinger2019wot,
+  author  = {Schiebinger, G and Shu, J and Tabaka, M and Cleary, B and Subramanian, V and Solomon, A and others},
+  title   = {{Optimal-Transport Analysis of Single-Cell Gene Expression Identifies Developmental Trajectories in Reprogramming}},
+  journal = {Cell},
+  year    = {2019},
+  volume  = {176},
+  number  = {4},
+  pages   = {928--943.e22},
+  doi     = {10.1016/j.cell.2019.01.006},
+  pmid  = {30712874}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 扰动打分 / CMap / 富集
+% ─────────────────────────────────────────────────────────────────────────
+
+% [repo] 10_niche/TARGET_REVERSAL_PREREG.md:98-99（仓库只记 PMC，无 DOI）
+@article{subramanian2017,
+  author  = {Subramanian, A and Narayan, R and Corsello, SM and Peck, DD and others},
+  title   = {{A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles}},
+  journal = {Cell},
+  year    = {2017},
+  volume  = {171},
+  number  = {6},
+  pages   = {1437--1452.e17},
+  doi     = {10.1016/j.cell.2017.10.049},
+  pmcid = {5990023}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=16199517&retmode=json
+@article{subramanian2005gsea,
+  author  = {Subramanian, A and Tamayo, P and Mootha, VK and Mukherjee, S and Ebert, BL and Gillette, MA and others},
+  title   = {{Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles}},
+  journal = {Proceedings of the National Academy of Sciences},
+  year    = {2005},
+  volume  = {102},
+  number  = {43},
+  pages   = {15545--15550},
+  doi     = {10.1073/pnas.0506580102},
+  pmid  = {16199517},
+  internalnote = {origin of the weighted-KS statistic}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33068417&retmode=json
+@article{duan2020signaturesearch,
+  author  = {Duan, Y and Evans, DS and Miller, RA and Schork, NJ and Cummings, SR and Girke, T},
+  title   = {{signatureSearch: environment for gene expression signature searching and functional interpretation}},
+  journal = {Nucleic Acids Research},
+  year    = {2020},
+  volume  = {48},
+  number  = {21},
+  pages   = {e124},
+  doi     = {10.1093/nar/gkaa878},
+  pmid  = {33068417}
+}
+
+% [web] https://api.crossref.org/works/10.1101/060012 —— fgsea 只有预印本，无期刊记录
+@misc{korotkevich2016fgsea,
+  author       = {Korotkevich, G and Sukhov, V and Budin, N and Shpak, B and Artyomov, MN and Sergushichev, A},
+  title   = {{Fast gene set enrichment analysis}},
+  year         = {2016},
+  howpublished = {bioRxiv preprint},
+  doi          = {10.1101/060012}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=31819264&retmode=json
+@article{browaeys2020nichenet,
+  author  = {Browaeys, R and Saelens, W and Saeys, Y},
+  title   = {{NicheNet: modeling intercellular communication by linking ligands to target genes}},
+  journal = {Nature Methods},
+  year    = {2020},
+  volume  = {17},
+  number  = {2},
+  pages   = {159--162},
+  doi     = {10.1038/s41592-019-0667-5},
+  pmid  = {31819264}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 生存分析 / 影像 / 生物学签名
+% ─────────────────────────────────────────────────────────────────────────
+
+% [web] https://joss.theoj.org/papers/10.21105/joss.01317
+@article{davidsonpilon2019lifelines,
+  author  = {Davidson-Pilon, C},
+  title   = {{lifelines: survival analysis in Python}},
+  journal = {Journal of Open Source Software},
+  year    = {2019},
+  volume  = {4},
+  number  = {40},
+  pages   = {1317},
+  doi     = {10.21105/joss.01317}
+}
+
+% [web] https://academic.oup.com/jrsssb/article/57/1/289/7035855 —— 不在 PubMed，无 PMID
+@article{benjamini1995fdr,
+  author  = {Benjamini, Y and Hochberg, Y},
+  title   = {{Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing}},
+  journal = {Journal of the Royal Statistical Society: Series B (Methodological)},
+  year    = {1995},
+  volume  = {57},
+  number  = {1},
+  pages   = {289--300},
+  doi     = {10.1111/j.2517-6161.1995.tb02031.x}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=37592105&retmode=json
+%   注：这是病理视觉-语言模型 PLIP，不是同名的蛋白-配体工具；标题里不含 "PLIP"
+@article{huang2023plip,
+  author  = {Huang, Z and Bianchi, F and Yuksekgonul, M and Montine, TJ and Zou, J},
+  title   = {{A visual-language foundation model for pathology image analysis using medical Twitter}},
+  journal = {Nature Medicine},
+  year    = {2023},
+  volume  = {29},
+  number  = {9},
+  pages   = {2307--2316},
+  doi     = {10.1038/s41591-023-02504-3},
+  pmid  = {37592105}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=33545035&retmode=json
+@article{cheng2021trem2lam,
+  author  = {Cheng, S and Li, Z and Gao, R and Xing, B and Gao, Y and Yang, Y and others},
+  title   = {{A pan-cancer single-cell transcriptional atlas of tumor infiltrating myeloid cells}},
+  journal = {Cell},
+  year    = {2021},
+  volume  = {184},
+  number  = {3},
+  pages   = {792--809.e23},
+  doi     = {10.1016/j.cell.2021.01.010},
+  pmid  = {33545035},
+  internalnote = {source of the TREM2+ LAM programme}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=26205583&retmode=json
+@article{wherry2015exhaustion,
+  author  = {Wherry, EJ and Kurachi, M},
+  title   = {{Molecular and cellular insights into T cell exhaustion}},
+  journal = {Nature Reviews Immunology},
+  year    = {2015},
+  volume  = {15},
+  number  = {8},
+  pages   = {486--499},
+  doi     = {10.1038/nri3862},
+  pmid  = {26205583}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 稳定性 / 统计学工具
+% ─────────────────────────────────────────────────────────────────────────
+
+% [repo] 10_niche/NICHE_PREREG.md:840,922（仓库只记 PubMed URL）
+@article{senbabaoglu2014pac,
+  author  = {Senbabaoglu, Y and Michailidis, G and Li, JZ},
+  title   = {{Critical limitations of consensus clustering in class discovery}},
+  journal = {Scientific Reports},
+  year    = {2014},
+  volume  = {4},
+  number  = {1},
+  pages   = {6207},
+  doi     = {10.1038/srep06207},
+  pmid  = {25158761},
+  internalnote = {defines the PAC statistic}
+}
+
+% [repo] docs/PARAMETERS_AND_SOURCES.md:322
+@article{gao2024selective,
+  author  = {Gao, LL and Bien, J and Witten, D},
+  title   = {{Selective Inference for Hierarchical Clustering}},
+  journal = {Journal of the American Statistical Association},
+  year    = {2024},
+  volume  = {119},
+  number  = {545},
+  pages   = {332--342},
+  doi     = {10.1080/01621459.2022.2116331},
+  internalnote = {article-first 2022; citable issue 2024}
+}
+
+% ─────────────────────────────────────────────────────────────────────────
+% 基因扰动库 / 生物学签名 / 空间平台
+%   以下五条仓库里没有记录，全部由检索查证后补入，核验链接见各行
+% ─────────────────────────────────────────────────────────────────────────
+
+% [web] https://api.biorxiv.org/details/biorxiv/10.64898/2026.05.16.725005
+%   注：SCMG 无期刊论文，只有预印本 + MIT 软件；正文须写明这一点
+@article{pan2026scmg,
+  author  = {Pan, X and Saunders, R and Replogle, JM and Weissman, JS and Zhuang, X},
+  title   = {{Global cell-state and gene-program representations reveal conserved and context-specific perturbation responses of cells}},
+  journal = {bioRxiv},
+  year    = {2026},
+  doi     = {10.64898/2026.05.16.725005},
+  note  = {Preprint, not peer-reviewed}
+}
+
+% [web] https://api.github.com/repos/xingjiepan/SCMG
+@misc{xingjiepan_scmg,
+  author       = {Pan, Xingjie},
+  title   = {{Single Cell Manifold Generator (SCMG)}},
+  year         = {2026},
+  howpublished = {Software, MIT license},
+  url          = {https://github.com/xingjiepan/SCMG},
+  internalnote = {\texttt{CausalGenePredictor} is documented in the source and tutorial, not in a paper}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=29892065&retmode=json
+%   注：这是原始研究论文（NSCLC PD-1+ CD8+ CXCL13+ 耗竭池），不是综述
+@article{thommen2018,
+  author  = {Thommen, DS and Koelzer, VH and Herzig, P and Roller, A and Trefny, M and Dimeloe, S and others},
+  title   = {{A transcriptionally and functionally distinct PD-1+ CD8+ T cell pool with predictive potential in non-small-cell lung cancer treated with PD-1 blockade}},
+  journal = {Nature Medicine},
+  year    = {2018},
+  volume  = {24},
+  number  = {7},
+  pages   = {994--1004},
+  doi     = {10.1038/s41591-018-0057-z},
+  pmid  = {29892065},
+  pmcid = {6110381}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=28232471&retmode=json
+@article{ohllund2017,
+  author  = {{\"O}hlund, D and Handly-Santana, A and Biffi, G and Elyada, E and Almeida, AS and Ponz-Sarvise, M and others},
+  title   = {{Distinct populations of inflammatory fibroblasts and myofibroblasts in pancreatic cancer}},
+  journal = {Journal of Experimental Medicine},
+  year    = {2017},
+  volume  = {214},
+  number  = {3},
+  pages   = {579--596},
+  doi     = {10.1084/jem.20162024},
+  pmid  = {28232471},
+  internalnote = {iCAF signature}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=31197017&retmode=json
+@article{elyada2019,
+  author  = {Elyada, E and Bolisetty, M and Laise, P and Flynn, WF and Courtois, ET and Burkhart, RA and others},
+  title   = {{Cross-Species Single-Cell Analysis of Pancreatic Ductal Adenocarcinoma Reveals Antigen-Presenting Cancer-Associated Fibroblasts}},
+  journal = {Cancer Discovery},
+  year    = {2019},
+  volume  = {9},
+  number  = {8},
+  pages   = {1102--1123},
+  doi     = {10.1158/2159-8290.CD-19-0094},
+  pmid  = {31197017},
+  internalnote = {iCAF signature}
+}
+
+% [web] https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=27365449&retmode=json
+%   注：Visium 平台本身没有同行评审方法学论文；这是其底层方法（空间转录组学）的规范引文
+@article{stahl2016,
+  author  = {St{\aa}hl, PL and Salm{\'e}n, F and Vickovic, S and Lundmark, A and Navarro, JF and Magnusson, J and others},
+  title   = {{Visualization and analysis of gene expression in tissue sections by spatial transcriptomics}},
+  journal = {Science},
+  year    = {2016},
+  volume  = {353},
+  number  = {6294},
+  pages   = {78--82},
+  doi     = {10.1126/science.aaf2403},
+  pmid  = {27365449},
+  internalnote = {underpinning method for Visium}
+}

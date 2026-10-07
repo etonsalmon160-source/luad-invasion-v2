@@ -144,3 +144,19 @@ results/07_he_pathology/source_arms/armdump_GSM9226185_P8_LUAD.png
 # `resolution_sweep/registration_final.csv` 取代（s/s_pred 收敛到 0.995–1.000）。
 # 两者并存会让同一张切片出现两个互相矛盾的尺度数 ⇒ 只留最终版。
 results/07_he_pathology/registration_56_summary.csv
+
+# ── 发布前整理（2026-10-07）────────────────────────────────────────────────
+# 工作过程产物，非交付物。终图在 paper/tex/figs/（Fig1–3.pdf），
+# 本目录只保留作为分析证据的小体积 PNG（上面 5 个已跟踪的）。
+Rplots.pdf
+/*.log
+figures/cohort_overview_*.png
+figures/cohort_overview_*.jpg
+figures/cohort_overview_composite_*
+figures/_check_overview_*.png
+figures/sharpen_demo_*.png
+figures/roi_pair_check.png
+figures/rstar_candidates_by_lineage.png
+figures/umap_full_run_by_lineage.png
+# PR 正文草稿：对应 PR 已合并，正文在 GitHub 上，此处不重复留存
+10_niche/_PR_*.md

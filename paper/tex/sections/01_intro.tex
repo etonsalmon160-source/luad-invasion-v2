@@ -1,0 +1,41 @@
+\section{Introduction}
+
+Lung adenocarcinoma (LUAD) develops through a stereotypic morphological sequence that
+begins with atypical adenomatous hyperplasia (AAH) and proceeds through adenocarcinoma
+\emph{in situ} (AIS) and minimally invasive adenocarcinoma (MIA) to invasive
+adenocarcinoma (IAC). Each stage is histologically defined, and the transition from
+precursor lesion to invasive carcinoma is the point at which clinical management changes.
+The sequence therefore provides a well-defined system in which to ask what transcriptional
+changes accompany invasion and in what order they arise.
+
+Most transcriptomic descriptions of this sequence derive either from bulk tissue
+\citep{tcga2014luad} or from single-cell profiling restricted to the invasive tumour and
+adjacent normal lung, and both designs conflate the intermediate states that define the
+sequence. Single-cell atlases spanning the full spectrum are available \citep{han2024}, but
+these rarely carry a spatially resolved counterpart, so the tissue architecture surrounding
+a given transcriptional state, such as the niche composition around an alveolar type II
+cell, remains unobserved.
+
+Two obstacles are specific to this disease. Tumour cells are difficult to identify without
+copy-number information, because the reference panels used for spatial deconvolution
+contain no malignant cell type; malignant epithelium is assigned to the most similar normal
+epithelial class, leaving any composition-based description of a niche structurally blind
+to the tumour. In addition, invasive regions of a section are both more cellular and more
+transcriptionally active than precursor regions, so comparisons between the two are also
+comparisons of RNA content.
+
+We assembled paired single-nucleus RNA sequencing and Visium spatial transcriptomics from
+23 patients spanning all five stages. The single-cell data define cell states and a
+patient-internal disease axis. The spatial data define tissue niches
+\citep{singhal2024banksy,cable2022rctd} and provide the context in which the copy-number
+signal is placed \citep{cabrejas2026fastcnv}. The same disease axis is then used as a query
+against two perturbation libraries \citep{subramanian2017}, to ask whether any known
+compound or gene perturbation reverses it.
+
+A methodological result obtained early shaped the remainder of the study. Sequencing depth
+and tissue density are not separable in this cohort, and their coupling is strong enough to
+generate stage-dependent patterns where none exist. Controlling for it, and reporting what
+survives when that control is incomplete, became the organising constraint of the work. We
+therefore present positive and negative results together and record the analytical
+difficulties encountered, several of which required the withdrawal of an apparently sound
+result.

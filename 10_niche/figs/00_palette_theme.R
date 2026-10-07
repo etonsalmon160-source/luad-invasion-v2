@@ -17,8 +17,9 @@ LIN_COL <- setNames(pal_npg("nrc")(6), LIN_EN[LIN_LEVELS])   # 图例用英文�
 
 ## ── 七个生态位域类型（D1–D7）──
 ARCH_LEVELS <- paste0("D", 1:7)
-ARCH_COL <- setNames(c("#4C72B0", "#DD8452", "#55A868", "#C44E52",
-                       "#8172B3", "#937860", "#DA8BC3"), ARCH_LEVELS)
+## 2026-10-06 定：蓝紫粉家族；D4 是占 45% spot 的肺泡毛细血管背景域 ⇒ 用最浅粉后退
+ARCH_COL <- setNames(c("#2F5597", "#5B4E9E", "#9C4E93", "#F7DCEA",
+                       "#D95F8C", "#2E8B8B", "#6A3FA0"), ARCH_LEVELS)
 
 ## ── 强调色（单值高亮用）──
 ACCENT <- "#B02A30"; NEUTRAL <- "#BDBDBD"; HILITE <- "#E07B39"
@@ -68,4 +69,18 @@ load_cellmap <- function() {
   D[, stage := factor(stage, levels = STAGE_LEVELS)]
   D[, L1 := factor(LIN_EN[L1], levels = LIN_EN[LIN_LEVELS])]
   D
+}
+
+## ── 荧光配色（移植自 08_spatial_deconv/23_spatial_subtype_fluorescence.R，RCTD 39 亚型）──
+FLUO_HUE  <- c("上皮"=12, "成纤维"=52, "髓系"=125, "内皮"=182, "T/NK"=235, "B/浆"=302)
+FLUO_SPAN <- c("上皮"=26, "成纤维"=16, "髓系"=62, "内皮"=26, "T/NK"=30, "B/浆"=26)
+make_fluo_palette <- function(ref, sub_lin) {          # ref=39亚型名向量; sub_lin=每条对应谱系
+  col <- character(length(ref)); names(col) <- ref
+  for (L in names(FLUO_HUE)) {
+    idx <- which(sub_lin == L); n <- length(idx); if (!n) next
+    off <- if (n == 1) 0 else seq(-FLUO_SPAN[[L]]/2, FLUO_SPAN[[L]]/2, length.out = n)
+    v   <- if (n == 1) 1 else seq(0.85, 1.0, length.out = n)[order(off)]
+    col[idx] <- hsv((FLUO_HUE[[L]] + off) %% 360 / 360, s = 0.95, v = v)
+  }
+  col
 }

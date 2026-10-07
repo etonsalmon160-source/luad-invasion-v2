@@ -62,6 +62,14 @@ log(f"查询 A/B 就绪；配对用了 {len(ps)} 例患者")
 del M, Mn
 
 # ── ③ 对齐基因空间（按扰动库的 var 顺序排 std 与 shift）──
+# 🔴🔴 本脚本**产物已作废**（见 TARGET_REVERSAL_STATUS.md §四）：
+#    这里用的是**替代的 gene_stds**（缺失填 0.1），而官方口径要求用流形算出的真 std
+#    ⇒ 产出 `scmg_native_A/B.tsv` 的因果分全在 1e-6 量级、全平，**「官方方法找不到」是假象**。
+#    **现行版是 `56_scmg_native_gates.py`**（用官方 stds）。本脚本保留仅作审计，勿引用其产物。
+#
+# ⚠️ 审计补充（2026-10-06）：下面第 2 行 `np.maximum(std_p, 0.1)` 会把**真实 SD 也低于 0.1 的基因
+#    抬升到 0.1**——这一步此前未单独登记，它会人为放大低方差基因。属已作废路径，不再修，
+#    但任何复用这段代码的脚本都必须先删掉这一行。
 pos = {g: i for i, g in enumerate(sg)}
 std_p = np.array([std_all[pos[g]] if g in pos else np.nan for g in genes_p])
 for nm, sh in [("A", shiftA), ("B", shiftB)]:

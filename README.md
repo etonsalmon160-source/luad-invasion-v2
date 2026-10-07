@@ -1,64 +1,92 @@
-# LUAD v2 —— 配对空间-单核图谱（癌前→浸润轴）
+# Sequencing depth is tissue density in the LUAD invasion sequence
 
-> **范围（2026-09-12 收窄）**：仅**两个配对数据集**——`GSE308103`(snRNA) + `GSE307534`(Visium 空间)。
-> 与旧目录 `/home/eto/luad_invasion`（结果作废）**物理隔离**；该目录仅作**只读数据源**。
+Code, analysis and derived results for the manuscript:
 
----
+> **Sequencing depth is tissue density in the lung adenocarcinoma invasion sequence:
+> niche domains and *in-silico* reversal of the disease state**
+> Zhiyang Li, Jiaxuan Yang
+> Guangdong Medical University · Monash University Malaysia
 
-## 项目一句话
-
-用**同一批患者、同一病灶、相邻切片**的 **Visium 空间**与 **snRNA** 配对数据，
-刻画肺腺癌 **Normal → AAH → AIS → MIA → IAC** 的细胞状态与空间生态位，
-并产出**遗传学锚定的候选靶点**（→ 结构对接）。
-
-**技术定位**：贡献是**数据独特性 + 方法严谨性（基准与验证）**，不是发明新的因果推断算法。
-
-## 先读
-1. **[`PLAN_AND_CHECKPOINTS.md`](PLAN_AND_CHECKPOINTS.md)** —— 里程碑与**硬性过门条件**（含 §5b 环境约束）
-2. [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) —— 技术路线（v2）
-3. [`docs/PROJECT_SUMMARY.md`](docs/PROJECT_SUMMARY.md) —— 已核实事实总纲（v2）
-4. [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) —— 参数出处（v2）
-
-## 铁律
-1. 数据身份以 **GEO/GSA** 为准；分期**无静默默认**；
-2. 恶性标签**须 CNV 证真**（CopyKAT）；双体用 **scDblFinder**；
-3. **模态混淆（sn/空间）显式处理**，禁 naive 合并；
-4. 无真实来源 = 不计算（宁可报缺，不伪造）；
-5. 措辞：**候选 / 遗传学支持的候选**，**不得称因果**。
+This repository is the complete analytical record behind that paper. It is a self-contained
+study; the directory it was originally developed in is retained only as a read-only data
+source and is not part of this project.
 
 ---
 
-## 数据底座（权威）
+## What the study is about
 
-| 数据集 | 身份 | 模态 | 角色 |
+Lung adenocarcinoma (LUAD) progresses through a defined morphological sequence, from
+atypical adenomatous hyperplasia (AAH) through adenocarcinoma *in situ* (AIS) and minimally
+invasive adenocarcinoma (MIA) to invasive adenocarcinoma (IAC). We profiled paired
+single-nucleus RNA sequencing and Visium spatial transcriptomics from the same patients
+across all five stages, and asked how the transcriptional state of the tissue changes as
+invasion proceeds, and whether that state can be reversed *in silico* by known
+perturbations.
+
+The organising finding is that **sequencing depth and tissue density are the same
+measurement in this cohort**. Domain identity, marker stability, the apparent
+stage-dependence of the spatial programmes, the cohort-level copy-number difference and one
+domain's prognostic weight all scale with depth. Several apparently positive results
+disappeared once depth was matched, and the paper reports those negatives alongside the
+positives. Four results survive; they are listed in the manuscript's Discussion.
+
+## Data
+
+All data are public. Nothing in this repository redistributes controlled-access material.
+
+| Dataset | Accession | Modality | Role |
 | :--- | :--- | :--- | :--- |
-| **GSE308103** | 75 样本 / **798,100 核**（实测；**分析口径 413,697 核**，论文 QC） | **snRNA**（FFPE） | 单细胞**参考**；**唯一含 AAH** |
-| **GSE307534** | GEO 56 样本 / 25 患者；本地 **56** 切片 | **Visium spot**（FFPE） | **空间图谱**；解卷积对象 |
+| snRNA-seq | **GSE308103** | fixed RNA profiling (probe panel) | single-cell reference, 413,697 nuclei analysed |
+| Visium | **GSE307534** | CytAssist 11 mm (probe panel) | spatial atlas, 56 sections |
+| TCGA-LUAD | archived distribution | bulk RNA + clinical | independent prognostic filter |
+| LINCS L1000 | **GSE70138** | compound perturbation | queried through a locally built database |
+| SCMG | `xingjiepan/SCMG_data` | gene perturbation (MIT) | second, parallel perturbation library |
 
-**23 例配对患者**（P3–P25；本地空间切片完整覆盖）。
-**LNM**：空转暂缺（`GSE190811` 经核实为**乳腺癌**，已废）。
+23 patients are shared between the two primary modalities. Three further external resources
+were evaluated and rejected; they are documented in the manuscript's Methods rather than
+listed here.
 
-> ⚠️ Visium spot 是多细胞混合 → 必须用单细胞参考**解卷积**；"配对"指**同患者/同病灶**，不取消解卷积。
+## Layout
 
----
-
-## 目录
 ```
-luad_v2/
-├── PLAN_AND_CHECKPOINTS.md   # ← 先读：计划 + 严格检查点
-├── README.md                 # 本文件
-├── docs/                     # WHITEPAPER / PROJECT_SUMMARY / PARAMETERS / M7B手册 / 规则
-├── 00_ingest/                # 权威队列登记（cohort_registry.py）
-├── 01_qc/                    # M1：QC + 双体（GSE308103）
-├── tools/                    # 主流工具源码（不入库）
-├── results/  logs/           # 产物与日志
-└── data/ scmg/ traditional/ scripts/   # 预留（空）
+├── 00_ingest/          authoritative cohort registry
+├── 01_qc/              quality control and doublet detection
+├── 02_expression/      expression object assembly
+├── 03_cnv/             copy-number inference and the malignancy probes
+├── 04_integration/     integration and the traditional (Seurat) pipeline
+├── 05_annotation/      marker panels and cell-type annotation
+├── 06_scmg/            SCMG subsystem
+├── 07_he_pathology/    H&E imaging line, including the slide-registration algorithm
+├── 08_spatial_deconv/  RCTD deconvolution and the spatial copy-number arm
+├── 09_trajectory/      developmental-trajectory arm
+├── 10_niche/           spatial domains, prognosis, and the reversal arm
+├── docs/               method provenance, parameter sources, audit records
+├── results/            derived outputs (large binaries are git-ignored)
+└── figures/            figure source data
 ```
 
-## 范围外内容
-三个 scRNA 队列（GSE131907/189357/148071）、HRA001130 接口、旧 M0/M1 产物 →
-已移至 `/home/eto/luad_invasion/luad_v2_out_of_scope/`（**未删除**，见其 README）。
+**Start here if you are new to the project:**
+1. `docs/PARAMETERS_AND_SOURCES.md` — every analysis parameter, labelled by whether it comes
+   from a source paper, a software default, or from us.
+2. `docs/PROJECT_SUMMARY.md` — the verified-facts overview.
+3. `10_niche/` — the reversal arm, which is where most of the recent work lives.
 
-## 作废说明
-旧 `luad_invasion/` 的全部结果产物（图表/数值/TMB/CMap/对接）**作废**。
-一切从本目录、按 `PLAN_AND_CHECKPOINTS.md` 重新开始。
+## Reproducibility notes
+
+- Scripts are numbered in execution order within each directory.
+- Large intermediate objects (`.h5`, `.npz`, `.rds`, `.bin`, model weights) are git-ignored
+  and regenerable from the scripts; `.gitignore` records, for each exclusion, why it is
+  excluded and what regenerates it.
+- Alongside every analysis that produced a negative result, the repository keeps the
+  diagnostic that established the failure was real rather than a broken method.
+
+## What is not here
+
+- Structural docking, molecular dynamics and co-folding were **not** run. They appear in the
+  planning documents as future work and produced no result.
+- No malignant cell label is assigned anywhere in this project. Copy-number output is used
+  as a continuous quantity only.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).

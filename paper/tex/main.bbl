@@ -1,0 +1,296 @@
+\begin{thebibliography}{48}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{Cancer Genome Atlas Research Network}(2014)]{tcga2014luad}
+{Cancer Genome Atlas Research Network}.
+\newblock {Comprehensive molecular profiling of lung adenocarcinoma}.
+\newblock \emph{Nature}, 511\penalty0 (7511):\penalty0 543--550, 2014.
+\newblock \doi{10.1038/nature13385}.
+
+\bibitem[Han et~al.(2024)Han, Sinjab, Rahal, et~al.]{han2024}
+G~Han, A~Sinjab, Z~Rahal, et~al.
+\newblock {An atlas of epithelial cell states and plasticity in lung adenocarcinoma}.
+\newblock \emph{Nature}, 627:\penalty0 656--663, 2024.
+\newblock \doi{10.1038/s41586-024-07113-9}.
+
+\bibitem[Singhal et~al.(2024)Singhal, Chou, Lee, Yue, Liu, Chock, et~al.]{singhal2024banksy}
+V~Singhal, N~Chou, J~Lee, Y~Yue, J~Liu, WK~Chock, et~al.
+\newblock {BANKSY unifies cell typing and tissue domain segmentation for scalable spatial omics data analysis}.
+\newblock \emph{Nature Genetics}, 56\penalty0 (3):\penalty0 431--441, 2024.
+\newblock \doi{10.1038/s41588-024-01664-3}.
+
+\bibitem[Cable et~al.(2022)Cable, Murray, Zou, Goeva, Macosko, Chen, et~al.]{cable2022rctd}
+DM~Cable, E~Murray, LS~Zou, A~Goeva, EZ~Macosko, F~Chen, et~al.
+\newblock {Robust decomposition of cell type mixtures in spatial transcriptomics}.
+\newblock \emph{Nature Biotechnology}, 40\penalty0 (4):\penalty0 517--526, 2022.
+\newblock \doi{10.1038/s41587-021-00830-w}.
+
+\bibitem[Cabrejas et~al.(2026)Cabrejas, Sroussi, Croizer, Cazelles, Sala{\"u}n, Jerman, et~al.]{cabrejas2026fastcnv}
+G~Cabrejas, M~Sroussi, H~Croizer, A~Cazelles, N~Sala{\"u}n, L~Jerman, et~al.
+\newblock {FastCNV: fast and accurate copy number variation prediction from high-definition spatial transcriptomics and scRNA-seq data}.
+\newblock \emph{Genome Medicine}, 2026.
+\newblock \doi{10.1186/s13073-026-01731-w}.
+
+\bibitem[Subramanian et~al.(2017)Subramanian, Narayan, Corsello, Peck, et~al.]{subramanian2017}
+A~Subramanian, R~Narayan, SM~Corsello, DD~Peck, et~al.
+\newblock {A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles}.
+\newblock \emph{Cell}, 171\penalty0 (6):\penalty0 1437--1452.e17, 2017.
+\newblock \doi{10.1016/j.cell.2017.10.049}.
+
+\bibitem[Thommen et~al.(2018)Thommen, Koelzer, Herzig, Roller, Trefny, Dimeloe, et~al.]{thommen2018}
+DS~Thommen, VH~Koelzer, P~Herzig, A~Roller, M~Trefny, S~Dimeloe, et~al.
+\newblock {A transcriptionally and functionally distinct PD-1+ CD8+ T cell pool with predictive potential in non-small-cell lung cancer treated with PD-1 blockade}.
+\newblock \emph{Nature Medicine}, 24\penalty0 (7):\penalty0 994--1004, 2018.
+\newblock \doi{10.1038/s41591-018-0057-z}.
+
+\bibitem[Wherry and Kurachi(2015)]{wherry2015exhaustion}
+EJ~Wherry and M~Kurachi.
+\newblock {Molecular and cellular insights into T cell exhaustion}.
+\newblock \emph{Nature Reviews Immunology}, 15\penalty0 (8):\penalty0 486--499, 2015.
+\newblock \doi{10.1038/nri3862}.
+
+\bibitem[{\"O}hlund et~al.(2017){\"O}hlund, Handly-Santana, Biffi, Elyada, Almeida, Ponz-Sarvise, et~al.]{ohllund2017}
+D~{\"O}hlund, A~Handly-Santana, G~Biffi, E~Elyada, AS~Almeida, M~Ponz-Sarvise, et~al.
+\newblock {Distinct populations of inflammatory fibroblasts and myofibroblasts in pancreatic cancer}.
+\newblock \emph{Journal of Experimental Medicine}, 214\penalty0 (3):\penalty0 579--596, 2017.
+\newblock \doi{10.1084/jem.20162024}.
+
+\bibitem[Elyada et~al.(2019)Elyada, Bolisetty, Laise, Flynn, Courtois, Burkhart, et~al.]{elyada2019}
+E~Elyada, M~Bolisetty, P~Laise, WF~Flynn, ET~Courtois, RA~Burkhart, et~al.
+\newblock {Cross-Species Single-Cell Analysis of Pancreatic Ductal Adenocarcinoma Reveals Antigen-Presenting Cancer-Associated Fibroblasts}.
+\newblock \emph{Cancer Discovery}, 9\penalty0 (8):\penalty0 1102--1123, 2019.
+\newblock \doi{10.1158/2159-8290.CD-19-0094}.
+
+\bibitem[Cheng et~al.(2021)Cheng, Li, Gao, Xing, Gao, Yang, et~al.]{cheng2021trem2lam}
+S~Cheng, Z~Li, R~Gao, B~Xing, Y~Gao, Y~Yang, et~al.
+\newblock {A pan-cancer single-cell transcriptional atlas of tumor infiltrating myeloid cells}.
+\newblock \emph{Cell}, 184\penalty0 (3):\penalty0 792--809.e23, 2021.
+\newblock \doi{10.1016/j.cell.2021.01.010}.
+
+\bibitem[Gao et~al.(2021)Gao, Bai, Henderson, Lin, Schalck, Yan, et~al.]{gao2021copykat}
+R~Gao, S~Bai, YC~Henderson, Y~Lin, A~Schalck, Y~Yan, et~al.
+\newblock {Delineating copy number and clonal substructure in human tumors from single-cell transcriptomes}.
+\newblock \emph{Nature Biotechnology}, 39\penalty0 (5):\penalty0 599--608, 2021.
+\newblock \doi{10.1038/s41587-020-00795-2}.
+
+\bibitem[Patel et~al.(2014)Patel, Tirosh, Trombetta, Shalek, Gillespie, Wakimoto, et~al.]{patel2014infercnv}
+AP~Patel, I~Tirosh, JJ~Trombetta, AK~Shalek, SM~Gillespie, H~Wakimoto, et~al.
+\newblock {Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma}.
+\newblock \emph{Science}, 344\penalty0 (6190):\penalty0 1396--1401, 2014.
+\newblock \doi{10.1126/science.1254257}.
+
+\bibitem[Yu et~al.(2025)Yu, Li, and Chen]{scmalignantfinder2025}
+Q~Yu, YY~Li, and Y~Chen.
+\newblock {scMalignantFinder distinguishes malignant cells in single-cell and spatial transcriptomics by leveraging cancer signatures}.
+\newblock \emph{Communications Biology}, 8\penalty0 (1):\penalty0 504, 2025.
+\newblock \doi{10.1038/s42003-025-07942-y}.
+
+\bibitem[Pan et~al.(2026)Pan, Saunders, Replogle, Weissman, and Zhuang]{pan2026scmg}
+X~Pan, R~Saunders, JM~Replogle, JS~Weissman, and X~Zhuang.
+\newblock {Global cell-state and gene-program representations reveal conserved and context-specific perturbation responses of cells}.
+\newblock \emph{bioRxiv}, 2026.
+\newblock \doi{10.64898/2026.05.16.725005}.
+\newblock Preprint, not peer-reviewed.
+
+\bibitem[Cao et~al.(2019)Cao, Spielmann, Qiu, Huang, Ibrahim, Hill, et~al.]{cao2019monocle3}
+J~Cao, M~Spielmann, X~Qiu, X~Huang, DM~Ibrahim, AJ~Hill, et~al.
+\newblock {The single-cell transcriptional landscape of mammalian organogenesis}.
+\newblock \emph{Nature}, 566\penalty0 (7745):\penalty0 496--502, 2019.
+\newblock \doi{10.1038/s41586-019-0969-x}.
+
+\bibitem[Gulati et~al.(2020)Gulati, Sikandar, Wesche, Manjunath, Bharadwaj, Berger, et~al.]{gulati2020cytotrace}
+GS~Gulati, SS~Sikandar, DJ~Wesche, A~Manjunath, A~Bharadwaj, MJ~Berger, et~al.
+\newblock {Single-cell transcriptional diversity is a hallmark of developmental potential}.
+\newblock \emph{Science}, 367\penalty0 (6476):\penalty0 405--411, 2020.
+\newblock \doi{10.1126/science.aax0249}.
+
+\bibitem[Schiebinger et~al.(2019)Schiebinger, Shu, Tabaka, Cleary, Subramanian, Solomon, et~al.]{schiebinger2019wot}
+G~Schiebinger, J~Shu, M~Tabaka, B~Cleary, V~Subramanian, A~Solomon, et~al.
+\newblock {Optimal-Transport Analysis of Single-Cell Gene Expression Identifies Developmental Trajectories in Reprogramming}.
+\newblock \emph{Cell}, 176\penalty0 (4):\penalty0 928--943.e22, 2019.
+\newblock \doi{10.1016/j.cell.2019.01.006}.
+
+\bibitem[Lange et~al.(2022)Lange, Bergen, Klein, Setty, Reuter, Bakhti, et~al.]{lange2022cellrank}
+M~Lange, V~Bergen, M~Klein, M~Setty, B~Reuter, M~Bakhti, et~al.
+\newblock {CellRank for directed single-cell fate mapping}.
+\newblock \emph{Nature Methods}, 19\penalty0 (2):\penalty0 159--170, 2022.
+\newblock \doi{10.1038/s41592-021-01346-6}.
+
+\bibitem[Huang et~al.(2023)Huang, Bianchi, Yuksekgonul, Montine, and Zou]{huang2023plip}
+Z~Huang, F~Bianchi, M~Yuksekgonul, TJ~Montine, and J~Zou.
+\newblock {A visual-language foundation model for pathology image analysis using medical Twitter}.
+\newblock \emph{Nature Medicine}, 29\penalty0 (9):\penalty0 2307--2316, 2023.
+\newblock \doi{10.1038/s41591-023-02504-3}.
+
+\bibitem[Gao et~al.(2024)Gao, Bien, and Witten]{gao2024selective}
+LL~Gao, J~Bien, and D~Witten.
+\newblock {Selective Inference for Hierarchical Clustering}.
+\newblock \emph{Journal of the American Statistical Association}, 119\penalty0 (545):\penalty0 332--342, 2024.
+\newblock \doi{10.1080/01621459.2022.2116331}.
+
+\bibitem[Peng et~al.(2026)Peng, Sinjab, Dai, Treekitkarnmongkol, Yang, Wang, et~al.]{peng2026}
+F~Peng, A~Sinjab, Y~Dai, W~Treekitkarnmongkol, S~Yang, L~Wang, et~al.
+\newblock {Multimodal spatial-omics reveal co-evolution of alveolar progenitors and proinflammatory niches in progression of lung precursor lesions}.
+\newblock \emph{Cancer Cell}, 44\penalty0 (2):\penalty0 321--339.e13, 2026.
+\newblock \doi{10.1016/j.ccell.2025.10.004}.
+
+\bibitem[St{\aa}hl et~al.(2016)St{\aa}hl, Salm{\'e}n, Vickovic, Lundmark, Navarro, Magnusson, et~al.]{stahl2016}
+PL~St{\aa}hl, F~Salm{\'e}n, S~Vickovic, A~Lundmark, JF~Navarro, J~Magnusson, et~al.
+\newblock {Visualization and analysis of gene expression in tissue sections by spatial transcriptomics}.
+\newblock \emph{Science}, 353\penalty0 (6294):\penalty0 78--82, 2016.
+\newblock \doi{10.1126/science.aaf2403}.
+
+\bibitem[Dom{\'i}nguez~Conde et~al.(2022)Dom{\'i}nguez~Conde, Xu, Jarvis, Rainbow, Wells, Gomes, et~al.]{dominguezconde2022celltypist}
+C~Dom{\'i}nguez~Conde, C~Xu, LB~Jarvis, DB~Rainbow, SB~Wells, T~Gomes, et~al.
+\newblock {Cross-tissue immune cell analysis reveals tissue-specific features in humans}.
+\newblock \emph{Science}, 376\penalty0 (6594):\penalty0 eabl5197, 2022.
+\newblock \doi{10.1126/science.abl5197}.
+
+\bibitem[Sikkema et~al.(2023)Sikkema, Ram{\'i}rez-Su{\'a}stegui, Strobl, et~al.]{sikkema2023}
+L~Sikkema, C~Ram{\'i}rez-Su{\'a}stegui, DC~Strobl, et~al.
+\newblock {An integrated cell atlas of the lung in health and disease}.
+\newblock \emph{Nature Medicine}, 29\penalty0 (6):\penalty0 1563--1577, 2023.
+\newblock \doi{10.1038/s41591-023-02327-2}.
+
+\bibitem[Browaeys et~al.(2020)Browaeys, Saelens, and Saeys]{browaeys2020nichenet}
+R~Browaeys, W~Saelens, and Y~Saeys.
+\newblock {NicheNet: modeling intercellular communication by linking ligands to target genes}.
+\newblock \emph{Nature Methods}, 17\penalty0 (2):\penalty0 159--162, 2020.
+\newblock \doi{10.1038/s41592-019-0667-5}.
+
+\bibitem[Hao et~al.(2024)Hao, Stuart, Kowalski, Choudhary, Hoffman, Hartman, et~al.]{hao2024seurat}
+Y~Hao, T~Stuart, MH~Kowalski, S~Choudhary, P~Hoffman, A~Hartman, et~al.
+\newblock {Dictionary learning for integrative, multimodal and scalable single-cell analysis}.
+\newblock \emph{Nature Biotechnology}, 42\penalty0 (2):\penalty0 293--304, 2024.
+\newblock \doi{10.1038/s41587-023-01767-y}.
+
+\bibitem[Hafemeister and Satija(2019)]{hafemeister2019sctransform}
+C~Hafemeister and R~Satija.
+\newblock {Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression}.
+\newblock \emph{Genome Biology}, 20\penalty0 (1):\penalty0 296, 2019.
+\newblock \doi{10.1186/s13059-019-1874-1}.
+
+\bibitem[Ahlmann-Eltze and Huber(2021)]{ahlmanneltze2021glmgampoi}
+C~Ahlmann-Eltze and W~Huber.
+\newblock {glmGamPoi: fitting Gamma-Poisson generalized linear models on single cell count data}.
+\newblock \emph{Bioinformatics}, 36\penalty0 (24):\penalty0 5701--5702, 2021.
+\newblock \doi{10.1093/bioinformatics/btaa1009}.
+
+\bibitem[Korsunsky et~al.(2019)Korsunsky, Millard, Fan, Slowikowski, Zhang, Wei, et~al.]{korsunsky2019harmony}
+I~Korsunsky, N~Millard, J~Fan, K~Slowikowski, F~Zhang, K~Wei, et~al.
+\newblock {Fast, sensitive and accurate integration of single-cell data with Harmony}.
+\newblock \emph{Nature Methods}, 16\penalty0 (12):\penalty0 1289--1296, 2019.
+\newblock \doi{10.1038/s41592-019-0619-0}.
+
+\bibitem[Germain et~al.(2021)Germain, Lun, Garcia~Meixide, Macnair, and Robinson]{germain2021scdblfinder}
+PL~Germain, A~Lun, C~Garcia~Meixide, W~Macnair, and MD~Robinson.
+\newblock {Doublet identification in single-cell sequencing data using scDblFinder}.
+\newblock \emph{F1000Research}, 10:\penalty0 979, 2021.
+\newblock \doi{10.12688/f1000research.73600.2}.
+
+\bibitem[Wolock et~al.(2019)Wolock, Lopez, and Klein]{wolock2019scrublet}
+SL~Wolock, R~Lopez, and AM~Klein.
+\newblock {Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data}.
+\newblock \emph{Cell Systems}, 8\penalty0 (4):\penalty0 281--291.e9, 2019.
+\newblock \doi{10.1016/j.cels.2018.11.005}.
+
+\bibitem[Travaglini et~al.(2020)Travaglini, Nabhan, Penland, et~al.]{travaglini2020}
+KJ~Travaglini, AN~Nabhan, L~Penland, et~al.
+\newblock {A molecular cell atlas of the human lung from single-cell RNA sequencing}.
+\newblock \emph{Nature}, 587\penalty0 (7835):\penalty0 619--625, 2020.
+\newblock \doi{10.1038/s41586-020-2922-4}.
+
+\bibitem[Habermann et~al.(2020)Habermann, Gutierrez, Bui, et~al.]{habermann2020}
+AC~Habermann, AJ~Gutierrez, LT~Bui, et~al.
+\newblock {Single-cell RNA sequencing reveals profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary fibrosis}.
+\newblock \emph{Science Advances}, 6\penalty0 (28):\penalty0 eaba1972, 2020.
+\newblock \doi{10.1126/sciadv.aba1972}.
+
+\bibitem[Vieira~Braga et~al.(2019)Vieira~Braga, Kar, Berg, et~al.]{vieirabraga2019}
+FA~Vieira~Braga, G~Kar, M~Berg, et~al.
+\newblock {A cellular census of human lungs identifies novel cell states in health and in asthma}.
+\newblock \emph{Nature Medicine}, 25\penalty0 (7):\penalty0 1153--1163, 2019.
+\newblock \doi{10.1038/s41591-019-0468-5}.
+
+\bibitem[Sinjab et~al.(2021)Sinjab, Han, Treekitkarnmongkol, Hara, Brennan, Dang, et~al.]{sinjab2021}
+A~Sinjab, G~Han, W~Treekitkarnmongkol, K~Hara, PM~Brennan, M~Dang, et~al.
+\newblock {Resolving the Spatial and Cellular Architecture of Lung Adenocarcinoma by Multiregion Single-Cell Sequencing}.
+\newblock \emph{Cancer Discovery}, 11\penalty0 (10):\penalty0 2506--2523, 2021.
+\newblock \doi{10.1158/2159-8290.CD-20-1285}.
+
+\bibitem[Senbabaoglu et~al.(2014)Senbabaoglu, Michailidis, and Li]{senbabaoglu2014pac}
+Y~Senbabaoglu, G~Michailidis, and JZ~Li.
+\newblock {Critical limitations of consensus clustering in class discovery}.
+\newblock \emph{Scientific Reports}, 4\penalty0 (1):\penalty0 6207, 2014.
+\newblock \doi{10.1038/srep06207}.
+
+\bibitem[Benjamini and Hochberg(1995)]{benjamini1995fdr}
+Y~Benjamini and Y~Hochberg.
+\newblock {Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing}.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Methodological)}, 57\penalty0 (1):\penalty0 289--300, 1995.
+\newblock \doi{10.1111/j.2517-6161.1995.tb02031.x}.
+
+\bibitem[Palla et~al.(2022)Palla, Spitzer, Klein, Fischer, Schaar, Kuemmerle, et~al.]{palla2022squidpy}
+G~Palla, H~Spitzer, M~Klein, D~Fischer, AC~Schaar, LB~Kuemmerle, et~al.
+\newblock {Squidpy: a scalable framework for spatial omics analysis}.
+\newblock \emph{Nature Methods}, 19\penalty0 (2):\penalty0 171--178, 2022.
+\newblock \doi{10.1038/s41592-021-01358-2}.
+
+\bibitem[Gao et~al.(2023)Gao, Soldatov, Sarkar, Kurkiewicz, Biederstedt, Loh, et~al.]{gao2023numbat}
+T~Gao, R~Soldatov, H~Sarkar, A~Kurkiewicz, E~Biederstedt, PR~Loh, et~al.
+\newblock {Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes}.
+\newblock \emph{Nature Biotechnology}, 41\penalty0 (3):\penalty0 417--426, 2023.
+\newblock \doi{10.1038/s41587-022-01468-y}.
+
+\bibitem[Fan et~al.(2018)Fan, Lee, Lee, Ryu, Lee, Xue, et~al.]{fan2018honeybadger}
+J~Fan, HO~Lee, S~Lee, DE~Ryu, S~Lee, C~Xue, et~al.
+\newblock {Linking transcriptional and genetic tumor heterogeneity through allele analysis of single-cell RNA-seq data}.
+\newblock \emph{Genome Research}, 28\penalty0 (8):\penalty0 1217--1227, 2018.
+\newblock \doi{10.1101/gr.228080.117}.
+
+\bibitem[Serin~Harmanci et~al.(2020)Serin~Harmanci, Harmanci, and Zhou]{serinharmanci2020caspER}
+A~Serin~Harmanci, AO~Harmanci, and X~Zhou.
+\newblock {CaSpER identifies and visualizes CNV events by integrative analysis of single-cell or bulk RNA-sequencing data}.
+\newblock \emph{Nature Communications}, 11\penalty0 (1):\penalty0 89, 2020.
+\newblock \doi{10.1038/s41467-019-13779-x}.
+
+\bibitem[De~Falco et~al.(2023)De~Falco, Caruso, Su, Iavarone, and Ceccarelli]{defalco2023scevan}
+A~De~Falco, F~Caruso, XD~Su, A~Iavarone, and M~Ceccarelli.
+\newblock {A variational algorithm to detect the clonal copy number substructure of tumors from scRNA-seq data}.
+\newblock \emph{Nature Communications}, 14\penalty0 (1):\penalty0 1074, 2023.
+\newblock \doi{10.1038/s41467-023-36790-9}.
+
+\bibitem[Davidson-Pilon(2019)]{davidsonpilon2019lifelines}
+C~Davidson-Pilon.
+\newblock {lifelines: survival analysis in Python}.
+\newblock \emph{Journal of Open Source Software}, 4\penalty0 (40):\penalty0 1317, 2019.
+\newblock \doi{10.21105/joss.01317}.
+
+\bibitem[Duan et~al.(2020)Duan, Evans, Miller, Schork, Cummings, and Girke]{duan2020signaturesearch}
+Y~Duan, DS~Evans, RA~Miller, NJ~Schork, SR~Cummings, and T~Girke.
+\newblock {signatureSearch: environment for gene expression signature searching and functional interpretation}.
+\newblock \emph{Nucleic Acids Research}, 48\penalty0 (21):\penalty0 e124, 2020.
+\newblock \doi{10.1093/nar/gkaa878}.
+
+\bibitem[Subramanian et~al.(2005)Subramanian, Tamayo, Mootha, Mukherjee, Ebert, Gillette, et~al.]{subramanian2005gsea}
+A~Subramanian, P~Tamayo, VK~Mootha, S~Mukherjee, BL~Ebert, MA~Gillette, et~al.
+\newblock {Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles}.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 102\penalty0 (43):\penalty0 15545--15550, 2005.
+\newblock \doi{10.1073/pnas.0506580102}.
+
+\bibitem[Korotkevich et~al.(2016)Korotkevich, Sukhov, Budin, Shpak, Artyomov, and Sergushichev]{korotkevich2016fgsea}
+G~Korotkevich, V~Sukhov, N~Budin, B~Shpak, MN~Artyomov, and A~Sergushichev.
+\newblock {Fast gene set enrichment analysis}.
+\newblock bioRxiv preprint, 2016.
+
+\bibitem[Pan(2026)]{xingjiepan_scmg}
+Xingjie Pan.
+\newblock {Single Cell Manifold Generator (SCMG)}.
+\newblock Software, MIT license, 2026.
+\newblock URL \url{https://github.com/xingjiepan/SCMG}.
+
+\end{thebibliography}
