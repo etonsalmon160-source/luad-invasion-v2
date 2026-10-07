@@ -1,223 +1,224 @@
-# LUAD 早期演进 · 配对空间-单核图谱
+# LUAD Early Progression · Paired Spatial–snRNA Atlas
 ## A paired spatial–snRNA atlas of the pre-invasive→invasive LUAD axis
 
-> **版本**：v2（2026-09-12 重写）· 取代 v1（含已作废结果与不成立方法）
-> **配套**：[`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md)（里程碑与过门条件）· [`PROJECT_SUMMARY.md`](PROJECT_SUMMARY.md)（已核实事实）· [`PARAMETERS_AND_SOURCES.md`](PARAMETERS_AND_SOURCES.md)（参数出处）
+> **Version**: v2 (rewritten 2026-09-12) · supersedes v1 (contained retracted results and invalid methods)
+> **Companion documents**: [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) (milestones and gate conditions) · [`PROJECT_SUMMARY.md`](PROJECT_SUMMARY.md) (verified facts) · [`PARAMETERS_AND_SOURCES.md`](PARAMETERS_AND_SOURCES.md) (parameter sources)
 
 ---
 
-## 0. 一句话定位
+## 0. One-sentence positioning
 
-用**同一批患者、同一病灶、相邻切片**的 **Visium 空间**与 **snRNA** 配对数据，
-刻画肺腺癌**癌前→浸润轴（Normal → AAH → AIS → MIA → IAC）**的细胞状态与空间生态位，
-并据此产出**遗传学锚定的候选靶点**（→ 结构对接）。
+Using paired **Visium spatial** and **snRNA** data from the **same patients, same lesion, adjacent sections**,
+we characterize the cell states and spatial niches along the lung adenocarcinoma **pre-invasive→invasive axis (Normal → AAH → AIS → MIA → IAC)**,
+and on that basis derive **candidate targets**. Structural docking over those candidates was planned as
+milestone M8 and has **not been run**; nothing in this repository reports a docking result.
 
-**技术定位**：本工作的贡献是**数据独特性 + 方法严谨性（基准与验证）**，**不是**发明新的因果推断算法。
-
----
-
-## 1. 科学问题
-
-1. **AAH 是唯一可干预的癌前起点**——它与同患者的 Normal/AIS 在**细胞状态**与**空间微环境**上差在哪？
-2. **微浸润的分水岭（AIS→MIA）**在**空间上**表现为怎样的生态位重构（恶性-间质交界、免疫排斥）？
-3. 哪些**候选靶点**同时满足：在恶性程序/生态位中特异、**有遗传学因果支持**、且**结构可成药**？
-
-**为什么必须配对**：跨患者比较无法区分"疾病阶段差异"与"个体差异"；配对（同患者多阶段 + 双模态）把个体差异作为自身对照。
+**Technical positioning**: the contribution of this work is **data uniqueness + methodological rigor (benchmarking and validation)**, **not** the invention of a new causal-inference algorithm.
 
 ---
 
-## 2. 数据底座（仅两个数据集，23 例配对）
+## 1. Scientific questions
+
+1. **AAH is the only actionable pre-cancerous starting point**—how does it differ from the same patient's Normal/AIS in **cell state** and **spatial microenvironment**?
+2. How does the **watershed of microinvasion (AIS→MIA)** manifest **spatially** as niche remodeling (malignant–stromal interface, immune exclusion)?
+3. Which **candidate targets** simultaneously satisfy: specific to the malignant program/niche, **with genetic causal support**, and **structurally druggable**?
+
+**Why pairing is essential**: cross-patient comparisons cannot distinguish "disease-stage differences" from "individual differences"; pairing (multiple stages from the same patient + dual modality) uses individual variation as its own control.
+
+---
+
+## 2. Data foundation (only two datasets, 23 paired cases)
 
 | | **GSE308103** | **GSE307534** |
 | :--- | :--- | :--- |
-| 模态 | **snRNA**（细胞核；FFPE） | **Visium spot**（FFPE CytAssist；55 µm，**非单细胞**） |
-| 角色 | 单细胞**参考**；**唯一含 AAH** 的单细胞资源 | **空间图谱**（原位坐标）；**解卷积对象** |
-| 规模 | 75 样本；**798,100 核**（实测） | GEO 56 样本 / 25 患者；本地 **56 张切片** |
-| 分期 | Normal / AAH / AIS / MIA / IAC | Normal / AAH / AIS / MIA / IAC |
+| Modality | **snRNA** (nuclei; FFPE) | **Visium spot** (FFPE CytAssist; 55 µm, **not single-cell**) |
+| Role | single-cell **reference**; the **only single-cell resource containing AAH** | **spatial atlas** (in-situ coordinates); **deconvolution target** |
+| Scale | 75 samples; **798,100 nuclei** (measured) | GEO 56 samples / 25 patients; local **56 sections** |
+| Stage | Normal / AAH / AIS / MIA / IAC | Normal / AAH / AIS / MIA / IAC |
 
-**配对患者（23 例，P3–P25）** —— 每例在**两个模态**均有切片，本地空间切片**完整覆盖**这 23 例。
-> **2026-09-15 修正**：旧值"9 例"系**仅下载 19/56 张空间切片**时的交集产物；切片补齐后按两张 GEO 权威表求交集实为 23 例。
+**Paired patients (23 cases, P3–P25)** — each case has sections in **both modalities**, and the local spatial sections **fully cover** these 23 cases.
+> **2026-09-15 correction**: the old value "9 cases" was an artifact of the intersection when **only 19/56 spatial sections had been downloaded**; after the sections were completed, the intersection of the two authoritative GEO tables is in fact 23 cases.
 
-**关键概念**：Visium 每个 spot 含**多个细胞**（混合信号）→ 必须用单细胞参考**解卷积**才能得到 spot 的细胞组成。配对的作用是**让参考模态匹配、患者匹配**，从而让解卷积可信；它**不取消**解卷积这一步。
+**Key concept**: each Visium spot contains **multiple cells** (mixed signal) → a single-cell reference must be used to **deconvolve** it in order to obtain a spot's cell composition. The role of pairing is to **match the reference modality and match the patient**, thereby making deconvolution trustworthy; it does **not eliminate** the deconvolution step.
 
-**LNM**：空转淋巴结转移**暂无合法 LUAD 数据**（`GSE190811` 经 GEO 核实为**乳腺癌**，已废）。LNM 不作为空间阶段；如后续获得真实数据再补。
+**LNM**: for spatial lymph-node metastasis there is **currently no legitimate LUAD data** (`GSE190811` was verified via GEO to be **breast cancer**, retracted). LNM is not treated as a spatial stage; it will be added if real data become available later.
 
 ---
 
-## 3. 技术路线
+## 3. Technical roadmap
 
 ```
-M0  输入冻结        两数据集样本/患者/分期冻结 + 哈希
-M1  QC / 双体       逐样本自适应 MAD + scDblFinder；**分析掩膜再叠加源论文绝对门**
-                    （`nFeature≥500 & nCount≥1000 & pct_mt≤20`）→ 413,697 核（2026-09-16 起，见 PLAN §2.0 行 2）
-M2  恶性证真        CopyKAT 逐样本 CNV（+ infercnv 子集交叉验证）
-M3  整合            scVI(batch=sample_id) 建 snRNA 图谱（原文 batch=dataset 已废，见 PLAN §C）
-                    + scArches/scANVI 跨模态标签迁移；scIB 完整 panel
-                    对照臂：纯 SCMG zero-shot 整合/流形（正交，不产出结论）
-M4  跨模态 AAH      同患者配对一致性（五判据）
-M5  空间解卷积      RCTD，参考 = GSE308103（模态匹配）；门用 RCTD 原生输出
-M6  空间生态位      BANKSY（稳定性定簇）+ Squidpy（类别标签 + 经验 p）
-M7  靶点            a 生态位预后特征（患者级 → TCGA 生存）
-                    b 候选靶点池（cis-MR + coloc 遗传学锚定 + 可成药性）
-                    c CMap（仅当有真实 LINCS 数据）
-M8  结构对接        fpocket+P2Rank → Vina → gnina 重打分 → PoseBusters
-                    （MD 缓做）
+M0  Input freeze      Freeze the two datasets' samples/patients/stages + hash
+M1  QC / doublets     per-sample adaptive MAD + scDblFinder; **the analysis mask additionally overlays the source paper's absolute gate**
+                    (`nFeature≥500 & nCount≥1000 & pct_mt≤20`) → 413,697 nuclei (from 2026-09-16, see PLAN §2.0 line 2)
+M2  Malignancy confirmation  CopyKAT per-sample CNV (+ infercnv subset cross-validation)
+M3  Integration       scVI(batch=sample_id) to build the snRNA atlas (the paper's batch=dataset is retracted, see PLAN §C)
+                    + scArches/scANVI cross-modality label transfer; full scIB panel
+                    Control arm: pure SCMG zero-shot integration/manifold (orthogonal, produces no conclusions)
+M4  Cross-modality AAH  same-patient paired consistency (five criteria)
+M5  Spatial deconvolution  RCTD, reference = GSE308103 (modality-matched); gate uses RCTD's native output
+M6  Spatial niche     BANKSY (stability-based clustering) + Squidpy (category labels + empirical p)
+M7  Targets           a niche prognostic signature (patient-level → TCGA survival)
+                    b candidate target pool (cis-MR + coloc genetic anchoring + druggability)
+                    c CMap (only when real LINCS data are available)
+M8  Structural docking  fpocket+P2Rank → Vina → gnina rescoring → PoseBusters
+                    (MD deferred)
 ```
 
-### M1 · QC：**snRNA 阈值必须据实定** —— ✅ **已完成**（2026-09-12）
-本数据 median nCount 1,516、median pct_mt 0.6%（**细胞核**特征）。照搬整细胞 scRNA 阈值
-（nCount≥1000）会**砍掉约 30% 的核**，而 mt<10% 几乎不筛。故：
-**nCount/nFeature 逐样本 MAD 离群**（`scuttle::isOutlier`, nmads=3, log1p, 双尾）+ **pct_mt < 5**（核约定）。
-双体：**scDblFinder 逐样本**（禁合池）。
+### M1 · QC: **snRNA thresholds must be set empirically** —— ✅ **Completed** (2026-09-12)
+In this data, median nCount 1,516 and median pct_mt 0.6% (**nucleus** characteristics). Copying whole-cell scRNA thresholds
+(nCount≥1000) would **cut roughly 30% of nuclei**, whereas mt<10% barely filters. Hence:
+**nCount/nFeature per-sample MAD outliers** (`scuttle::isOutlier`, nmads=3, log1p, two-sided) + **pct_mt < 5** (nucleus convention).
+Doublets: **scDblFinder per sample** (pooling forbidden).
 
-**实测结果**（`GSE308103`，75 样本 / 798,100 核）：
+**Measured results** (`GSE308103`, 75 samples / 798,100 nuclei):
 
-| 指标 | 值 |
+| Metric | Value |
 | :--- | :--- |
-| QC 通过 | **767,839（96.21%）**；剔除 30,261（nCount 离群 8,919 · nFeature 离群 1,077 · mt≥5% 12,918） |
-| 双体 | **118,894（15.48%）**；逐样本中位 10.60%、范围 4.43–29.03% |
+| QC pass | **767,839 (96.21%)**; removed 30,261 (nCount outliers 8,919 · nFeature outliers 1,077 · mt≥5% 12,918) |
+| Doublets | **118,894 (15.48%)**; per-sample median 10.60%, range 4.43–29.03% |
 
-**稳健性（两项敏感性）**：
-- **nmads 3 vs 5**：+1.97 pp（逐样本中位 2.20 pp）→ 阈值选择**不敏感**；
-- **双体剔除比例**：与固定 top-10% 重合约 **62.3%** → 判定**对率假设较敏感**，故此结果**须配下游"剔/不剔"敏感性**。
+**Robustness (two sensitivities)**:
+- **nmads 3 vs 5**: +1.97 pp (per-sample median 2.20 pp) → threshold choice is **insensitive**;
+- **doublet-removal fraction**: overlap with a fixed top-10% is about **62.3%** → the call is **fairly sensitive to the rate assumption**, so this result **must be paired with a downstream "remove/keep" sensitivity**.
 
-> ⚠️ **2026-09-16 口径变更（本节上文仍成立，但不再是最终分析口径）**：用户裁定**改按源论文固定 QC 重建**。
-> 最终分析掩膜 = **M1（`qc_pass & singlet`）∩ 论文绝对门**（`nFeature≥500 & nCount≥1000 & pct_mt≤20`）
-> = **413,697 核 × 18,069 基因**。链：798,100 → 767,839 → 648,945(∩单细胞) → 论文门 555,480 → **交集 413,697**。
-> 即**"不能照搬绝对阈值"这一直觉被论文口径叠加覆盖**：绝对门照样施加。旧 648,945 对象保留为**敏感性臂**。
-> 双体判定器与论文有**已知偏差**：论文用 Scrublet，本项目用 **scDblFinder**（遵守 R2），据此如实登记。
+> ⚠️ **2026-09-16 definition change (the text above in this section still holds, but is no longer the final analysis definition)**: the user ruled that the pipeline be **rebuilt according to the source paper's fixed QC**.
+> Final analysis mask = **M1 (`qc_pass & singlet`) ∩ paper absolute gate** (`nFeature≥500 & nCount≥1000 & pct_mt≤20`)
+> = **413,697 nuclei × 18,069 genes**. Chain: 798,100 → 767,839 → 648,945 (∩ single cells) → paper gate 555,480 → **intersection 413,697**.
+> That is, **the intuition that "absolute thresholds cannot be copied over" is overridden by overlaying the paper's definition**: the absolute gate is applied nonetheless. The old 648,945 object is retained as a **sensitivity arm**.
+> The doublet caller differs from the paper by a **known deviation**: the paper uses Scrublet, this project uses **scDblFinder** (in compliance with R2), registered truthfully as such.
 
-**双体判定的两项独立验证**（本环境无法做第二方法交叉验证——scrublet 在稀疏核上可检测比例仅 ~0.5%；
-DoubletFinder 需 Seurat 2/3 或 5，本机为 4.3.0）：
-> **A · 计数特征**：**75/75 样本**双体计数显著高于单细胞（nCount 比值**中位 2.39**、nFeature 中位 2.05——符合真双体 ≈2× 的预期）；
-> 双体率 vs 样本细胞数 **r=0.921**（符合 10x 载量关系）。
-> **B · 跨谱系共表达**（独立于 scDblFinder）：doublet 共表达互斥谱系标记（EPCAM+ & PTPRC+）的比例
-> 为 singlet 的 **7.2 倍**（中位 3.15% vs 0.49%；**72/75 样本一致**）→ 判定的确富集真双体指纹，
-> **排除"把高计数单细胞误判为双体"**。
+**Two independent validations of the doublet call** (this environment cannot perform second-method cross-validation—the detectable fraction of scrublet on sparse nuclei is only ~0.5%;
+DoubletFinder requires Seurat 2/3 or 5, and this machine has 4.3.0):
+> **A · Count features**: in **75/75 samples** the doublets have significantly higher counts than singlets (nCount ratio **median 2.39**, nFeature median 2.05—consistent with the expected ≈2× for true doublets);
+> doublet rate vs sample cell number **r=0.921** (consistent with the 10x loading relationship).
+> **B · Cross-lineage co-expression** (independent of scDblFinder): the proportion of doublets co-expressing mutually exclusive lineage markers (EPCAM+ & PTPRC+)
+> is **7.2 times** that of singlets (median 3.15% vs 0.49%; **consistent in 72/75 samples**) → the call indeed enriches the true-doublet fingerprint,
+> **ruling out "high-count single cells misclassified as doublets".**
 
-> **关于双体率数值**：汇总 15.48% 为**按细胞数加权**（大样本拉高）；"典型样本"率为**中位 10.6%**。
-> `dbr=NULL` **按细胞数推算**率 → 报告**逐样本呈现**并注明为模型估计。
+> **On the doublet-rate figures**: the pooled 15.48% is **weighted by cell number** (pulled up by large samples); the "typical sample" rate is the **median 10.6%**.
+> `dbr=NULL` derives the rate **from cell number** → report the **per-sample presentation** and note it as a model estimate.
 
-**已解决的一次异常**：`P7_LUAD` 曾判 0 双体，经排查为 **scDblFinder 默认 `xgb` 分类器在该样本上训练塌缩**
-（非生物学原因；同患者另两样本正常）。改用 `score="weighted"` 得 11.69%，与其他样本一致；
-**主脚本已加自动 fallback**（xgb 判 0 → 改用 weighted），杜绝此类静默失败。
-**详报**：[`results/01_qc/M1_validation_report.md`](../results/01_qc/M1_validation_report.md)。
+**One resolved anomaly**: `P7_LUAD` was once called as 0 doublets; investigation showed this was **the scDblFinder default `xgb` classifier collapsing during training on that sample**
+(not a biological cause; the patient's other two samples were normal). Switching to `score="weighted"` yielded 11.69%, consistent with the other samples;
+**the main script now has an automatic fallback** (xgb calls 0 → switch to weighted), eliminating this class of silent failure.
+**Detailed report**: [`results/01_qc/M1_validation_report.md`](../results/01_qc/M1_validation_report.md).
 
-### M2 · 恶性证真：**CNV 为准**
-`CopyKAT` 逐样本；`infercnv` 降为 5–10k 细胞/样本的**可选交叉验证**（官方已停维护、需 JAGS）。
-**不得**以泛上皮标记（EPCAM/KRT…）argmax 代替。
+### M2 · Malignancy confirmation: **CNV is authoritative**
+`CopyKAT` per sample; `infercnv` demoted to **optional cross-validation** on 5–10k cells/sample (officially unmaintained, requires JAGS).
+**Must not** be replaced by the argmax of pan-epithelial markers (EPCAM/KRT…).
 
-### M3 · 整合：**不做"modality 当 batch"**
-sc↔sn 是 scvi-tools 定义的 **system** 效应，且 modality 与数据集共线 → 条件 VAE 会**欠校正**。
-正确做法：**snRNA 内部** 用 `scVI(batch=sample_id)` 建图谱（**`patient_id` 绝不可作 batch**——分期嵌套于患者内）；
-**跨模态**用 **scArches/scANVI 标签迁移**（非"zero-shot"）。
-评估用 **scIB 完整 panel**：批去除（kBET + iLISI + graph-connectivity + PCR）**与** 生物保守（cLISI/ARI/NMI/ASW）**并报**；
-不单凭 iLISI↑ 判定成功（可被过度整合刷高）。
-**SCMG 对照臂**：仅做 zero-shot 跨数据集整合 + 流形 + 状态刻画；**不输出逆转/因果**（该能力不存在）。
+### M3 · Integration: **do not treat "modality as batch"**
+sc↔sn is a **system** effect as defined by scvi-tools, and modality is collinear with dataset → a conditional VAE would **under-correct**.
+Correct approach: **within snRNA** use `scVI(batch=sample_id)` to build the atlas (**`patient_id` must never be used as batch**—stage is nested within patient);
+**across modalities** use **scArches/scANVI label transfer** (not "zero-shot").
+Evaluation uses the **full scIB panel**: batch removal (kBET + iLISI + graph-connectivity + PCR) **and** biological conservation (cLISI/ARI/NMI/ASW) **reported together**;
+do not judge success on iLISI↑ alone (it can be inflated by over-integration).
+**SCMG control arm**: performs only zero-shot cross-dataset integration + manifold + state characterization; **outputs no reversal/causality** (that capability does not exist).
 
-### M4 · 跨模态 AAH（**五判据缺一不可**）
-① 各阶段可分辨；② 重叠阶段 sn↔空间一致；③ 平台偏移 δ(stage) 稳定；④ **sn 内部配对**（AAH vs 同患者 Normal/AIS）同向；⑤ AAH 身份 **CNV/标记**证真。
-**不过门 → AAH 只能标为假说。**
+### M4 · Cross-modality AAH (**all five criteria are required**)
+① each stage is distinguishable; ② overlapping stages are consistent sn↔spatial; ③ the platform offset δ(stage) is stable; ④ **pairing within sn** (AAH vs the same patient's Normal/AIS) is concordant; ⑤ AAH identity is confirmed by **CNV/markers**.
+**Not passing the gate → AAH may only be labeled a hypothesis.**
 
-### M5 · 空间解卷积：**门要用 RCTD 原生输出**
-`RCTD(doublet_mode='full')`，参考 = **GSE308103**（模态匹配）。
-**禁用**把 `normalize_weights()` 后的 Σ=1 当门——那是项目自己施加的归一化；`full` 模式**没有** reject 类别。
-门改到：权重非负、每 spot 分布合理、参考模态匹配、按 `UMI_min`/`counts_MIN` **显式阈值**报告被剔除 spot 数。
+### M5 · Spatial deconvolution: **the gate must use RCTD's native output**
+`RCTD(doublet_mode='full')`, reference = **GSE308103** (modality-matched).
+**Forbidden** to treat Σ=1 after `normalize_weights()` as a gate—that normalization is imposed by the project itself; the `full` mode has **no** reject category.
+The gate moves to: non-negative weights, a reasonable per-spot distribution, modality-matched reference, and reporting the number of removed spots by an **explicit threshold** on `UMI_min`/`counts_MIN`.
 
-### M6 · 生态位：**稳定性定簇，不靠单一 BIC**
-**BANKSY**（同行评审，*Nat Genet* 2024）做空间域/生态位；簇数由**稳定性/共识**决定（非 BIC 极小值）。
-空间统计用**类别标签**、报 **z + 经验 p=(b+1)/(n+1)**，记录 `n_perms`。
-**禁用**：把 `nhood_enrichment` 写成 `P<0.001`（该函数**不返回 p 值**；它置换的是标签）；对 `co_occurrence` 声称做过置换（它**不做**）；距离步长小于 Visium ~100 µm 点距。富集检验报**效应量**（Fisher FDR 受组成性 + 大 N 灌水）。
+### M6 · Niche: **stability defines clusters, not a single BIC**
+**BANKSY** (peer-reviewed, *Nat Genet* 2024) performs spatial domain/niche detection; the number of clusters is decided by **stability/consensus** (not a BIC minimum).
+Spatial statistics use **category labels** and report **z + empirical p=(b+1)/(n+1)**, recording `n_perms`.
+**Forbidden**: writing `nhood_enrichment` as `P<0.001` (that function **does not return a p-value**; it permutes the labels); claiming permutation was done for `co_occurrence` (it **does not** do it); a distance step smaller than the Visium ~100 µm spot pitch. Enrichment tests report **effect size** (Fisher FDR is inflated by compositionality + large N).
 
-### M7 · 靶点：**遗传统计锚定是"因果"的合法杠杆**
-- **M7a 预后**：生态位签名**患者/切片级聚合** → TCGA-LUAD bulk 打分 → **多变量 Cox（校正分期/年龄/性别）+ KM**；防过拟合（惩罚/交叉验证）。措辞 = **预后关联**。空间配对仅 **23 例** → **不主张患者亚型分型**。
-- **M7b 候选靶点池**：来源 = 恶性程序/regulon **＋** 生态位签名 → **cis-MR + coloc**（LUAD GWAS × 肺 eQTL）→ **Open Targets 可成药性 + DepMap 选择性依赖 + 临床期药物匹配**。见 [`M7B_MR_COLOC_TARGET_ANCHORING.md`](M7B_MR_COLOC_TARGET_ANCHORING.md)。
-  输出 `genetic_support ∈ {supported, not_supported, not_testable}`；**不得事后调参**，`not_testable` **如实标缺**。
-- **M7c CMap**：仅当获得**真实 LINCS 数据**且用对指标（**NCS**，非负 Tau）才执行；否则**不产出**。
+### M7 · Targets: **genetic statistical anchoring is the legitimate lever for "causality"**
+- **M7a Prognosis**: niche signature **aggregated at patient/slide level** → TCGA-LUAD bulk scoring → **multivariable Cox (adjusted for stage/age/sex) + KM**; guard against overfitting (penalization/cross-validation). Wording = **prognostic association**. Spatial pairing has only **23 cases** → **no claim of patient subtyping**.
+- **M7b Candidate target pool**: sources = malignant program/regulon **+** niche signature → **cis-MR + coloc** (LUAD GWAS × lung eQTL) → **Open Targets druggability + DepMap selective dependency + clinical-stage drug matching**. See [`M7B_MR_COLOC_TARGET_ANCHORING.md`](M7B_MR_COLOC_TARGET_ANCHORING.md).
+  Output `genetic_support ∈ {supported, not_supported, not_testable}`; **no post-hoc parameter tuning**, and `not_testable` is **truthfully marked as missing**.
+- **M7c CMap**: executed only when **real LINCS data** are obtained and the correct metric (**NCS**, not negative Tau) is used; otherwise **no output**.
 
-### M8 · 结构对接
-`fpocket + P2Rank` 共识探袋 → `AutoDock Vina 1.2.7` → `gnina` 重打分 → `PoseBusters` 物理合理性过滤；
-无晶体结构时用共折叠（Boltz-2，**需 GPU**）。**MD（100 ns）缓做**（本机无 GPU/GROMACS）。
-对接结论仅为**计算假说**；"validated" 须湿实验。
+### M8 · Structural docking
+`fpocket + P2Rank` consensus pocket detection → `AutoDock Vina 1.2.7` → `gnina` rescoring → `PoseBusters` physical-plausibility filtering;
+when no crystal structure exists, use co-folding (Boltz-2, **requires GPU**). **MD (100 ns) deferred** (this machine has no GPU/GROMACS).
+Docking conclusions are only **computational hypotheses**; "validated" requires wet-lab experiments.
 
 ---
 
-## 4. 诚实的能力边界（语言规范）
+## 4. Honest capability boundaries (language conventions)
 
-| 可以主张 | 不可主张 |
+| May claim | May not claim |
 | :--- | :--- |
-| 各阶段的细胞状态 / 生态位架构（`we characterize`） | 因果（`causal`） |
-| 空间定位到浸润前沿 | `driver`（无限定） |
-| **候选调控因子 / 候选靶点**（`candidate`） | `validated target` |
-| **遗传学支持的候选**（`genetically supported candidate`） | "状态逆转因子"（方法不存在） |
-| 预后**关联** | 预后预测 / 临床可用 |
-| 对接 = **计算假说** | 对接 = 验证 |
+| cell states / niche architecture at each stage (`we characterize`) | causality (`causal`) |
+| spatial localization to the invasion front | `driver` (unqualified) |
+| **candidate regulators / candidate targets** (`candidate`) | `validated target` |
+| **genetically supported candidate** (`genetically supported candidate`) | "state-reversal factor" (method does not exist) |
+| prognostic **association** | prognostic prediction / clinically actionable |
+| docking = **computational hypothesis** | docking = validation |
 
-**因果的合法杠杆**：仅 **人类遗传学（cis-MR + coloc）** 或 **扰动实验**；观察性单细胞/空间**不能**建立因果。
-
----
-
-## 5. 验证策略
-
-1. **跨模态配对一致性**（M4）：同患者 AAH vs Normal/AIS，在 sn 与空间两个模态互证；
-2. **跨队列**：如后续纳入独立 LUAD 队列，仅作**外部验证**，不并入主图谱；
-3. **内部一致性**：恶性细胞 CNV 阳性 ↔ 经典标记 ↔ 空间定位 三者相符；
-4. **阴性对照 / 敏感性分析**：标签置换、阈值敏感性（nmads、mt、聚类稳定性）；
-5. **主/探索分析预指定**：避免 p-hacking。
+**Legitimate levers for causality**: only **human genetics (cis-MR + coloc)** or **perturbation experiments**; observational single-cell/spatial data **cannot** establish causality.
 
 ---
 
-## 6. 明确删除 / 降级（相对 v1）
+## 5. Validation strategy
 
-| 项 | 处置 | 原因 |
+1. **Cross-modality paired consistency** (M4): same-patient AAH vs Normal/AIS, cross-validated in both the sn and spatial modalities;
+2. **Cross-cohort**: if an independent LUAD cohort is added later, it serves only as **external validation** and is not merged into the main atlas;
+3. **Internal consistency**: malignant-cell CNV positivity ↔ canonical markers ↔ spatial localization all agree;
+4. **Negative controls / sensitivity analyses**: label permutation, threshold sensitivity (nmads, mt, clustering stability);
+5. **Primary/exploratory analyses pre-specified**: to avoid p-hacking.
+
+---
+
+## 6. Explicitly removed / demoted (relative to v1)
+
+| Item | Disposition | Reason |
 | :--- | :--- | :--- |
-| SCMG「状态逆转 / 逆转因子 / 因果基因」 | **删除**（仅保留整合/流形对照） | 源码无此能力；参照流形无肿瘤态 |
-| 三个 scRNA 队列（GSE131907/189357/148071） | **移出范围**（存档 `/home/eto/luad_invasion/luad_v2_out_of_scope/`） | 与配对主线无关 |
-| 空转 LNM（GSE190811） | **删除** | 经核实为**乳腺癌** |
-| CMap（Tau≤-90） | **降级为可选** | 指标用错（Tau 不可能为负）+ 无 LINCS 数据 |
-| WES / TMB / TCGA 分子分型 | **删除** | 无数据 / 已废 |
-| PLIP zero-shot 判 WHO 生长模式 | **删除** | spot 尺度（45–90 px ≈ 45 µm）**不足**判定 mm 级架构 |
-| 旧数值（14 克隆、107,796 spots、`Z<-5.8`、316,689 细胞…） | **作废** | 旧工程产物 |
-| CellCharter | 降级（py3.8 装不上） | 改用 BANKSY |
+| SCMG "state reversal / reversal factor / causal gene" | **Removed** (only the integration/manifold control is retained) | the source code has no such capability; the reference manifold has no tumor state |
+| three scRNA cohorts (GSE131907/189357/148071) | **moved out of scope** (archived at `/home/eto/luad_invasion/luad_v2_out_of_scope/`) | unrelated to the paired main line |
+| spatial LNM (GSE190811) | **Removed** | verified to be **breast cancer** |
+| CMap (Tau≤-90) | **demoted to optional** | wrong metric (Tau cannot be negative) + no LINCS data |
+| WES / TMB / TCGA molecular subtyping | **Removed** | no data / retracted |
+| PLIP zero-shot determination of WHO growth pattern | **Removed** | the spot scale (45–90 px ≈ 45 µm) is **insufficient** to determine mm-scale architecture |
+| old figures (14 clones, 107,796 spots, `Z<-5.8`, 316,689 cells…) | **void** | old engineering artifacts |
+| CellCharter | demoted (cannot install on py3.8) | switched to BANKSY |
 
 ---
 
-## 7. 环境约束（影响选型）
+## 7. Environment constraints (affecting tooling choices)
 
-见 [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) §5b。要点：
-**无 GPU**（Boltz-2/cell2location/SysVI 不可行或需外部节点）；**Python 3.8**（scvi-tools 1.5/CellCharter 装不上）；
-共享库 root 属主（装包一律进个人库）；出网受限，依赖经镜像站获取。
+See [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) §5b. Key points:
+**No GPU** (Boltz-2/cell2location/SysVI infeasible or require an external node); **Python 3.8** (scvi-tools 1.5/CellCharter cannot be installed);
+shared library is owned by root (packages always go into the personal library); outbound network is restricted, dependencies are obtained via mirrors.
 
 ---
 
-## 8. 风险登记
+## 8. Risk register
 
-| 风险 | 缓解 |
+| Risk | Mitigation |
 | :--- | :--- |
-| sn↔空间跨模态不可迁移 | 同患者配对做**内部一致性**验证（M4）；低置信标 `unassigned` |
-| 空间患者数有限（本地 23 例配对） | 患者级聚合；TCGA 大样本兜底；**不主张亚型分型** |
-| RCTD 罕见类型 <25 细胞报错 | 先合并稀有类型或降 `CELL_MIN_INSTANCE` 并留档 |
-| 组成性比例统计假阳性 | 效应量 + 置换检验，不用裸 FDR |
-| MR 所需 GWAS 可能受控 | 改用 OpenGWAS 肺癌 GWAS 并标注来源与样本量 |
-| 无 GPU 限制结构预测 | 对接用 Vina/gnina（CPU 可跑）；共折叠待 GPU 节点 |
+| sn↔spatial cross-modality not transferable | same-patient pairing provides **internal consistency** validation (M4); low-confidence labeled `unassigned` |
+| limited number of spatial patients (23 local paired cases) | patient-level aggregation; large TCGA cohort as a fallback; **no claim of subtyping** |
+| RCTD errors for rare types <25 cells | merge rare types first or lower `CELL_MIN_INSTANCE` and file a record |
+| false positives in compositional proportion statistics | effect size + permutation tests, not bare FDR |
+| GWAS needed for MR may be access-controlled | switch to an OpenGWAS lung-cancer GWAS and annotate the source and sample size |
+| no GPU limits structure prediction | docking uses Vina/gnina (runs on CPU); co-folding awaits a GPU node |
 
 ---
 
-## 9. 交付物（图版规划）
+## 9. Deliverables (figure planning)
 
-1. **F1** 配对设计 + 数据底座（**23 例**配对患者 × 双模态 × 分期）
-2. **F2** snRNA 图谱与恶性程序（CNV 证真 → 状态/轨迹 → regulon）
-3. **F3** 空间解卷积与生态位（RCTD → BANKSY 生态位 → 浸润前沿）
-4. **F4** 跨模态 AAH 一致性（五判据）
-5. **F5** 候选靶点池（MR/coloc + 可成药性）与结构对接
+1. **F1** Paired design + data foundation (**23** paired patients × dual modality × stage)
+2. **F2** snRNA atlas and malignant program (CNV confirmation → state/trajectory → regulon)
+3. **F3** Spatial deconvolution and niche (RCTD → BANKSY niche → invasion front)
+4. **F4** Cross-modality AAH consistency (five criteria)
+5. **F5** Candidate target pool (MR/coloc + druggability) and structural docking
 
-> **原则**：**未计算不虚构**；每图附参数、n、哈希。
+> **Principle**: **nothing fabricated that was not computed**; every figure carries its parameters, n, and hash.
 
 ---
 
-## 10. 与 PLAN 的对应
+## 10. Mapping to PLAN
 
-| 本白皮书 | PLAN 里程碑 |
+| This whitepaper | PLAN milestone |
 | :--- | :--- |
 | §3 M0–M1 | M0 / M-1 / M1 |
 | §3 M2 | M2 |

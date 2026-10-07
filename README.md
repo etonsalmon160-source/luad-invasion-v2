@@ -73,6 +73,16 @@ listed here.
 3. `docs/PROJECT_SUMMARY.md` — the verified-facts overview.
 4. `10_niche/` — the reversal arm, which is where most of the recent work lives.
 
+## A note on the documentation
+
+The top-level documents — this README, `DEPENDENCIES.md`, `docs/PARAMETERS_AND_SOURCES.md`
+and `docs/PROJECT_SUMMARY.md` — are in English. The pre-registration records and the
+per-milestone reports that sit inside the analysis directories (`results/`, `10_niche/`,
+`08_spatial_deconv/`) were written as the work proceeded and remain in Chinese, as do the
+header comments of most scripts. They are the working audit trail rather than
+documentation for readers; the English summary of what they establish is the manuscript.
+The parameter values, accessions and file paths they contain are language-independent.
+
 ## Reproducibility notes
 
 - Scripts are numbered in execution order within each directory.

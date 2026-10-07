@@ -1,93 +1,93 @@
-# M0 / M1 学术级审查报告
+# M0 / M1 Academic-Grade Review Report
 
-> ⚠️ **历史文档（2026-09-12 快照），其中 M1 部分已不再是最终分析口径。**
-> 2026-09-16 用户裁定改按**源论文固定 QC** 重建分析掩膜：最终口径 = M1 ∩ 论文门 = **413,697 核 × 18,069 基因**。
-> 本文所述 M1（767,839 合格、648,945 单细胞）现为**敏感性臂**。M0 部分的结论（含 `GSM9226176` 截断）**仍然有效**。
-> 现行口径见 [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) §2.0 / §6。
+> ⚠️ **Historical document (2026-09-12 snapshot); its M1 portion is no longer the final analysis caliber.**
+> On 2026-09-16 the user ruled to rebuild the analysis mask using the **source paper's fixed QC**: final caliber = M1 ∩ paper gate = **413,697 nuclei × 18,069 genes**.
+> The M1 described here (767,839 passed, 648,945 singlets) is now a **sensitivity arm**. The M0 conclusions (including the `GSM9226176` truncation) **remain valid**.
+> For the current caliber see [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) §2.0 / §6.
 
-> **审查日期**：2026-09-12 · **范围**：M0 输入冻结（配对数据集）+ M1 QC/双体
-> **权威源**：GEO 逐样本元数据（GSE308103 / GSE307534，`targ=gsm&form=text`）
-> **审查目的**：排查**数据/标签映射混乱**及一切可能严重影响下游的问题
-
----
-
-## 结论
-
-**未发现严重学术问题。** 标签映射与 GEO **逐样本零不一致**；产物可 join、可复现、有哈希。
-发现的均为**已记录的限制**（§3），不构成阻断。
+> **Review date**: 2026-09-12 · **Scope**: M0 input freeze (paired datasets) + M1 QC/doublets
+> **Authoritative source**: GEO per-sample metadata (GSE308103 / GSE307534, `targ=gsm&form=text`)
+> **Review purpose**: to investigate **data/label mapping confusion** and any issue that could seriously affect downstream stages
 
 ---
 
-## 1. 核验项与结果
+## Conclusion
 
-| # | 检查 | 方法 | 结果 |
+**No serious academic problems were found.** Label mapping vs GEO shows **zero per-sample discrepancy**; outputs are joinable, reproducible, and hashed.
+All findings are **documented limitations** (§3) and do not constitute a blocker.
+
+---
+
+## 1. Verification Items and Results
+
+| # | Check | Method | Result |
 | :--- | :--- | :--- | :---: |
-| A1 | **阶段标签映射** | 逐 GSM 比对 GEO 标题 vs 冻结表（两数据集） | ✅ **0 不一致** |
-| A2 | **阶段计数** | 与 GEO 标题统计对比 | ✅ GSE308103：AAH 9 / AIS 14 / IAC 24 / MIA 4 / Normal 24（**完全一致**） |
-| A3 | **样本覆盖** | 本地 vs GEO 全集 | ✅ GSE308103 75/75；GSE307534 本地 **56/56**（2026-09-15 补齐；唯 `GSM9226176` tar 截断，见 §3-①） |
-| B1 | **患者身份** | 取自 GEO 标题 `… of patient N` | ✅ 两数据集 `P*` 编号一致；**GEO 无独立 patient 字段**，配对据此建立（§3-②） |
-| B2 | **配对关系** | 双模态患者交集 | ✅ **23 例**（P3–P25），两模态均有切片。**2026-09-15 修正**：旧值 9 系"仅下载 19/56 张切片"的产物 |
-| C1 | **cell_barcode 完整性** | 唯一性 + 与源矩阵 join | ✅ 798,100 行 / 798,100 唯一；抽查 P3_Normal 与矩阵 **完全一致（2631=2631）** |
-| C2 | **基因集合** | 源文件行数 | ✅ 全部 **18,082**（含此前丢失的 SAMD11） |
-| D1 | **QC ↔ 双体标注一致性** | 逻辑交叉检查 | ✅ QC 不过但被测 0；QC 过但未测 0；被测缺分数 0 |
-| D2 | **per-cell vs per-sample 表** | 三方计数对齐 | ✅ **0 处不一致** |
-| E1 | **双体判定有效性** | 计数特征 + 跨谱系共表达 | ✅ 计数比中位 2.39（75/75）；跨谱系富集 **7.2×**（72/75） |
-| F1 | **异常样本** | 全样本分布 | ✅ `P7_LUAD` 已定位根因并修复（§2） |
+| A1 | **Stage label mapping** | Per-GSM comparison of GEO title vs freeze table (both datasets) | ✅ **0 discrepancy** |
+| A2 | **Stage counts** | Compared against GEO title tallies | ✅ GSE308103: AAH 9 / AIS 14 / IAC 24 / MIA 4 / Normal 24 (**fully consistent**) |
+| A3 | **Sample coverage** | Local vs full GEO set | ✅ GSE308103 75/75; GSE307534 local **56/56** (completed 2026-09-15; only the `GSM9226176` tar is truncated, see §3-①) |
+| B1 | **Patient identity** | Taken from GEO titles `… of patient N` | ✅ The `P*` numbering agrees across both datasets; **GEO has no independent patient field**, and pairing is established on this basis (§3-②) |
+| B2 | **Pairing relationship** | Intersection of dual-modality patients | ✅ **23 cases** (P3–P25), each with slices in both modalities. **2026-09-15 correction**: the old value 9 was an artifact of "only 19/56 spatial slices downloaded" |
+| C1 | **cell_barcode integrity** | Uniqueness + join with the source matrix | ✅ 798,100 rows / 798,100 unique; spot-check of P3_Normal matches the matrix **exactly (2631=2631)** |
+| C2 | **Gene set** | Source-file line count | ✅ All **18,082** (including the previously lost SAMD11) |
+| D1 | **QC ↔ doublet-annotation consistency** | Logical cross-check | ✅ QC-fail but tested 0; QC-pass but untested 0; tested with missing score 0 |
+| D2 | **per-cell vs per-sample tables** | Three-way count alignment | ✅ **0 inconsistencies** |
+| E1 | **Validity of doublet calling** | Count features + cross-lineage co-expression | ✅ Median count ratio 2.39 (75/75); cross-lineage enrichment **7.2×** (72/75) |
+| F1 | **Anomalous sample** | All-sample distribution | ✅ `P7_LUAD` root cause located and fixed (§2) |
 
 ---
 
-## 2. 已定位并修复的问题
+## 2. Located and Fixed Issues
 
-| 问题 | 根因 | 影响 | 处置 |
+| Issue | Root cause | Impact | Disposition |
 | :--- | :--- | :--- | :--- |
-| `cell_barcode` 全为 `"0\|<样本>"` | `fread` **autostart 跳过条码行**（首行字段数≠数据行） | 标识失效、无法 join；且丢 1 个基因 | 单独读条码行 + `skip=1` + `stopifnot` 断言；**全量重跑** |
-| 修复后数据行多丢一行 | `dt[-1,-1]` 重复丢行 | 基因数与矩阵不符（即时报错） | 改 `dt[,-1]` |
-| `P7_LUAD` 双体率 = 0 | **scDblFinder `xgb` 分类器塌缩**（非生物学；同患者另两样本正常） | 该样本无剔除 | 改 `score="weighted"` → 11.69%；**主脚本加自动 fallback** |
-| 归一化丢失 GEO 原始标签 | `LUAD` → `IAC` 后无回溯 | 透明性不足 | 冻结表新增 **`stage_token`** 列保留原标签 |
-| 空间样本无 GSM | 源文件表未记目录名中的 GSM | 可追溯性不足 | 源文件表新增 **`gsm`** 列 |
+| `cell_barcode` all equal to `"0\|<sample>"` | `fread` **autostart skipped the barcode row** (first-row field count ≠ data rows) | Identifier voided, cannot join; also lost 1 gene | Read the barcode row separately + `skip=1` + `stopifnot` assertion; **full rerun** |
+| After the fix, one extra data row was dropped | `dt[-1,-1]` dropped rows redundantly | Gene count disagreed with the matrix (immediate error) | Changed to `dt[,-1]` |
+| `P7_LUAD` doublet rate = 0 | **scDblFinder `xgb` classifier collapse** (non-biological; the patient's other two samples were normal) | No removal for that sample | Changed to `score="weighted"` → 11.69%; **main script gets an automatic fallback** |
+| Normalization lost the original GEO label | No traceback after `LUAD` → `IAC` | Insufficient transparency | Freeze table gains a **`stage_token`** column preserving the original label |
+| Spatial samples lacked a GSM | The source-file table did not record the GSM in the directory name | Insufficient traceability | Source-file table gains a **`gsm`** column |
 
 ---
 
-## 3. 已知限制（不阻断，但下游须声明）
+## 3. Known Limitations (non-blocking, but downstream stages must declare them)
 
-**① 空间数据本地 56/56 张切片（2026-09-15 补齐），但 1 张 tar 截断**
-GSE307534 GEO 全量 56 样本；本地已解压 **56**。唯一缺陷：`GSM9226176` 的 tar 仅 56,272,384 B（应为 90,677,930 B），
-`gzip -t` 报 unexpected EOF → 缺 `spatial/scalefactors_json.json` 与 `spatial/tissue_positions.csv`。
-已实测重下载可得完整 87 MB tar（**只有一个切片根** `P4_AAH2`）。属 M5 前置；源目录只读，需单独授权后补。
+**① Spatial data local 56/56 slices (completed 2026-09-15), but 1 tar is truncated**
+GSE307534 has 56 samples in full on GEO; **56** are decompressed locally. The only defect: the `GSM9226176` tar is only 56,272,384 B (should be 90,677,930 B),
+`gzip -t` reports unexpected EOF → missing `spatial/scalefactors_json.json` and `spatial/tissue_positions.csv`.
+Measured: re-downloading yields the complete 87 MB tar (**with only one slice root**, `P4_AAH2`). This is an M5 prerequisite; the source directory is read-only, so it requires separate authorization to fill in.
 
-**② 患者身份来自 GEO 标题推断**
-GEO 无独立 `patient id` 字段；`P*` 编号取自标题 `… of patient N`（标题本身是 GEO 权威）。
-配对关系（**23 例**）据此建立 —— 已落为 **GEO 权威样本表** `00_ingest/geo_metadata/*_samples.tsv`（逐 GSM 交叉核验，0 不一致）。
+**② Patient identity is inferred from GEO titles**
+GEO has no independent `patient id` field; the `P*` numbering is taken from the title `… of patient N` (the title itself is GEO-authoritative).
+The pairing relationship (**23 cases**) is built on this basis — it has been committed as the **GEO authoritative sample tables** `00_ingest/geo_metadata/*_samples.tsv` (per-GSM cross-verification, 0 discrepancy).
 
-**③ 阶段归一化 `LUAD → IAC` 为本项目约定**
-该研究以 `LUAD` 命名浸润期样本（与 AIS/MIA 并列），故归一为 `IAC`。原始标签已保留于 `stage_token`。
+**③ The stage normalization `LUAD → IAC` is a project convention**
+That study names invasive-stage samples `LUAD` (in parallel with AIS/MIA), hence the normalization to `IAC`. The original label is preserved in `stage_token`.
 
-**④ 双体检测为单一方法**
-第二方法在本环境不可行：**scrublet** 在稀疏核上可检测比例仅 ~0.5%；**DoubletFinder** 需 Seurat 2/3 或 5，本机为 4.3.0。
-→ 以两项独立验证替代（计数特征、跨谱系共表达），并**如实声明**。
+**④ Doublet detection uses a single method**
+A second method is infeasible in this environment: **scrublet** can detect only ~0.5% on sparse nuclei; **DoubletFinder** requires Seurat 2/3 or 5, while this machine runs 4.3.0.
+→ Replaced with two independent validations (count features, cross-lineage co-expression), and **honestly declared**.
 
-**⑤ 双体剔除比例有一定敏感性**
-主结果与固定 top-10% 重合约 **62.3%** → 关键分析处**必须做"剔/不剔双体"下游敏感性**。
+**⑤ The doublet-removal proportion is somewhat sensitive**
+The main result overlaps a fixed top-10% by about **62.3%** → at key analyses a downstream "remove/keep doublets" sensitivity **must be performed**.
 
-**⑥ 汇总双体率 15.48% 具误导性**
-为**按细胞数加权**（大样本拉高）；"典型样本"率为中位 **10.6%**。应**逐样本呈现**并注明为模型估计。
+**⑥ The pooled doublet rate of 15.48% is misleading**
+It is **weighted by cell count** (large samples inflate it); the "typical-sample" rate has a median of **10.6%**. It should be **presented per sample** and noted as a model estimate.
 
-**⑦ 空间 spot QC 未做**
-M1 仅覆盖 GSE308103（snRNA）；GSE307534 的 spot 级 QC 属空间前处理，尚未执行。
+**⑦ Spatial spot QC not performed**
+M1 covers only GSE308103 (snRNA); spot-level QC for GSE307534 belongs to spatial preprocessing and has not yet been executed.
 
 ---
 
-## 4. 审查判定
+## 4. Review Verdict
 
-| 维度 | 判定 |
+| Dimension | Verdict |
 | :--- | :--- |
-| 标签/分期映射 | ✅ **无混乱**（GEO 逐样本 0 不一致） |
-| 数据完整性（条码/基因/join） | ✅ 通过 |
-| 内部一致性（QC↔双体、表间对齐） | ✅ 通过 |
-| 异常值处理 | ✅ 已定位根因并修复，非"标注了事" |
-| 透明性与可追溯性 | ✅ 已补 `stage_token` / `gsm` |
-| 已知限制 | ⚠️ 7 项，均已记录，**不构成阻断** |
+| Label/stage mapping | ✅ **No confusion** (GEO per-sample 0 discrepancy) |
+| Data integrity (barcode/gene/join) | ✅ Pass |
+| Internal consistency (QC↔doublet, cross-table alignment) | ✅ Pass |
+| Outlier handling | ✅ Root cause located and fixed, not merely "flagged and dismissed" |
+| Transparency and traceability | ✅ `stage_token` / `gsm` added |
+| Known limitations | ⚠️ 7 items, all documented, **constituting no blocker** |
 
-**→ 当时结论：可进入下一步（M2）。**
-> ⚠️ 续：M1 随后降级为**敏感性臂**，分析口径改按论文 QC（413,697 核）。此处"M2"指当时计划里的 CNV；
-> 现行计划中 CNV 已调整为 **GP2**，且**须晚于 GP8a 上皮亚聚类**（见 PLAN §关键次序约束）。
+**→ Conclusion at the time: may proceed to the next step (M2).**
+> ⚠️ Addendum: M1 was subsequently downgraded to a **sensitivity arm**, and the analysis caliber was switched to the paper QC (413,697 nuclei). "M2" here refers to the CNV in the plan at that time;
+> in the current plan, CNV has been repositioned as **GP2**, and **must come after GP8a epithelial subclustering** (see PLAN §Key Ordering Constraints).

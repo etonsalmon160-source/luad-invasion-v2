@@ -1,525 +1,525 @@
-# LUAD v2 · 计划指导与严格检查点 (PLAN & STRICT CHECKPOINTS)
+# LUAD v2 · Planning Guide and Strict Checkpoints (PLAN & STRICT CHECKPOINTS)
 
-> **性质**：本文件是**重做的计划指导（planning guide）**。每个里程碑设**硬性过门条件（gate）**，
-> **不过门不得启动下一步**。
-> **配套**：[`docs/WHITEPAPER.md`](docs/WHITEPAPER.md)（技术路线）· [`docs/PROJECT_SUMMARY.md`](docs/PROJECT_SUMMARY.md)（事实总纲）· [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md)（参数出处）。
-
----
-
-## 0. 进度重置声明（PROGRESS RESET）
-- 旧工程 `luad_invasion` 的**一切结果性产物作废**（图表/数值/表/TMB/CMap/对接），原因见 `PROJECT_SUMMARY`。
-- **本工程进度归零**，从 `M0` 重新开始。旧目录仅作**只读数据源与历史参考**。
-- 进度看板见本文件 §6（M0 已完成；M-1 起为 0%）。
+> **Nature**: This file is the **redone planning guide**. Each milestone has **hard pass-through conditions (gate)**,
+> and **the next step must not be started without passing the gate**.
+> **Companion documents**: [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) (technical route) · [`docs/PROJECT_SUMMARY.md`](docs/PROJECT_SUMMARY.md) (master statement of facts) · [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) (sources of parameters).
 
 ---
 
-## 1. 铁律（每步硬约束）
-1. 数据身份以 **GEO/GSA** 为准；**分期无静默默认**（代码里不得出现 `.get(x,'IAC')` 之类回退）。
-2. **恶性标签须 CNV 证真**；**双体用 scDblFinder**。
-3. **无真实来源 = 不计算**（宁可拒绝/报缺，不伪造、不硬编码、不 np.random）。
-4. 产物**可复现 + 有哈希**；`patient_id`（真患者）与 `sample_id`（组织/切片）**分层**。
-5. **SCMG 分支不掺传统算法**；标准分支与 SCMG 分支**并行**，最后对照。
-6. **SCMG 分支能力边界**（2026-09-12 核实）：只做 **zero-shot 跨数据集 scRNA 整合 + 流形 + 状态刻画**；
-   **不得**输出「状态逆转 / 逆转因子 / 因果基因」（源码无此能力，参照流形无肿瘤态）。靶点为**候选**，不得称因果。
+## 0. Progress Reset Declaration (PROGRESS RESET)
+- **All result-producing artifacts are void** for the old project `luad_invasion` (figures/values/tables/TMB/CMap/docking); see `PROJECT_SUMMARY` for the reasons.
+- **This project's progress is reset to zero**, restarting from `M0`. The old directory serves only as a **read-only data source and historical reference**.
+- The progress board is in §6 of this file (M0 already complete; from M-1 onward at 0%).
 
 ---
 
-## 2. 里程碑与硬性检查点（Gates）
+## 1. Iron Laws (hard constraints for every step)
+1. Data identity is governed by **GEO/GSA**; **no silent default for stage** (code must not contain fallbacks like `.get(x,'IAC')`).
+2. **Malignancy labels must be corroborated by CNV**; **doublets use scDblFinder**.
+3. **No real source = do not compute** (prefer to refuse/report missing; never fabricate, hard-code, or np.random).
+4. Outputs **reproducible + hashed**; `patient_id` (true patient) and `sample_id` (tissue/slice) are **layered**.
+5. **The SCMG branch does not mix in traditional algorithms**; the standard branch and the SCMG branch run **in parallel** and are compared at the end.
+6. **Capability boundary of the SCMG branch** (verified 2026-09-12): it does only **zero-shot cross-dataset scRNA integration + manifold + state characterization**;
+   it **must not** output "state reversal / reversal factors / causal genes" (the source code has no such capability; the reference manifold has no tumor state). Targets are **candidates** and must not be called causal.
 
-### 2.0 执行顺序（2026-09-16 按**传统单细胞流程**重构）
+---
 
-> **背景**：本文件原先把 **M2（CNV）排在 M3（降维聚类）之前**，那是把 CNV 当作"前置的主力证真步骤"。
-> 传统单细胞流程的实际顺序相反：**先归一化→降维→聚类→marker 注释，再对所注释出的上皮簇做 CNA 细化**。
-> 本次重构后 **M 编号降级为「模块标识符」**（`M2` 只表示"CNV 模块"，不再蕴含先做后做）；
-> **执行顺序以下表为准**，GP 编号为稳定的检查点编号。
+## 2. Milestones and Hard Checkpoints (Gates)
 
-> 🔴 **2026-09-16 二次重构（用户决策「改用论文 QC 重建」+「对齐论文全套」）**：第 2–5 行全部改写。
-> **GP0 用论文 QC 口径重做**（413,697 核，非原 648,945）；**GP4a–4c 换成源论文的 Seurat 配方**
-> （SCTransform v2 → HVG 3000 → PCA 50 → **Harmony 为主口径** → FindClusters/Louvain）。
-> 旧的 scran / HVG-2000 / PCA-30 / kNN-15 / Leiden 与 `{20,30,50}` ARI 护栏**全部作废**（登记见 PARAMETERS §M3-A.1）。
-> 详见 [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) §M3-A.0–A.3。
+### 2.0 Execution Order (restructured 2026-09-16 around the **traditional single-cell workflow**)
 
-> 🔴 **2026-09-16 三次重构（用户决策：CNV 降为"上皮亚群恶性精判"）**：第 7–10 行改写，GP8 拆为 **GP8a/GP8b**。
-> **CNV 的定位从"独立证真门"收缩为"给亚群贴恶性标签的精细判别器"**，因此**必须排在上皮亚聚类之后**
-> （原排 GP6 之后，只能出逐细胞读数，落不到亚群上）。**免疫/基质/内皮谱系的亚聚类（GP8b）不再被 CNV 排期阻塞**。
-> **GP1（CopyKAT 冒烟）随之下沉为 GP2 的执行细节**，不再单列。
+> **Background**: This file originally placed **M2 (CNV) before M3 (dimensionality reduction and clustering)** — treating CNV as a "leading, main corroboration step".
+> The actual order in the traditional single-cell workflow is the opposite: **normalize → dimensionality reduction → clustering → marker annotation, then CNA refinement on the annotated epithelial clusters**.
+> After this restructuring, **the M numbers are downgraded to "module identifiers"** (`M2` denotes only the "CNV module", no longer implying order of execution);
+> **the execution order is governed by the table below**, and GP numbers are the stable checkpoint numbers.
 
-| 序 | 检查点 | 内容 | 子门 |
+> 🔴 **2026-09-16 second restructuring (user decisions "rebuild with the paper's QC" + "align with the paper's full set")**: rows 2–5 fully rewritten.
+> **GP0 redone with the paper's QC caliber** (413,697 nuclei, not the original 648,945); **GP4a–4c switched to the source paper's Seurat recipe**
+> (SCTransform v2 → HVG 3000 → PCA 50 → **Harmony as the main caliber** → FindClusters/Louvain).
+> The old scran / HVG-2000 / PCA-30 / kNN-15 / Leiden and the `{20,30,50}` ARI guardrail are **all void** (registration in PARAMETERS §M3-A.1).
+> See [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) §M3-A.0–A.3 for details.
+
+> 🔴 **2026-09-16 third restructuring (user decision: CNV is downgraded to "fine malignant calling of epithelial subclusters")**: rows 7–10 rewritten, GP8 split into **GP8a/GP8b**.
+> **CNV's role shrinks from an "independent corroboration gate" to a "fine discriminator that labels subclusters as malignant"**, and therefore **must be placed after epithelial subclustering**
+> (previously placed after GP6, it could only produce per-cell readouts and could not be assigned to subclusters). **Subclustering of the immune/stromal/endothelial lineages (GP8b) is no longer blocked by CNV scheduling**.
+> **GP1 (CopyKAT smoke test) consequently sinks into an execution detail of GP2** and is no longer listed separately.
+
+| No. | Checkpoint | Content | Sub-gate |
 | :---: | :--- | :--- | :--- |
-| 1 | ~~M1~~ | QC / 双体（逐样本自适应 MAD） | ✅ 已过（🔶 降级为**敏感性臂**） |
-| 2 | **GP0** | 表达对象重建 —— **🔴 2026-09-16 按论文 QC 重做**：`nFeature≥500 & nCount≥1000 & pct_mt≤20` ∩ scDblFinder 单细胞 → **413,697 核 × 18,069 基因** | 🔶 已重做；**2026-09-17 审计补做门校验（13 PASS / 0 FAIL）**，待你签字 |
-| 3 | **GP4a** | **预处理（论文配方）**：`SCTransform(vst.flavor="v2", variable.features.n=3000)` | ✅ 全量已跑（2026-09-17） |
-| 4 | **GP4b** | `RunPCA(npcs=50)` —— **无 ARI 护栏**（原护栏随旧网格作废） | ✅ 全量已跑（2026-09-17） |
-| 5 | **GP4c** | 批次：**Harmony on `sample_id`, `dims.use=1:50`（主口径，论文配方）** / 不校正（**敏感性臂，非论文配方**） | ✅ **2026-09-17 用户裁定：采用论文 Harmony 主口径**（附不可归因限定） |
-| 6 | **GP5** | 分辨率选择：**`{0.5,0.6,0.7,0.8}` × 5 种子** + 指标 **1/2/3/4**（含 **AAH 吸收护栏**）+ 预注册 `r*` 规则（**注释之前**人工签字） | ✅ **2026-09-17 签字：L1 `r*=0.6`**；指标4 承认全量无效。**2026-09-21 检查点关闭**。🔴 **2026-09-22 L1 口径切 `A_adjudicated` ⇒ 六谱系重聚类重选 `r*`**：现行 **上皮0.7（放宽）/ T·NK0.8 / 髓系0.5 / 内皮0.7 / B·浆0.6 / 成纤维0.8（放宽）**，六份 JSON **均为用户本人签字**；指标3 **重算后唯髓系不过线**（用户裁定保留、登记缺陷）；**种子重算后 T·NK→3、成纤维→4，其余沿用 0**。详见 `results/05_annotation/GP5_report.md` §3.1 / §6.8 / §12.1 |
-| 7 | **GP6** | **双标准注释**（法则2 marker ⊕ CellTypist）+ Cohen's κ —— **只负责定出"哪些是上皮"** | 🔶 已跑、**未签收**（`GP6_report.md`，413,697 核） |
-| 8 | **GP8a** | **上皮谱系亚聚类**（子集内重启全流程，口径同 GP4a–c）→ **上皮亚群** | ✅ **已完成 2026-09-22**（报告名 `GP8c`；27 亚簇 / 133,384 核 / 0 剔）——⚠️ **未签收** |
-| 9 | **GP2** | ~~**CNV 精判**：逐样本 CopyKAT，输入 = GP6 定出的**上皮细胞**；结论按 GP8a 的**上皮亚群**汇总 → 逐亚群恶性判定~~ | ⛔ **2026-09-24 作废**（单细胞 CNV 失败）→ 改走**空转 SC0–SC4**，排在 M5 之后 |
-| 10 | **GP8b** | 其余 **5 个谱系**亚聚类（非上皮，与 CNV 无关）+ 层级自洽 | ✅ **已完成 2026-09-22**（与 GP8a 同批，见 `GP8c_report.md`；六谱系互斥完备 413,697 核）——⚠️ **未签收** |
-| 11 | **GP3 / GP7** | 指标后端冻结（GP3）→ scIB 双 panel 评估（GP7） | ⬜ |
-| 12 | **GP9** | **SCMG 对照臂**（M3-B）：zero-shot 整合 + 全局流形 + 状态刻画，**不掺传统算法**（铁律 5） | ⬜ |
-| 13 | M4… | 跨模态 AAH → M5 → M6 → M7 → M8 | ⬜ |
+| 1 | ~~M1~~ | QC / doublets (per-sample adaptive MAD) | ✅ Passed (🔶 downgraded to **sensitivity arm**) |
+| 2 | **GP0** | Expression object rebuild — **🔴 redone 2026-09-16 with the paper QC**: `nFeature≥500 & nCount≥1000 & pct_mt≤20` ∩ scDblFinder singlets → **413,697 nuclei × 18,069 genes** | 🔶 Redone; **gate validation completed by the 2026-09-17 audit (13 PASS / 0 FAIL)**, awaiting your sign-off |
+| 3 | **GP4a** | **Preprocessing (paper recipe)**: `SCTransform(vst.flavor="v2", variable.features.n=3000)` | ✅ Full run done (2026-09-17) |
+| 4 | **GP4b** | `RunPCA(npcs=50)` — **no ARI guardrail** (the old guardrail is void along with the old grid) | ✅ Full run done (2026-09-17) |
+| 5 | **GP4c** | Batch: **Harmony on `sample_id`, `dims.use=1:50` (main caliber, paper recipe)** / no correction (**sensitivity arm, not the paper recipe**) | ✅ **2026-09-17 user ruling: adopt the paper's Harmony main caliber** (with a non-attributability caveat) |
+| 6 | **GP5** | Resolution selection: **`{0.5,0.6,0.7,0.8}` × 5 seeds** + metrics **1/2/3/4** (including the **AAH absorption guardrail**) + pre-registered `r*` rule (manually signed **before annotation**) | ✅ **2026-09-17 sign-off: L1 `r*=0.6`**; metric 4 acknowledged as ineffective at full scale. **2026-09-21 checkpoint closed**. 🔴 **2026-09-22 L1 caliber switched to `A_adjudicated` ⇒ six lineages re-clustered and `r*` re-selected**: current values **epithelial 0.7 (relaxed) / T·NK 0.8 / myeloid 0.5 / endothelial 0.7 / B·plasma 0.6 / fibroblast 0.8 (relaxed)**, six JSONs **all signed by the user personally**; metric 3 **after recomputation only myeloid fails the line** (user ruled to keep it, registered as a defect); **after seed recomputation T·NK→3, fibroblast→4, the rest remain 0**. See `results/05_annotation/GP5_report.md` §3.1 / §6.8 / §12.1 for details |
+| 7 | **GP6** | **Dual-standard annotation** (Rule 2 marker ⊕ CellTypist) + Cohen's κ — **responsible only for identifying "which cells are epithelial"** | 🔶 Run, **not signed off** (`GP6_report.md`, 413,697 nuclei) |
+| 8 | **GP8a** | **Epithelial-lineage subclustering** (restart the full pipeline within the subset, same caliber as GP4a–c) → **epithelial subclusters** | ✅ **Completed 2026-09-22** (report named `GP8c`; 27 subclusters / 133,384 nuclei / 0 removed) — ⚠️ **not signed off** |
+| 9 | **GP2** | ~~**CNV fine calling**: per-sample CopyKAT, input = the **epithelial cells** determined by GP6; conclusions aggregated by GP8a's **epithelial subclusters** → per-subcluster malignant calling~~ | ⛔ **Voided 2026-09-24** (single-cell CNV failed) → switch to **spatial SC0–SC4**, placed after M5 |
+| 10 | **GP8b** | Subclustering of the remaining **5 lineages** (non-epithelial, unrelated to CNV) + hierarchical self-consistency | ✅ **Completed 2026-09-22** (same batch as GP8a, see `GP8c_report.md`; six lineages mutually exclusive and complete, 413,697 nuclei) — ⚠️ **not signed off** |
+| 11 | **GP3 / GP7** | Metric backend freeze (GP3) → scIB dual-panel evaluation (GP7) | ⬜ |
+| 12 | **GP9** | **SCMG control arm** (M3-B): zero-shot integration + global manifold + state characterization, **with no mixing of traditional algorithms** (iron law 5) | ⬜ |
+| 13 | M4… | Cross-modal AAH → M5 → M6 → M7 → M8 | ⬜ |
 
-**关键次序约束**：
-- **GP2（CNV）必须晚于 GP8a（上皮亚聚类）** —— 2026-09-16 第三次调整。CNV 在本项目里的**唯一用途**
-  是**给上皮亚群精判恶性**，而"亚群"这个对象在 GP8a 之前**还不存在**。停在 GP6 之后跑，
-  只能给出"逐上皮**细胞**"的读数，却无法把它归到亚群上，等于把最需要的那一步留给下游猜。
-  ⇒ **顺序：GP6 定上皮 → GP8a 定亚群 → GP2 定亚群恶性**。
-- **GP2 不得给出"恶性克隆"级结论** —— 核 UMI 低、含内含子/环境 RNA，CNV 只能支持
-  **亚群级（非整倍体 vs 否）**判定。措辞上限见 §M2。
-- **GP6 之前必须 GP5 签字** —— 分辨率不可事后拟合。
-- **GP8a 与 GP8b 拆开的原因** —— 只有上皮**需要**等 CNV（R2 要求恶性须 CNV 证真）；
-  免疫/基质/内皮谱系的亚聚类与 CNV 无关，**不得**被 CNV 的排期阻塞。
-- **GP4c 主口径 = Harmony（论文配方）**，不校正臂仅为**稳健性对照**；**GP9 的 SCMG 是另一条分支**。
-  三者不是同一层对照，报告时**不得并表**。
-- **GP3 须在 GP7 之前** —— 单数据集无 ground truth 的**门规格变更**必须先在 GP3 落书面批准。
+**Key Ordering Constraints**:
+- **GP2 (CNV) must come after GP8a (epithelial subclustering)** — third adjustment, 2026-09-16. CNV's **sole purpose** in this project
+  is **to finely call epithelial subclusters as malignant**, and the object "subcluster" **does not yet exist** before GP8a. Running it right after GP6
+  yields only per-epithelial-**cell** readouts that cannot be attributed to subclusters, effectively leaving the most needed step for downstream guessing.
+  ⇒ **Order: GP6 defines epithelium → GP8a defines subclusters → GP2 defines subcluster malignancy**.
+- **GP2 must not give "malignant clone"-level conclusions** — nuclei have low UMI and contain intronic/ambient RNA, so CNV can support only
+  **subcluster-level (aneuploid vs not)** calls. See §M2 for the wording ceiling.
+- **GP5 must be signed before GP6** — resolution must not be fitted after the fact.
+- **Why GP8a and GP8b are separated** — only the epithelium **needs** to wait for CNV (R2 requires malignancy to be corroborated by CNV);
+  subclustering of the immune/stromal/endothelial lineages is unrelated to CNV and **must not** be blocked by CNV scheduling.
+- **GP4c main caliber = Harmony (paper recipe)**; the uncorrected arm serves only as a **robustness control**; **GP9's SCMG is a separate branch**.
+  The three are not controls at the same level, and **must not be tabulated together** in reports.
+- **GP3 must come before GP7** — any **gate-specification change** for the single-dataset-without-ground-truth case must first receive written approval at GP3.
 
-### M0 · 输入冻结门 (Input Freeze)
-- **做**：按 [`00_ingest/cohort_registry.py`](00_ingest/cohort_registry.py) 纳入**两个配对数据集**
-  （`GSE308103` snRNA + `GSE307534` 空间），产出样本/患者/分期冻结表（含 **23 例**配对关系）。
-- **过门条件（全满足）**：
-  1. 样本表字段齐全：`dataset, sample_id, patient_id, stage, modality`；
-  2. **分期与 GEO 真值一致**（token 严格映射，未知即 raise）；**空转 LNM 不得伪造**（暂缺如实标注）；
-  3. **23 例配对患者**（P3–P25）在**两模态**均有切片；
-  4. 代码审查**无静默默认**；产出**冻结清单 + SHA-256 + 校验报告**。
-- **不过门 → 停**（不得进 M1）。
+### M0 · Input Freeze Gate
+- **Do**: per [`00_ingest/cohort_registry.py`](00_ingest/cohort_registry.py), include the **two paired datasets**
+  (`GSE308103` snRNA + `GSE307534` spatial), producing a sample/patient/stage freeze table (including the **23 cases** of pairing relationships).
+- **Gate conditions (all must be satisfied)**:
+  1. The sample table has complete fields: `dataset, sample_id, patient_id, stage, modality`;
+  2. **Stage agrees with the GEO ground truth** (strict token mapping, raise on unknown); **spatial LNM must not be fabricated** (currently missing, honestly annotated);
+  3. The **23 paired patients** (P3–P25) all have slices in **both modalities**;
+  4. Code review shows **no silent default**; produces a **freeze manifest + SHA-256 + validation report**.
+- **Gate not passed → stop** (must not proceed to M1).
 
-### M-1 · 计划整改门 (Plan Remediation) —— **先于 M1，必做**
+### M-1 · Plan Remediation Gate — **before M1, mandatory**
 
-> **背景**：2026-09-12 对白皮书做**逐阶段可行性/严谨性审计**（数据身份 + 8 份方法学核查），
-> 发现 **3 个 🔴（方法/数据不成立）+ 7 项 🟡**。**不过此门，不得进入 M1 及其后任何阶段。**
+> **Background**: On 2026-09-12 a **stage-by-stage feasibility/rigor audit** of the whitepaper was performed (data identity + 8 methodological checks),
+> finding **3 🔴 (method/data not valid) + 7 🟡**. **Without passing this gate, M1 and any later stage must not be entered.**
 
-**A. 数据层**
-- **A1** 空间图谱限定 **Normal→AAH→AIS→MIA→IAC**（全部 GSE307534，同库同平台）；**删除 GSE190811**（经 GEO 核实为**乳腺癌**，非 LUAD；原 GSM5732148 在该库不存在）。规则文档已改（[`docs/spatial_cohort_and_figure_prohibitions.md`](docs/spatial_cohort_and_figure_prohibitions.md)），白皮书待改。
-- **A2** **LNM 不在范围**（空转无合法 LUAD 数据；单细胞层随三 scRNA 队列一并移出）。日后若获得真实 LUAD LNM 空转数据再补。
-- **A3** 可选：`GSE305258`（ALK+ NSCLC 淋巴结/脑转移空间，10 LNT，**GeoMx ROI 非 Visium**）仅作 **LNM 正交验证**，**不并入主 Visium 矩阵**。
-- **A4** **永久禁用 WES/TMB**（TCGA 突变文件为 0 字节）。
+**A. Data Layer**
+- **A1** The spatial atlas is limited to **Normal→AAH→AIS→MIA→IAC** (all GSE307534, same repository, same platform); **GSE190811 is removed** (verified via GEO as **breast cancer**, not LUAD; the original GSM5732148 does not exist in that repository). The rules document has been changed ([`docs/spatial_cohort_and_figure_prohibitions.md`](docs/spatial_cohort_and_figure_prohibitions.md)); the whitepaper is still to be changed.
+- **A2** **LNM is out of scope** (no legal LUAD spatial data; the single-cell layer is moved out together with the three scRNA cohorts). To be added later if genuine LUAD LNM spatial data is obtained.
+- **A3** Optional: `GSE305258` (ALK+ NSCLC lymph-node/brain metastasis spatial, 10 LNT, **GeoMx ROI, not Visium**) serves only as **orthogonal LNM validation** and is **not merged into the main Visium matrix**.
+- **A4** **WES/TMB permanently disabled** (the TCGA mutation files are 0 bytes).
 
-**B. 工具/环境**
-- 安装 **CopyKAT**（`MCMCpack`+`transport` from CRAN；纯 R，无 root）→ M2 **主力**。
-- **infercnv 降级为可选交叉验证**（官方 README 已声明 *no longer supported*；需系统 JAGS；本机 Bioconductor 不可达）。
-- **升级 scvi-tools 至 1.5.x**（现装 0.15.5，2022 版）→ 方可使用 **SysVI / scArches(scANVI surgery)**。
-  ⚠️ **不能在共享环境做**（Py3.8 + root 库；见 §5b）→ 必须建 **隔离 env（micromamba, Py≥3.10）**；否则退用 0.15.5 能力并**如实标注**（无 SysVI/scArches surgery）。
-- 安装 ~~**spaGCN**~~（**2026-10-01 用户裁定：M6 改用 BANKSY，spaGCN 不装、不作对照臂**）、**harmonypy**、**plip(py)**（权重已缓存 1.2 GB）；~~**CellCharter**（若采用）~~ → **CellCharter 移入隔离 env 候选（待预注册 S7 裁定，见 §M6）**。
-- **GROMACS 缺失** → 装，或**砍掉 Stage-8 的 100 ns MD**（仅保留对接）。
+**B. Tools/Environment**
+- Install **CopyKAT** (`MCMCpack`+`transport` from CRAN; pure R, no root) → M2 **main workhorse**.
+- **infercnv downgraded to an optional cross-validation** (the official README declares it *no longer supported*; requires a system JAGS; Bioconductor is unreachable from this machine).
+- **Upgrade scvi-tools to 1.5.x** (currently 0.15.5, a 2022 version) → only then can **SysVI / scArches(scANVI surgery)** be used.
+  ⚠️ **This cannot be done in the shared environment** (Py3.8 + root-owned libraries; see §5b) → an **isolated env (micromamba, Py≥3.10)** must be created; otherwise fall back to the 0.15.5 capabilities and **honestly annotate** (no SysVI/scArches surgery).
+- Install ~~**spaGCN**~~ (**2026-10-01 user ruling: M6 switches to BANKSY, spaGCN not installed and not used as a control arm**), **harmonypy**, **plip(py)** (weights already cached, 1.2 GB); ~~**CellCharter** (if adopted)~~ → **CellCharter moved to the isolated-env candidate (pending the S7 ruling at pre-registration, see §M6)**.
+- **GROMACS missing** → install it, or **drop the 100 ns MD of Stage-8** (keeping only the docking).
 
-**C. 方法学修正**（写入下方 M3/M5/M6/M7 各门）
-- **M3**：弃用「modality 当 batch」（sc↔sn 是 *system* 效应，且 modality 与 dataset 共线）→ **scVI(`batch=sample_id`)**。
-  **⚠️ 2026-09-15 更正**：原文 `batch=dataset` 在**单数据集**（GSE308103）下该键为**常量、无意义**；75 个样本文库才是唯一真实技术批次轴。
-  **且 `patient_id` 绝不可作 batch** —— 分期嵌套于患者内，校正它会抹掉 M4 门判据 ④ 所需的患者内配对对比。scIB 用**完整 panel**。
-- **M5**：弃用自归一化 Σ=1 作为门（full 模式无 reject，该门为空）→ 门改到 **RCTD 原生输出 + 显式 QC**；参考模态与切片匹配。
-- **M6**：GMM/BIC 改**稳定性/共识选择**；Fisher 改报**效应量**；Squidpy 统计改**类别标签 + 经验 p**。
-- **M7**：CMap 指标纠正为 **NCS**，或直接**砍掉**（无 LINCS 数据不产出）。
-- **SCMG 分支收缩**：仅做 **zero-shot 跨数据集 scRNA 整合 + 全局流形 + 状态刻画**，与标准分支 **scIB 对照**。
-  **删除所有「状态逆转 / 逆转因子 / CausalGenePredictor 因果」表述**（经核实：SCMG 无此能力；参照流形无肿瘤态）。
-  > 🔴 **2026-10-03 更正（用户裁定：「**之前是这个认识不足**」）**：上面这条**的事实前提有误**，已核对——
-  > ① `CausalGenePredictor` **真实存在**（`tools/SCMG/scmg/model/causal_prediction.py`，MIT License，
-  >    Copyright 2025 Xingjie Pan），且**会输出负向基因**（`perturbation_sign`）；② 伪批量扰动库
-  >    **已在本机**（`~/scmg_workspace/hf_data/pseudo_bulk_perturbation_database.h5ad`，4.43 GB，
-  >    20,345 扰动 × 18,108 基因，`obs` 含 `perturbed_gene` / `perturbation_sign`）。
-  > ⇒ **原文不删**（法则 3.2），但**该限制对"扰动库签名逆向"这条用法不再适用**；
-  > 「不得称因果 / 不得称药」的**措辞约束仍然有效**，且**必须带零模型**。
-  > 落地方案见 `10_niche/TARGET_REVERSAL_PREREG.md`（**待签**）。
-  靶点候选改由**标准分支**产出（SCENIC+/regulon + CellRank 命运关联 + TCGA 生存），用词限定为 **「候选调控因子/靶点」**，不得称因果。
+**C. Methodological Corrections** (written into the M3/M5/M6/M7 gates below)
+- **M3**: Drop "modality as batch" (sc↔sn is a *system* effect, and modality is collinear with dataset) → **scVI(`batch=sample_id`)**.
+  **⚠️ 2026-09-15 correction**: In the original text, under the **single dataset** (GSE308103), the `batch=dataset` key is **constant and meaningless**; the 75 sample libraries are the only genuine technical batch axis.
+  **Moreover, `patient_id` must never be used as batch** — stage is nested within patient, and correcting for it would erase the within-patient paired comparison needed by M4 gate criterion ④. scIB uses the **full panel**.
+- **M5**: Drop self-normalization Σ=1 as a gate (full mode has no reject, so that gate is empty) → the gate moves to **RCTD native output + explicit QC**; the reference modality must match the slice.
+- **M6**: GMM/BIC is replaced by **stability/consensus selection**; Fisher is replaced by reporting the **effect size**; Squidpy statistics are replaced by **category labels + empirical p**.
+- **M7**: The CMap metric is corrected to **NCS**, or **cut entirely** (no output without LINCS data).
+- **SCMG branch contraction**: does only **zero-shot cross-dataset scRNA integration + global manifold + state characterization**, compared against the standard branch via **scIB**.
+  **Delete all statements of "state reversal / reversal factors / CausalGenePredictor causality"** (verified: SCMG has no such capability; the reference manifold has no tumor state).
+  > 🔴 **2026-10-03 correction (user ruling: "**this was insufficient understanding before**")**: the **factual premise of the above item is wrong**, now checked —
+  > ① `CausalGenePredictor` **really exists** (`tools/SCMG/scmg/model/causal_prediction.py`, MIT License,
+  >    Copyright 2025 Xingjie Pan), and it **does output negative genes** (`perturbation_sign`); ② the pseudobulk perturbation library
+  >    **is already on this machine** (`~/scmg_workspace/hf_data/pseudo_bulk_perturbation_database.h5ad`, 4.43 GB,
+  >    20,345 perturbations × 18,108 genes, `obs` contains `perturbed_gene` / `perturbation_sign`).
+  > ⇒ **the original text is not deleted** (Rule 3.2), but **that restriction no longer applies to the "reverse the signature against the perturbation library" usage**;
+  > the **wording constraint "must not be called causal / must not be called a drug" still holds**, and **a null model is mandatory**.
+  > For the implementation plan see `10_niche/TARGET_REVERSAL_PREREG.md` (**awaiting sign-off**).
+  Target candidates are instead produced by the **standard branch** (SCENIC+/regulon + CellRank fate association + TCGA survival), with wording limited to **"candidate regulators/targets"**; they must not be called causal.
 
-**D. 文档修正**
-- 白皮书：删作废结果（Figure 1–5「已完成」、14 克隆、107,796 spots、`Z<-5.8`、316,689 等）；LNM 改 pending；删 SCMG 逆转表述；修 CellRank 矛盾。
-- PARAMETERS：修 `infercnv denoise` 默认（**FALSE**，非 TRUE）、Tau 定义矛盾（**0–1** vs ±100）；QC 阈值补文献或标「本项目约定」。
+**D. Document Corrections**
+- Whitepaper: delete voided results (Figure 1–5 "completed", 14 clones, 107,796 spots, `Z<-5.8`, 316,689, etc.); change LNM to pending; delete the SCMG reversal statements; fix the CellRank contradiction.
+- PARAMETERS: fix the `infercnv denoise` default (**FALSE**, not TRUE), the Tau definition contradiction (**0–1** vs ±100); add references for the QC thresholds or mark them "project convention".
 
-**过门条件（全满足）**：
-1. 必需工具**安装且 smoke-test 通过**（CopyKAT 对 1 样本跑通；`scvi.external.SysVI` / scArches 可 import）；
-2. 白皮书 / PLAN / PARAMETERS 修订**落盘**，且对作废数值（`14 克隆`、`107,796`、`Z<-5.8`、`316,689`、`PT_3_LNM`/`GSM5732148`）grep 无残留（历史勘误记录除外）；
-3. GSE190811 在代码 / 文档 / 规则中**全部清除**（除勘误说明）；
-4. M3 / M5 / M6 / M7 门**重写落盘**；
-5. **无 🔴 遗留**。
+**Gate conditions (all must be satisfied)**:
+1. Required tools **installed and smoke-test passed** (CopyKAT runs through on 1 sample; `scvi.external.SysVI` / scArches importable);
+2. Whitepaper / PLAN / PARAMETERS revisions **committed to disk**, and a grep for the voided values (`14 clones`, `107,796`, `Z<-5.8`, `316,689`, `PT_3_LNM`/`GSM5732148`) shows no residue (except historical erratum records);
+3. GSE190811 **fully purged** from code / documents / rules (except erratum notes);
+4. The M3 / M5 / M6 / M7 gates **rewritten and committed**;
+5. **No 🔴 remaining**.
 
-### M1 · QC / 双体门
+### M1 · QC / Doublet Gate
 
-> 🔴 **2026-09-16 口径反转（用户决策「改用论文 QC 重建」）**。本节原写"**严禁**照搬整细胞 scRNA 阈值
-> （实测 `nCount≥1000` 会砍掉约 30% 的核）"。该结论**在数量上仍然成立**（实测确砍掉约 30%），
-> 但**据此拒绝论文阈值是错的**：论文的阈值来自**这批同样的样本、同一平台（10x Fixed RNA/FFPE）**，
-> 是**原生口径**；本项目的逐样本 MAD 才是无出处的自选值。故**主口径改为论文固定阈值**，
-> 原 MAD 口径**降级为敏感性臂**（产物保留：`results/02_expression/gse308103_counts.h5ad`，648,945 核）。
+> 🔴 **2026-09-16 caliber reversal (user decision "rebuild with the paper's QC")**. This section originally wrote "**strictly forbidden** to copy whole-cell scRNA thresholds
+> (measured: `nCount≥1000` would cut ~30% of nuclei)". That conclusion **still holds numerically** (measured, it does cut ~30%),
+> but **rejecting the paper's thresholds on that basis was wrong**: the paper's thresholds come from **this same batch of samples, the same platform (10x Fixed RNA/FFPE)**,
+> and are the **native caliber**; this project's per-sample MAD was the sourced-from-nowhere self-chosen value. Hence **the main caliber is changed to the paper's fixed thresholds**,
+> and the original MAD caliber is **downgraded to a sensitivity arm** (artifact retained: `results/02_expression/gse308103_counts.h5ad`, 648,945 nuclei).
 
-- **做**：显式 QC；**scDblFinder 逐样本**（铁律 R2）。数据为 **GSE308103（snRNA / 细胞核）**。
-- **主口径（论文，逐字）**：剔除 `nFeature<500` 或 `nCount<1000` 或 `pct_mt>20%`；基因保留「在 ≥3 个细胞中检出」。
-- **过门**：报告 QC 前后细胞数、双体率、参数（标出处，见 PARAMETERS）；**无启发式替代**。
-- **★ 实测（2026-09-16）**：新分析集 = **413,697 核 × 18,069 基因**（旧 M1 掩膜 648,945；论文公布 401,635，**+12,062 = +3.00%**）。
-  论文门在 M1 单细胞集内剔除 **235,248** 核：`nFeature<500` 剔除 **68,694**、另 **166,554** 仅因 `nCount<1000`、
-  **`pct_mt>20%` 剔除 0 个**（M1 的自适应 MAD 已先清掉）⇒ 论文的线粒体门在本数据上**形同虚设**。
-  边界：`pct_mt` 恰为 20.000 的核 **0** 个 ⇒ `<=20` 与 `<20` 两读法无差异。
-- **⚠️ 登记偏差**：双体口径 **scDblFinder**（R2）vs 论文 **Scrublet**。R2 优先于"对齐论文"，已有 Scrublet 敏感性臂。
-- **⚠️ 不得**因"要对齐论文"而把 `pct_mt` 当分数用——本项目的 `pct_mt` 是**百分数**（0–100），
-  见 `01_qc/00_metrics_gse308103.R`：`pct <- 100 * colSums(m[mt,]) / pmax(cs,1)`。
-- **AAH 脆弱性**：已在**新细胞集上重做实证检验**（`results/01_qc/stage_fragility_report_paperqc.json`）：
-  中位 `nFeature` 比 Normal **1.081×**，AAH 留存 65.48% vs Normal 62.05%（**+3.43 pp**）⇒ **计数层面不脆弱**。
-  故**不得**给 AAH 单独放宽 QC（那是无出处的静默默认）；脆弱性改在 **GP5 的聚类吸收层面**设可证伪护栏（指标4）。
+- **Do**: explicit QC; **scDblFinder per sample** (iron law R2). Data is **GSE308103 (snRNA / nuclei)**.
+- **Main caliber (paper, verbatim)**: drop `nFeature<500` or `nCount<1000` or `pct_mt>20%`; keep genes "detected in ≥3 cells".
+- **Gate**: report cell counts before and after QC, doublet rate, parameters (with sources, see PARAMETERS); **no heuristic substitution**.
+- **★ Measured (2026-09-16)**: new analysis set = **413,697 nuclei × 18,069 genes** (old M1 mask 648,945; the paper reports 401,635, **+12,062 = +3.00%**).
+  The paper gate removes **235,248** nuclei within the M1 single-cell set: `nFeature<500` removes **68,694**, a further **166,554** fail only on `nCount<1000`,
+  and **`pct_mt>20%` removes 0** (M1's adaptive MAD had already removed them) ⇒ the paper's mitochondrial gate is **effectively vacuous** on this data.
+  Boundary: **0** nuclei have `pct_mt` exactly 20.000 ⇒ the two readings `<=20` and `<20` do not differ.
+- **⚠️ Registered deviation**: the doublet caliber is **scDblFinder** (R2) vs the paper's **Scrublet**. R2 takes priority over "aligning with the paper"; a Scrublet sensitivity arm already exists.
+- **⚠️ Must not** treat `pct_mt` as a fraction in order to "align with the paper" — this project's `pct_mt` is a **percentage** (0–100),
+  see `01_qc/00_metrics_gse308103.R`: `pct <- 100 * colSums(m[mt,]) / pmax(cs,1)`.
+- **AAH fragility**: the empirical test was **redone on the new cell set** (`results/01_qc/stage_fragility_report_paperqc.json`):
+  median `nFeature` is **1.081×** that of Normal, AAH retention 65.48% vs Normal 62.05% (**+3.43 pp**) ⇒ **not fragile at the count level**.
+  Therefore AAH **must not** get individually relaxed QC (that would be an unsourced silent default); fragility is instead handled by a falsifiable guardrail at the **GP5 clustering-absorption level** (metric 4).
 
-### M2 · 上皮亚群恶性精判 (CNV) —— **执行位置：GP2，在 GP8a 上皮亚聚类之后**
+### M2 · Fine Malignant Calling of Epithelial Subclusters (CNV) — **execution position: GP2, after GP8a epithelial subclustering**
 
-> **⚠️ 2026-09-16 定位两次收窄**：① 从"降维聚类之前的**主力证真门**"改为"注释之后的上皮细化"；
-> ② 再收窄为**"给上皮亚群贴恶性标签的精细判别器"**，执行位置由 GP6 之后**后移到 GP8a 之后**。
-> 理由见 §2.0：CNV 在本项目的**唯一用途**是判**亚群**恶性，而亚群在 GP8a 之前不存在。
+> **⚠️ 2026-09-16 role narrowed twice**: ① from a "**leading corroboration gate before dimensionality reduction and clustering**" to "epithelial refinement after annotation";
+> ② further narrowed to a **"fine discriminator that labels epithelial subclusters as malignant"**, with its execution position **moved back from after GP6 to after GP8a**.
+> For the reason see §2.0: CNV's **sole purpose** in this project is to call **subclusters** malignant, and subclusters do not exist before GP8a.
 
-- **做**：**`CopyKAT` 为主力**（逐样本，**禁止合池**），输入 = GP6 注释为**上皮谱系**、并经 **GP8a** 划出亚群的细胞；
-  **`infercnv` 仅作 5–10k 细胞/样本的可选交叉验证**（官方已停维护）。
-- **产出粒度 = 亚群**：逐样本得 CNV± 后，按 **GP8a 的上皮亚群**汇总（每亚群 `frac_cnv_pos`、跨样本一致性），
-  据此给**每个上皮亚群**贴 `malignant` / `non-malignant` / `not_testable`。
-- **过门**：上皮亚群的恶性标签**三态齐全且样本级可溯**（不出现"全样本 0 非整倍体"被当作正常证据）。
-  **不过门不得产出"恶性克隆"。** 措辞上限 = **亚群级（非整倍体 vs 否）**，**禁止**克隆/亚克隆/进化树表述。
-- **下游使用**：M4 判据⑤、以及一切"恶性上皮"过滤，**一律以 GP2 的亚群标签为准**，不得用泛上皮 argmax 替代。
+- **Do**: **`CopyKAT` as the workhorse** (per sample, **pooling forbidden**), input = cells annotated by GP6 as the **epithelial lineage** and partitioned into subclusters by **GP8a**;
+  **`infercnv` serves only as an optional cross-validation on 5–10k cells/sample** (officially unmaintained).
+- **Output granularity = subcluster**: after obtaining CNV± per sample, aggregate by **GP8a's epithelial subclusters** (per-subcluster `frac_cnv_pos`, cross-sample consistency),
+  and on that basis label **each epithelial subcluster** as `malignant` / `non-malignant` / `not_testable`.
+- **Gate**: the malignant labels of epithelial subclusters must be **complete across all three states and traceable at sample level** (no case where "0 aneuploid across all samples" is taken as evidence of normality).
+  **Without passing the gate, "malignant clone" must not be produced.** Wording ceiling = **subcluster level (aneuploid vs not)**; clone/subclone/phylogenetic-tree statements are **forbidden**.
+- **Downstream use**: M4 criterion ⑤, and every "malignant epithelium" filter, **must all defer to GP2's subcluster labels**; a generic epithelium argmax must not be used as a substitute.
 
-- **★★ 2026-09-16 实测发现：`CopyKAT` 存在两个必须用守卫堵住的静默失效路径**
-  （源码 `tools/copykat/R/copykat.R`，copykat 1.2.5）：
-  1. **`norm.cell.names=""` ⇒ 走自猜基线**（`copykat.R:166-170` `baseline.norm.cl()`）。低置信度时
-     `WNS="unclassified.prediction"` 并**静默回退** `baseline.GMM(max.normal=5, mu.cut=0.05, Nfraq.cut=0.99)`，
-     该函数**重写 `WNS`** ⇒ 日志只剩 `"low confidence in classification"`。
-     **守卫**：必须传 `norm.cell.names=`（免疫/基质参考，`LUAD_NORM_REF=nonepi`），
-     并断言日志出现 **`baseline is from known input`**（`copykat.R:136-145` 的可证伪标记）。
-  2. **`:456` 全二倍体逃生门**：`if (cor(conses.diploid, conses.aneuploid) >= 0.6) com.preN[] <- "diploid"`
-     —— **没有"不确定"类别**。纯上皮输入最易撞上此门。
-     **实测**：`P11_LUAD` 纯上皮输入返回 **0/160 = 0.0%** 非整倍体 ⇒ **该臂是盲的**，
-     其上任何"0 非整倍体"读数**不携带信息**，不得作为正常样本的证据。
-     **守卫**：每个肿瘤样本必须**同时**跑"全细胞"对照臂；若对照臂也为 0，该样本 CNV 结论标 `not_testable`。
-  - **副作用提醒**：`copykat.R:18-20` 只在**不合格细胞数 > 1** 时才过滤（恰好 1 个时不过滤）——
-    任何复刻 copykat 细胞过滤的链条必须逐字照搬此语义，否则 `n_judged` 守卫会误炸。
+- **★★ 2026-09-16 measured finding: `CopyKAT` has two silent failure paths that must be blocked by guards**
+  (source `tools/copykat/R/copykat.R`, copykat 1.2.5):
+  1. **`norm.cell.names=""` ⇒ falls back to a self-guessed baseline** (`copykat.R:166-170` `baseline.norm.cl()`). At low confidence
+     `WNS="unclassified.prediction"` and it **silently falls back** to `baseline.GMM(max.normal=5, mu.cut=0.05, Nfraq.cut=0.99)`,
+     which **rewrites `WNS`** ⇒ the log retains only `"low confidence in classification"`.
+     **Guard**: must pass `norm.cell.names=` (immune/stromal reference, `LUAD_NORM_REF=nonepi`),
+     and assert that the log contains **`baseline is from known input`** (the falsifiable marker at `copykat.R:136-145`).
+  2. **The `:456` all-diploid escape hatch**: `if (cor(conses.diploid, conses.aneuploid) >= 0.6) com.preN[] <- "diploid"`
+     — **there is no "uncertain" category**. Pure-epithelial input most easily hits this hatch.
+     **Measured**: `P11_LUAD` pure-epithelial input returns **0/160 = 0.0%** aneuploid ⇒ **that arm is blind**,
+     and any "0 aneuploid" readout from it **carries no information** and must not be used as evidence of a normal sample.
+     **Guard**: every tumor sample must **also** run an "all-cells" control arm; if the control arm is also 0, that sample's CNV conclusion is marked `not_testable`.
+  - **Side-effect note**: `copykat.R:18-20` filters only when the **number of failing cells > 1** (with exactly 1 it does not filter) —
+    any pipeline replicating copykat's cell filtering must copy this semantics verbatim, otherwise the `n_judged` guard will misfire.
 
-- **注**：本数据为 **snRNA（GSE308103）** → CNV 需放宽参数并谨慎解读（核、低 UMI）；
-  参考用同样本免疫/基质细胞（即上条守卫 1 的 `norm.cell.names`）。
-- **退化样本预注册处置**（本项目约定，无文献阈值）：`n_retained<200` → `not_testable`，**绝不**填补为 "normal"；
-  `n_cnv_pos==0` → 作为**真实结果**上报，**不得**放宽 `KS.cut` 重跑（法则 3.2 禁事后调参）；
-  Normal/AAH 中 `frac_cnv_pos>0.95` 或 IAC 中 `<0.01` → `implausible`。
-  **弃跑判据**：`not_testable` + `implausible` 合计 > 30% → **停下上报**（R2 对该数据集不可满足），
-  **禁用**泛上皮 argmax 替代。
-- **亚群级传导规则（2026-09-16 新增，跑之前固定）**：样本标 `not_testable` ⇒ 该样本贡献的**所有上皮亚群细胞**
-  一并标 `not_testable`（**不得**因"其他样本正常"就补一个标签）；某亚群在**全部**样本上 `not_testable`
-  ⇒ 该亚群恶性状态 = **`unknown`**，**不得**进入任何"恶性 vs 非恶性"对比。报告须给出
-  `亚群 × 样本` 的 `not_testable` 覆盖表。**"unknown 亚群"占比 > 30% ⇒ 停在 GP2 上报。**
-- **必须上报**：`annotateGenes.hg20()` 内部位置表未覆盖而被静默丢弃的基因清单（法则 0 静默默认陷阱）。
+- **Note**: this data is **snRNA (GSE308103)** → CNV requires relaxed parameters and careful interpretation (nuclei, low UMI);
+  the reference uses immune/stromal cells from the same sample (i.e. `norm.cell.names` from guard 1 above).
+- **Pre-registered handling of degenerate samples** (project convention, no literature threshold): `n_retained<200` → `not_testable`, **never** filled in as "normal";
+  `n_cnv_pos==0` → reported as a **genuine result**, and `KS.cut` **must not** be relaxed and rerun (Rule 3.2 forbids post-hoc parameter tuning);
+  `frac_cnv_pos>0.95` in Normal/AAH or `<0.01` in IAC → `implausible`.
+  **Abort criterion**: `not_testable` + `implausible` totaling > 30% → **stop and report** (R2 is unsatisfiable for that dataset),
+  and a generic-epithelium argmax substitute is **disabled**.
+- **Subcluster-level propagation rule (added 2026-09-16, fixed before running)**: a sample marked `not_testable` ⇒ **all epithelial subcluster cells** contributed by that sample
+  are also marked `not_testable` (**must not** be given a label just because "other samples are normal"); if a subcluster is `not_testable` across **all** samples
+  ⇒ that subcluster's malignant status = **`unknown`**, and it **must not** enter any "malignant vs non-malignant" comparison. The report must provide
+  a `subcluster × sample` `not_testable` coverage table. **"unknown subcluster" proportion > 30% ⇒ stop and report at GP2.**
+- **Must report**: the list of genes silently discarded because `annotateGenes.hg20()`'s internal position table does not cover them (Rule 0's silent-default trap).
 
-### M3-A · 传统/主流分支（执行位置：GP4a–GP8a → GP2 → GP8b）
+### M3-A · Traditional/Mainstream Branch (execution position: GP4a–GP8a → GP2 → GP8b)
 
-> **⚠️ 2026-09-16 拆分说明**：原文把两件不同层面的事塞在同一个 M3 门里，现拆开：
-> **M3-A 内部的两臂**（GP4c）= **Harmony on `sample_id`（主口径，论文配方）** vs **不校正（敏感性臂，非论文配方）**；
-> **M3-B 的 SCMG**（GP9）= **另一条分支**。**三者不是同一层对照，报告时不得并表。**
+> **⚠️ 2026-09-16 split note**: the original text crammed two things at different levels into a single M3 gate; they are now split:
+> **the two arms within M3-A** (GP4c) = **Harmony on `sample_id` (main caliber, paper recipe)** vs **no correction (sensitivity arm, not the paper recipe)**;
+> **M3-B's SCMG** (GP9) = **a separate branch**. **The three are not controls at the same level and must not be tabulated together in reports.**
 >
-> 🔴 **2026-09-16 主/对照反转**：原为「不校正＝**主**，Harmony＝对照」。论文把 Harmony 写进**主配方**，
-> 故主口径改为 Harmony；不校正臂**保留**但降级为稳健性对照（`sample_id`↔`stage` 共线风险仍在）。
+> 🔴 **2026-09-16 main/control reversal**: originally "no correction = **main**, Harmony = control". The paper writes Harmony into its **main recipe**,
+> so the main caliber is changed to Harmony; the uncorrected arm is **retained** but downgraded to a robustness control (the `sample_id`↔`stage` collinearity risk remains).
 
-- **做**（按 §2.0 的顺序）：GP4a 预处理 → GP4b 降维 → GP4c 批次两臂 → GP5 分辨率 → GP6 注释
-  → **GP8a 上皮亚聚类** → **GP2 CNV 定亚群恶性**（M2 门，见上）→ **GP8b 其余 5 谱系亚聚类**。
-- **传统分支的"权威参数和顺序"以 [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) M3-A.0–A.5 为准**，
-  该表为执行前登记（法则 3.1），执行时**不得偏离而不登记**。
-- **过门**（GP4a/b/c）：`SCTransform(vst.flavor="v2")` / HVG `3000` / `npcs=50` / `Harmony dims=1:50` /
-  `k.param=20` 全部**带哈希登记**；**参数来源逐条可溯**（论文逐字引文 or Seurat 源码默认）。
-  ⚠️ **原 `{20,30,50}` ARI 护栏随旧 PCA-30 口径一并作废**，不适用于论文的固定 50 PC。
-- **两臂上报规则**：逐细胞 `ARI(Harmony, 不校正)` < 0.7 ⇒ **不得择一上报**，须同时呈现两臂结果并升级裁定。
-- **执行脚本**：[`04_integration/10_seurat_traditional.R`](04_integration/10_seurat_traditional.R)
-  （`smoke --n_cells N` / `full` 两种模式；已过 3,000 与 60,000 细胞烟雾测试）。
-- **禁用**：`modality 当 batch`（sc↔sn 为 system 效应且与 dataset 共线）；**`patient_id` 作 batch**
-  （分期嵌套于患者内，校正会抹掉 M4 判据 ④ 所需的患者内配对）。
+- **Do** (in the order of §2.0): GP4a preprocessing → GP4b dimensionality reduction → GP4c two batch arms → GP5 resolution → GP6 annotation
+  → **GP8a epithelial subclustering** → **GP2 CNV defines subcluster malignancy** (M2 gate, see above) → **GP8b subclustering of the remaining 5 lineages**.
+- **The "authoritative parameters and order" for the traditional branch are governed by [`docs/PARAMETERS_AND_SOURCES.md`](docs/PARAMETERS_AND_SOURCES.md) M3-A.0–A.5**,
+  which is a pre-execution registration (Rule 3.1); during execution it **must not be deviated from without registration**.
+- **Gate** (GP4a/b/c): `SCTransform(vst.flavor="v2")` / HVG `3000` / `npcs=50` / `Harmony dims=1:50` /
+  `k.param=20` all **registered with hashes**; **parameter sources traceable item by item** (verbatim paper quote or Seurat source default).
+  ⚠️ **The original `{20,30,50}` ARI guardrail is void along with the old PCA-30 caliber** and does not apply to the paper's fixed 50 PCs.
+- **Two-arm reporting rule**: per-cell `ARI(Harmony, no correction)` < 0.7 ⇒ **must not report only one**, both arms must be presented together and the matter escalated for a ruling.
+- **Execution script**: [`04_integration/10_seurat_traditional.R`](04_integration/10_seurat_traditional.R)
+  (`smoke --n_cells N` / `full`, two modes; already passed 3,000- and 60,000-cell smoke tests).
+- **Disabled**: `modality as batch` (sc↔sn is a system effect and collinear with dataset); **`patient_id` as batch**
+  (stage is nested within patient, and correcting for it would erase the within-patient pairing needed by M4 criterion ④).
 
-### M3-B · SCMG 对照分支（执行位置：GP9，在 M3-A 之后）
+### M3-B · SCMG Control Branch (execution position: GP9, after M3-A)
 
-- **做**：**zero-shot 跨数据集 scRNA 整合 + 全局流形 + 状态刻画**
-  （**不掺传统算法**——铁律 5；**不输出逆转/因果**——铁律 6）。
-- **过门**：以 **scIB 完整口径**与 M3-A 对照——批去除（kBET + iLISI + graph-connectivity + PCR）
-  **与** 生物保守（cLISI/ARI/NMI/ASW）**并报**；batch panel 与 bio panel **分开报**，附逐指标原始值。
-- **判据重写（2026-09-15）**：不再是「最大化 iLISI」，而是 **batch 指标可接受 _且_ 分期可分性被保留**
-  （证明**有分辨力**，非"全糊一块"）。
-- **门规格变更**：单数据集**无 ground truth** ⇒ 生物保守的 ARI/NMI 只能算**未校正 vs 已校正簇标签之间**的，
-  **须在 GP3 显式批准**后方可计算。
-- **裁决**：Arm B 相对 Arm A 的 **ARI < 0.7** ⇒ Arm A 为主，如实报方法学局限。
-- **禁用**：仅凭 iLISI↑ 判为整合成功（可被过度整合刷高）。
+- **Do**: **zero-shot cross-dataset scRNA integration + global manifold + state characterization**
+  (**no mixing of traditional algorithms** — iron law 5; **no reversal/causal output** — iron law 6).
+- **Gate**: compare against M3-A using the **full scIB caliber** — batch removal (kBET + iLISI + graph-connectivity + PCR)
+  **and** biological conservation (cLISI/ARI/NMI/ASW) **reported together**; the batch panel and the bio panel are **reported separately**, with raw per-metric values attached.
+- **Criterion rewritten (2026-09-15)**: no longer "maximize iLISI" but rather **batch metrics acceptable _and_ stage separability preserved**
+  (demonstrating **resolving power**, not everything smeared together).
+- **Gate-specification change**: the single dataset has **no ground truth** ⇒ the biological-conservation ARI/NMI can only be computed **between uncorrected vs corrected cluster labels**,
+  and may be computed **only after explicit approval at GP3**.
+- **Ruling**: if Arm B's **ARI < 0.7** relative to Arm A ⇒ Arm A is primary, with the methodological limitation reported honestly.
+- **Disabled**: judging integration success on iLISI↑ alone (it can be inflated by over-integration).
 
-### M4 · 跨模态 AAH 门（**五判据缺一不可**）
-- ① 各阶段**可分辨**；② 重叠阶段 sn↔sc **一致**；③ 平台偏移 **δ(stage) 稳定**；④ **sn 内部配对**（AAH vs 同患者 Normal/AIS）同向；⑤ AAH 身份 **CNV/标记**证真。
-- **不过门 → 不下"AAH 结论"**（只能标为假说）。
-- 数据：`GSE308103`(snRNA，主参考)；如日后获批 `HRA001130`(全细胞 scRNA，受控) 可作 AAH 跨模态验证。
+### M4 · Cross-Modal AAH Gate (**all five criteria required**)
+- ① Each stage **distinguishable**; ② overlapping stages sn↔sc **consistent**; ③ platform offset **δ(stage) stable**; ④ **within-sn pairing** (AAH vs the same patient's Normal/AIS) concordant; ⑤ AAH identity **CNV/marker**-corroborated.
+- **Gate not passed → do not draw an "AAH conclusion"** (it may only be labelled a hypothesis).
+- Data: `GSE308103` (snRNA, main reference); if `HRA001130` (whole-cell scRNA, controlled access) is obtained later it may serve as cross-modal AAH validation.
 
-### M5 · 空间解卷积门
-- **做**：RCTD（`doublet_mode='full'`，Visium 推荐），reference 用 M3 冻结的签名。
-- **过门**：以 **RCTD 原生输出**为准——权重非负、**每 spot 权重分布合理**、**参考模态与切片匹配**（FFPE↔sn，先剔除跨模态 DEG）、报告**低质量/被剔除 spot 数**（由 `UMI_min`/`counts_MIN` 显式阈值定义，**不用** self-imposed 的 Σ=1 充当门）；签名与 reference **哈希对齐**。
-- **禁用**：把 `normalize_weights()` 后的 Σ=1 当作 RCTD 的性质（那是项目自己施加的）；`full` 模式**没有** reject 类别。
+### M5 · Spatial Deconvolution Gate
+- **Do**: RCTD (`doublet_mode='full'`, recommended for Visium), with the reference using the signatures frozen in M3.
+- **Gate**: governed by the **RCTD native output** — weights non-negative, **per-spot weight distribution reasonable**, **reference modality matching the slice** (FFPE↔sn, cross-modal DEGs removed first), reporting the **number of low-quality/removed spots** (defined by the explicit `UMI_min`/`counts_MIN` thresholds, **not** using a self-imposed Σ=1 as the gate); signatures and reference **hash-aligned**.
+- **Disabled**: treating Σ=1 after `normalize_weights()` as a property of RCTD (that is imposed by the project itself); `full` mode has **no** reject category.
 
-### M6 · 生态位门
-- 🔴 **2026-10-01 工具更正**：本行原写 **SpaGCN**，与 `docs/PARAMETERS_AND_SOURCES.md` §M6 登记的 **BANKSY** 冲突；
-  **用户 2026-10-01 裁定改用 BANKSY**（SpaGCN 不作对照臂）。**「CellCharter」在共享 Python（3.8.10）里装不上**（须 ≥3.10），
-  但计划板 §5b 的 **micromamba 隔离环境是可行解**（**不是「本机装不上」**）⇒ 跨切片步骤**保留 CellCharter 作为候选敏感性臂**，
-  待预注册 §8 的 **S7** 裁定（方案 A 逐切片→共识 / 方案 B 联合聚类）。簇数一律由 **Leiden 多分辨率 + 跨种子稳定性** 决定。
-  预注册见 [`10_niche/NICHE_PREREG.md`](10_niche/NICHE_PREREG.md)（🟢 **2026-10-01 已签字**：S1–S13 全部生效取值 + §12 局限性；🔴 **2026-10-02 追加 §4.1 闸 1 FAIL 裁定 + §12-⑪ ⇒ 局限性条数 九→十→十一**）。
-- **做**：BANKSY 逐切片分域 → 邻域聚合 → **数据驱动聚类（稳定性/共识选择，不用单一 BIC 极小值）** → Squidpy 空间统计。
-- **过门**：**无硬编码聚类数/标签**；簇数由**稳定性/共识**决定并留档；空间统计用**类别标签**（不是解卷积比例），报 **z-score + 经验 p（(b+1)/(n+1)）**，置换 `n_perms` 有记录；富集检验报**效应量**（Fisher FDR 受组成性与大 N 灌水）。
-- **禁用**：把 `nhood_enrichment` 的输出写成 `P<0.001`（该函数**不返回 p 值**）；对 `co_occurrence` 声称做过置换（它**不做**）；距离步长小于 Visium ~100 µm 点距。
+### M6 · Niche Gate
+- 🔴 **2026-10-01 tool correction**: this line originally wrote **SpaGCN**, conflicting with the **BANKSY** registered in `docs/PARAMETERS_AND_SOURCES.md` §M6;
+  **the user ruled on 2026-10-01 to switch to BANKSY** (SpaGCN is not used as a control arm). **"CellCharter" cannot be installed in the shared Python (3.8.10)** (requires ≥3.10),
+  but the **micromamba isolated environment in the plan board §5b is a viable solution** (**not "cannot be installed on this machine"**) ⇒ the cross-slice step **retains CellCharter as a candidate sensitivity arm**,
+  pending the **S7** ruling in pre-registration §8 (plan A per-slice→consensus / plan B joint clustering). The number of clusters is always determined by **Leiden multi-resolution + cross-seed stability**.
+  For pre-registration see [`10_niche/NICHE_PREREG.md`](10_niche/NICHE_PREREG.md) (🟢 **signed 2026-10-01**: effective values for all of S1–S13 + §12 limitations; 🔴 **2026-10-02 appended the §4.1 Gate 1 FAIL ruling + §12-⑪ ⇒ limitation count nine→ten→eleven**).
+- **Do**: BANKSY per-slice domain partitioning → neighborhood aggregation → **data-driven clustering (stability/consensus selection, not a single BIC minimum)** → Squidpy spatial statistics.
+- **Gate**: **no hard-coded cluster count/labels**; the cluster count is determined by **stability/consensus** and archived; spatial statistics use **category labels** (not deconvolution proportions), reporting **z-score + empirical p ((b+1)/(n+1))**, with the permutation `n_perms` recorded; enrichment tests report the **effect size** (Fisher FDR is inflated by compositionality and large N).
+- **Disabled**: writing `nhood_enrichment`'s output as `P<0.001` (that function **does not return p values**); claiming a permutation was done for `co_occurrence` (it **does not**); a distance step smaller than the Visium ~100 µm spot spacing.
 
-### M7 · 靶点门（传统轨道）
-**M7a · 生态位预后特征**：BANKSY 生态位（**2026-10-01 由 CellCharter 更正**，理由同 §M6）→ **患者/切片级聚合**出签名 → TCGA-LUAD bulk 打分（ssGSEA/解卷积）→ **多变量 Cox（校正分期/年龄/性别）+ KM**。
-- **过门**：签名在**患者级**聚合产生（不用 spot 级 DE）；防过拟合（惩罚/交叉验证）；措辞 = **预后关联**（`niche poor-prognosis signature`）。空间仅 11–25 例 → **不主张患者亚型分型**。
+### M7 · Target Gate (traditional track)
+**M7a · Niche prognostic signature**: BANKSY niches (**corrected from CellCharter on 2026-10-01**, same reason as §M6) → **patient/slice-level aggregation** into a signature → TCGA-LUAD bulk scoring (ssGSEA/deconvolution) → **multivariable Cox (adjusted for stage/age/sex) + KM**.
+- **Gate**: the signature is produced by **patient-level** aggregation (not spot-level DE); overfitting prevention (penalty/cross-validation); wording = **prognostic association** (`niche poor-prognosis signature`). Spatial has only 11–25 cases → **no claim of patient subtyping**.
 
-**M7b · 候选靶点池（遗传统计锚定）**：候选来源 = 恶性程序/regulon **＋** 生态位签名 → **cis-MR + coloc**（ILCCO/TRICL LUAD GWAS × 肺 eQTL）→ **Open Targets 可成药性 + DepMap 选择性依赖 + 临床期药物匹配**。
-- **操作手册**：[`docs/M7B_MR_COLOC_TARGET_ANCHORING.md`](docs/M7B_MR_COLOC_TARGET_ANCHORING.md)
-- **过门**：每个候选给出 `genetic_support ∈ {supported, not_supported, not_testable}`（阈值见手册，**不得事后调参**）；`not_testable` **如实标缺，不替代**；措辞 = **genetically supported candidate target**，**不得称因果**。
+**M7b · Candidate target pool (genetic-statistical anchoring)**: candidate sources = malignant programs/regulons **＋** niche signatures → **cis-MR + coloc** (ILCCO/TRICL LUAD GWAS × lung eQTL) → **Open Targets tractability + DepMap selective dependency + clinical-stage drug matching**.
+- **Operations manual**: [`docs/M7B_MR_COLOC_TARGET_ANCHORING.md`](docs/M7B_MR_COLOC_TARGET_ANCHORING.md)
+- **Gate**: each candidate is given `genetic_support ∈ {supported, not_supported, not_testable}` (thresholds in the manual, **no post-hoc parameter tuning**); `not_testable` **honestly marked as missing, not substituted**; wording = **genetically supported candidate target**, and it **must not be called causal**.
 
-**M7c · CMap（可选）**：仅当获得**真实 LINCS 数据**且用对指标（**NCS**，非负 Tau）时才执行；否则**拒绝产出表**（现无 LINCS 数据 → 默认不产出）。
-  > 🟡 **2026-10-03 进展**：**真实 LINCS 正在下载**（GSE70138 Phase II Level5 5.00 GB ＋ GSE92742 Phase I Level5 19.86 GB
-  > ＋ 元数据，共 ~25 GB → `~/lincs_data/`）。落地后本节**门开**。
-  > 另：SCMG 扰动库**作为第二套扰动库**解禁（见上），用于**交叉验证**，指标口径须另行写死。
+**M7c · CMap (optional)**: executed only when **real LINCS data** is obtained and the correct metric is used (**NCS**, not negative Tau); otherwise **refuse to produce a table** (currently no LINCS data → not produced by default).
+  > 🟡 **2026-10-03 progress**: **real LINCS is downloading** (GSE70138 Phase II Level5 5.00 GB ＋ GSE92742 Phase I Level5 19.86 GB
+  > ＋ metadata, ~25 GB total → `~/lincs_data/`). Once it lands, this section's **gate opens**.
+  > Also: the SCMG perturbation library is **unblocked as a second perturbation library** (see above), used for **cross-validation**, and its metric caliber must be fixed separately in writing.
 
-- **总过门**：DESeq2 设计/截断有出处；靶点措辞限定；MR 输入/输出有哈希与来源记录。
+- **Overall gate**: DESeq2 design/truncation has a source; target wording constrained; MR inputs/outputs have hashes and provenance records.
 
-### M8 · 对接门
-- **做**：fpocket + AutoDock Vina（靶点来自 M7 真实结果）；**MD 仅在 GROMACS 安装后才做**。
-- **过门**：靶点/结构文件**真实存在**；参数标出处；**未计算不虚构**。
-
----
-
-## 3. 通用检查点（每步都查）
-- [ ] 无 `np.random` / 写死数值 / 伪曲线；
-- [ ] 无静默默认（回退到某阶段/标签）；
-- [ ] 脚本可复现（确定性 + 种子显式）；
-- [ ] 产物有哈希；输入输出可溯源；
-- [ ] 参数在 `docs/PARAMETERS_AND_SOURCES.md` 有出处。
+### M8 · Docking Gate
+- **Do**: fpocket + AutoDock Vina (targets from M7's real results); **MD is done only after GROMACS is installed**.
+- **Gate**: target/structure files **genuinely exist**; parameters have sources; **nothing not computed is fabricated**.
 
 ---
 
-## 4. 双分支架构（贯穿 M3–M8）
-- **标准/主流分支**：scVI（`batch=sample_id`）/scANVI + scArches、Harmony、Seurat、RCTD、SpaGCN、Squidpy、DESeq2、CellRank、SCENIC+…
-- **纯 SCMG 分支**：**zero-shot 跨数据集 scRNA 整合 → 全局流形 → 细胞状态刻画**（**不掺传统算法**）。
-  ~~条件扩散轨迹 → CausalGenePredictor 因果~~ —— **已删除**（能力不存在，见铁律 6）。
-  > 🔴 **2026-10-03 更正**：此删除所依据的「能力不存在」**经核实为误**
-  > （`CausalGenePredictor` 真实存在，见上文 2026-10-03 更正块）。
-  > **条件扩散轨迹仍不做**（那是流形那条路的限制，确实缺肿瘤态）；
-  > 但**「拿扰动库对签名做逆向排序」是另一条用法，已解禁**，见 `10_niche/TARGET_REVERSAL_PREREG.md`。
-- 两分支**对照**（scIB 完整口径）；工具源码见 [`tools/`](tools/)。
-- 靶点/调控因子候选**只由标准分支产出**，且措辞为「候选」。
-
-> **⚠️ 2026-09-16 层级澄清**：本文档里"臂(arm)"和"分支(branch)"是**两个不同层级**，不得混用：
-> - **分支** = 顶层二分（**标准/主流分支** vs **纯 SCMG 分支**），两个分支**各自独立跑完整流程**后**互相对照**。
-> - **臂** = **标准分支内部**的批次处理对照（**Arm A 不校正** vs **Arm B Harmony on `sample_id`**），
->   共用同一套预处理之外的下游，只在 GP4c 分岔。
-> 因此 **Arm A/B 的对照结论只属于 M3-A**，**不得**与 M3-B 的 SCMG 对照并成一张表。
+## 3. General Checkpoints (checked at every step)
+- [ ] No `np.random` / hard-coded values / fake curves;
+- [ ] No silent default (falling back to some stage/label);
+- [ ] Scripts reproducible (deterministic + explicit seeds);
+- [ ] Outputs hashed; inputs and outputs traceable;
+- [ ] Parameters have a source in `docs/PARAMETERS_AND_SOURCES.md`.
 
 ---
 
-## 5. 数据来源与获取（**范围已收窄：仅两个配对数据集**）
+## 4. Dual-Branch Architecture (spanning M3–M8)
+- **Standard/mainstream branch**: scVI (`batch=sample_id`)/scANVI + scArches, Harmony, Seurat, RCTD, SpaGCN, Squidpy, DESeq2, CellRank, SCENIC+…
+- **Pure SCMG branch**: **zero-shot cross-dataset scRNA integration → global manifold → cell-state characterization** (**no mixing of traditional algorithms**).
+  ~~conditional diffusion trajectory → CausalGenePredictor causality~~ — **deleted** (capability does not exist, see iron law 6).
+  > 🔴 **2026-10-03 correction**: the "capability does not exist" this deletion was based on **was verified to be erroneous**
+  > (`CausalGenePredictor` really exists, see the 2026-10-03 correction block above).
+  > **The conditional diffusion trajectory is still not done** (that is a limitation of the manifold route, which genuinely lacks a tumor state);
+  > but **"reverse-ranking the signature against the perturbation library" is a different usage and has been unblocked**, see `10_niche/TARGET_REVERSAL_PREREG.md`.
+- The two branches are **compared** (full scIB caliber); tool source code is in [`tools/`](tools/).
+- Target/regulator candidates are **produced only by the standard branch**, and worded as "candidates".
 
-> **2026-09-15 修正**：配对患者数 **9 → 23**（P3–P25）。**旧值 9 是"仅下载 19/56 张空间切片"时的产物**，
-> 切片下载齐后按两张 GEO 权威表求交集实为 **23 例**。见 `00_ingest/cohort_registry.py` 的 `PAIRED_PATIENTS_MIN`。
-> **2026-09-12 收窄**：仅用 **`GSE308103`(snRNA) + `GSE307534`(Visium 空间)** —— 同一研究、**模态匹配（FFPE↔FFPE）**。
-> 三个 scRNA 队列（GSE131907/189357/148071）**移出范围**，存档 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
-
-- **单细胞/参考**：`GSE308103`（snRNA，75 样本 / 798,100 核实测）——**唯一含 AAH** 的单细胞资源；
-- **空间**：`GSE307534`（Visium CytAssist FFPE；GEO 56 样本 / 25 患者，**本地 56 张切片齐**，覆盖全部 **23 例**配对患者；仅 P1/P2 无 snRNA 不入配对）；
-- **LNM**：空转暂缺（~~GSE190811~~ 经核实为**乳腺癌**，已废）；
-- （范围外，已存档）`HRA001130`（sc，受控）预留接口 → `/home/eto/luad_invasion/luad_v2_out_of_scope/`；
-- TCGA-LUAD：仅表达 + 临床（**突变文件 0 字节，WES/TMB 永久禁用**）。
-
----
-
-## 5b. 环境约束与最简决定（Environment Constraints，2026-09-12 核实）
-
-> 本机环境**硬约束**，决定了工具选型与"哪些方法根本装不上"。**凡与之冲突的方案一律作废。**
-
-1. **无 GPU**（无 `/dev/nvidia*`，`torch.cuda.is_available()=False`）→ GPU 依赖方法（Boltz-2、cell2location、SysVI…）**CPU-only 或 ~42 万细胞下不可行**。
-   ⚠️ **2026-10-01 更正**：此处原把 **CellCharter** 列进 GPU 依赖名单，**不准确**——据其仓库文档，**GPU 非必需**；CellCharter 的真实阻塞是 **Python ≥3.10**（见第 2 条），不是 GPU。
-2. **仅 Python 3.8.10、无 conda** → 现代 DL 栈装不上：
-   - `cellcharter` 需 ≥3.9；`scvi-tools` 1.5.x（SysVI / scArches surgery）需 ≥3.10 → **在共享环境不可装**。
-   - **解**：需要现代 DL 时用**隔离环境**（micromamba from conda-forge）；PyPI 仅经镜像（`https://pypi.tuna.tsinghua.edu.cn/simple`），conda-forge 直连。
-3. **共享库 root 属主**（`/usr/local/lib/R/site-library`、`/usr/local/lib/python3.8/dist-packages`）→ **禁止把社区 DL 包 pip 进共享环境**：
-   - 曾装 `cellcharter` **静默把 torch 降到 1.12.1**，搞坏 `scvi`/`pytorch-lightning`（已手工回滚 torch→2.4.1+cu118、pytorch-lightning→1.5.10.post0、torchmetrics→0.7.3）。
-   - `scvi-tools 0.15.5` **保持**（pin `pytorch-lightning>=1.5,<1.6`）；装包一律进**个人库**（`~/.local/lib/python3.8/site-packages`、`~/R/.../4.2`）。
-4. **R 可装**：**CopyKAT**（先装 `RcppEigen`(Eigen 4.0) 到个人库，再 `transport`）、`coloc`、`ieugwasr`、`TwoSampleMR`。
-
-**对本计划的直接影响**：
-- M-1 §B 里"升级 scvi-tools 至 1.5.x"**不能在共享环境做** → 必须建**隔离 env（micromamba）**，或改用 **scvi 0.15.5 的可用能力**（无 SysVI/scArches surgery）并如实标注。
-- M2 主力 **CopyKAT** 与 M6 的 **CellCharter**：CopyKAT 可装（见上）；**CellCharter 需隔离 env**。
-- 任何"GPU 加速"表述须删或降级为 CPU。
+> **⚠️ 2026-09-16 level clarification**: in this document "arm" and "branch" are **two different levels** and must not be used interchangeably:
+> - **Branch** = the top-level dichotomy (**standard/mainstream branch** vs **pure SCMG branch**); the two branches **each run the full pipeline independently** and are then **compared against each other**.
+> - **Arm** = the batch-handling comparison **within the standard branch** (**Arm A no correction** vs **Arm B Harmony on `sample_id`**),
+>   sharing the same downstream outside preprocessing, diverging only at GP4c.
+> Therefore **the Arm A/B comparison conclusion belongs only to M3-A** and **must not** be merged with M3-B's SCMG comparison into a single table.
 
 ---
 
-## 6. 里程碑进度看板
+## 5. Data Sources and Acquisition (**scope already narrowed: only two paired datasets**)
 
-> **2026-09-16 重构**：本表原按 M 编号排序，与 §2.0 的实际执行序不一致（M2 被排在 M3 前）。
-> 现**改按执行序排列**，并补入此前完全缺失的 GP1–GP9 行。
+> **2026-09-15 correction**: paired-patient count **9 → 23** (P3–P25). **The old value 9 was an artifact of "only 19/56 spatial slices downloaded"**;
+> once the slices were fully downloaded, intersecting the two GEO-authoritative tables actually gives **23 cases**. See `PAIRED_PATIENTS_MIN` in `00_ingest/cohort_registry.py`.
+> **2026-09-12 narrowing**: use only **`GSE308103`(snRNA) + `GSE307534`(Visium spatial)** — the same study, **modality-matched (FFPE↔FFPE)**.
+> The three scRNA cohorts (GSE131907/189357/148071) are **moved out of scope**, archived at `/home/eto/luad_invasion/luad_v2_out_of_scope/`.
 
-| 序 | 检查点 | 模块 | 状态 | 过门 |
+- **Single-cell/reference**: `GSE308103` (snRNA, 75 samples / 798,100 verified measured) — the **only AAH-containing** single-cell resource;
+- **Spatial**: `GSE307534` (Visium CytAssist FFPE; GEO 56 samples / 25 patients, **all 56 slices present locally**, covering all **23 cases** of paired patients; only P1/P2 have no snRNA and are not paired);
+- **LNM**: spatial currently missing (~~GSE190811~~ verified as **breast cancer**, voided);
+- (out of scope, archived) `HRA001130` (sc, controlled access) as a reserved interface → `/home/eto/luad_invasion/luad_v2_out_of_scope/`;
+- TCGA-LUAD: expression + clinical only (**mutation files 0 bytes, WES/TMB permanently disabled**).
+
+---
+
+## 5b. Environment Constraints and Minimal Decisions (Environment Constraints, verified 2026-09-12)
+
+> These are **hard constraints** of this machine's environment; they determine the tool selection and "which methods simply cannot be installed". **Any plan conflicting with them is void.**
+
+1. **No GPU** (no `/dev/nvidia*`, `torch.cuda.is_available()=False`) → GPU-dependent methods (Boltz-2, cell2location, SysVI…) are **infeasible CPU-only or at ~420,000 cells**.
+   ⚠️ **2026-10-01 correction**: this originally listed **CellCharter** among GPU-dependent tools, which is **inaccurate** — per its repository docs, **GPU is not required**; CellCharter's real blocker is **Python ≥3.10** (see item 2), not GPU.
+2. **Python 3.8.10 only, no conda** → the modern DL stack cannot be installed:
+   - `cellcharter` requires ≥3.9; `scvi-tools` 1.5.x (SysVI / scArches surgery) requires ≥3.10 → **not installable in the shared environment**.
+   - **Solution**: when modern DL is needed, use an **isolated environment** (micromamba from conda-forge); PyPI only via mirror (`https://pypi.tuna.tsinghua.edu.cn/simple`), conda-forge via direct connection.
+3. **Shared libraries are root-owned** (`/usr/local/lib/R/site-library`, `/usr/local/lib/python3.8/dist-packages`) → **piping community DL packages into the shared environment is forbidden**:
+   - Installing `cellcharter` once **silently downgraded torch to 1.12.1**, breaking `scvi`/`pytorch-lightning` (manually rolled back torch→2.4.1+cu118, pytorch-lightning→1.5.10.post0, torchmetrics→0.7.3).
+   - `scvi-tools 0.15.5` is **kept** (pin `pytorch-lightning>=1.5,<1.6`); packages always go into **personal libraries** (`~/.local/lib/python3.8/site-packages`, `~/R/.../4.2`).
+4. **R installable**: **CopyKAT** (first install `RcppEigen`(Eigen 4.0) into the personal library, then `transport`), `coloc`, `ieugwasr`, `TwoSampleMR`.
+
+**Direct impact on this plan**:
+- "Upgrade scvi-tools to 1.5.x" in M-1 §B **cannot be done in the shared environment** → an **isolated env (micromamba)** must be created, or fall back to **scvi 0.15.5's available capabilities** (no SysVI/scArches surgery) with honest annotation.
+- M2's workhorse **CopyKAT** and M6's **CellCharter**: CopyKAT is installable (see above); **CellCharter needs an isolated env**.
+- Any "GPU-accelerated" statement must be deleted or downgraded to CPU.
+
+---
+
+## 6. Milestone Progress Board
+
+> **2026-09-16 restructuring**: this table was originally ordered by M number, inconsistent with the actual execution order in §2.0 (M2 was placed before M3).
+> It is now **reordered by execution order**, and the previously entirely missing GP1–GP9 rows have been added.
+
+| No. | Checkpoint | Module | Status | Gate |
 | :---: | :--- | :--- | :---: | :---: |
-| — | M0 输入冻结 | 输入 | ⚠️ 未过门 | ☐ |
-| — | M-1 计划整改 | 计划 | 🔶 进行中 | ☐ |
-| 1 | M1 QC/双体（🔶 降级为敏感性臂） | 质控 | ✅ 100% | ✅ |
-| 2 | **GP0** 表达对象重建 | 表达 | 🔶 **2026-09-16 按论文 QC 重做**；09-17 审计补校验 **13/0** | ☐ |
-| 3 | **GP4a** 预处理（SCTransform v2 → HVG 3000） | M3-A | ✅ **2026-09-17 全量完成** | ✅ |
-| 4 | **GP4b** 降维（PCA 50，无 ARI 护栏） | M3-A | ✅ **2026-09-17 全量完成** | ✅ |
-| 5 | **GP4c** 批次两臂（**Harmony 主** / 不校正对照） | M3-A | ✅ **2026-09-17 裁定：采用论文 Harmony 主口径** | ✅ |
-| 6 | **GP5** 分辨率选择（区间 0.5–0.8 × 5 种子 + AAH 护栏） | M3-A | ✅ **2026-09-17 签字 L1 `r*=0.6`**；指标4 认无效；**2026-09-21 检查点关闭**。🔴 **2026-09-22 重跑**：六谱系 `r*` 现行 **0.7/0.8/0.5/0.7/0.6/0.8**（上皮、成纤维带 `relaxed`），六份 JSON 用户本人签字；指标3 重算后**唯髓系不过线**（保留、登记缺陷）；种子 **T·NK→3、成纤维→4** | ✅ |
-| 7 | **GP6** 双标准注释 + κ（**只定"哪些是上皮"**） | M3-A | 🔶 **已跑、未签收**：见 `results/05_annotation/GP6_report.md`，产物 `gp6_cell_labels.csv.gz`（413,697 核） | ☐ |
-| 8 | **GP8a** **上皮**亚聚类 → 上皮亚群 | M3-A | ✅ **已完成（2026-09-22 夜跑），报告名 = `GP8c`（见下方编号分叉注记）**。上皮 `r*=0.7`/种子0 → **27 亚簇 / 133,384 核 / 0 簇被剔**；亚型 AT2 88,666 · AT1 30,320 · Ciliated 6,697 · Goblet/Mucous 3,587 · Basal 2,386 · Serous 1,728（Club/Ionocyte/Neuroendocrine/Tuft 未胜出，如实上报不凑满）。⚠️ **过门列仍空 = 未正式签收** | ☐ |
-| 9 | ~~**GP2** CNV **亚群**恶性精判~~ | **M2** | ⛔ **2026-09-24 已作废**（单细胞 CNV 失败退出）→ 改走**空转 SC0–SC4**（见 §M2 与 `08_spatial_deconv/SPATIAL_CNV_PREREG.md`）。⚠️ 原「等 GP8a」的依赖**已失效**（GP8a 实际早已完成） | ⛔ |
-| 10 | **GP8b** 其余 5 谱系亚聚类（不被 CNV 阻塞） | M3-A | ✅ **已完成（2026-09-22 夜跑，与 GP8a 同批，见 `GP8c_report.md`）**：T·NK `r*=0.8`/种子3（38 亚簇 63,078 核，剔 2 簇）、B·浆 `r*=0.6`/种子0（22 亚簇 22,915 核，剔 9 簇）、髓系 `r*=0.5`/种子0（27 亚簇 63,869 核，剔 1 簇，**S4 面板 12 型胜出**）、内皮 `r*=0.7`/种子0（**S4 面板 8 型胜出**）、成纤维 `r*=0.8`/种子4（33 亚簇）。六谱系**互斥且完备 = 413,697 核**。⚠️ 同 GP8a：**未签收** | ☐ |
-| 11 | **GP3** 指标后端冻结 → **GP7** scIB 双 panel | M3-A | ⬜ 0% | ☐ |
-| 12 | **GP9** SCMG 对照臂 | **M3-B** | ⬜ 0% | ☐ |
-| 13 | M4 跨模态 AAH | — | ⬜ 0% | ☐ |
-| 14 | M5 空间解卷积 | — | ⬜ 0% | ☐ |
-| 15 | M6 生态位 | — | 🟢 **预注册已签（2026-10-01）**；工具 = R `Banksy` 0.1.6（已装，零安装）。**2026-10-01 跑中**：HVG-3000 冻结（§3.1.1 = 逐切片 vst + Seurat `SelectIntegrationFeatures`，实测 **42.4 分钟**）→ 冒烟 **2/2 通过**（各约 1 分钟）→ **全网格 112/112**（56 张 × 两版 AGF；并发由用户 2026-10-01 裁定 **3 → 8**——单任务实测 **约 2 GB / 1 核**，并发只是资源旋钮、**不改任何结果**）→ 下游 **03→04→06→05 接力**。首张实测：最小的 P25（3,776 spot）跑满 40 格 **10.83 分钟**（≈14.9 秒/格）⇒ 112 跑约 58 h CPU，-P 8 下约 **8 小时**。🔴 **首跑全线死掉，根因两条、均已修**（2026-10-01 19:36 修复后重挂）：① `run_banksy_grid.sh` 用 `export -f` + `xargs bash -c`，但本机 PATH 里 `/home/eto/.local/bin/bash` 是 `#!/bin/sh` 转发壳，**dash 会丢掉 `BASH_FUNC_*`** ⇒ 函数传不下去（详见记忆 `env_bash_name_resolves_to_dash_wrapper`）⇒ 改**自派发** `xargs ... /bin/bash "$SELF" __run_one`；② 同一脚本的内存守卫写成 `if free_gb -lt "$MIN_FREE_GB"`，是把 `-lt 80` 当**参数**喂函数、**恒真** ⇒ 112 个任务会被全部误判成「内存不足」跳过（实测可用 252 GB 仍打印「252 GB < 80」）⇒ 改先取数再比 `fg="$(free_gb)"; (( fg < MIN_FREE_GB ))`。🟢 **2026-10-01 20:00 加装无人值守守护**（用户令：断点 + 内存自适应 + 中间结果不丢 + 脱离会话）：**① `10_niche/07_supervisor.sh`**（PPID=1 常驻，唯一父进程，自己拉主链条与下游）——每 30 秒把内存/进度写进 `results/10_niche/banksy/memory_timeline.tsv`；链条或下游**意外退出就自动重挂**（各最多 10 次、带退避），下游跑完写 `results/10_niche/_DOWNSTREAM_DONE` 后守护自行退出。**② 驱动器加断点续跑**——开工读完成表，跳过已是 DONE 的 (切片, AGF) **唯一对**（重跑会留多行，进度一律按唯一对计）。**③ 内存闸门由「不足就跳过」改成「等」**——不再有 SKIP_MEM 把活悄悄丢掉；守护内存吃紧时置暂停旗标 `banksy/_PAUSE`，驱动器一并尊重；守护不在则旗标自动失效清掉，不会永久卡死；等超 1 小时才记 `SKIP_MEM_TIMEOUT`。**④ 内存自适应**——可用 < **60 GB** 置暂停旗标（不再起新任务，在跑的不动）；< **40 GB** 收掉**最新起**的那个任务（投入最少，续跑会重算它）。**⑤ `02_banksy_grid.R` 落盘改原子写**（先写 `.tmp` 再改名）——被中途杀掉只会留半截 `.tmp`，正式文件要么完整旧版要么完整新版，绝不会被下游当成完整结果。⚠️ 冒烟改用**独立完成表** `banksy/_status_smoke.tsv`（开工前清空）——它那 2 行若落进正式表，续跑会把 P25 两版误判成「已完成」而跳过。P25 的 40 格正式产物（-P3 那轮 19:48 跑完，10.83 分钟，gz 完好、manifest 40 行、5 种子）**保留**并回填完成表，省下重跑。🔴 **§5.1 深度配平守卫（672 次重跑）脚本未写，须等 03 出配置后再挂**。🟢 **2026-10-02 09:23:52 全网格跑完：112/112 唯一对全 DONE、零 FAIL**（20:09 起，墙钟 **13 小时 14 分**；实测**内存全程富余 215–252 GB**，40 GB 硬地板与 60 GB 派活线**从未触发**）。🔴 **过门结果：闸 1（跨种子 ARI ≥ 0.90）实测「存活档 0 / 全部档 40」，`use_agf` 两版都一样** ⇒ **M6-3 判据未达标**；`03_consensus.R` 打到「按 rule=frac_ge 在高端 λ 里没有存活档；回落到全部档再选」后仍选参（agfT `k_geom=18/λ=1.0/r=1.0`，agfF `18/1.0/0.5`），**该回落行为预注册未写、属实现先于签字的偏离**。选中档跨张 ARI 中位仅 **0.721 / 0.711**、通过率 **0.02 / 0.04**。🟢 **用户 2026-10-02 裁定「A」（已写入 `NICHE_PREREG.md` §4.1＋§12-⑪＋签字位）**：**闸 1 保持原样、如实报 FAIL，不放松阈值不事后重签（法则 3.2）**；本套 **16 域（K\*=16）降级为「探索性 / 敏感性臂」，正文不得当「通过预注册的主结果」写**；报告须与结果同页出现「闸 1 FAIL」，**不得**用 §3.5 的 K\* 稳定性（0.6548/0.6526）替代或掩盖它（那是跨切片画像归并、不是逐切片跨种子可复现性）。⇒ **本臂当前无主结果**，若要出主结果须**另立预注册**。旁证（已落盘，必须并报）：§3.5 共识 **K\*=16**；§3.5 RCTD 组成对齐敏感性 **ARI = 0.225 / 0.247 ⇒ 触发预设分支「生态位定义对方法敏感」**。🔴 **下游「无声死」已查明，是误判**：下游接力并非被外部杀掉，而是 `09_postrun_chain.sh` 里 **`06_coverage_guard.R` 报 rc=1 ⇒ `exit 3` 就地停**（日志里那行 `!! … 失败` 一直在，我先前 grep 漏了）⇒ 每轮 03(≈5 min)→04(≈4 min)→**06 秒崩** ⇒ 约 9 分钟一轮，才被误读成「7–8 分钟无声消失」。**根因（我自己的 bug）**：`median()` 对**整数**向量**按元素个数奇偶返回不同类型**（奇数⇒integer、偶数⇒double）⇒ `data.table` 按 `slide` 分组时各切片类型不一，直接报 `Column 3 of result for group 2 is type 'integer' but expecting type 'double'` ⇒ 已加 `as.numeric()` **只统一存储类型、数值不变**。03/04 两版产物在反复重跑中**已完整落盘**；**06 修复后已单独跑通**；`05_spatial_stats.py` 尚未跑。⚠️ 守护侧已加 `_run_postrun_traced.sh` 验尸壳（记录 rc/信号/存活秒数到 `logs/_postrun_exit.log`），**保留但不改口径**——它只是保险，真凶已另查明。🔴 **2026-10-02 整条臂按平台合规档重签（`NICHE_PREREG.md` §13 S4-REV/S6-REV，用户「开工」签发）**：查出 **λ 语义套错平台档位**——我们数据是 **10x Visium v1/v2、55 µm spot**，BANKSY 官方文档对其**域分割**推荐 **λ=0.2**（通用规则「低 λ 分型 / 高 λ 分域」**只对高分辨技术成立**）；S4 签字时把 0.2 从网格删掉、主候选取高端，闸 1 全档 FAIL 后由**未预注册的兜底规则**选参落到 **λ=1.0**（＝把本 spot 自身表达权重清零）⇒ 平台合规的那个档**从头到尾没被跑过**。新网格 **λ {0, 0.2, 0.5, 0.8}（1.0 退出）/ res {0.5, 0.6, 0.8} / k_geom {6, 18}**；**λ=0.2 与 k_geom=18 固定为主档、不再由网格选**（§13.5）；排序改用 **C1 跨种子 ARI 中位**；**PAC 只报数值、不设硬线**（`PAC < 0.1` 未能从原始文献复核 ⇒ 不设线）；**C3 空间连贯性为唯一硬门**，逐切片 `coh_mean > 零分布 q95`（单侧 α=0.05 置换），跨切片**用户裁定「≥90% 切片过」**（§13.6；FAIL 时如实报错、**无静默回落**）。旧 λ=1.0 产物按**改名不删**归档（`banksy_STALE_lam1.0_20261002` / `consensus_STALE_lam1.0_20261002` / `spatial_stats_STALE_lam1.0_20261002` / `depth_guard_STALE_lam1.0_20261002`）。**2026-10-02 11:00 全链路脱离式重挂**（`07_supervisor.sh` PPID=1），顺序 **02 → 03 → 04 → 06 → 05 → §5.1 深度守卫**（深度守卫已接到 `09_postrun_chain.sh` 末位，因 `08_depth_guard.R` 须读 03 出的配置）。🔴 **挂载时我自己捅了一个洞、已修**：清旧产物时 `rm -rf $NICHE/banksy` 把**正在飞行中**的 8 个 worker 输出目录＋`_status.tsv` 表头一起删了——driver 只在文件缺失时写表头，后续 `>>` 会造出**无表头**文件 ⇒ `awk 'NR>1'` 漏计第一条 DONE ⇒ **永远到不了 112**；发现时该表**尚不存在**（⇒ zero 完成、**无数据丢失**），已**补回 56 个切片目录 + 重建表头**，在跑任务无需重启。另发现一条 **10:52:30 起、PPID=1 的链路**（无守护伴随），核对后**跑的是新网格**（实时日志 λ 0/0.2/0.5/0.8、res 0.5/0.6/0.8），予以保留续跑；`ps` 清点确认**全机只有一条链路、一个守护**（无重复拉起风险）。🟢 **2026-10-02 12:52 运行中健康**：**37/112 DONE、零 FAIL**；8 worker；内存 **222 GB 可用**（派活线 60/硬地板 40 从未触发，守护心跳 `paused=0`）；实测速率 **0.31 对/分钟** ⇒ **ETA 约 4 小时（完成约 17:00）**。**参数体检通过**：λ{0,0.2,0.5,0.8}/res{0.5,0.6,0.8}/k_geom{6,18}、npcs=20、Leiden k.neighbors=50、CP10K+log1p、种子 0:4、N_PERM=200、HVG=3000、C3 门、`K_GRID`、05 的 `n_perms=1000/seed=20261001/n_neighs=6/DIST_UM` 全对得上已签口径（唯一待裁定仍是 §3.4 补-3 的 K 稳定性阈）。🔴 **两条新登记（2026-10-02；`NICHE_PREREG.md` §12-⑫/⑬ ＋ §3.2.2 交叉注 ＋ §13.6 补记；均"只登记、不改数字不改门"）**：⑫ **C3 硬门在本队列判别力弱**——实时 `coh_mean` 0.66–0.90 vs 零分布 q95 0.08–0.19（z≈140–370），**连 `λ=0.0`（完全不用空间信息）那档也过** ⇒ C3 只能排除"明显反空间"、**不能证明划分用了空间信息**，本队列上**不承担筛选作用**（实际定档靠 C1）；**门不改**，但报告**不得**把"C3 通过"写成"空间结构成立"。⑬ **尺度口径在本文件内自相矛盾**——§3.2.2 记实测点距 **91.1 µm**（395.3 px × 0.2304），§13.0 记 **99.03 µm**（同 µm/px 下应对应 429.8 px），**两数互斥**；`05_spatial_stats.py` 注释沿用 91；`UM_PER_PX` 是**距离壳换算的唯一系数**⇒ 若真值 99.03，壳的**实际物理尺度与标签差约 9%**（05 注释"只影响报数不影响图"之说**待核**）；**数字一律未改**，须裁定真值并统一三处。🔴 **2026-10-02 13:25 溯源补记（用户问「这个门控参数来自原文吗」）**：逐条核过，**C3 不是任何原文推荐的门，是本项目自建的**——① **源论文（彭 2026 *Cancer Cell*，本数据出处）没有空间分域门**，它对 Visium 的用法是 snRNA 标签**返还**，自身惯例是「混合簇直接删 + argmax」，**不设闸、不留"未定义"**；② **BANKSY 也没有**——本机 `Banksy` 0.1.6 的 `NAMESPACE` 对外只导出 `getARI`/`plotARI`/`ConnectClusters`/`SmoothLabels` 等，**不存在任何"空间连贯性"函数**，BANKSY 原文评估分域用的是**对真值的 ARI**（DLPFC 上也只有 ≈0.35）⇒ 它**既未提供、也未推荐**任何连贯性阈值；③ 逐件溯源：**动机** = SpatialARI 2025（"普通 ARI 完全忽略空间位置"），**`6 邻居`** = Visium 六角栅格**一环的几何常数**、非推荐值，**`标签置换零分布 + q95`** = 通用置换检验构造、**本项目自建**（`03_consensus.R` 手算，非包函数），**`≥90% 切片过`** 的 **0.90 借自本项目 GP5**（§12-③ 已登记"借来的、在 spot 尺度上未标定"）、**而"跨切片用比例"这件事本身是 2026-10-02 用户拍板**。⇒ **报告里不得把 C3 写成"有文献依据的判据"**，它是**自建守卫**（其"判别力弱"见上条 ⑫，二者同源）。⚠️ **别混**：真正有「原文推荐」的是**参数**（λ=0.2 / `k_geom`=18 / `npcs`=20 / res≈0.55，§13.0 官方逐字），**不是这条门**；且那些参数出自 **BANKSY 原文**、**不是彭 2026**（彭 2026 只给了它 snRNA 聚类的 res 0.5–0.8）。**已写入 `NICHE_PREREG.md` §13.2 表格 C3 行「外部依据」格 ＋ §13.6 新增溯源补记块；表格竖线数已复核（6 根/行，未写坏）。**🟢 **2026-10-02 13:22 运行中健康**：**43/112 DONE、零 FAIL**；8 worker 在飞（P6_AAH / P10_MIA / P14_LUAD / P12_AIS，各两版 AGF）；内存 **229 GB 可用**（`free` 口径 170 GB free / 36 GB used，派活线 60/硬地板 40 未触发）；实测单作业时长 **31–38 分钟**（近段 6 个正式作业均值 ≈34 分钟；冒烟那 8 个 1–15 分钟的别计入）⇒ **ETA 约 5 小时（完成约 18:00–18:30）**，累计速率约 **0.29 对/分钟**。🔴 **2026-10-02 18:31 检查时逮到一个会被静默卡死在 111/112 的缺口（是我先前那次 `rm -rf` 的后遗症，不查就发现不了）**：`_status.tsv` 里 **P25_LUAD 只有 `agfT` 有 DONE 行，`agfF` 一行都没有**——既不是 DONE 也不是 FAIL，**表里查无此对**。查 `logs/nice_grid_GSM9226223_P25_LUAD_agfF.log` 尾部见真相：该作业 **11:01:35 rc=1**，报 `atomic_write -> gzfile` 打不开 `domains_agfF.tsv.gz.tmp`（**输出目录正被我在 10:54 的 `rm -rf` 删掉**），而它那行 `FAIL(rc=1)` 由 `>>` 写进了**已被 unlink 的旧 inode** ⇒ 落不到新表里。后果链条：驱动按**唯一对只跑一遍**、不会回头 ⇒ **永远停在 111**；守护要 `d >= 112` 才 `launch_post` ⇒ **下游 03→04→06→05 永不启动**，要等 **72 小时兜底**才退出（无声卡死，比报 FAIL 更坏）。**处置（已完成）**：用既有机制补跑这一对——`run_banksy_grid.sh __run_one GSM9226223_P25_LUAD FALSE`（脱离式，PPID=1，18:32:18 起，内存 243 GB 富余）⇒ 成功后 DONE 归 **112**，下游照常自动接力；该进程名同时含 `run_banksy_grid.sh`，会顺带让守护的 `grid_alive` 判真、**避免多挂一次链条**。🔴 **教训（已并入记忆）**：删掉**完成表所在的目录**，丢的不只是目录——**还会丢掉"失败行"，使某个对既不在 DONE 也不在 FAIL 里**；**逐对核进度必须用 `comm`（想要 112 对 vs 已有 DONE 对）比对，只看 DONE 计数发现不了这种缺失**。 | ☐ |
-| 16 | M7 靶点(传统轨道) | — | 🟢 M7a 口径已签（并入 `10_niche/NICHE_PREREG.md` §6）；**TCGA-LUAD 六步清洗已出数：483 例 / 177 死（36.6%）**，**等 M6 生态位签名**后跑 ssGSEA + 多变量 Cox + KM；M7b/M8 未动 | ☐ |
-| 17 | M8 对接 | — | ⬜ 0% | ☐ |
+| — | M0 Input freeze | Input | ⚠️ Gate not passed | ☐ |
+| — | M-1 Plan remediation | Plan | 🔶 In progress | ☐ |
+| 1 | M1 QC/doublets (🔶 downgraded to sensitivity arm) | QC | ✅ 100% | ✅ |
+| 2 | **GP0** Expression object rebuild | Expression | 🔶 **redone 2026-09-16 with the paper QC**; 09-17 audit supplemented validation **13/0** | ☐ |
+| 3 | **GP4a** Preprocessing (SCTransform v2 → HVG 3000) | M3-A | ✅ **full run completed 2026-09-17** | ✅ |
+| 4 | **GP4b** Dimensionality reduction (PCA 50, no ARI guardrail) | M3-A | ✅ **full run completed 2026-09-17** | ✅ |
+| 5 | **GP4c** Two batch arms (**Harmony main** / no-correction control) | M3-A | ✅ **2026-09-17 ruling: adopt the paper's Harmony main caliber** | ✅ |
+| 6 | **GP5** Resolution selection (range 0.5–0.8 × 5 seeds + AAH guardrail) | M3-A | ✅ **2026-09-17 sign-off L1 `r*=0.6`**; metric 4 acknowledged ineffective; **2026-09-21 checkpoint closed**. 🔴 **2026-09-22 rerun**: six lineages' `r*` currently **0.7/0.8/0.5/0.7/0.6/0.8** (epithelial, fibroblast carry `relaxed`), six JSONs signed by the user personally; metric 3 after recomputation **only myeloid fails the line** (kept, registered as a defect); seeds **T·NK→3, fibroblast→4** | ✅ |
+| 7 | **GP6** Dual-standard annotation + κ (**identifies only "which cells are epithelial"**) | M3-A | 🔶 **run, not signed off**: see `results/05_annotation/GP6_report.md`, artifact `gp6_cell_labels.csv.gz` (413,697 nuclei) | ☐ |
+| 8 | **GP8a** **Epithelial** subclustering → epithelial subclusters | M3-A | ✅ **Completed (2026-09-22 night run), report named `GP8c` (see the numbering-fork note below)**. Epithelial `r*=0.7`/seed 0 → **27 subclusters / 133,384 nuclei / 0 clusters removed**; subtypes AT2 88,666 · AT1 30,320 · Ciliated 6,697 · Goblet/Mucous 3,587 · Basal 2,386 · Serous 1,728 (Club/Ionocyte/Neuroendocrine/Tuft did not win out, honestly reported rather than padded to fill). ⚠️ **The gate column is still empty = not formally signed off** | ☐ |
+| 9 | ~~**GP2** CNV **subcluster** malignant fine calling~~ | **M2** | ⛔ **voided 2026-09-24** (single-cell CNV failed and exited) → switch to **spatial SC0–SC4** (see §M2 and `08_spatial_deconv/SPATIAL_CNV_PREREG.md`). ⚠️ The original "wait for GP8a" dependency **is void** (GP8a was in fact long completed) | ⛔ |
+| 10 | **GP8b** Subclustering of the remaining 5 lineages (not blocked by CNV) | M3-A | ✅ **Completed (2026-09-22 night run, same batch as GP8a, see `GP8c_report.md`)**: T·NK `r*=0.8`/seed 3 (38 subclusters, 63,078 nuclei, 2 clusters removed), B·plasma `r*=0.6`/seed 0 (22 subclusters, 22,915 nuclei, 9 clusters removed), myeloid `r*=0.5`/seed 0 (27 subclusters, 63,869 nuclei, 1 cluster removed, **S4 panel 12 types won out**), endothelial `r*=0.7`/seed 0 (**S4 panel 8 types won out**), fibroblast `r*=0.8`/seed 4 (33 subclusters). Six lineages **mutually exclusive and complete = 413,697 nuclei**. ⚠️ Same as GP8a: **not signed off** | ☐ |
+| 11 | **GP3** Metric backend freeze → **GP7** scIB dual panel | M3-A | ⬜ 0% | ☐ |
+| 12 | **GP9** SCMG control arm | **M3-B** | ⬜ 0% | ☐ |
+| 13 | M4 Cross-modal AAH | — | ⬜ 0% | ☐ |
+| 14 | M5 Spatial deconvolution | — | ⬜ 0% | ☐ |
+| 15 | M6 Niche | — | 🟢 **Pre-registration signed (2026-10-01)**; tool = R `Banksy` 0.1.6 (already installed, zero install). **2026-10-01 running**: HVG-3000 frozen (§3.1.1 = per-slice vst + Seurat `SelectIntegrationFeatures`, measured **42.4 minutes**) → smoke test **2/2 passed** (~1 minute each) → **full grid 112/112** (56 slices × two AGF versions; concurrency ruled by the user on 2026-10-01 **3 → 8** — a single task measured **~2 GB / 1 core**, concurrency is only a resource knob and **changes no result**) → downstream **03→04→06→05 relay**. First-slice measurement: the smallest P25 (3,776 spots) ran all 40 cells in **10.83 minutes** (≈14.9 s/cell) ⇒ 112 runs ≈ 58 h CPU, ≈ **8 hours** at -P 8. 🔴 **The first run died across the board, two root causes, both fixed** (remounted after the fix at 2026-10-01 19:36): ① `run_banksy_grid.sh` used `export -f` + `xargs bash -c`, but in this machine's PATH `/home/eto/.local/bin/bash` is a `#!/bin/sh` forwarding shell, and **dash drops `BASH_FUNC_*`** ⇒ functions do not propagate (see memory `env_bash_name_resolves_to_dash_wrapper`) ⇒ switched to **self-dispatch** `xargs ... /bin/bash "$SELF" __run_one`; ② the same script's memory guard was written as `if free_gb -lt "$MIN_FREE_GB"`, feeding `-lt 80` to the function as an **argument**, which is **always true** ⇒ all 112 tasks would be misjudged as "insufficient memory" and skipped (measured: 252 GB available yet it still printed "252 GB < 80") ⇒ changed to fetch the value first then compare, `fg="$(free_gb)"; (( fg < MIN_FREE_GB ))`. 🟢 **2026-10-01 20:00 added an unattended supervisor** (user order: checkpoint + memory adaptivity + no loss of intermediate results + session-detached): **① `10_niche/07_supervisor.sh`** (resident with PPID=1, the sole parent process, launching the main chain and downstream itself) — every 30 seconds writes memory/progress into `results/10_niche/banksy/memory_timeline.tsv`; if the chain or downstream **exits unexpectedly it automatically remounts** (up to 10 times each, with backoff); once downstream finishes it writes `results/10_niche/_DOWNSTREAM_DONE` and the supervisor exits on its own. **② Driver given checkpoint-resume** — on startup it reads the completion table and skips (slice, AGF) **unique pairs** already DONE (reruns leave multiple rows, so progress is always counted by unique pair). **③ The memory gate changed from "skip if insufficient" to "wait"** — no more SKIP_MEM quietly dropping work; when the supervisor is tight on memory it sets a pause flag `banksy/_PAUSE`, which the driver also respects; if the supervisor is absent the flag auto-expires and is cleared, so it will not deadlock permanently; only after waiting over 1 hour is `SKIP_MEM_TIMEOUT` recorded. **④ Memory adaptivity** — available < **60 GB** sets the pause flag (no new tasks started, running ones untouched); < **40 GB** kills the **most recently started** task (least invested, a rerun will recompute it). **⑤ `02_banksy_grid.R` writes to disk atomically** (write `.tmp` first, then rename) — being killed midway leaves only a half `.tmp`, and the official file is either the complete old version or the complete new version, never mistaken by downstream for a complete result. ⚠️ The smoke test was switched to an **independent completion table** `banksy/_status_smoke.tsv` (cleared before starting) — if its 2 rows landed in the official table, a resume would misjudge both P25 versions as "already complete" and skip them. P25's 40 official cells (the -P3 round, finished 19:48, 10.83 minutes, gz intact, manifest 40 rows, 5 seeds) are **retained** and back-filled into the completion table, saving a rerun. 🔴 **§5.1 depth-balancing guard (672 reruns): the script is not written and must be attached after 03 produces the configuration**. 🟢 **2026-10-02 09:23:52 full grid finished: 112/112 unique pairs all DONE, zero FAIL** (started 20:09, wall clock **13 hours 14 minutes**; measured **memory was in surplus throughout, 215–252 GB**, the 40 GB hard floor and 60 GB dispatch line **never triggered**). 🔴 **Gate result: Gate 1 (cross-seed ARI ≥ 0.90) measured "0 surviving cells / 40 total cells", identical for both `use_agf` versions** ⇒ **the M6-3 criterion is unmet**; `03_consensus.R` printed "under rule=frac_ge there is no surviving cell in the high-λ range; falling back to all cells and selecting again" and still selected parameters (agfT `k_geom=18/λ=1.0/r=1.0`, agfF `18/1.0/0.5`), and **this fallback behavior was not written in the pre-registration — it is an implementation-precedes-sign-off deviation**. The selected cell's cross-slice median ARI is only **0.721 / 0.711**, pass rate **0.02 / 0.04**. 🟢 **User ruling "A" on 2026-10-02 (already written into `NICHE_PREREG.md` §4.1＋§12-⑪＋the signature slot)**: **keep Gate 1 as is, report FAIL honestly, do not relax the threshold and do not re-sign after the fact (Rule 3.2)**; this set of **16 domains (K\*=16) is downgraded to an "exploratory / sensitivity arm", and the main text must not write it as a "pre-registration-passing main result"**; the report must show "Gate 1 FAIL" on the same page as the result, and **must not** replace or mask it with the §3.5 K\* stability (0.6548/0.6526) (that is cross-slice profile merging, not per-slice cross-seed reproducibility). ⇒ **This arm currently has no main result**; to produce one, a **separate pre-registration** is required. Corroborating evidence (already on disk, must be reported alongside): §3.5 consensus **K\*=16**; §3.5 RCTD composition-alignment sensitivity **ARI = 0.225 / 0.247 ⇒ triggers the preset branch "niche definition is sensitive to method"**. 🔴 **The downstream "silent death" has been identified as a misjudgment**: the downstream relay was not killed externally; rather in `09_postrun_chain.sh` **`06_coverage_guard.R` reported rc=1 ⇒ `exit 3` stopped it in place** (that `!! … 失败` line was in the log all along; my earlier grep missed it) ⇒ each round 03(≈5 min)→04(≈4 min)→**06 crashed in seconds** ⇒ about 9 minutes per round, which was misread as "silently vanishing in 7–8 minutes". **Root cause (my own bug)**: `median()` for **integer** vectors **returns a different type depending on element-count parity** (odd⇒integer, even⇒double) ⇒ when `data.table` groups by `slide`, the slice types differ, directly erroring with `Column 3 of result for group 2 is type 'integer' but expecting type 'double'` ⇒ added `as.numeric()`, which **only unifies the storage type, values unchanged**. Both 03/04 product versions **landed in full** across the repeated reruns; **06 has since run through separately after the fix**; `05_spatial_stats.py` has not yet run. ⚠️ The supervisor side added a `_run_postrun_traced.sh` post-mortem shell (recording rc/signal/lifetime seconds into `logs/_postrun_exit.log`), **retained but without changing the caliber** — it is only insurance, since the real culprit was identified separately. 🔴 **2026-10-02 the entire arm re-signed under the platform-compliant cell (`NICHE_PREREG.md` §13 S4-REV/S6-REV, issued by the user's "commence work")**: it was discovered that **the λ semantics were applied to the wrong platform tier** — our data is **10x Visium v1/v2, 55 µm spots**, and BANKSY's official docs recommend **λ=0.2** for its **domain partitioning** (the general rule "low λ for typing / high λ for domain partitioning" **holds only for high-resolution technologies**); when S4 was signed, 0.2 was deleted from the grid and the main candidate took the high end, and after Gate 1 FAILed across all cells it fell — via an **un-pre-registered fallback rule** — to **λ=1.0** (= zeroing this spot's own expression weight) ⇒ the platform-compliant cell **was never run from start to finish**. New grid **λ {0, 0.2, 0.5, 0.8} (1.0 withdrawn) / res {0.5, 0.6, 0.8} / k_geom {6, 18}**; **λ=0.2 and k_geom=18 are fixed as the main cell, no longer selected by the grid** (§13.5); ranking switched to the **C1 cross-seed median ARI**; **PAC reports the value only, no hard line** (`PAC < 0.1` could not be re-verified from the primary literature ⇒ no line set); **C3 spatial coherence is the sole hard gate**, per-slice `coh_mean > null-distribution q95` (one-sided α=0.05 permutation), cross-slice **user ruling "≥90% of slices pass"** (§13.6; on FAIL report the error honestly, **no silent fallback**). The old λ=1.0 products are archived by **rename, not delete** (`banksy_STALE_lam1.0_20261002` / `consensus_STALE_lam1.0_20261002` / `spatial_stats_STALE_lam1.0_20261002` / `depth_guard_STALE_lam1.0_20261002`). **2026-10-02 11:00 full-pipeline session-detached remount** (`07_supervisor.sh` PPID=1), order **02 → 03 → 04 → 06 → 05 → §5.1 depth guard** (the depth guard has been attached to the end of `09_postrun_chain.sh`, since `08_depth_guard.R` must read the configuration produced by 03). 🔴 **While mounting I poked a hole myself, since fixed**: while clearing old products, `rm -rf $NICHE/banksy` deleted the **in-flight** 8 worker output directories plus the `_status.tsv` header — the driver writes the header only when the file is missing, so a subsequent `>>` creates a **headerless** file ⇒ `awk 'NR>1'` undercounts the first DONE ⇒ **it can never reach 112**; when discovered the table **did not yet exist** (⇒ zero complete, **no data loss**), and I **restored the 56 slice directories + rebuilt the header**, with no need to restart running tasks. Separately a **chain with PPID=1 started at 10:52:30** (not accompanied by a supervisor) was found, and after checking it was **running the new grid** (real-time log λ 0/0.2/0.5/0.8, res 0.5/0.6/0.8), so it was kept running; a `ps` count confirms **there is only one chain and one supervisor on the whole machine** (no risk of a duplicate launch). 🟢 **2026-10-02 12:52 healthy while running**: **37/112 DONE, zero FAIL**; 8 workers; memory **222 GB available** (the dispatch line 60 / hard floor 40 never triggered, supervisor heartbeat `paused=0`); measured rate **0.31 pairs/minute** ⇒ **ETA about 4 hours (finish about 17:00)**. **Parameter check passed**: λ{0,0.2,0.5,0.8}/res{0.5,0.6,0.8}/k_geom{6,18}, npcs=20, Leiden k.neighbors=50, CP10K+log1p, seeds 0:4, N_PERM=200, HVG=3000, the C3 gate, `K_GRID`, and 05's `n_perms=1000/seed=20261001/n_neighs=6/DIST_UM` all match the signed caliber (the only item still awaiting a ruling remains the K-stability threshold of §3.4 supplement-3). 🔴 **Two new registrations (2026-10-02; `NICHE_PREREG.md` §12-⑫/⑬ ＋ the §3.2.2 cross-note ＋ the §13.6 addendum; both "register only, change no number and no gate")**: ⑫ **The C3 hard gate has weak discriminating power on this cohort** — real-time `coh_mean` 0.66–0.90 vs null-distribution q95 0.08–0.19 (z≈140–370), and **even the `λ=0.0` cell (using no spatial information at all) passes** ⇒ C3 can only rule out "clearly anti-spatial" and **cannot prove that the partition used spatial information**; on this cohort it **plays no filtering role** (the actual cell choice rests on C1); **the gate is unchanged**, but the report **must not** write "C3 passed" as "spatial structure established". ⑬ **The scale caliber is self-contradictory within this file** — §3.2.2 records the measured spot spacing **91.1 µm** (395.3 px × 0.2304), §13.0 records **99.03 µm** (which at the same µm/px should correspond to 429.8 px), **the two numbers are mutually exclusive**; the `05_spatial_stats.py` comment carries 91 over; `UM_PER_PX` is **the sole coefficient for the distance-shell conversion** ⇒ if the true value is 99.03, the shell's **actual physical scale differs from the label by about 9%** (the 05 comment's claim "only affects reported numbers, not the figure" **awaits verification**); **no number has been changed**, and the true value must be ruled on and unified across the three places. 🔴 **2026-10-02 13:25 provenance addendum (the user asked "does this gating parameter come from the paper")**: checked item by item, **C3 is not a gate recommended by any source paper — it is project-built** — ① **the source paper (Peng 2026 *Cancer Cell*, the origin of this data) has no spatial domain-partitioning gate**; its use of Visium is to **transfer** snRNA labels back, its own convention is "delete mixed clusters directly + argmax", and it **sets no gate and leaves no "undefined"**; ② **nor does BANKSY** — this machine's `Banksy` 0.1.6 `NAMESPACE` exports only `getARI`/`plotARI`/`ConnectClusters`/`SmoothLabels` and the like, and **no "spatial coherence" function exists**; BANKSY's original evaluation of domain partitioning uses **ARI against ground truth** (only ≈0.35 even on DLPFC) ⇒ it **neither provides nor recommends** any coherence threshold; ③ item-by-item provenance: the **motivation** = SpatialARI 2025 ("ordinary ARI completely ignores spatial location"), the **`6 neighbors`** = a **geometric constant of one ring** of the Visium hexagonal grid, not a recommended value, the **`label-permutation null distribution + q95`** = a generic permutation-test construction, **project-built** (computed by hand in `03_consensus.R`, not a package function), the **`≥90% of slices pass`** threshold's **0.90 borrowed from this project's GP5** (§12-③ already registered as "borrowed, uncalibrated at spot scale"), and **the very act of "using a proportion across slices" was the user's call on 2026-10-02**. ⇒ **The report must not write C3 as a "criterion with literature support"**; it is a **project-built guard** (its "weak discriminating power" is the previous item ⑫; the two are the same source). ⚠️ **Do not conflate**: what genuinely has "source-paper recommendation" are the **parameters** (λ=0.2 / `k_geom`=18 / `npcs`=20 / res≈0.55, official verbatim in §13.0), **not this gate**; and those parameters come from the **BANKSY paper**, **not Peng 2026** (Peng 2026 gave only res 0.5–0.8 for its snRNA clustering). **Already written into `NICHE_PREREG.md` §13.2 table's C3-row "external basis" cell ＋ the new §13.6 provenance-addendum block; the table pipe count was re-checked (6 per row, not broken).** 🟢 **2026-10-02 13:22 healthy while running**: **43/112 DONE, zero FAIL**; 8 workers in flight (P6_AAH / P10_MIA / P14_LUAD / P12_AIS, each two AGF versions); memory **229 GB available** (`free` reading 170 GB free / 36 GB used, dispatch line 60 / hard floor 40 not triggered); measured per-job duration **31–38 minutes** (the recent 6 official jobs average ≈34 minutes; exclude the 8 smoke ones of 1–15 minutes) ⇒ **ETA about 5 hours (finish about 18:00–18:30)**, cumulative rate ≈ **0.29 pairs/minute**. 🔴 **2026-10-02 18:31 during inspection a gap was caught that would silently stall at 111/112 (an after-effect of my earlier `rm -rf`, invisible unless you look)**: in `_status.tsv` **P25_LUAD has a DONE row only for `agfT`, and not a single row for `agfF`** — neither DONE nor FAIL, **the table has no such pair**. Looking at the tail of `logs/nice_grid_GSM9226223_P25_LUAD_agfF.log` shows the truth: that job **11:01:35 rc=1**, reporting that `atomic_write -> gzfile` could not open `domains_agfF.tsv.gz.tmp` (**the output directory had just been deleted by my 10:54 `rm -rf`**), and its `FAIL(rc=1)` row was written by `>>` into the **already-unlinked old inode** ⇒ it could not land in the new table. Consequence chain: the driver **runs each unique pair only once** and never loops back ⇒ **it stalls at 111 forever**; the supervisor requires `d >= 112` to `launch_post` ⇒ **the downstream 03→04→06→05 never starts**, and only after the **72-hour fallback** does it exit (a silent stall, worse than reporting FAIL). **Disposition (completed)**: rerun this pair through the existing mechanism — `run_banksy_grid.sh __run_one GSM9226223_P25_LUAD FALSE` (session-detached, PPID=1, starting 18:32:18, memory 243 GB in surplus) ⇒ on success DONE goes to **112** and downstream relays automatically as usual; the process name also contains `run_banksy_grid.sh`, which incidentally makes the supervisor's `grid_alive` test true, **avoiding mounting an extra chain**. 🔴 **Lesson (folded into memory)**: deleting **the directory containing the completion table** loses not only the directory — **it also loses "failure rows", leaving some pair in neither DONE nor FAIL**; **per-pair progress checking must use `comm` (desired 112 pairs vs pairs already DONE); looking only at the DONE count cannot reveal such a gap**. | ☐ |
+| 16 | M7 Target (traditional track) | — | 🟢 M7a caliber signed (merged into `10_niche/NICHE_PREREG.md` §6); **TCGA-LUAD six-step cleaning has produced numbers: 483 cases / 177 deaths (36.6%)**, then after **waiting for the M6 niche signature**, run ssGSEA + multivariable Cox + KM; M7b/M8 not started | ☐ |
+| 17 | M8 Docking | — | ⬜ 0% | ☐ |
 
-> 🔴 **2026-10-01 看板回填更正（GP8 编号分叉）**：§2.0 把 GP8 拆成 **GP8a**（上皮）/ **GP8b**（其余 5 谱系）两个编号，
-> 但实际执行时**六谱系是同批一起做完的**，结题报告命名为 **`GP8c`** ⇒ 看板原第 8/10 行的 `⬜` 是**漏回填的旧状态，不是"未做"**。
-> **依据两条**：① `results/05_annotation/GP8c_report.md`（2026-09-22 夜跑，退出码全 0，413,697 核互斥完备）；
-> ② `results/08_spatial_deconv/reference_d.manifest.json`（2026-09-25 用户签字，`lineage_layer` 明写"六谱系重聚类子集"，
-> `cell_type_counts` = **39 个 L2 亚型**）⇒ **M5 的 RCTD 参考用的就是 L2，不是第一层六谱系**。
-> ⚠️ **「做完」≠「签收」**：产物齐全，但两条的**过门列仍空**，L2 结果**尚缺一次正式签收**。
-> ⚠️ 同一处过时文字也在 `STARTUP_PROMPT.md:70`（「下一步 = GP8a 上皮亚聚类」），**尚未同步**。
+> 🔴 **2026-10-01 board back-fill correction (GP8 numbering fork)**: §2.0 split GP8 into the two numbers **GP8a** (epithelial) / **GP8b** (the remaining 5 lineages),
+> but in actual execution **the six lineages were done together in one batch**, and the completion report was named **`GP8c`** ⇒ the `⬜` in the board's original rows 8/10 is a **back-fill omission of an old state, not "not done"**.
+> **Two grounds**: ① `results/05_annotation/GP8c_report.md` (2026-09-22 night run, all exit codes 0, 413,697 nuclei mutually exclusive and complete);
+> ② `results/08_spatial_deconv/reference_d.manifest.json` (signed by the user 2026-09-25, `lineage_layer` explicitly says "six-lineage reclustering subset",
+> `cell_type_counts` = **39 L2 subtypes**) ⇒ **M5's RCTD reference uses L2, not the first-level six lineages**.
+> ⚠️ **"Done" ≠ "signed off"**: the artifacts are complete, but the **gate column of both rows is still empty**, and the L2 result **still lacks a formal sign-off**.
+> ⚠️ The same stale text is also at `STARTUP_PROMPT.md:70` ("next step = GP8a epithelial subclustering") and **has not yet been synced**.
 
-> **GP1（CopyKAT 冒烟）已并入 GP2**，不再单列：它是 GP2 的**执行细节**（先 3 点外推再排期），不是独立门。
-> 参考：`results/03_cnv/smoke/P19_LUAD/` —— 该冒烟**未能收敛**（13h CPU 停在 step 7），
-> 是促成"CNV 收窄 + 输入改上皮亚群"的实测依据之一。
+> **GP1 (CopyKAT smoke test) is merged into GP2** and no longer listed separately: it is an **execution detail** of GP2 (extrapolate from 3 points before scheduling), not an independent gate.
+> Reference: `results/03_cnv/smoke/P19_LUAD/` — that smoke test **failed to converge** (13h CPU, stalled at step 7),
+> and is one of the measured grounds that drove "CNV narrowed + input changed to epithelial subclusters".
 
-> 每过一个门 → 更新本表 + 记一笔"过门证据"（产物路径 + 哈希）。
+> Each time a gate is passed → update this table + record one entry of "gate evidence" (artifact path + hash).
 >
-> ⚠️ **GP4a/4b/4c 合并为一个执行单元**：`04_integration/10_seurat_traditional.R` 一次跑完
-> （SCTransform → PCA → Harmony → 两臂 kNN → 聚类 → UMAP），但**过门证据按三步分别记**，
-> 因为三者是三个可独立否决的判据，不得因"一个脚本跑通"就合并签字。
+> ⚠️ **GP4a/4b/4c are merged into a single execution unit**: `04_integration/10_seurat_traditional.R` runs through in one go
+> (SCTransform → PCA → Harmony → two-arm kNN → clustering → UMAP), but **gate evidence is recorded separately for the three steps**,
+> because they are three independently vetoable criteria and must not be signed off jointly just because "one script ran through".
 
-### 过门证据 (Gate Evidence)
+### Gate Evidence
 
-**GP4a / GP4b / GP4c / GP5 — ✅ 全部签字 (2026-09-17)**（GP4a、GP4b 全量跑通于 00:43；GP4c、GP5 经用户裁定签字）
-- 脚本：`04_integration/10_seurat_traditional.R`（`full` 模式）· 日志 `logs/seurat_full.log`
-- 输入：`results/02_expression/gse308103_counts_paperqc.h5ad` sha256 `a276cd1a…`（**已现场复核与 manifest 一致**）
-  = **413,697 核 × 18,069 基因**，nnz 655,222,534
-- 配方：`SCTransform(vst.flavor="v2", variable.features.n=3000, rv.th=1.3, ncells=5000, seed=1448145)`
+**GP4a / GP4b / GP4c / GP5 — ✅ all signed (2026-09-17)** (GP4a, GP4b full runs completed at 00:43; GP4c, GP5 signed by user ruling)
+- Script: `04_integration/10_seurat_traditional.R` (`full` mode) · log `logs/seurat_full.log`
+- Input: `results/02_expression/gse308103_counts_paperqc.h5ad` sha256 `a276cd1a…` (**verified on site to be consistent with the manifest**)
+  = **413,697 nuclei × 18,069 genes**, nnz 655,222,534
+- Recipe: `SCTransform(vst.flavor="v2", variable.features.n=3000, rv.th=1.3, ncells=5000, seed=1448145)`
   → `RunPCA(npcs=50, seed=42)` → `Harmony(group.by.vars="sample_id", dims.use=1:50)`
-  → `FindNeighbors(k.param=20, prune.SNN=1/15)` → Louvain × `{0.5,0.6,0.7,0.8}` × 种子 `{0,1,2,3,4}` + 不校正臂
-- 耗时 **14,716.6 s = 4 h 05 m**；**全程峰值 VmHWM 252.5 GB / 256 GB（98.5%），无 swap，可用内存一度只剩 9 GB**
-- 版本：R 4.2.2 · Seurat 4.3.0 · sctransform 0.3.5 · harmony 2.0.5（论文为 1.2.0，**不声称数值等价**）· Matrix 1.5.3
-- 产物哈希：`clusters.csv.gz` `4e6e6977…` · `umap.csv.gz` `c33995dd…` · `resolution_metrics.csv` `58c35608…` ·
+  → `FindNeighbors(k.param=20, prune.SNN=1/15)` → Louvain × `{0.5,0.6,0.7,0.8}` × seeds `{0,1,2,3,4}` + no-correction arm
+- Elapsed **14,716.6 s = 4 h 05 m**; **peak VmHWM throughout 252.5 GB / 256 GB (98.5%), no swap, available memory once down to only 9 GB**
+- Versions: R 4.2.2 · Seurat 4.3.0 · sctransform 0.3.5 · harmony 2.0.5 (paper used 1.2.0, **no claim of numerical equivalence**) · Matrix 1.5.3
+- Artifact hashes: `clusters.csv.gz` `4e6e6977…` · `umap.csv.gz` `c33995dd…` · `resolution_metrics.csv` `58c35608…` ·
   `run_manifest.json` `a57c977c…` · `timings.csv` `7d8724f2…` · `embeddings/harmony_f32.bin` `93f2cf96…` · `embeddings/pca_f32.bin` `f529b2f2…`
-- 报告：[`results/04_integration/seurat_trad/full/GP4_report.md`](results/04_integration/seurat_trad/full/GP4_report.md)
+- Report: [`results/04_integration/seurat_trad/full/GP4_report.md`](results/04_integration/seurat_trad/full/GP4_report.md)
 
-- ✅ **GP4c 已签字 —— 用户裁定 (2026-09-17)：采用源论文的 Harmony 主口径。**
-  升级条款触发经过如实报出，用户裁定主口径＝`RunHarmony(group.by.vars="sample_id", dims.use=1:50)`（与 §M3-A.2 预注册主口径一致）；
-  **不校正臂保留为敏感性/局限陈述，不得当作主结果**。
-  ⚠️ **这是对"两臂分歧"的显式裁定，不是分歧消失 —— 下列限定对全部下游结果具约束力：**
-  逐细胞 `ARI(Harmony, 不校正)` = r0.6 **0.6575（5/5 种子 <0.7，稳健）**、r0.7 **0.6960（1/5，边缘）**；
-  kNN(k=15) 从嵌入预测分期：**校正前 0.5388（基线 0.4546，+8.42 pp）→ 校正后 0.4866（+3.19 pp）⇒ 抹掉约 60% 分期可恢复信号**；
-  `sample_id`↔`stage` 一对一嵌套 ⇒ **被抹掉的部分数学上不可归因**。
-  ⇒ 下游任何分期相关结论**不得声称已排除批次混淆**；M4 须把这层不可归因性写入解释边界。
-  版本偏差仍在：论文 Harmony 1.2.0 vs 本机 2.0.5 ⇒ **不声称数值等价**。
-- ✅ **GP5 已签字，`r* = 0.6`**（合法候选仅 r=0.6 / r=0.7）：
-  指标1（跨种子 ARI ≥ 0.90 硬约束）实测 0.8963–0.9230，**剔除 r=0.5（0.8963）与 r=0.8（0.8999）** ⇒ 该护栏在全量规模**真实承重**（3,000 细胞时恒 = 1.0 空转，60,000 细胞时 0.9346–0.9834 —— **不得用小规模推断本规模**）。
-  按预注册破平规则（分差 <0.01 取较低）0.9123−0.9041=0.0082 ⇒ **取 r=0.6**。
-  ⚠️ **脚本原第 305 行为裸 `which.max`，行内注释却声称已破平 —— 注释与代码不符**，故全量 run 报出 0.7。
-  已修脚本为显式破平实现，并同步更正 `resolution_metrics.csv` 的 `is_rstar` 列与 manifest 的 `rstar_candidate`/`metrics_table[*].is_rstar`，
-  manifest 内新增 **`rstar_correction`** 块留痕；**原始指标一个字节未动**。**用户接受该更正经过程序。**
-- ✅ **指标4（AAH 吸收护栏）—— 用户签字：承认其在全量规模上无效。** 4 个分辨率下**没有任何簇满足"Normal 占比最高且 >50%"**，
-  分母为空 ⇒ `absorption_rate` 按定义恒为 0，**没有为 `r*` 提供任何信息**。
-  ⇒ `r*` **实际由指标 1（跨种子 ARI）与指标 2（跨分辨率稳定性）承担**；指标 3 **已于 2026-09-21 补算**（同样空转，见下条）；指标 4 不计入。
-  护栏**保留登记但标记"全量无效"**，不删除、不重设计；将来若在别的数据/粒度重启，须**重新预注册**。
-- ✅ **指标3（谱系覆盖）—— 2026-09-21 补算；🔴 2026-09-22 在 L1 新口径下重算。**
-  🔴 **重算后结论变了：只有髓系在 `r*` 处不过线**（R_mean **0.8929** < 0.90；五个种子全不过；收紧口径 0.8571）。
-  不过线的 8,321 核（13.0%）里 **98.9% 是裁决移入髓系的细胞**（raw17 肥大细胞 6,360 + raw26 DC 1,866）；
-  根因是**已登记的已知局限**（`marker_panel.py` 髓系面板不含肥大细胞/DC marker，用户已裁定不补面板）⇒ **结构性不可达**。
-  三个不过线簇在四个分辨率下是**同一批细胞**，r=0.8 的「过线」（28/31）**纯属分母假象**。
-  ⇒ **用户 2026-09-22 裁定：保留髓系 `r*=0.5`，不过线登记为已知缺陷**，**显式覆盖** §M3-A.3 预注册的「须停在检查点升级」。
-  ⇒ 其余六个对象仍全过线 ⇒ **对它们的 `r*` 无区分力** ⇒ **不得**写成"指标3 通过为 `r*` 提供了支持"。
-  **下游约束**：髓系 L2 若注释到肥大细胞/DC，**须人工判读**，不得只看面板 argmax。
-  口径取「逐基因检出率均值」（R_mean；两个极端读法一个恒 = 1.0、一个结构性不可达，均可证退化），明细见 `PARAMETERS §M3-A.3` 与 `results/05_annotation/GP5_report.md` **§6.8**（旧 §6.7 已作废）。
-  ⚠️ **更正我此前的说法**：旧条目写的"需 GP6 注释之后方可算"是**错的** —— 登记口径（「≥1 个 marker 集」＝任一套即可）**不依赖注解**。
-  ⚠️ `results/04_integration/seurat_trad/*/run_manifest.json` 里 `metric3_absent` 的旧文本是 **2026-09-17 的时点记录**，已被本条取代。
-  🔴 同一批 manifest 的 `caliber` 字段写死为旧口径名 `A_frozen`（根因 = `04_integration/10_seurat_traditional.R:440` 的字符串常量）。
-  **2026-09-22 用户裁定：不改脚本、不重跑，如实登记** —— 9 份里 7 份说错了自己的输入（逐个经哈希核对），
-  引用时 `caliber` / `rstar_status` / `rstar_candidate` **一律视为无效**，口径以 `<tag>_rstar.json` 为准。
-  详见 `results/05_annotation/GP5_report.md` §15.1–§15.2。
-- 诚实记录：`input.n_genes` 18,069 → 变换矩阵 18,047，差 **22 个**基因，由 sctransform v2 内部过滤产生（日志可查，**非静默**）。
+- ✅ **GP4c signed — user ruling (2026-09-17): adopt the source paper's Harmony main caliber.**
+  The escalation-clause triggering process was reported honestly, and the user ruled the main caliber = `RunHarmony(group.by.vars="sample_id", dims.use=1:50)` (consistent with the main caliber pre-registered in §M3-A.2);
+  **the no-correction arm is retained as a sensitivity/limitation statement and must not be treated as a main result**.
+  ⚠️ **This is an explicit ruling on the "two-arm divergence", not the divergence disappearing — the following caveats are binding on all downstream results:**
+  Per-cell `ARI(Harmony, no correction)` = r0.6 **0.6575 (5/5 seeds <0.7, robust)**, r0.7 **0.6960 (1/5, marginal)**;
+  kNN(k=15) predicting stage from the embedding: **before correction 0.5388 (baseline 0.4546, +8.42 pp) → after correction 0.4866 (+3.19 pp) ⇒ erases about 60% of the recoverable stage signal**;
+  `sample_id`↔`stage` is one-to-one nested ⇒ **the erased portion is mathematically non-attributable**.
+  ⇒ Any downstream stage-related conclusion **must not claim to have excluded batch confounding**; M4 must write this non-attributability into its interpretation boundary.
+  The version discrepancy remains: paper Harmony 1.2.0 vs this machine's 2.0.5 ⇒ **no claim of numerical equivalence**.
+- ✅ **GP5 signed, `r* = 0.6`** (the only legal candidates were r=0.6 / r=0.7):
+  Metric 1 (cross-seed ARI ≥ 0.90 hard constraint) measured 0.8963–0.9230, **eliminating r=0.5 (0.8963) and r=0.8 (0.8999)** ⇒ this guardrail **genuinely bears weight** at full scale (at 3,000 cells it is always = 1.0, idling; at 60,000 cells 0.9346–0.9834 — **small-scale behavior must not be used to infer this scale**).
+  Per the pre-registered tie-break rule (difference <0.01, take the lower) 0.9123−0.9041=0.0082 ⇒ **take r=0.6**.
+  ⚠️ **Original line 305 of the script was a bare `which.max`, while the inline comment claimed a tie-break had been applied — the comment does not match the code**, so the full run reported 0.7.
+  The script was fixed into an explicit tie-break implementation, and the `is_rstar` column of `resolution_metrics.csv` and the manifest's `rstar_candidate`/`metrics_table[*].is_rstar` were corrected in sync,
+  and a **`rstar_correction`** block was added to the manifest for the record; **the original metrics were not changed by a single byte**. **The user accepted this correction through the process.**
+- ✅ **Metric 4 (AAH absorption guardrail) — user signed off: acknowledges it is ineffective at full scale.** Across the 4 resolutions **no cluster satisfies "highest Normal proportion and >50%"**,
+  so the denominator is empty ⇒ `absorption_rate` is identically 0 by definition and **provides no information for `r*`**.
+  ⇒ `r*` **is in practice borne by metric 1 (cross-seed ARI) and metric 2 (cross-resolution stability)**; metric 3 **was computed later on 2026-09-21** (also idling, see the next item); metric 4 does not count.
+  The guardrail is **registered but marked "ineffective at full scale"**, neither deleted nor redesigned; if it is ever restarted on other data/granularity, it must be **re-pre-registered**.
+- ✅ **Metric 3 (lineage coverage) — computed later on 2026-09-21; 🔴 recomputed under the new L1 caliber on 2026-09-22.**
+  🔴 **After recomputation the conclusion changed: only myeloid fails the line at `r*`** (R_mean **0.8929** < 0.90; all five seeds fail; a stricter caliber gives 0.8571).
+  Of the 8,321 nuclei (13.0%) that fail the line, **98.9% are cells adjudicated into myeloid** (raw17 mast cells 6,360 + raw26 DC 1,866);
+  the root cause is a **registered known limitation** (`marker_panel.py`'s myeloid panel does not include mast-cell/DC markers, and the user has ruled not to add them) ⇒ **structurally unreachable**.
+  The three failing clusters are **the same set of cells** across the four resolutions, and r=0.8's "passing the line" (28/31) is **purely a denominator artifact**.
+  ⇒ **User ruling 2026-09-22: keep myeloid `r*=0.5` and register the failing of the line as a known defect**, **explicitly overriding** the "must stop at the checkpoint and escalate" pre-registered in §M3-A.3.
+  ⇒ The remaining six objects all still pass the line ⇒ **no discriminating power for their `r*`** ⇒ **must not** be written as "metric 3 passing provides support for `r*`".
+  **Downstream constraint**: if the myeloid L2 annotates to mast cells/DC, it **requires manual interpretation**, and must not rely on the panel argmax alone.
+  The caliber is "mean per-gene detection rate" (R_mean; of the two extreme readings one is always = 1.0 and the other structurally unreachable, both provably degenerate); details in `PARAMETERS §M3-A.3` and `results/05_annotation/GP5_report.md` **§6.8** (the old §6.7 is void).
+  ⚠️ **Correcting my earlier statement**: the old entry's "can only be computed after GP6 annotation" is **wrong** — the registered caliber ("≥1 marker set" = any one set suffices) **does not depend on annotation**.
+  ⚠️ The old `metric3_absent` text in `results/04_integration/seurat_trad/*/run_manifest.json` is a **2026-09-17 point-in-time record**, superseded by this item.
+  🔴 The `caliber` field of the same batch of manifests is hard-coded to the old caliber name `A_frozen` (root cause = the string constant at `04_integration/10_seurat_traditional.R:440`).
+  **2026-09-22 user ruling: do not change the script, do not rerun, register honestly** — 7 of the 9 misstate their own input (checked individually by hash),
+  and when cited, `caliber` / `rstar_status` / `rstar_candidate` are **all to be treated as invalid**, with the caliber taken from `<tag>_rstar.json`.
+  See `results/05_annotation/GP5_report.md` §15.1–§15.2 for details.
+- Honest record: `input.n_genes` 18,069 → transformed matrix 18,047, a difference of **22** genes, produced by sctransform v2's internal filtering (checkable in the log, **not silent**).
 
-**Step 0 · GP0 表达对象重建（论文 QC 口径）— 🔶 已重做 (2026-09-16)，校验由 2026-09-17 审计补做**
-- 脚本：`02_expression/04_rebuild_expression_paperqc.py`；来源 = 75 个稠密文本计数矩阵 → 稀疏 AnnData
-- 掩码：**M1 `qc_pass & singlet` ∩ 论文 QC 门**（`nFeature≥500 & nCount≥1000 & pct_mt≤20`），逆中 `gene_min_cells=3` 在重建矩阵时施加
-- 结果：**(413,697 核 × 18,069 基因)**，nnz **655,222,534**；分期 IAC 188,087 / Normal 94,506 / AIS 81,555 / AAH 35,283 / MIA 14,266（**23 患者 / 75 样本**）
-- 产物：`results/02_expression/gse308103_counts_paperqc.h5ad` `a276cd1a…`（3.13 GB）· `results/01_qc/gse308103_analysis_mask_paperqc.csv.gz` `ebc74c1e…` · `rebuild_paperqc_manifest.json`
-- ⚠️ **本次审计发现的缺口（已补）**：GP0-redo **当初没跑门校验、也没出报告** —— 因为 `02_verify_expression_build.py` 的 `EXPECT_N_OBS/N_VARS` **硬编码在旧对象上**（648945 / 18082），从未适配重做版。**该缺口正是"§6 曾把旧 648,945 构建记为 ✅ PASS"的根因。**
-  2026-09-17 审计对 paperqc 对象**重跑全部硬检查**，独立复算 + 现场哈希核对，结果：
-  V1 形状 ✅ · V2 逐样本偏差 **0** ✅ · V4 条码可解析 & `sample_id` 全在权威表 ✅ · V5 `stage == resolve_stage(token)` 无静默默认 ✅ · V6 全元素非负/整数、全零细胞 **0** ✅
-  V3 修正形：`nnz == Σ nFeature − 11 = 655,222,545 − 11 = 655,222,534` ✅ —— **差 11 是构造性的**，即那 13 个 `<3 细胞` 被丢基因内残留的 11 个非零计数（旧脚本 V3 的"精确相等"形对重做版**不成立**，需带此项）
-  **掩膜 ↔ h5ad ↔ manifest 三方独立对账**：条码集合完全相等（`S1 == S2`，双向差 0）、`stage/patient_id/sample_id/stage_token` 逐行一致、无 NaN、条码唯一、`stage_counts` 相等
-  **下游 seurat_io 导出**（R 侧实际读入）：`cell_names`/`gene_names` 行数与**顺序**均等于 h5ad、`cell_meta` 条码集合相等、6 个产物 sha256 **逐个吻合清单**
-- **未复核项（如实标缺）**：重做版**没有**旧的 A5 独立重抽取（3 样本逐元素重算）与 A4b 全元素整数性专项脚本留痕；本次 V6 已全量覆盖整数性，A5 类重抽取**仍未对 paperqc 对象做**。
-- 🔎 **旧 648,945 对象保留为敏感性臂，未删除**：`gse308103_counts.h5ad` `f9dbe382…` · `gse308103_analysis_mask.csv.gz` `2f8bb0f6…` · `GP0_report.md`（该报告只描述旧对象）
-- 旧对象历史（当时确已过门，**现已被论文口径取代**）：V1–V6 12/12 + 对抗审计 22/22 全绿，含 A5 独立重抽取、A2b 逐细胞行和 == nCount（偏差 0）、A6b/c R1 闭合 75/75 & 23/23；残余盲区 (行和,非零数) 重复 252,677/648,945
-- 诚实记录：旧对象**首次运行崩于** `KeyError ['cell_barcode']` → 已定位修复；**崩溃未污染数据**。日志 `logs/Step0_build_expression.run1_FAILED.stdout`
+**Step 0 · GP0 Expression Object Rebuild (paper QC caliber) — 🔶 redone (2026-09-16), validation added by the 2026-09-17 audit**
+- Script: `02_expression/04_rebuild_expression_paperqc.py`; source = 75 dense text count matrices → sparse AnnData
+- Mask: **M1 `qc_pass & singlet` ∩ paper QC gate** (`nFeature≥500 & nCount≥1000 & pct_mt≤20`), with the inverse's `gene_min_cells=3` applied when rebuilding the matrix
+- Result: **(413,697 nuclei × 18,069 genes)**, nnz **655,222,534**; stages IAC 188,087 / Normal 94,506 / AIS 81,555 / AAH 35,283 / MIA 14,266 (**23 patients / 75 samples**)
+- Artifacts: `results/02_expression/gse308103_counts_paperqc.h5ad` `a276cd1a…` (3.13 GB) · `results/01_qc/gse308103_analysis_mask_paperqc.csv.gz` `ebc74c1e…` · `rebuild_paperqc_manifest.json`
+- ⚠️ **Gap found in this audit (now filled)**: GP0-redo **initially ran no gate validation and produced no report** — because `02_verify_expression_build.py`'s `EXPECT_N_OBS/N_VARS` were **hard-coded to the old object** (648945 / 18082) and never adapted to the redo. **This gap is precisely the root cause of "§6 once recorded the old 648,945 build as ✅ PASS".**
+  The 2026-09-17 audit **reran all hard checks** on the paperqc object, with independent recomputation + on-site hash verification, results:
+  V1 shape ✅ · V2 per-sample deviation **0** ✅ · V4 barcodes parseable & all `sample_id` in the authoritative table ✅ · V5 `stage == resolve_stage(token)` with no silent default ✅ · V6 all elements non-negative/integer, all-zero cells **0** ✅
+  V3 corrected form: `nnz == Σ nFeature − 11 = 655,222,545 − 11 = 655,222,534` ✅ — **the difference of 11 is constructive**, namely the 11 nonzero counts left inside the 13 dropped genes with `<3 cells` (the old script's V3 "exact equality" form **does not hold** for the redo and needs this term)
+  **Independent three-way reconciliation of mask ↔ h5ad ↔ manifest**: barcode sets fully equal (`S1 == S2`, bidirectional difference 0), `stage/patient_id/sample_id/stage_token` consistent row by row, no NaN, barcodes unique, `stage_counts` equal
+  **Downstream seurat_io export** (what the R side actually reads in): `cell_names`/`gene_names` row counts and **order** both equal to the h5ad, `cell_meta` barcode sets equal, the 6 artifacts' sha256 **matching the manifest one by one**
+- **Unverified items (honestly marked missing)**: the redo **has no** old A5 independent re-extraction (3-sample element-by-element recomputation) or A4b all-element integrality dedicated-script trace; this V6 already covers integrality in full, and A5-type re-extraction **has still not been done for the paperqc object**.
+- 🔎 **The old 648,945 object is retained as a sensitivity arm, not deleted**: `gse308103_counts.h5ad` `f9dbe382…` · `gse308103_analysis_mask.csv.gz` `2f8bb0f6…` · `GP0_report.md` (that report describes only the old object)
+- Old-object history (it did pass the gate then, **now superseded by the paper caliber**): V1–V6 12/12 + adversarial audit 22/22 all green, including A5 independent re-extraction, A2b per-cell row sum == nCount (deviation 0), A6b/c R1 closure 75/75 & 23/23; residual blind spot (row sum, nonzero count) duplicates 252,677/648,945
+- Honest record: the old object's **first run crashed on** `KeyError ['cell_barcode']` → located and fixed; **the crash did not contaminate the data**. Log `logs/Step0_build_expression.run1_FAILED.stdout`
 
-**M1 QC / 双体 — ✅ PASS (2026-09-12)｜🔶 现状：按 §2.0 行 1 已**降级为敏感性臂**
-- 数据集：`GSE308103`（snRNA）**75 样本 / 798,100 核**
-- 脚本：`01_qc/00_metrics_gse308103.R` → `01_qc/01_qc_doublets_gse308103.R` → `02_annotate_doublet_qc.R` → `03_sensitivity_nmads.R` → `06_sensitivity_doublet_rate.R` → `08_validate_doublet_calls.R`
-- 结果：pre **798,100** → pass **767,839（96.21%）**；双体 **118,894（15.48% of pass）**
-- 阈值：`nCount/nFeature` 逐样本 **MAD 离群**（nmads=3, log1p）+ `pct_mt<5`（**核数据据实定**，非照搬 scRNA）
-- ⚠️ **口径叠加（勿误读）**：分析掩膜 = **M1 `qc_pass & singlet` ∩ 论文 QC 门**（`nFeature≥500 & nCount≥1000 & pct_mt≤20`）。
-  即**论文的绝对阈值照样施加了**，"非照搬 scRNA" 指的是 **M1 自身**的判定口径，**不是**说绝对阈值被否决。链：798,100 → 767,839(M1) → 648,945(∩单细胞) → 论文门在全集上 555,480 → **交集 413,697**
-- 敏感性：nmads 3 vs 5 = +1.97 pp（**不敏感**）；双体率 vs 固定 top-10% 重合约 **62.3%**（**较敏感** → 须做下游"剔/不剔"敏感性）
-- 正向验证：**A** 计数特征（75/75 样本双体 nCount 比中位 **2.39**；双体率 vs 细胞数 **r=0.921**）；**B** 跨谱系共表达（EPCAM+PTPRC+ 在 doublet 中为 singlet 的 **7.2×**，72/75 样本一致）
-- 交叉验证：**本环境不可行**（scrublet 不适配稀疏核；DoubletFinder 需 Seurat 2/3 或 5）—— 已如实记录
-- **已解决异常**：`P7_LUAD` 曾判 0 双体 → 根因为 **xgb 分类器塌缩**（非生物学）→ 改 `score="weighted"` 得 11.69%；主脚本已加**自动 fallback**
-- 报告：[`results/01_qc/M1_validation_report.md`](results/01_qc/M1_validation_report.md)（v3）
-- 产物哈希：`gse308103_per_cell_qc.csv.gz` `44c890bb…` · `gse308103_qc_per_sample.csv` `2d0bd7df…`
-- ⚠️ v1 的 per-cell 表存在 `cell_barcode` 失效缺陷（fread autostart 跳过条码行）→ 已修复并全量重跑，v1/v2 报告作废
+**M1 QC / doublets — ✅ PASS (2026-09-12) ｜ 🔶 Current status: per §2.0 row 1, already **downgraded to a sensitivity arm**
+- Dataset: `GSE308103` (snRNA) **75 samples / 798,100 nuclei**
+- Script: `01_qc/00_metrics_gse308103.R` → `01_qc/01_qc_doublets_gse308103.R` → `02_annotate_doublet_qc.R` → `03_sensitivity_nmads.R` → `06_sensitivity_doublet_rate.R` → `08_validate_doublet_calls.R`
+- Result: pre **798,100** → pass **767,839 (96.21%)**; doublets **118,894 (15.48% of pass)**
+- Thresholds: `nCount/nFeature` per-sample **MAD outlier** (nmads=3, log1p) + `pct_mt<5` (**set on the merits for nuclear data**, not copied from scRNA)
+- ⚠️ **Caliber stacking (do not misread)**: analysis mask = **M1 `qc_pass & singlet` ∩ paper QC gate** (`nFeature≥500 & nCount≥1000 & pct_mt≤20`).
+  That is, **the paper's absolute thresholds were applied all the same**; "not copied from scRNA" refers to **M1's own** decision caliber, and **not** to the absolute thresholds being rejected. Chain: 798,100 → 767,839(M1) → 648,945(∩single-cell) → paper gate on the full set 555,480 → **intersection 413,697**
+- Sensitivity: nmads 3 vs 5 = +1.97 pp (**insensitive**); doublet rate vs fixed top-10% overlaps by about **62.3%** (**fairly sensitive** → a downstream "remove/keep" sensitivity must be done)
+- Positive validation: **A** count features (75/75 samples, median doublet nCount ratio **2.39**; doublet rate vs cell count **r=0.921**); **B** cross-lineage co-expression (EPCAM+PTPRC+ in doublets is **7.2×** that in singlets, consistent in 72/75 samples)
+- Cross-validation: **infeasible in this environment** (scrublet does not fit sparse nuclei; DoubletFinder requires Seurat 2/3 or 5) — honestly recorded
+- **Resolved anomaly**: `P7_LUAD` was once called 0 doublets → root cause was an **xgb classifier collapse** (not biological) → changed to `score="weighted"` to get 11.69%; the main script now has an **automatic fallback**
+- Report: [`results/01_qc/M1_validation_report.md`](results/01_qc/M1_validation_report.md) (v3)
+- Artifact hashes: `gse308103_per_cell_qc.csv.gz` `44c890bb…` · `gse308103_qc_per_sample.csv` `2d0bd7df…`
+- ⚠️ The v1 per-cell table has the `cell_barcode` failure defect (fread autostart skipping the barcode row) → fixed and fully rerun; the v1/v2 reports are void
 
-**M0 输入冻结（配对）— ⚠️ 未过门 (2026-09-15 重做)**
-- 脚本：`00_ingest/01_freeze_paired.py`；registry `00_ingest/cohort_registry.py`
-- 结果：**131 样本 / 25 患者 / 23 例双模态配对**（P3–P25）；唯一键 = `sample_key`（`dataset:sample_id`）
-- 产物：`results/00_ingest/paired_{samples,patients,source_files}.csv` + `M0_paired_validation_report.md` + `paired_manifest.json`
-- 校验：C1–C7 绿；**C8 红 1 项** → `paired_manifest.json` 的 `gate_pass=false`
-- **未过门原因（唯一）**：`GSE307534/GSM9226176` 磁盘上的 tar **截断**（56,272,384 B，应为 90,677,930 B；
-  `gzip -t` 报 `unexpected end of file`），缺 `spatial/scalefactors_json.json` 与 `spatial/tissue_positions.csv`。
-  已实测重下载可得**完整 87 MB** tar（清单含全部必需文件，且**只有一个切片根** `P4_AAH2`）。
-- **不阻塞 M2/M3-A**：该缺口在**空间**数据集（GSE307534），而 M2/M3-A 只跑 **snRNA**（GSE308103）。补下载属 M5 前置，
-  且源目录 `/home/eto/luad_invasion` 为**只读**，需单独授权后另做。
-- ⚠️ 旧 M0（三 scRNA 队列）**已随范围收窄作废**，其脚本/产物移至 `/home/eto/luad_invasion/luad_v2_out_of_scope/`。
+**M0 Input Freeze (paired) — ⚠️ Gate not passed (redone 2026-09-15)**
+- Script: `00_ingest/01_freeze_paired.py`; registry `00_ingest/cohort_registry.py`
+- Result: **131 samples / 25 patients / 23 dual-modality pairs** (P3–P25); unique key = `sample_key` (`dataset:sample_id`)
+- Artifacts: `results/00_ingest/paired_{samples,patients,source_files}.csv` + `M0_paired_validation_report.md` + `paired_manifest.json`
+- Validation: C1–C7 green; **C8 red on 1 item** → `paired_manifest.json`'s `gate_pass=false`
+- **Reason the gate was not passed (the only one)**: the tar of `GSE307534/GSM9226176` on disk is **truncated** (56,272,384 B, should be 90,677,930 B;
+  `gzip -t` reports `unexpected end of file`), missing `spatial/scalefactors_json.json` and `spatial/tissue_positions.csv`.
+  Measured: re-downloading yields the **complete 87 MB** tar (the manifest contains all required files, and there is **only one slice root**, `P4_AAH2`).
+- **Does not block M2/M3-A**: the gap is in the **spatial** dataset (GSE307534), while M2/M3-A run only **snRNA** (GSE308103). The re-download is an M5 prerequisite,
+  and the source directory `/home/eto/luad_invasion` is **read-only**, so it requires separate authorization and must be done separately.
+- ⚠️ The old M0 (three scRNA cohorts) **is void with the scope narrowing**, and its scripts/artifacts are moved to `/home/eto/luad_invasion/luad_v2_out_of_scope/`.
 
-> **历史记录（旧范围，已作废）**：曾冻结 3 个 scRNA 队列（GSE131907 / GSE189357 / GSE148071，420,766 细胞 / 109 样本 / 95 患者），
-> 并完成 GEO 交叉核验（分期与 origin）。该产物已归档，**不再作为本项目依据**。
+> **Historical record (old scope, now void)**: 3 scRNA cohorts were once frozen (GSE131907 / GSE189357 / GSE148071, 420,766 cells / 109 samples / 95 patients),
+> and GEO cross-validation (stage and origin) was completed. That artifact is archived and **no longer a basis for this project**.
 
 
 ---
 
-## 7. 发育谱臂（`09_trajectory/`）—— 已结项路线 + 后续任务登记
+## 7. Developmental-Trajectory Arm (`09_trajectory/`) — Closed Routes + Follow-up Task Register
 
-> **本节 2026-09-27 新增。** 发育谱臂此前**在任何已跟踪文档里都不存在**（§6 看板没有它的行），
-> 代码/预注册本次经 **PR #14** 入库。本节把它**挂到计划上**：已结项的三条路线记状态，未做的后续任务逐条登记。
-> 两条红线先写在前面：单细胞 CNV 已退场 ⇒ **全项目没有逐细胞恶性标签**（**铁律 2**）；
-> 因此任何"Tumor cell / KAC"字样**只能当表达态报，不得当恶性判定**。
+> **This section was added 2026-09-27.** The developmental-trajectory arm previously **did not exist in any tracked document** (§6's board had no row for it);
+> its code/pre-registration was committed this time via **PR #14**. This section **attaches it to the plan**: the three closed routes are recorded by status, and the un-done follow-up tasks are registered one by one.
+> Two red lines come first: single-cell CNV has exited ⇒ **the whole project has no per-cell malignancy label** (**iron law 2**);
+> therefore any "Tumor cell / KAC" wording **may only be reported as an expression state, and must not be treated as a malignancy call**.
 
-**臂的状态：三条主轴结论全是「否定或受限」，全部如实入库（不是"跑成功了"）**
+**Arm status: all three main-axis conclusions are "negative or constrained", all committed honestly (not "ran successfully")**
 
-| 路线 | 预注册 | 结论 |
+| Route | Pre-registration | Conclusion |
 | :--- | :--- | :--- |
-| CellRank 谱机制 | `10`/`11`/`12` | **废弃**——装配出块上三角，运输数值根本不进特征值；"终点=IAC"是装配写死的，不是数据算的 |
-| WOT 直接运输读数 | `13`/`14`/`15` | §4.1 过（余量小）、§4.2 部分过；**§4.3 基因趋势判据退化作废**（"54 个候选"= 全部 Δ 为 0 的基因） |
-| CytoTRACE 分期轴 | `16`/`17`/`18`/`19` | **C1 单调 FAIL，方向与原文相反**（期别中位 IAC 最高）；反向很结实（22/23 患者正向、逐深度档 IAC 都最高） |
-| 原文 MP 面板 KAC 轴 | `20`/`21`/`22`/`23`/`24` | D1 命中 8/27 簇但**全部落在经典 AT2 内**；D2 **两源不一致**（MP6 支持 / MP9 反向） |
+| CellRank spectral mechanism | `10`/`11`/`12` | **Abandoned** — the assembly yields a block upper-triangular matrix, so the transport values never enter the eigenvalues at all; "endpoint = IAC" is hard-wired into the assembly, not computed from the data |
+| WOT direct transport readout | `13`/`14`/`15` | §4.1 passed (small margin), §4.2 partly passed; **§4.3 gene-trend criterion degenerate and void** ("54 candidates" = the genes whose Δ is all 0) |
+| CytoTRACE stage axis | `16`/`17`/`18`/`19` | **C1 monotonicity FAIL, direction opposite to the paper** (stage-median highest in IAC); the reversal is robust (22/23 patients positive, IAC highest in every depth bin) |
+| Source-paper MP-panel KAC axis | `20`/`21`/`22`/`23`/`24` | D1 hits 8/27 clusters but **all fall within classic AT2**; D2 **the two sources disagree** (MP6 supports / MP9 reverses) |
 
-### 待办任务登记（按"能不能现在开"排序）
+### Follow-up Task Register (ordered by "can it start now")
 
-| # | 任务 | 为什么做 | 现在能不能开 | 开跑前需要什么 |
+| # | Task | Why do it | Can it start now | What is needed before starting |
 | :---: | :--- | :--- | :---: | :--- |
-| D1 | **MP9 为什么反向** | D2 报 MP6 ρ=+0.722、MP9 ρ=−0.376，"两源不一致"是本臂最硬的否证结论；查清 MP9 那 50 个基因是什么、是否被 Ciliated/Club 簇拉高 | ✅ **已完成 2026-09-27** | 结论：**MP9 不是"另一个 KAC 定义"**——它的 50 个基因是即刻早期/应激/炎症程序（FOSB·FOSL1·EGR1·ATF3·GADD45A/B·CDKN1A·SOCS3·PTGS2·AREG·CCN1·PLAUR·LAMC2），与 AT2/Ciliated/Club **零重叠**，与 **MP7（`Tumor cell (stress/inflammatory)`）共享 12 个基因**（七个 MP 里最高）；MP9 最高分落在 c4/c6（**AT1**）与 c26/c9（这两簇 argmax 正是 **MP7**），最低落在 AT2/Ciliated。逐细胞层面 corr(MP9, KAC 签名) = **−0.041**（≈0）⇒ **那个 −0.376 是簇均值层面的，测的是「AT1/炎症 vs AT2/纤毛」的身份轴，不是 KAC 轴**。⚠️ 替代解释未能排除：`score_genes` 的对照基因池可能诱导部分人为负相关。产物 `09_trajectory/25_kac_followup_cheap.py` / `results/09_trajectory/paper_axis/followup_cheap.md` |
-| D2 | **簇 16/21/23 是不是单一患者的亚克隆** | K3 已标 `top_patient_frac` = 0.561 / 0.673 / 0.862，三簇合计 4,695 核，可能只是一个患者贡献的 | ✅ **已完成 2026-09-27** | 结论：**不是私有亚克隆**——三簇的主导患者**各不相同**（c16→P10 56.1%、c21→P24 67.3%、c23→P5 86.2%），且每位主导患者自己还散布在**另外 24 个簇**里；三簇分别 **95.4% / 99.1% / 98.8% 是 IAC**，而各主导患者在自己体内只有 71% / 54% / 37% 是 IAC ⇒ 是「**IAC 极度富集 + 患者构成不均**」，不是私有亚克隆。**K3 的警报据此降级**（不是"单一患者寡头"，是"期别极富集 × 患者间 IAC 分布不均"） |
-| D3 | **AIC 臂** | 原文链条是 AT2→**AIC**→KAC→前驱→浸润，本臂只做了 KAC 那一节，缺 AIC | ⛔ **不能** | ⚠️ **必须**先签 AIC 的判定口径（原文 marker？还是 MP？本臂没有 AIC 面板），且结果**必须显式标注"这是我们的推断，不是原文给的标签"** |
-| D4 | **换到 MP 空间重聚类** | 现有 27 簇是**经典面板**定义的，不是 MP 定义的；argmax 落在"经典 AT2"内，可能只是经典面板的投影 | ⛔ **不能** | 改聚类 = 新口径 ⇒ 须**先预注册**（打分对象从"现有 27 簇"变成"MP 空间的新簇"） |
-| D5 | **monocle3 伪时间**（原文另一半） | 原文发育轴用的是 monocle3 + CytoTRACE；我们只复刻了 CytoTRACE 那一半 | ⛔ **不能** | `16_` 预注册的 T3 已写「先不装」；要跑须先装 **monocle3(R)**（或 Python 复刻，须证明等价），且须预注册 |
-| D6 | **"KAC 样态" vs "浸润期肿瘤细胞" 不可分** | 本臂最根本的边界：IAC 占 42% 细胞、KAC 侧簇与 IAC 高度重合，现有数据**分不开**这两种读法 | ⛔ **阻塞** | 需要**能给出恶性/上皮归属的标签**（**铁律 2**）。**交汇点 = 空转 CNV（SC0–SC4）**；单细胞 CNV 已退场，这是唯一可能的解锁路径 |
+| D1 | **Why MP9 reverses** | D2 reported MP6 ρ=+0.722, MP9 ρ=−0.376, and "the two sources disagree" is this arm's hardest falsifying conclusion; clarify what MP9's 50 genes are and whether they are inflated by the Ciliated/Club clusters | ✅ **Completed 2026-09-27** | Conclusion: **MP9 is not "another KAC definition"** — its 50 genes are an immediate-early/stress/inflammatory program (FOSB·FOSL1·EGR1·ATF3·GADD45A/B·CDKN1A·SOCS3·PTGS2·AREG·CCN1·PLAUR·LAMC2), with **zero overlap** with AT2/Ciliated/Club, and **sharing 12 genes with MP7 (`Tumor cell (stress/inflammatory)`)** (the highest among the seven MPs); MP9's highest scores fall in c4/c6 (**AT1**) and c26/c9 (whose argmax is precisely **MP7**), and its lowest fall in AT2/Ciliated. At the per-cell level corr(MP9, KAC signature) = **−0.041** (≈0) ⇒ **that −0.376 is at the cluster-mean level, measuring the "AT1/inflammation vs AT2/ciliated" identity axis, not the KAC axis**. ⚠️ An alternative explanation was not ruled out: `score_genes`' control gene pool may induce part of the artificial negative correlation. Artifacts `09_trajectory/25_kac_followup_cheap.py` / `results/09_trajectory/paper_axis/followup_cheap.md` |
+| D2 | **Are clusters 16/21/23 subclones of a single patient** | K3 already flagged `top_patient_frac` = 0.561 / 0.673 / 0.862; the three clusters total 4,695 nuclei and might be contributed by just one patient | ✅ **Completed 2026-09-27** | Conclusion: **not private subclones** — the dominant patients of the three clusters are **all different** (c16→P10 56.1%, c21→P24 67.3%, c23→P5 86.2%), and each dominant patient is himself also spread across **24 other clusters**; the three clusters are **95.4% / 99.1% / 98.8% IAC** respectively, whereas each dominant patient's own body is only 71% / 54% / 37% IAC ⇒ it is "**extreme IAC enrichment + uneven patient composition**", not a private subclone. **K3's alert is downgraded accordingly** (not "single-patient oligarchy" but "stage heavily enriched × IAC distribution uneven across patients") |
+| D3 | **AIC arm** | The source chain is AT2→**AIC**→KAC→precursor→invasion, and this arm did only the KAC section, missing AIC | ⛔ **No** | ⚠️ The AIC decision caliber **must** be signed first (the source markers? or MPs? this arm has no AIC panel), and the result **must be explicitly labelled "this is our inference, not a label the paper provided"** |
+| D4 | **Re-cluster in MP space** | The current 27 clusters are defined by the **classic panel**, not by MPs; the argmax falling within "classic AT2" may be only a projection of the classic panel | ⛔ **No** | Changing clustering = a new caliber ⇒ must **pre-register first** (the scoring object changes from "the current 27 clusters" to "new clusters in MP space") |
+| D5 | **monocle3 pseudotime** (the paper's other half) | The source developmental axis uses monocle3 + CytoTRACE; we replicated only the CytoTRACE half | ⛔ **No** | The T3 pre-registered in `16_` already says "not installed for now"; to run it, **monocle3(R)** must first be installed (or a Python replication, which must be proven equivalent), and it must be pre-registered |
+| D6 | **"KAC-like state" vs "invasive-stage tumor cell" indistinguishable** | This arm's most fundamental boundary: IAC accounts for 42% of cells and the KAC-side clusters heavily overlap IAC, so the existing data **cannot separate** the two readings | ⛔ **Blocking** | Requires **a label that can give malignant/epithelial assignment** (**iron law 2**). **The intersection point = spatial CNV (SC0–SC4)**; single-cell CNV has exited, and this is the only possible unlocking path |
 
-**WOT 臂的两笔未结小事**（不新开任务，挂在 D 表后面备查）：
-- §4.3 判据退化作废后的**改法待签**（按**法则 3.2** 不私自改判据重跑）；
-- §4.4 **患者分层复报与出图未做**；
-- 两处偏离已登记未重签：`N_PERM` 1000→**200**、**IAC 期不入判定**。
+**Two loose ends of the WOT arm** (no new tasks; hung after the D table for reference):
+- The **remedy for the voided degenerate §4.3 criterion awaits sign-off** (per **Rule 3.2**, do not unilaterally change the criterion and rerun);
+- §4.4 **patient-stratified re-reporting and figure generation not done**;
+- Two deviations registered but not re-signed: `N_PERM` 1000→**200**, **IAC stage excluded from the decision**.
 
-**与其它模块的交汇**：**D6 是发育谱臂与空间 CNV 臂的唯一交汇点** —— 发育谱这一侧想说的那句话（"KAC 样态是不是浸润期肿瘤细胞"），
-正好是空转 CNV 那一侧想给的东西（上皮 spot 的恶性归属）。两条臂各自都到不了，合起来才可能到。
+**Intersection with other modules**: **D6 is the sole intersection of the developmental-trajectory arm and the spatial CNV arm** — the sentence the developmental-trajectory side wants to say ("is the KAC-like state an invasive-stage tumor cell")
+is exactly what the spatial CNV side wants to deliver (the malignant assignment of epithelial spots). Neither arm can reach it alone; only together might they.
 
-**空转 CNV 一侧的进展（2026-09-27）**：该臂的一处**口径矛盾已签**——`08_spatial_deconv/SPATIAL_CNV_PREREG.md`
-**§13**：`analysis_mode` 取 **`samples`**（不取工具默认的 `subclusters`）、`no_plot=TRUE`、**成本冒烟限单患者重测**。
-促成裁定的实测是：默认模式在患者 P4（2 张切片）上**24 小时未跑完**被超时杀掉，**峰值内存仅 7.67 GB**
-（不是内存问题）——根因是 `subclusters` 把参考切出 181 + 观测 65 = **246 个单位**逐个跑 HMM/贝叶斯网，
-外加 **9.5 小时纯绘图**。取 `samples` 后单位数降到 2。
-⇒ 该臂**仍未开跑**，且 §13.3 记了两条开工前必须钉死的（per-spot 判定取自哪个产物；SC2 单患者先行）。
+**Progress on the spatial CNV side (2026-09-27)**: one **caliber contradiction of that arm has been signed** — `08_spatial_deconv/SPATIAL_CNV_PREREG.md`
+**§13**: `analysis_mode` set to **`samples`** (not the tool's default `subclusters`), `no_plot=TRUE`, **the cost smoke test limited to a single patient for retesting**.
+The measurement that drove the ruling: the default mode on patient P4 (2 slices) **did not finish in 24 hours** and was killed by timeout, with **peak memory of only 7.67 GB**
+(not a memory problem) — the root cause is that `subclusters` splits the reference into 181 + observation 65 = **246 units**, running HMM/Bayesian network on each in turn,
+plus **9.5 hours of pure plotting**. Taking `samples` reduces the unit count to 2.
+⇒ That arm **has still not started**, and §13.3 records two things that must be pinned down before starting (which artifact the per-spot decision comes from; SC2 runs a single patient first).

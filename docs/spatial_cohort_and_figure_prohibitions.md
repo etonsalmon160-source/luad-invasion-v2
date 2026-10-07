@@ -1,38 +1,38 @@
-# 🛑 空间转录组 6 阶段切片映射与图表严谨性最高禁令 (Spatial Cohort & Figure Prohibitions)
+# 🛑 Spatial Transcriptomics 6-Stage Slice Mapping and Figure Rigor: Supreme Prohibitions (Spatial Cohort & Figure Prohibitions)
 
-> **生效级别**：最高科研诚信铁律（P0 级永久约束），全流程任何脚本、报告与智能体行为必须无条件遵守，违者即视为学术不端。
+> **Level in force**: supreme research-integrity iron law (P0-level permanent constraint); at every stage, any script, report, or agent behavior must comply unconditionally, and any violation is treated as academic misconduct.
 
 ---
 
-## 一、 6 阶段空间切片映射铁律 (Golden Standard Slice Manifest)
+## 1. The 6-Stage Spatial Slice Mapping Iron Law (Golden Standard Slice Manifest)
 
-在整个项目所有生成 Figure 1、空间矩阵、微环境解卷积及多模态图谱的脚本中，**切片与分期映射关系必须 100% 锁定如下，严禁任何形式的擅自替换或回退**：
+In every script across the entire project that generates Figure 1, spatial matrices, microenvironment deconvolution, and multimodal atlases, **the slice-to-stage mapping must be 100% locked as follows; any form of unauthorized substitution or fallback is strictly forbidden**:
 
-| 阶段 (Stage) | 阶段标准名称 (Label) | 唯一合法切片 ID | 权威数据库 | GSM / 样本编号 | 组织学特征与严禁事项 |
+| Stage | Stage Standard Name (Label) | Sole Legal Slice ID | Authoritative Database | GSM / Sample ID | Histological Features and Strict Prohibitions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Stage 1** | `Stage 1: Normal in PT` | **`P4_Normal`** | GSE307534 | GSM9226174 | 正常肺实质对照，严禁使用任何含癌切片。 |
-| **Stage 2** | `Stage 2: AAH Precursor` | **`P1_AAH`** | GSE307534 | GSM9226168 | 真实不典型腺瘤样增生（AAH）前体切片。 |
-| **Stage 3** | `Stage 3: AIS In Situ` | **`P3_AIS`** | GSE307534 | GSM9226172 | 原位腺癌（AIS）纯伏壁样（Lepidic）生长切片。 |
-| **Stage 4** | `Stage 4: MIA Micro-inv` | **`P10_MIA`** | GSE307534 | GSM9226189 | **【铁律禁令】必须使用真实微浸润 `P10_MIA`；绝对禁止使用 `P4_AAH1` / `P4_AAH` 充当 MIA！** |
-| **Stage 5** | `Stage 5: IAC Invasive` | **`P3_LUAD`** | GSE307534 | GSM9226173 | **【铁律禁令】原发浸润性腺癌（IAC），实性/腺泡型与纤维化基质！** |
-| **Stage 6** | `Stage 6: LNM Metastasis` | **⛔ 暂无合法切片（待真实 LUAD 数据）** | — | — | **【2026-09-12 勘误】原锁定的 `PT_3_LNM`(GSE190811) 经 GEO 核实为【乳腺癌】淋巴结转移（系列标题 "…breast cancer patients"），且其 GSM 号 GSM5732148 在该库并不存在（真实为 GSM5732357–2360）。该切片已【作废】，禁止用于任何 LUAD 产物；Stage 6 空间锚点暂缺，待项目方提供真实 LUAD 淋巴结转移空转数据后重锁。** |
+| **Stage 1** | `Stage 1: Normal in PT` | **`P4_Normal`** | GSE307534 | GSM9226174 | Normal lung parenchyma control; use of any cancer-containing slice is strictly forbidden. |
+| **Stage 2** | `Stage 2: AAH Precursor` | **`P1_AAH`** | GSE307534 | GSM9226168 | A genuine atypical adenomatous hyperplasia (AAH) precursor slice. |
+| **Stage 3** | `Stage 3: AIS In Situ` | **`P3_AIS`** | GSE307534 | GSM9226172 | Adenocarcinoma in situ (AIS) slice with pure lepidic growth. |
+| **Stage 4** | `Stage 4: MIA Micro-inv` | **`P10_MIA`** | GSE307534 | GSM9226189 | **【Iron-law prohibition】A genuine microinvasive `P10_MIA` must be used; using `P4_AAH1` / `P4_AAH` as MIA is absolutely forbidden!** |
+| **Stage 5** | `Stage 5: IAC Invasive` | **`P3_LUAD`** | GSE307534 | GSM9226173 | **【Iron-law prohibition】Primary invasive adenocarcinoma (IAC), solid/acinar pattern with fibrotic stroma!** |
+| **Stage 6** | `Stage 6: LNM Metastasis` | **⛔ No legal slice available for now (awaiting real LUAD data)** | — | — | **【2026-09-12 erratum】The originally locked `PT_3_LNM`(GSE190811) was verified against GEO as a 【breast cancer】 lymph-node metastasis (series title "…breast cancer patients"), and its GSM number GSM5732148 does not exist in that repository (the real ones are GSM5732357–2360). That slice is 【void】 and forbidden for any LUAD output; the Stage 6 spatial anchor is currently missing, to be re-locked once the project provides real LUAD lymph-node-metastasis spatial transcriptomics data.** |
 
-> **⛔ 勘误记录（2026-09-12）**：本文件原将 `PT_3_LNM`(GSE190811, GSM5732148) 作为 Stage 6 永久锁定切片，
-> 经 GEO 逐样本核实为**乳腺癌**数据。已作废。**LNM 阶段空间产物（解卷积 / 生态位 / PLIP / 对接）在其被替换前一律不得产出**；
-> 期间空间图谱限定为 **Normal → AAH → AIS → MIA → IAC**（全部来自 GSE307534 单库单平台）。
-> 单细胞层面的 LNM 仍可用 GSE131907 `mLN`（真转移淋巴结，44 患者中已 GEO 核实）。
+> **⛔ Erratum record (2026-09-12)**: This file originally locked `PT_3_LNM`(GSE190811, GSM5732148) as the permanent Stage 6 slice,
+> but per-sample verification against GEO identified it as **breast cancer** data. It is voided. **LNM-stage spatial outputs (deconvolution / niche / PLIP / docking) must not be produced in any form until it is replaced**;
+> in the interim the spatial atlas is limited to **Normal → AAH → AIS → MIA → IAC** (all from the single GSE307534 repository on a single platform).
+> At the single-cell level, LNM may still use GSE131907 `mLN` (genuine metastatic lymph nodes, GEO-verified among 44 patients).
 
 ---
 
-## 二、 算法与图表渲染的三大红线禁令 (Rendering Prohibitions)
+## 2. The Three Red-Line Prohibitions for Algorithms and Figure Rendering (Rendering Prohibitions)
 
-1. 🚫 **严禁人工取模或伪造条纹（Zero Synthetic Modulo Logic）**：
-   - WHO 病理学分类（Lepidic, Acinar, Papillary, Solid, Fibrotic Stroma）与 TCGA 分子亚型（TRU, PP, PI）必须 100% 由真实的 RCTD 亚克隆及微环境解卷积权重计算得出。
-   - **绝对禁止出现 `i % 2 == 0`、`i % 3 != 0` 或 `np.random` 等任何人造交替条纹代码！**
+1. 🚫 **Synthetic modulo or fabricated striping is strictly forbidden (Zero Synthetic Modulo Logic)**:
+   - The WHO pathological classification (Lepidic, Acinar, Papillary, Solid, Fibrotic Stroma) and the TCGA molecular subtypes (TRU, PP, PI) must be 100% computed from genuine RCTD subclones and microenvironment deconvolution weights.
+   - **It is absolutely forbidden to introduce any artificial alternating-stripe code such as `i % 2 == 0`, `i % 3 != 0`, or `np.random`!**
 
-2. 🚫 **严禁在非肿瘤背景乱涂假阳性（Clean Non-tumor Background Rule）**：
-   - 非肿瘤细胞（正常肺泡上皮、淋巴细胞、巨噬细胞、血管内皮等）在 WHO 与 TCGA 列中必须统一保持整洁的浅灰底色（`#E2E8F0`），与图例中的 `Non-tumor / NA` 严格一致，严禁给正常组织赋予恶性亚型颜色。
+2. 🚫 **Painting false positives across non-tumor background is strictly forbidden (Clean Non-tumor Background Rule)**:
+   - Non-tumor cells (normal alveolar epithelium, lymphocytes, macrophages, vascular endothelium, etc.) must uniformly keep a clean light-gray background (`#E2E8F0`) in both the WHO and TCGA columns, strictly consistent with `Non-tumor / NA` in the legend; assigning a malignant-subtype color to normal tissue is strictly forbidden.
 
-3. 🚫 **严禁 ROI 选框沦为纯黄色肿瘤块（Multilineage Frontier ROI Law）**：
-   - 第 5 列的虚线选框与第 6 列的放大六边形，必须是**恶性肿瘤（黄/橙/红）、成纤维基质（深红 myCAF）、巨噬细胞（紫 TAM）、T细胞（蓝）及内皮细胞（粉）紧密接触重塑的“多系侵袭破口前沿（Multilineage Frontier）”**。
-   - **绝对禁止将 ROI 中心定位于肿瘤实质内部的 100% 纯恶性细胞黄块！**
+3. 🚫 **The ROI box must not degenerate into a pure-yellow tumor block (Multilineage Frontier ROI Law)**:
+   - The dashed box in column 5 and the magnified hexagon in column 6 must show a **"multilineage invasion-front breach (Multilineage Frontier)" in which malignant tumor (yellow/orange/red), fibroblast stroma (dark-red myCAF), macrophages (purple TAM), T cells (blue), and endothelial cells (pink) are in close contact and actively remodeling**.
+   - **It is absolutely forbidden to center the ROI on a 100% pure-malignant-cell yellow block inside the tumor parenchyma!**

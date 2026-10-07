@@ -1,94 +1,94 @@
-# 科研严谨性与审计准则 (Scientific Rigor & Audit Protocol)
+# Scientific Rigor & Audit Protocol
 
-> 适用于本项目（配对空间-单核图谱）。**所有脚本、报告、图表必须遵守。**
-> 范围与里程碑见 [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) 与 [`WHITEPAPER.md`](WHITEPAPER.md)。
-
----
-
-## 法则 0 · 数据身份与分期真值
-1. 数据集身份以 **GEO/GSA** 为准；本项目**仅两个配对数据集**：`GSE308103`(snRNA) + `GSE307534`(空间)；
-2. **分期无静默默认**（严禁 `.get(x,'IAC')` 之类回退）；未知 token 一律 raise；
-3. **恶性标签须 CNV 证真**（CopyKAT），**不得**以泛上皮标记（EPCAM/KRT…）argmax 代替；
-4. 双体必须用**标准算法**（scDblFinder），**不得**以 nCount+nFeature 启发式替代。
-5. **病灶序号无推导**：同一患者的第二病灶**不得由 token 猜** —— 两个数据集的命名约定**不同**
-   （`GSE307534` 用 `AAH-1`/`AIS-1`（**带横线**）；`GSE308103` 用 `AAH1`/`AIS1`/`Normal1`/`LUAD1`（**无横线**））。
-   序号**只查 GEO 权威表**（`cohort_registry.resolve_lesion_ordinal`），查不到即 raise。
+> Applies to this project (paired spatial–snRNA atlas). **All scripts, reports, and figures must comply.**
+> For scope and milestones see [`PLAN_AND_CHECKPOINTS.md`](../PLAN_AND_CHECKPOINTS.md) and [`WHITEPAPER.md`](WHITEPAPER.md).
 
 ---
 
-## 法则 1 · 伪造与模拟数据零容忍
-1. **严禁** `np.random` / `runif` / `rnorm` / `sample()` / `make_blobs()` / 硬编码虚拟数值来伪造细胞比例、表达或空间丰度；
-2. 每个图表/统计的输入必须来自**真实测序矩阵**，并具明确来源；
-3. 发现伪造脚本 → **立即隔离**，禁止留在生产主干。
+## Rule 0 · Data identity and stage ground truth
+1. Dataset identity follows **GEO/GSA**; this project has **only two paired datasets**: `GSE308103`(snRNA) + `GSE307534`(spatial);
+2. **No silent default for stage** (fallbacks such as `.get(x,'IAC')` are strictly forbidden); any unknown token must raise;
+3. **Malignant labels must be confirmed by CNV** (CopyKAT), and **must not** be replaced by the argmax of pan-epithelial markers (EPCAM/KRT…);
+4. Doublets must use a **standard algorithm** (scDblFinder), and **must not** be replaced by a nCount+nFeature heuristic.
+5. **No inference of lesion ordinal**: a patient's second lesion **must not be guessed from a token** — the two datasets have **different** naming conventions
+   (`GSE307534` uses `AAH-1`/`AIS-1` (**with a hyphen**); `GSE308103` uses `AAH1`/`AIS1`/`Normal1`/`LUAD1` (**without a hyphen**)).
+   the ordinal is **looked up only in the authoritative GEO table** (`cohort_registry.resolve_lesion_ordinal`); if it is not found, raise.
 
 ---
 
-## 法则 2 · 生物学特异性（marker 交叉校验）
+## Rule 1 · Zero tolerance for fabricated and simulated data
+1. **Strictly forbidden** to fabricate cell proportions, expression, or spatial abundance with `np.random` / `runif` / `rnorm` / `sample()` / `make_blobs()` / hard-coded dummy values;
+2. the input to every figure/statistic must come from a **real sequencing matrix** with a clear source;
+3. a fabrication script found → **isolated immediately**, never left on the production trunk.
 
-> 🔴 **2026-09-17 重建（用户指令「marker 要来自权威文章，不要给我从犄角旮旯搞来」）**。
-> 本表旧版（EPCAM/KRT7/19… 六行）**一个出处都没有**，属审计标缺。现按**一次文献**重建，
-> 逐基因出处见 [`05_annotation/marker_panel.py`](../05_annotation/marker_panel.py)。
-> **执行口径 = 该文件，不是本表**；本表为人读摘要。
+---
 
-| 谱系 | 阳性 marker | 应为阴性 | 出处（一次文献） |
+## Rule 2 · Biological specificity (marker cross-validation)
+
+> 🔴 **2026-09-17 rebuilt (user instruction: "markers must come from authoritative papers, don't dig them out of some obscure corner")**.
+> The old version of this table (six rows: EPCAM/KRT7/19…) **had not a single source**, flagged as missing in audit. It has now been rebuilt from **primary literature**,
+> with per-gene sources in [`05_annotation/marker_panel.py`](../05_annotation/marker_panel.py).
+> **The operative definition = that file, not this table**; this table is a human-readable summary.
+
+| Lineage | Positive markers | Expected negative | Source (primary literature) |
 | :--- | :--- | :--- | :--- |
-| 上皮 | EPCAM, KRT8/18/19, CDH1, NKX2-1, SFTPC, SFTPA1/A2, SFTPB, NAPSA, AGER, CAV1, PDPN, SCGB3A2, SCGB1A1 | PTPRC, CD3D, PECAM1, COL1A1 | Travaglini 2020 *Nature* 587:619（AT1/AT2/Club/pan-上皮）；Vieira Braga 2019 *Nat Med* 25:1153（气道）；**彭 2026 *Cancer Cell*（源论文，LUAD 谱系 NKX2-1）** |
-| T/NK | CD3D/E/G, TRAC, CD4, IL7R, CD8A/B, NKG7, GNLY, KLRD1, PRF1, GZMB | EPCAM, COL1A1, CD68 | Travaglini 2020；Vieira Braga 2019；Guo 2018 *Nat Med* 24:978（NSCLC T 细胞） |
-| B/浆细胞 | MS4A1, CD19, CD79A/B, MZB1, JCHAIN, SDC1, IGHG1, IGKC, XBP1, DERL3 | CD3D, EPCAM, ACTA2 | Travaglini 2020；Vieira Braga 2019 |
-| 髓系 | LYZ, AIF1, ITGAX, CD68, CD163, MSR1, C1QA/B/C, MARCO, APOE, FCN1, CD14, S100A8/9, SPP1 | CD3D, EPCAM, PECAM1 | Travaglini 2020（肺泡巨噬）；Habermann 2020 *Sci Adv* 6:eaba1972（SPP1⁺ 巨噬）；Zilionis 2019 *Immunity* 50:1317（肺肿瘤髓系） |
-| 成纤维 | COL1A1/A2, COL3A1, DCN, LUM, FN1, PDGFRA/B, ACTA2, TAGLN, FAP, CXCL12 | PTPRC, EPCAM, PECAM1 | Travaglini 2020；Habermann 2020；Reyfman 2019 *AJRCCM* 199:1517；Lambrechts 2018 *Nat Med* 24:1277（肿瘤基质） |
-| 内皮 | PECAM1, CDH5, KDR, CD34, VWF, EGFL7, RAMP2, EMCN, PLVAP, AQP1, CLDN5, FLT1 | EPCAM, PTPRC, COL1A1 | Travaglini 2020（EC 亚型）；Gillich 2020 *Nature* 586:785（肺泡毛细血管 aCap/gCap 特化）；Lambrechts 2018 |
+| Epithelial | EPCAM, KRT8/18/19, CDH1, NKX2-1, SFTPC, SFTPA1/A2, SFTPB, NAPSA, AGER, CAV1, PDPN, SCGB3A2, SCGB1A1 | PTPRC, CD3D, PECAM1, COL1A1 | Travaglini 2020 *Nature* 587:619 (AT1/AT2/Club/pan-epithelial); Vieira Braga 2019 *Nat Med* 25:1153 (airway); **Peng 2026 *Cancer Cell* (source paper, LUAD lineage NKX2-1)** |
+| T/NK | CD3D/E/G, TRAC, CD4, IL7R, CD8A/B, NKG7, GNLY, KLRD1, PRF1, GZMB | EPCAM, COL1A1, CD68 | Travaglini 2020; Vieira Braga 2019; Guo 2018 *Nat Med* 24:978 (NSCLC T cells) |
+| B/plasma cells | MS4A1, CD19, CD79A/B, MZB1, JCHAIN, SDC1, IGHG1, IGKC, XBP1, DERL3 | CD3D, EPCAM, ACTA2 | Travaglini 2020; Vieira Braga 2019 |
+| Myeloid | LYZ, AIF1, ITGAX, CD68, CD163, MSR1, C1QA/B/C, MARCO, APOE, FCN1, CD14, S100A8/9, SPP1 | CD3D, EPCAM, PECAM1 | Travaglini 2020 (alveolar macrophages); Habermann 2020 *Sci Adv* 6:eaba1972 (SPP1⁺ macrophages); Zilionis 2019 *Immunity* 50:1317 (lung tumor myeloid) |
+| Fibroblasts | COL1A1/A2, COL3A1, DCN, LUM, FN1, PDGFRA/B, ACTA2, TAGLN, FAP, CXCL12 | PTPRC, EPCAM, PECAM1 | Travaglini 2020; Habermann 2020; Reyfman 2019 *AJRCCM* 199:1517; Lambrechts 2018 *Nat Med* 24:1277 (tumor stroma) |
+| Endothelial | PECAM1, CDH5, KDR, CD34, VWF, EGFL7, RAMP2, EMCN, PLVAP, AQP1, CLDN5, FLT1 | EPCAM, PTPRC, COL1A1 | Travaglini 2020 (EC subtypes); Gillich 2020 *Nature* 586:785 (alveolar capillary aCap/gCap specialization); Lambrechts 2018 |
 
-**恶性身份以 CNV 为准**；marker 仅作**一致性佐证**，不作判据。
+**Malignant identity is determined by CNV**; markers serve only as **corroboration**, not as a criterion.
 
-**与 GP6 标准 B 的独立性（重要）**：本表是 GP6 **标准 A** 的基因来源，**刻意不取自 HLCA 整合图谱**
-（Sikkema 2023 *Nat Med* 29:1563）——因为 CellTypist 的 `Human_Lung_Atlas.pkl` 正是该图谱训出来的，
-若两者同源，则 κ 变成自证。**残留非独立性如实声明**：HLCA 整合了上表所引的多套一次研究数据，
-故两者**并非统计独立**，只保证「marker 定义来源不同」。
-
----
-
-## 法则 3 · 参数透明与统计严谨
-1. 参数**显式常量化**并登记 [`PARAMETERS_AND_SOURCES.md`](PARAMETERS_AND_SOURCES.md)（标出处与核对状态）；
-2. **阈值一经确定不得事后调整**（防 p-hacking）；
-3. 单细胞差异用**患者级 pseudobulk**（DESeq2），不用单细胞级 Wilcoxon（伪重复）；
-4. 组成性比例数据报**效应量**，不用裸 FDR；
-5. 空间统计用**类别标签**、报 **z + 经验 p**（`squidpy.nhood_enrichment` **不返回 p 值**；`co_occurrence` **不做置换**）；
-6. 生存分析须输出 HR、95% CI、Log-rank P，**严禁篡改显著性**。
+**Independence from GP6 Standard B (important)**: this table is the gene source for GP6 **Standard A**, **deliberately not taken from the HLCA integrated atlas**
+(Sikkema 2023 *Nat Med* 29:1563)—because CellTypist's `Human_Lung_Atlas.pkl` was trained from exactly that atlas,
+so if the two shared a source, κ would become self-validation. **Residual non-independence, truthfully declared**: HLCA integrates several of the primary studies cited in the table above,
+so the two are **not statistically independent**; the only guarantee is that the "marker-definition sources differ".
 
 ---
 
-## 法则 4 · 因果与措辞边界
-1. **观察性单细胞/空间不能建立因果**；合法杠杆 = **cis-MR + coloc** 或扰动实验；
-2. 可说：**candidate / genetically supported candidate / prognostic association / computational hypothesis**；
-3. **不可说**：`causal`、`driver`（无限定）、`validated target`、"状态逆转因子"；
-4. 对接（M8）结论仅为**计算假说**；"validated" 须湿实验。
+## Rule 3 · Parameter transparency and statistical rigor
+1. parameters are **explicitly made into constants** and registered in [`PARAMETERS_AND_SOURCES.md`](PARAMETERS_AND_SOURCES.md) (with source and verification status);
+2. **once a threshold is fixed it must not be adjusted post hoc** (to prevent p-hacking);
+3. single-cell differential expression uses **patient-level pseudobulk** (DESeq2), not single-cell-level Wilcoxon (pseudoreplication);
+4. compositional proportion data report **effect size**, not bare FDR;
+5. spatial statistics use **category labels** and report **z + empirical p** (`squidpy.nhood_enrichment` **does not return a p-value**; `co_occurrence` **does not permute**);
+6. survival analyses must output HR, 95% CI, and Log-rank P, and **tampering with significance is strictly forbidden**.
 
 ---
 
-## 法则 5 · 跨模态（本项目核心）
-1. 空间（Visium spot，多细胞混合）**必须解卷积**；参考须**模态匹配**（FFPE↔FFPE → 用 GSE308103）；
-2. 跨模态一致性须过 **M4 五判据**；**不过门 → AAH 只能标为假说**；
-3. 禁用 `modality 当 batch`（sc↔sn 是 system 效应且与数据集共线）。
+## Rule 4 · Causality and wording boundaries
+1. **observational single-cell/spatial data cannot establish causality**; legitimate lever = **cis-MR + coloc** or perturbation experiments;
+2. may say: **candidate / genetically supported candidate / prognostic association / computational hypothesis**;
+3. **may not say**: `causal`, `driver` (unqualified), `validated target`, "state-reversal factor";
+4. docking (M8) conclusions are only **computational hypotheses**; "validated" requires wet-lab experiments.
 
 ---
 
-## 法则 6 · 冻结与可复现
-1. 产物**可复现 + 有哈希**；确定性（种子显式、无随机）；
-2. `patient_id`（真患者）与 `sample_id`（切片/样本）**分层**；
-3. 输入输出可溯源；冻结清单与校验报告随里程碑提交。
+## Rule 5 · Cross-modality (core to this project)
+1. spatial (Visium spot, multi-cell mixture) **must be deconvolved**; the reference must be **modality-matched** (FFPE↔FFPE → use GSE308103);
+2. cross-modality consistency must pass the **M4 five criteria**; **not passing the gate → AAH may only be labeled a hypothesis**;
+3. `modality as batch` is forbidden (sc↔sn is a system effect and is collinear with dataset).
 
 ---
 
-## 审计流程（产物入库前）
-1. **数据源头核验**：路径有效、来源明确；
-2. **计数/标签一致性核验**：与冻结表对齐；
-3. **可复现性核验**：确定性脚本 + 种子显式 + 产物哈希；
-4. **措辞与方法学比对**：对照本准则与顶刊标准；
-5. **守卫须被证伪**：凡新增或修改的一致性校验，必须喂一份**故意做坏的输入**，确认它真的会红
-   （退出码非 0、且点名具体条目）。**只"跑通"不算验证 —— 永远通过的守卫是假的。**
-   实例：`00_ingest/03_verify_cohort_consistency.py` 用被删规则的坏表自证，点名 5 个样本并退出 1。
-6. **同一事实不得有两份实现**：凡同一事实存在第二份推导（**尤其是"从未被调用"的那一份**），
-   要么删除，要么与权威源逐字对撞。**无执行路径的缺陷不产生症状、不会自我暴露**，
-   单测/流水线/产物核验全都覆盖不到它（实例：`lesion_ordinal()`，
-   见 [`results/03_cnv/GP1_report.md`](../results/03_cnv/GP1_report.md) §6.1）。
+## Rule 6 · Freezing and reproducibility
+1. artifacts are **reproducible + hashed**; deterministic (explicit seed, no randomness);
+2. `patient_id` (true patient) and `sample_id` (section/sample) are **stratified**;
+3. inputs and outputs are traceable; the freeze manifest and verification report are submitted with each milestone.
+
+---
+
+## Audit workflow (before artifacts enter the ledger)
+1. **Data-source verification**: path valid, source clear;
+2. **Count/label consistency verification**: aligned with the freeze table;
+3. **Reproducibility verification**: deterministic script + explicit seed + artifact hash;
+4. **Wording and methodology comparison**: against this protocol and top-journal standards;
+5. **Guards must be falsified**: every new or modified consistency check must be fed a **deliberately corrupted input**, confirming that it really does go red
+   (non-zero exit code, and naming the specific item). **Merely "running through" is not validation — a guard that always passes is fake.**
+   Example: `00_ingest/03_verify_cohort_consistency.py` self-validates using a bad table with a deleted rule, naming 5 samples and exiting 1.
+6. **No fact may have two implementations**: wherever a second derivation of the same fact exists (**especially "the one that is never called"**),
+   either delete it or byte-for-byte collide it against the authoritative source. **A defect with no execution path produces no symptom and never exposes itself**,
+   and unit tests/pipelines/artifact verification all fail to cover it (example: `lesion_ordinal()`,
+   see [`results/03_cnv/GP1_report.md`](../results/03_cnv/GP1_report.md) §6.1).
