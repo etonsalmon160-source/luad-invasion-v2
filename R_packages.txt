@@ -1,0 +1,46 @@
+# R package versions - analysis environment
+#
+# Generated from the environment the analyses ran in, 2026-10-07.
+# R version 4.2.2 Patched (2022-11-10 r83330) 
+#
+# The third column records the library each package was loaded from. Four of
+# these libraries are deliberately isolated from the shared site-library.
+#
+package                version      library
+------------------------------------------------------------------------------ 
+arrow                  10.0.0       /usr/local/lib/R/site-library
+Banksy                 0.1.6        /home/eto/Rlibs/fastcnv
+BiocParallel           1.32.1       /usr/local/lib/R/site-library
+copykat                1.2.5        /home/eto/R/x86_64-pc-linux-gnu-library/4.2
+data.table             1.14.6       /usr/local/lib/R/site-library
+dbscan                 1.1-11       /usr/local/lib/R/site-library
+digest                 0.6.30       /usr/local/lib/R/site-library
+DoubletFinder          2.0.3        /home/eto/R/x86_64-pc-linux-gnu-library/4.2
+fastCNV                1.1.11       /home/eto/Rlibs/fastcnv
+ggplot2                3.4.0        /usr/local/lib/R/site-library
+ggrepel                0.9.2        /usr/local/lib/R/site-library
+ggsci                  2.9          /usr/local/lib/R/site-library
+GSVA                   1.46.0       /usr/local/lib/R/site-library
+harmony                2.0.5        /usr/local/lib/R/site-library
+infercnv               1.23.0       /home/eto/Rlibs/infercnv
+jsonlite               1.8.3        /usr/local/lib/R/site-library
+leidenAlg              1.1.8        /home/eto/Rlibs/fastcnv
+Matrix                 1.6-5        /home/eto/Rlibs/fastcnv
+mclust                 6.0.0        /usr/local/lib/R/site-library
+nichenetr              2.2.1.1      /home/eto/Rlibs/nichenet
+patchwork              1.1.2        /usr/local/lib/R/site-library
+png                    0.1-7        /usr/local/lib/R/site-library
+rhdf5                  2.42.0       /usr/local/lib/R/site-library
+S4Vectors              0.36.0       /usr/local/lib/R/site-library
+scales                 1.2.1        /usr/local/lib/R/site-library
+scDblFinder            1.12.0       /usr/local/lib/R/site-library
+scran                  1.26.0       /usr/local/lib/R/site-library
+sctransform            0.4.3        /home/eto/Rlibs/fastcnv
+scuttle                1.8.0        /usr/local/lib/R/site-library
+Seurat                 5.0.1        /home/eto/Rlibs/fastcnv
+SeuratObject           5.0.0        /home/eto/Rlibs/fastcnv
+signatureSearch        1.12.0       /home/eto/Rlibs/sigsearch
+SingleCellExperiment   1.20.0       /usr/local/lib/R/site-library
+spacexr                2.2.1        /usr/local/lib/R/site-library
+survival               3.4-0        /usr/lib/R/library
+viridisLite            0.4.3        /home/eto/Rlibs/nichenet

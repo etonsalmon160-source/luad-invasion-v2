@@ -66,10 +66,12 @@ listed here.
 ```
 
 **Start here if you are new to the project:**
-1. `docs/PARAMETERS_AND_SOURCES.md` — every analysis parameter, labelled by whether it comes
+1. [`DEPENDENCIES.md`](DEPENDENCIES.md) — what to install, and why the analysis needs more
+   than one environment.
+2. `docs/PARAMETERS_AND_SOURCES.md` — every analysis parameter, labelled by whether it comes
    from a source paper, a software default, or from us.
-2. `docs/PROJECT_SUMMARY.md` — the verified-facts overview.
-3. `10_niche/` — the reversal arm, which is where most of the recent work lives.
+3. `docs/PROJECT_SUMMARY.md` — the verified-facts overview.
+4. `10_niche/` — the reversal arm, which is where most of the recent work lives.
 
 ## Reproducibility notes
 
