@@ -5,7 +5,9 @@
 Paired single-nucleus RNA sequencing and Visium spatial transcriptomics were obtained from
 23 patients spanning the five stages of the sequence, with the spatial arm covering 56
 sections from 25 patients and sharing 23 patients with the single-cell arm
-(Fig.~\ref{fig:1}a). Quality control retained 399,579 nuclei. The atlas resolves into six
+(Fig.~\ref{fig:1}a). Quality control retained 413,697 nuclei; after removal of contaminants
+and low-quality clusters, the six mutually exclusive lineage subsets on which the atlas is
+built contain 399,579 nuclei. The atlas resolves into six
 lineages (epithelial, fibroblast, endothelial, myeloid, T/NK, B/plasma;
 Fig.~\ref{fig:1}a) and, on per-lineage sub-clustering, into 39 second-level (L2) subtypes
 (Supplementary Table~S1; Fig.~\ref{fig:1}f).
@@ -50,11 +52,17 @@ correction, and P24 is one of its representative samples.
 
 \subsection{Spatial deconvolution resolves seven recurring niche domains}
 
-BANKSY applied per section yielded 434 spatial domains, which collapsed to seven archetypes
-($K^{*}=7$; cross-seed stability 0.945) across the 56 sections (Fig.~\ref{fig:2}d).
-Stability falls to 0.814 at $K=8$, so the domains cannot be subdivided further without
-becoming seed-dependent. We therefore treat $K^{*}=7$ as the resolution limit of this
-cohort. A purely descriptive optimum exists at $K=6$ (stability 0.966) and was not adopted.
+BANKSY applied per section yielded 434 spatial domains, which were collapsed to archetypes
+by clustering their expression profiles. The stability of that collapse was measured by
+subsampling: re-clustering on a random 80\% of the domains, repeated 100 times, and
+comparing to the full solution. This gives 0.945 at $K^{*}=7$, the largest $K$ above the
+0.90 threshold, and 0.966 at $K=6$; it falls to 0.814 at $K=8$, so the archetypes cannot be
+subdivided further. We therefore treat $K^{*}=7$ as the resolution limit of this cohort. A
+purely descriptive optimum exists at $K=6$ and was not adopted. These figures describe the
+archetype clustering and are \emph{not} a cross-seed measurement; the cross-seed agreement
+of the underlying per-section domain calls is a separate and lower quantity (median
+adjusted Rand index 0.782), and is what determines the stability gate reported in the
+Limitations.
 
 Identities were assigned from each archetype's RCTD composition (Fig.~\ref{fig:2}a,c) and
 its marker genes (Fig.~\ref{fig:2}g). Six of the seven are ordinary lung structures: airway
@@ -71,9 +79,10 @@ itself depth-confounded (see below), and the identity of D3 was revised twice du
 study, from an immune-infiltrate reading to a hypoxic/invasive reading and then to its
 current ECM/interstitial reading; the earlier names should not be used. The domain
 definition is also method-sensitive: BANKSY, RCTD composition and marker-based clustering
-return 7, 6 and 5 domains respectively, with an adjusted Rand index of only 0.225--0.247
-against an RCTD-aligned partition. Domain boundaries are therefore quantitative but not
-unique. The composition underlying each label is given in Table~\ref{tab:domains}.
+return 7, 6 and 5 domains respectively, and the expression-based partition agrees with an
+RCTD-aligned partition at an adjusted Rand index of 0.352. Domain boundaries are therefore
+quantitative but not unique. The composition underlying each label is given in
+Table~\ref{tab:domains}.
 
 \input{sections/_fig2}
 
@@ -154,7 +163,7 @@ spots of the same section removes depth by construction, since every spot in the
 shares one cDNA library (Fig.~\ref{fig:3}c). Under this design the copy-number score is
 elevated in D5 (AT2; median $\Delta=+0.044$, positive in 40 of 46 sections, $p<0.001$) and
 in D3 (12 of 12 sections, $p=0.0005$); D4, D6 and D2 are significantly lower, and D1 and D7
-show no effect. Restricted to precursor sections, D5 remains positive in 17 of 20, so the
+show no effect. Restricted to the 25 precursor sections, D5 remains positive in 21, so the
 signal is present before invasion. This is consistent with AT2 as the cell of origin in this
 disease and with an independent supervised classifier whose signal was likewise confined to
 AT2.
@@ -162,7 +171,8 @@ AT2.
 The score is a continuous quantity and not a malignancy call; no malignant label is assigned
 to any spot or domain. Within D5, splitting spots into high and low copy-number groups
 produces spatially coherent patches, but the split is not separable from RNA content: the
-correlation between score and total UMI within D5 is $r=0.740$, and splitting by spot counts
+correlation between score and total UMI within D5 is $r=0.755$ across sections, and
+splitting by spot counts
 alone reproduces roughly 75\% of the difference in AT2 content between the two groups. A
 ``D5-high'' subdomain therefore cannot be described as a tumour subdomain.
 
@@ -189,8 +199,8 @@ To ask whether the disease state can be reversed, a query signature was derived 
 single-cell data and used against two perturbation libraries.
 
 \paragraph{Query construction.} For each patient the difference in mean expression between
-invasive and precursor cells was computed and the median taken across patients, giving a
-16,104-gene axis. This axis was filtered against an independent survival signal (per-gene
+invasive and precursor cells was computed and the median taken across patients, giving an
+18,069-gene axis, of which 16,104 are represented in the SCMG library. This axis was filtered against an independent survival signal (per-gene
 adjusted Cox models in TCGA-LUAD), retaining a gene only where the direction of disease
 change agreed with the direction of prognostic effect, so that a gene rising in disease is
 retained only if higher expression also predicts worse outcome, and conversely
@@ -219,8 +229,8 @@ smaller groups against HSP90, the proteasome and cell-cycle kinases (Fig.~\ref{f
 \paragraph{Reproducibility and modality independence.} Splitting patients at random into
 halves, deriving the axis independently in each half and scoring both against LINCS
 reproduces the ranking with a median Spearman $\rho$ of 0.962 across four splits, against a
-permutation null of $\pm0.045$ (Fig.~\ref{fig:3}e, left); the top-500 lists share 438
-compounds on average against a chance expectation of 137. One split is weaker ($\rho=0.752$)
+permutation null of $\pm0.045$ (Fig.~\ref{fig:3}e, left); the top-500 compound lists share
+423 on median against a chance expectation of 137. One split is weaker ($\rho=0.752$)
 and all four are reported. A second query axis was derived from the spatial data, after
 depth balancing, by comparing invasive and precursor spots within nUMI deciles, and scored
 against the same library with the same statistic. The two axes agree at Spearman
@@ -266,8 +276,9 @@ three and 7 by two.
 
 To test whether the candidates act on a compartment rather than on the tissue as a whole,
 the disease axis was rebuilt for each of 31 subtypes separately and every perturbation
-re-ranked within each axis. Of 1,748 entries reaching the top 100 in at least one cell-type
-axis, only two reach it in twenty or more of the 31. One is \emph{SFTPC} knockdown, which
+re-ranked within each axis. Of 1,466 perturbation entries, counted as gene and direction,
+reaching the top 100 in at least one cell-type axis, only two reach it in twenty or more of
+the 31. One is \emph{SFTPC} knockdown, which
 ranks in the top 100 in 22 of 31 axes but fails the direction check, since lowering a
 transcript whose high expression is protective does not describe a therapeutic direction.
 The other is \emph{STAT1} knockdown (21 of 31 axes; hazard ratio 1.08, consistent with the

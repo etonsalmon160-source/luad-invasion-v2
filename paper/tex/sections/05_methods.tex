@@ -58,7 +58,9 @@ entered this work.
 
 \subsection{Single-cell processing}
 
-After quality control and doublet removal 399,579 nuclei were retained. Expression was
+After quality control and doublet removal 413,697 nuclei were retained. Contaminant and
+low-quality clusters were then excluded, leaving 399,579 nuclei in the six mutually
+exclusive lineage subsets that the atlas is built on. Expression was
 normalised to counts per 10,000 with a $\log(1+x)$ transform (CP10K+log1p) throughout. The
 atlas was built with Seurat \citep{hao2024seurat} using the regularised negative-binomial
 variance-stabilising transform \citep{hafemeister2019sctransform} with \texttt{glmGamPoi}
@@ -94,7 +96,9 @@ because the authors recommend $\lambda\approx0.2$ for domain segmentation on 55\
 Visium and because higher $\lambda$ values, which the source study used, down-weight the
 cell's own expression towards zero. Cross-seed consensus over five seeds produced 434
 domain-level clusters across 56 sections; these were collapsed to archetypes by
-profile-based clustering, giving $K^{*}=7$ at a cross-seed stability of 0.945. Stability
+profile-based clustering, giving $K^{*}=7$ at a subsampling stability of 0.945 (re-clustering on a random 80\% of
+domains, 100 iterations); the cross-seed adjusted Rand index of the per-section domain
+calls is a separate quantity and is lower (median 0.782). Stability
 falls below 0.814 at $K=8$. A descriptive optimum exists at $K=6$ (0.966) but was not
 adopted, since the selection rule took the largest $K$ passing the stability threshold.
 Consensus stability was scored with the proportion-of-ambiguous-clustering statistic
@@ -119,7 +123,7 @@ before the cohort run. A spot mask was applied at thresholds of 500 counts, 200 
 depth rather than to the rule, and is recorded as a known discrepancy.
 
 Two consequences of the mask are guarded explicitly. Per-section removal rates range from
-0.88\% to 29.6\%, so a section in which a domain occupies little area may simply have had
+0.02\% to 29.6\%, so a section in which a domain occupies little area may simply have had
 more of itself masked; coverage is therefore reported per section and a small domain area is
 never read as evidence that the niche is rare. And because the 56 sections come from 25
 patients, every cross-section summary is clustered by patient, since two or three sections from
@@ -163,8 +167,9 @@ sex.
 \subsection{Query signature construction}
 
 For each patient, the disease axis was computed as the mean expression of invasive cells
-minus that of precursor cells, and the median across patients was taken, giving a
-16,104-gene vector. This axis was filtered on independent survival evidence: a gene rising
+minus that of precursor cells, and the median across patients was taken, giving an
+18,069-gene vector, of which 16,104 are represented in the SCMG library. This axis was
+filtered on independent survival evidence: a gene rising
 in disease was retained only if its adjusted hazard ratio exceeded 1, and a gene falling in
 disease only if it fell below 1; all others were set to zero. Of 18,069 genes, 8,799 were
 retained (51\% removed overall; 44\% of the 15,792 genes with survival annotation).
@@ -230,8 +235,8 @@ $\leq 1.4$ and were re-solved with a tissue-outline overlap metric). Second, the
 physical spot was cropped from both sources and compared directly, with the coordinate grid
 propagated through the full transform; the fitted affine reproduces the grid to within
 0.18\,px everywhere. Third, the residual was measured on the final solution as a translation field: the
-residual translation is within one pixel on 53 of 56 sections and within three pixels on
-the remaining three, and where the field could be fitted it shows no residual rotation
+residual translation is within one pixel on 46 of 56 sections, and three pixels or less on
+the remainder, and where the field could be fitted it shows no residual rotation
 ($|\phi| < 0.1^\circ$) and no residual scale ($k$ within $\pm0.13\%$). At the CytAssist
 scale of 4.6233\,$\mu$m per pixel this places even the largest residual well inside a spot
 radius, so no spot is assigned to a neighbouring spot's tissue. All 56 sections pass. The
