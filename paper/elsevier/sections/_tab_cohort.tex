@@ -1,0 +1,30 @@
+\begin{table*}[!ht]
+\centering
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+\tabheadfont Item & \tabheadfont Single-nucleus RNA-seq & \tabheadfont Spatial transcriptomics \\
+\midrule
+Accession & GSE308103 & GSE307534 \\
+Platform & fixed RNA profiling & Visium CytAssist, 11\,mm \\
+Feature space & 18{,}069 genes analysed & 18{,}085 probes \\
+Samples & 75 & 56 sections \\
+Patients & 25 & 25 \\
+\addlinespace[3pt]
+Units called & 798{,}100 nuclei & 14{,}336 spots per section \\
+Retained after QC & 767{,}839 (96.2\%) & 95.03\% of spots \\
+Doublet rate & 15.48\% & --- \\
+Analysed & \textbf{413{,}697 nuclei} & all 56 sections \\
+Grid and spacing & --- & $128\times112$; 100\,$\mu$m \\
+\addlinespace[3pt]
+Patients in both modalities & \multicolumn{2}{l}{23} \\
+\bottomrule
+\multicolumn{3}{@{}l}{\footnotesize\itshape Sections per stage: Normal 1 \quad AAH 11 \quad AIS 14 \quad MIA 4 \quad IAC 26 (source token \texttt{LUAD})} \\
+\end{tabularx}
+\caption{\textbf{Cohort and data sources.} Both modalities are public, come from the same
+patient series, and share 23 patients. Both are probe-based assays rather than
+whole-transcriptome chemistries, so each has a defined feature space. The invasive stage is
+labelled \texttt{LUAD} in the source annotations and is mapped to IAC throughout. Normal is
+represented by a single spatial section and MIA by four, so estimates for these two stages
+should not be quoted on their own.}
+\label{tab:cohort}
+\end{table*}

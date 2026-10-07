@@ -1,0 +1,50 @@
+\begin{table*}[!ht]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{68pt}>{\raggedright\arraybackslash}p{78pt}>{\raggedright\arraybackslash}p{104pt}>{\centering\arraybackslash}p{20pt}X@{}}
+\toprule
+\tabheadfont Arm & \tabheadfont Parameter & \tabheadfont Value & \tabheadfont Src. & \tabheadfont Note \\
+\midrule
+\tabgroup{5}{Single-cell processing}
+QC & retained nuclei & 399{,}579 & S & 15.48\% doublet rate; per-sample MAD \\
+Clustering & L2 subtypes & 39 & S & endothelial and myeloid panels rebuilt \\
+Integration & batch variable & sample ID & P & Harmony, rest at defaults \\
+\addlinespace[3pt]
+\tabgroup{5}{Spatial domains (BANKSY)}
+Domain search & $\lambda$ & 0.2 & P & authors' recommendation for 55\,$\mu$m Visium \\
+ & $k_{\text{geom}}$ & 18 & P & authors' recommendation \\
+ & resolution & 0.5 & P & within the source study's range \\
+Consensus & seeds & 5 & S & cross-seed agreement, per section \\
+Archetypes & $K^{*}$ & 7 & S & stability 0.945 (0.814 at $K=8$) \\
+\addlinespace[3pt]
+\tabgroup{5}{Spatial deconvolution}
+Reference & subtypes & 39 & S & a 6-lineage reference is also run \\
+Epithelial call & rule & $\arg\max =$ epithelial & S & fixed before the cohort run \\
+Spot mask & threshold & 500 counts / 200 genes / MT 0.15 & S & removes 4.97\% of spots \\
+\addlinespace[3pt]
+\tabgroup{5}{Copy-number inference}
+Engine & tool & fastCNV & P & DOI 10.1186/s13073-026-01731-w \\
+Chromosomes & filter & drop chrY, chrM & P & engine behaviour \\
+Domain contrast & design & within-section pairing & S & removes depth by construction \\
+\addlinespace[3pt]
+\tabgroup{5}{Query signature}
+Construction & axis & invasive $-$ precursor, median over patients & S & 16{,}104 genes \\
+Survival filter & rule & disease-up needs HR$>$1; disease-down needs HR$<$1 & S & removes 51\% of genes \\
+\addlinespace[3pt]
+\tabgroup{5}{Perturbation querying}
+Compound library & LINCS L1000 L5 & 118{,}050 $\times$ 12{,}328; 1{,}826 compounds & P & GSE70138 \\
+ & scoring & CMap $\tau$; Spearman; Pearson & P & \texttt{signatureSearch} 1.12.0 \\
+Gene library & SCMG & 20{,}345 perturbations & P & MIT-licensed \\
+Gating & specificity & K562 control axis & S & removes 20 generalising entries \\
+ & compartment & per-subtype axes (31) & S & top-100 counted per axis \\
+Null models & permutations & 1{,}000 signature layer & T & \texttt{signatureSearch} default \\
+Reproducibility & split-half & 4 partitions & S & reported individually \\
+\bottomrule
+\end{tabularx}
+\caption{\textbf{Analysis parameters and their provenance.} Each parameter is labelled by
+its source: \textbf{P}~= stated in a source paper or software publication, \textbf{T}~=
+software default rather than a published recommendation, \textbf{S}~= fixed by us and
+recorded in the analysis log. The distinction is drawn because most of the consequential
+settings in this study are ours rather than the field's.}
+\label{tab:params}
+\end{table*}

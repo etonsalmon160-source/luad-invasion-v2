@@ -1,0 +1,30 @@
+\begin{table*}[!ht]
+\centering
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{116pt}>{\raggedright\arraybackslash}p{104pt}X@{}}
+\toprule
+\tabheadfont Check & \tabheadfont Compared against & \tabheadfont Result \\
+\midrule
+\tabgroup{3}{Numerical agreement with the reference implementation}
+Weighted-KS statistic & \texttt{signatureSearch} 1.12.0 & max.\ abs.\ difference \num{6.6e-14}; signs agree \num{2000}/\num{2000} \\
+Normalised connectivity & \texttt{signatureSearch} 1.12.0 & max.\ abs.\ difference \num{1.2e-13} \\
+Causal gene score & authors' Python & Spearman \num{1.00000000}; signs agree 100\% (\num{19819} entries) \\
+\addlinespace[3pt]
+\tabgroup{3}{Biological positive control}
+Official benchmark & epiblast $\rightarrow$ nascent mesoderm & TBXT 1st of \num{8450}; MSGN1 2nd; MIXL1 3rd; POU5F1 7th; SNAI1 9th; EOMES 11th; NANOG 12th; EVX1 15th \\
+\addlinespace[3pt]
+\tabgroup{3}{Stability and agreement}
+Split-half & 4 patient partitions & median $\rho = 0.962$ (one split 0.752); permutation null $\pm0.045$ \\
+Cross-modality & single-cell axis vs spatial axis & $\rho = 0.735$; top-100 overlap 52 (chance 5.5) \\
+Scoring schemes & CMap vs the two correlations & Cor--Cor $\rho = 0.950$ (433 of top 500 shared); CMap--Cor $\rho = 0.36$--$0.38$ \\
+\addlinespace[3pt]
+\tabgroup{3}{Geometric self-consistency}
+Scale-bar calibration & adjacent-spot spacing $= 100$\,$\mu$m & 1\,px $= 0.2513$\,$\mu$m; full panel 10.9\,mm (11\,mm format) \\
+\bottomrule
+\end{tabularx}
+\caption{\textbf{Method verification and positive controls.} Every numerical check compares
+our own implementation with the reference implementation on identical input, so a
+discrepancy would be an implementation error rather than a modelling choice. The biological
+control establishes that an empty result from this pipeline reflects the query and not the
+method.}
+\label{tab:validation}
+\end{table*}

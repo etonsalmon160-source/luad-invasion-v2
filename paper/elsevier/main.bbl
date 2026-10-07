@@ -1,0 +1,301 @@
+\begin{thebibliography}{48}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Ahlmann-Eltze and Huber(2021)}]{ahlmanneltze2021glmgampoi}
+\bibinfo{author}{Ahlmann-Eltze, C.}, \bibinfo{author}{Huber, W.}, \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{{glmGamPoi: fitting Gamma-Poisson generalized linear models on single cell count data}}.
+\newblock \bibinfo{journal}{Bioinformatics} \bibinfo{volume}{36}, \bibinfo{pages}{5701--5702}.
+\newblock \DOIprefix\doi{10.1093/bioinformatics/btaa1009}.
+%Type = Article
+\bibitem[{Benjamini and Hochberg(1995)}]{benjamini1995fdr}
+\bibinfo{author}{Benjamini, Y.}, \bibinfo{author}{Hochberg, Y.}, \bibinfo{year}{1995}.
+\newblock \bibinfo{title}{{Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing}}.
+\newblock \bibinfo{journal}{Journal of the Royal Statistical Society: Series B (Methodological)} \bibinfo{volume}{57}, \bibinfo{pages}{289--300}.
+\newblock \DOIprefix\doi{10.1111/j.2517-6161.1995.tb02031.x}.
+%Type = Article
+\bibitem[{Browaeys et~al.(2020)Browaeys, Saelens and Saeys}]{browaeys2020nichenet}
+\bibinfo{author}{Browaeys, R.}, \bibinfo{author}{Saelens, W.}, \bibinfo{author}{Saeys, Y.}, \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{NicheNet: modeling intercellular communication by linking ligands to target genes}}.
+\newblock \bibinfo{journal}{Nature Methods} \bibinfo{volume}{17}, \bibinfo{pages}{159--162}.
+\newblock \DOIprefix\doi{10.1038/s41592-019-0667-5}.
+%Type = Article
+\bibitem[{Cable et~al.(2022)Cable, Murray, Zou, Goeva, Macosko, Chen et~al.}]{cable2022rctd}
+\bibinfo{author}{Cable, D.}, \bibinfo{author}{Murray, E.}, \bibinfo{author}{Zou, L.}, \bibinfo{author}{Goeva, A.}, \bibinfo{author}{Macosko, E.}, \bibinfo{author}{Chen, F.}, et~al., \bibinfo{year}{2022}.
+\newblock \bibinfo{title}{{Robust decomposition of cell type mixtures in spatial transcriptomics}}.
+\newblock \bibinfo{journal}{Nature Biotechnology} \bibinfo{volume}{40}, \bibinfo{pages}{517--526}.
+\newblock \DOIprefix\doi{10.1038/s41587-021-00830-w}.
+%Type = Article
+\bibitem[{Cabrejas et~al.(2026)Cabrejas, Sroussi, Croizer, Cazelles, Sala{\"u}n, Jerman et~al.}]{cabrejas2026fastcnv}
+\bibinfo{author}{Cabrejas, G.}, \bibinfo{author}{Sroussi, M.}, \bibinfo{author}{Croizer, H.}, \bibinfo{author}{Cazelles, A.}, \bibinfo{author}{Sala{\"u}n, N.}, \bibinfo{author}{Jerman, L.}, et~al., \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{FastCNV: fast and accurate copy number variation prediction from high-definition spatial transcriptomics and scRNA-seq data}}.
+\newblock \bibinfo{journal}{Genome Medicine} \DOIprefix\doi{10.1186/s13073-026-01731-w}.
+%Type = Article
+\bibitem[{{Cancer Genome Atlas Research Network}(2014)}]{tcga2014luad}
+\bibinfo{author}{{Cancer Genome Atlas Research Network}}, \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{{Comprehensive molecular profiling of lung adenocarcinoma}}.
+\newblock \bibinfo{journal}{Nature} \bibinfo{volume}{511}, \bibinfo{pages}{543--550}.
+\newblock \DOIprefix\doi{10.1038/nature13385}.
+%Type = Article
+\bibitem[{Cao et~al.(2019)Cao, Spielmann, Qiu, Huang, Ibrahim, Hill et~al.}]{cao2019monocle3}
+\bibinfo{author}{Cao, J.}, \bibinfo{author}{Spielmann, M.}, \bibinfo{author}{Qiu, X.}, \bibinfo{author}{Huang, X.}, \bibinfo{author}{Ibrahim, D.}, \bibinfo{author}{Hill, A.}, et~al., \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{The single-cell transcriptional landscape of mammalian organogenesis}}.
+\newblock \bibinfo{journal}{Nature} \bibinfo{volume}{566}, \bibinfo{pages}{496--502}.
+\newblock \DOIprefix\doi{10.1038/s41586-019-0969-x}.
+%Type = Article
+\bibitem[{Cheng et~al.(2021)Cheng, Li, Gao, Xing, Gao, Yang et~al.}]{cheng2021trem2lam}
+\bibinfo{author}{Cheng, S.}, \bibinfo{author}{Li, Z.}, \bibinfo{author}{Gao, R.}, \bibinfo{author}{Xing, B.}, \bibinfo{author}{Gao, Y.}, \bibinfo{author}{Yang, Y.}, et~al., \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{{A pan-cancer single-cell transcriptional atlas of tumor infiltrating myeloid cells}}.
+\newblock \bibinfo{journal}{Cell} \bibinfo{volume}{184}, \bibinfo{pages}{792--809.e23}.
+\newblock \DOIprefix\doi{10.1016/j.cell.2021.01.010}.
+%Type = Article
+\bibitem[{De~Falco et~al.(2023)De~Falco, Caruso, Su, Iavarone and Ceccarelli}]{defalco2023scevan}
+\bibinfo{author}{De~Falco, A.}, \bibinfo{author}{Caruso, F.}, \bibinfo{author}{Su, X.}, \bibinfo{author}{Iavarone, A.}, \bibinfo{author}{Ceccarelli, M.}, \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{{A variational algorithm to detect the clonal copy number substructure of tumors from scRNA-seq data}}.
+\newblock \bibinfo{journal}{Nature Communications} \bibinfo{volume}{14}, \bibinfo{pages}{1074}.
+\newblock \DOIprefix\doi{10.1038/s41467-023-36790-9}.
+%Type = Article
+\bibitem[{Dom{\'i}nguez~Conde et~al.(2022)Dom{\'i}nguez~Conde, Xu, Jarvis, Rainbow, Wells, Gomes et~al.}]{dominguezconde2022celltypist}
+\bibinfo{author}{Dom{\'i}nguez~Conde, C.}, \bibinfo{author}{Xu, C.}, \bibinfo{author}{Jarvis, L.}, \bibinfo{author}{Rainbow, D.}, \bibinfo{author}{Wells, S.}, \bibinfo{author}{Gomes, T.}, et~al., \bibinfo{year}{2022}.
+\newblock \bibinfo{title}{{Cross-tissue immune cell analysis reveals tissue-specific features in humans}}.
+\newblock \bibinfo{journal}{Science} \bibinfo{volume}{376}, \bibinfo{pages}{eabl5197}.
+\newblock \DOIprefix\doi{10.1126/science.abl5197}.
+%Type = Article
+\bibitem[{Duan et~al.(2020)Duan, Evans, Miller, Schork, Cummings and Girke}]{duan2020signaturesearch}
+\bibinfo{author}{Duan, Y.}, \bibinfo{author}{Evans, D.}, \bibinfo{author}{Miller, R.}, \bibinfo{author}{Schork, N.}, \bibinfo{author}{Cummings, S.}, \bibinfo{author}{Girke, T.}, \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{signatureSearch: environment for gene expression signature searching and functional interpretation}}.
+\newblock \bibinfo{journal}{Nucleic Acids Research} \bibinfo{volume}{48}, \bibinfo{pages}{e124}.
+\newblock \DOIprefix\doi{10.1093/nar/gkaa878}.
+%Type = Article
+\bibitem[{Elyada et~al.(2019)Elyada, Bolisetty, Laise, Flynn, Courtois, Burkhart et~al.}]{elyada2019}
+\bibinfo{author}{Elyada, E.}, \bibinfo{author}{Bolisetty, M.}, \bibinfo{author}{Laise, P.}, \bibinfo{author}{Flynn, W.}, \bibinfo{author}{Courtois, E.}, \bibinfo{author}{Burkhart, R.}, et~al., \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{Cross-Species Single-Cell Analysis of Pancreatic Ductal Adenocarcinoma Reveals Antigen-Presenting Cancer-Associated Fibroblasts}}.
+\newblock \bibinfo{journal}{Cancer Discovery} \bibinfo{volume}{9}, \bibinfo{pages}{1102--1123}.
+\newblock \DOIprefix\doi{10.1158/2159-8290.CD-19-0094}.
+%Type = Article
+\bibitem[{Fan et~al.(2018)Fan, Lee, Lee, Ryu, Lee, Xue et~al.}]{fan2018honeybadger}
+\bibinfo{author}{Fan, J.}, \bibinfo{author}{Lee, H.}, \bibinfo{author}{Lee, S.}, \bibinfo{author}{Ryu, D.}, \bibinfo{author}{Lee, S.}, \bibinfo{author}{Xue, C.}, et~al., \bibinfo{year}{2018}.
+\newblock \bibinfo{title}{{Linking transcriptional and genetic tumor heterogeneity through allele analysis of single-cell RNA-seq data}}.
+\newblock \bibinfo{journal}{Genome Research} \bibinfo{volume}{28}, \bibinfo{pages}{1217--1227}.
+\newblock \DOIprefix\doi{10.1101/gr.228080.117}.
+%Type = Article
+\bibitem[{Gao et~al.(2024)Gao, Bien and Witten}]{gao2024selective}
+\bibinfo{author}{Gao, L.}, \bibinfo{author}{Bien, J.}, \bibinfo{author}{Witten, D.}, \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{Selective Inference for Hierarchical Clustering}}.
+\newblock \bibinfo{journal}{Journal of the American Statistical Association} \bibinfo{volume}{119}, \bibinfo{pages}{332--342}.
+\newblock \DOIprefix\doi{10.1080/01621459.2022.2116331}.
+%Type = Article
+\bibitem[{Gao et~al.(2021)Gao, Bai, Henderson, Lin, Schalck, Yan et~al.}]{gao2021copykat}
+\bibinfo{author}{Gao, R.}, \bibinfo{author}{Bai, S.}, \bibinfo{author}{Henderson, Y.}, \bibinfo{author}{Lin, Y.}, \bibinfo{author}{Schalck, A.}, \bibinfo{author}{Yan, Y.}, et~al., \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{{Delineating copy number and clonal substructure in human tumors from single-cell transcriptomes}}.
+\newblock \bibinfo{journal}{Nature Biotechnology} \bibinfo{volume}{39}, \bibinfo{pages}{599--608}.
+\newblock \DOIprefix\doi{10.1038/s41587-020-00795-2}.
+%Type = Article
+\bibitem[{Gao et~al.(2023)Gao, Soldatov, Sarkar, Kurkiewicz, Biederstedt, Loh et~al.}]{gao2023numbat}
+\bibinfo{author}{Gao, T.}, \bibinfo{author}{Soldatov, R.}, \bibinfo{author}{Sarkar, H.}, \bibinfo{author}{Kurkiewicz, A.}, \bibinfo{author}{Biederstedt, E.}, \bibinfo{author}{Loh, P.}, et~al., \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{{Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes}}.
+\newblock \bibinfo{journal}{Nature Biotechnology} \bibinfo{volume}{41}, \bibinfo{pages}{417--426}.
+\newblock \DOIprefix\doi{10.1038/s41587-022-01468-y}.
+%Type = Article
+\bibitem[{Germain et~al.(2021)Germain, Lun, Garcia~Meixide, Macnair and Robinson}]{germain2021scdblfinder}
+\bibinfo{author}{Germain, P.}, \bibinfo{author}{Lun, A.}, \bibinfo{author}{Garcia~Meixide, C.}, \bibinfo{author}{Macnair, W.}, \bibinfo{author}{Robinson, M.}, \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{{Doublet identification in single-cell sequencing data using scDblFinder}}.
+\newblock \bibinfo{journal}{F1000Research} \bibinfo{volume}{10}, \bibinfo{pages}{979}.
+\newblock \DOIprefix\doi{10.12688/f1000research.73600.2}.
+%Type = Article
+\bibitem[{Gulati et~al.(2020)Gulati, Sikandar, Wesche, Manjunath, Bharadwaj, Berger et~al.}]{gulati2020cytotrace}
+\bibinfo{author}{Gulati, G.}, \bibinfo{author}{Sikandar, S.}, \bibinfo{author}{Wesche, D.}, \bibinfo{author}{Manjunath, A.}, \bibinfo{author}{Bharadwaj, A.}, \bibinfo{author}{Berger, M.}, et~al., \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{Single-cell transcriptional diversity is a hallmark of developmental potential}}.
+\newblock \bibinfo{journal}{Science} \bibinfo{volume}{367}, \bibinfo{pages}{405--411}.
+\newblock \DOIprefix\doi{10.1126/science.aax0249}.
+%Type = Article
+\bibitem[{Habermann et~al.(2020)Habermann, Gutierrez, Bui et~al.}]{habermann2020}
+\bibinfo{author}{Habermann, A.}, \bibinfo{author}{Gutierrez, A.}, \bibinfo{author}{Bui, L.}, et~al., \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{Single-cell RNA sequencing reveals profibrotic roles of distinct epithelial and mesenchymal lineages in pulmonary fibrosis}}.
+\newblock \bibinfo{journal}{Science Advances} \bibinfo{volume}{6}, \bibinfo{pages}{eaba1972}.
+\newblock \DOIprefix\doi{10.1126/sciadv.aba1972}.
+%Type = Article
+\bibitem[{Hafemeister and Satija(2019)}]{hafemeister2019sctransform}
+\bibinfo{author}{Hafemeister, C.}, \bibinfo{author}{Satija, R.}, \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression}}.
+\newblock \bibinfo{journal}{Genome Biology} \bibinfo{volume}{20}, \bibinfo{pages}{296}.
+\newblock \DOIprefix\doi{10.1186/s13059-019-1874-1}.
+%Type = Article
+\bibitem[{Han et~al.(2024)Han, Sinjab, Rahal et~al.}]{han2024}
+\bibinfo{author}{Han, G.}, \bibinfo{author}{Sinjab, A.}, \bibinfo{author}{Rahal, Z.}, et~al., \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{An atlas of epithelial cell states and plasticity in lung adenocarcinoma}}.
+\newblock \bibinfo{journal}{Nature} \bibinfo{volume}{627}, \bibinfo{pages}{656--663}.
+\newblock \DOIprefix\doi{10.1038/s41586-024-07113-9}.
+%Type = Article
+\bibitem[{Hao et~al.(2024)Hao, Stuart, Kowalski, Choudhary, Hoffman, Hartman et~al.}]{hao2024seurat}
+\bibinfo{author}{Hao, Y.}, \bibinfo{author}{Stuart, T.}, \bibinfo{author}{Kowalski, M.}, \bibinfo{author}{Choudhary, S.}, \bibinfo{author}{Hoffman, P.}, \bibinfo{author}{Hartman, A.}, et~al., \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{Dictionary learning for integrative, multimodal and scalable single-cell analysis}}.
+\newblock \bibinfo{journal}{Nature Biotechnology} \bibinfo{volume}{42}, \bibinfo{pages}{293--304}.
+\newblock \DOIprefix\doi{10.1038/s41587-023-01767-y}.
+%Type = Article
+\bibitem[{Huang et~al.(2023)Huang, Bianchi, Yuksekgonul, Montine and Zou}]{huang2023plip}
+\bibinfo{author}{Huang, Z.}, \bibinfo{author}{Bianchi, F.}, \bibinfo{author}{Yuksekgonul, M.}, \bibinfo{author}{Montine, T.}, \bibinfo{author}{Zou, J.}, \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{{A visual-language foundation model for pathology image analysis using medical Twitter}}.
+\newblock \bibinfo{journal}{Nature Medicine} \bibinfo{volume}{29}, \bibinfo{pages}{2307--2316}.
+\newblock \DOIprefix\doi{10.1038/s41591-023-02504-3}.
+%Type = Misc
+\bibitem[{Korotkevich et~al.(2016)Korotkevich, Sukhov, Budin, Shpak, Artyomov and Sergushichev}]{korotkevich2016fgsea}
+\bibinfo{author}{Korotkevich, G.}, \bibinfo{author}{Sukhov, V.}, \bibinfo{author}{Budin, N.}, \bibinfo{author}{Shpak, B.}, \bibinfo{author}{Artyomov, M.}, \bibinfo{author}{Sergushichev, A.}, \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{{Fast gene set enrichment analysis}}.
+\newblock \bibinfo{howpublished}{bioRxiv preprint}.
+\newblock \DOIprefix\doi{10.1101/060012}.
+%Type = Article
+\bibitem[{Korsunsky et~al.(2019)Korsunsky, Millard, Fan, Slowikowski, Zhang, Wei et~al.}]{korsunsky2019harmony}
+\bibinfo{author}{Korsunsky, I.}, \bibinfo{author}{Millard, N.}, \bibinfo{author}{Fan, J.}, \bibinfo{author}{Slowikowski, K.}, \bibinfo{author}{Zhang, F.}, \bibinfo{author}{Wei, K.}, et~al., \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{Fast, sensitive and accurate integration of single-cell data with Harmony}}.
+\newblock \bibinfo{journal}{Nature Methods} \bibinfo{volume}{16}, \bibinfo{pages}{1289--1296}.
+\newblock \DOIprefix\doi{10.1038/s41592-019-0619-0}.
+%Type = Article
+\bibitem[{Lange et~al.(2022)Lange, Bergen, Klein, Setty, Reuter, Bakhti et~al.}]{lange2022cellrank}
+\bibinfo{author}{Lange, M.}, \bibinfo{author}{Bergen, V.}, \bibinfo{author}{Klein, M.}, \bibinfo{author}{Setty, M.}, \bibinfo{author}{Reuter, B.}, \bibinfo{author}{Bakhti, M.}, et~al., \bibinfo{year}{2022}.
+\newblock \bibinfo{title}{{CellRank for directed single-cell fate mapping}}.
+\newblock \bibinfo{journal}{Nature Methods} \bibinfo{volume}{19}, \bibinfo{pages}{159--170}.
+\newblock \DOIprefix\doi{10.1038/s41592-021-01346-6}.
+%Type = Article
+\bibitem[{{\"O}hlund et~al.(2017){\"O}hlund, Handly-Santana, Biffi, Elyada, Almeida, Ponz-Sarvise et~al.}]{ohllund2017}
+\bibinfo{author}{{\"O}hlund, D.}, \bibinfo{author}{Handly-Santana, A.}, \bibinfo{author}{Biffi, G.}, \bibinfo{author}{Elyada, E.}, \bibinfo{author}{Almeida, A.}, \bibinfo{author}{Ponz-Sarvise, M.}, et~al., \bibinfo{year}{2017}.
+\newblock \bibinfo{title}{{Distinct populations of inflammatory fibroblasts and myofibroblasts in pancreatic cancer}}.
+\newblock \bibinfo{journal}{Journal of Experimental Medicine} \bibinfo{volume}{214}, \bibinfo{pages}{579--596}.
+\newblock \DOIprefix\doi{10.1084/jem.20162024}.
+%Type = Article
+\bibitem[{Palla et~al.(2022)Palla, Spitzer, Klein, Fischer, Schaar, Kuemmerle et~al.}]{palla2022squidpy}
+\bibinfo{author}{Palla, G.}, \bibinfo{author}{Spitzer, H.}, \bibinfo{author}{Klein, M.}, \bibinfo{author}{Fischer, D.}, \bibinfo{author}{Schaar, A.}, \bibinfo{author}{Kuemmerle, L.}, et~al., \bibinfo{year}{2022}.
+\newblock \bibinfo{title}{{Squidpy: a scalable framework for spatial omics analysis}}.
+\newblock \bibinfo{journal}{Nature Methods} \bibinfo{volume}{19}, \bibinfo{pages}{171--178}.
+\newblock \DOIprefix\doi{10.1038/s41592-021-01358-2}.
+%Type = Misc
+\bibitem[{Pan(2026)}]{xingjiepan_scmg}
+\bibinfo{author}{Pan, X.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{Single Cell Manifold Generator (SCMG)}}.
+\newblock \bibinfo{howpublished}{Software, MIT license}.
+\newblock \URLprefix \url{https://github.com/xingjiepan/SCMG}.
+%Type = Article
+\bibitem[{Pan et~al.(2026)Pan, Saunders, Replogle, Weissman and Zhuang}]{pan2026scmg}
+\bibinfo{author}{Pan, X.}, \bibinfo{author}{Saunders, R.}, \bibinfo{author}{Replogle, J.}, \bibinfo{author}{Weissman, J.}, \bibinfo{author}{Zhuang, X.}, \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{Global cell-state and gene-program representations reveal conserved and context-specific perturbation responses of cells}}.
+\newblock \bibinfo{journal}{bioRxiv} \DOIprefix\doi{10.64898/2026.05.16.725005}. \bibinfo{note}{preprint, not peer-reviewed}.
+%Type = Article
+\bibitem[{Patel et~al.(2014)Patel, Tirosh, Trombetta, Shalek, Gillespie, Wakimoto et~al.}]{patel2014infercnv}
+\bibinfo{author}{Patel, A.}, \bibinfo{author}{Tirosh, I.}, \bibinfo{author}{Trombetta, J.}, \bibinfo{author}{Shalek, A.}, \bibinfo{author}{Gillespie, S.}, \bibinfo{author}{Wakimoto, H.}, et~al., \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{{Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma}}.
+\newblock \bibinfo{journal}{Science} \bibinfo{volume}{344}, \bibinfo{pages}{1396--1401}.
+\newblock \DOIprefix\doi{10.1126/science.1254257}.
+%Type = Article
+\bibitem[{Peng et~al.(2026)Peng, Sinjab, Dai, Treekitkarnmongkol, Yang, Wang et~al.}]{peng2026}
+\bibinfo{author}{Peng, F.}, \bibinfo{author}{Sinjab, A.}, \bibinfo{author}{Dai, Y.}, \bibinfo{author}{Treekitkarnmongkol, W.}, \bibinfo{author}{Yang, S.}, \bibinfo{author}{Wang, L.}, et~al., \bibinfo{year}{2026}.
+\newblock \bibinfo{title}{{Multimodal spatial-omics reveal co-evolution of alveolar progenitors and proinflammatory niches in progression of lung precursor lesions}}.
+\newblock \bibinfo{journal}{Cancer Cell} \bibinfo{volume}{44}, \bibinfo{pages}{321--339.e13}.
+\newblock \DOIprefix\doi{10.1016/j.ccell.2025.10.004}.
+%Type = Article
+\bibitem[{Schiebinger et~al.(2019)Schiebinger, Shu, Tabaka, Cleary, Subramanian, Solomon et~al.}]{schiebinger2019wot}
+\bibinfo{author}{Schiebinger, G.}, \bibinfo{author}{Shu, J.}, \bibinfo{author}{Tabaka, M.}, \bibinfo{author}{Cleary, B.}, \bibinfo{author}{Subramanian, V.}, \bibinfo{author}{Solomon, A.}, et~al., \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{Optimal-Transport Analysis of Single-Cell Gene Expression Identifies Developmental Trajectories in Reprogramming}}.
+\newblock \bibinfo{journal}{Cell} \bibinfo{volume}{176}, \bibinfo{pages}{928--943.e22}.
+\newblock \DOIprefix\doi{10.1016/j.cell.2019.01.006}.
+%Type = Article
+\bibitem[{Senbabaoglu et~al.(2014)Senbabaoglu, Michailidis and Li}]{senbabaoglu2014pac}
+\bibinfo{author}{Senbabaoglu, Y.}, \bibinfo{author}{Michailidis, G.}, \bibinfo{author}{Li, J.}, \bibinfo{year}{2014}.
+\newblock \bibinfo{title}{{Critical limitations of consensus clustering in class discovery}}.
+\newblock \bibinfo{journal}{Scientific Reports} \bibinfo{volume}{4}, \bibinfo{pages}{6207}.
+\newblock \DOIprefix\doi{10.1038/srep06207}.
+%Type = Article
+\bibitem[{Serin~Harmanci et~al.(2020)Serin~Harmanci, Harmanci and Zhou}]{serinharmanci2020caspER}
+\bibinfo{author}{Serin~Harmanci, A.}, \bibinfo{author}{Harmanci, A.}, \bibinfo{author}{Zhou, X.}, \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{CaSpER identifies and visualizes CNV events by integrative analysis of single-cell or bulk RNA-sequencing data}}.
+\newblock \bibinfo{journal}{Nature Communications} \bibinfo{volume}{11}, \bibinfo{pages}{89}.
+\newblock \DOIprefix\doi{10.1038/s41467-019-13779-x}.
+%Type = Article
+\bibitem[{Sikkema et~al.(2023)Sikkema, Ram{\'i}rez-Su{\'a}stegui, Strobl et~al.}]{sikkema2023}
+\bibinfo{author}{Sikkema, L.}, \bibinfo{author}{Ram{\'i}rez-Su{\'a}stegui, C.}, \bibinfo{author}{Strobl, D.}, et~al., \bibinfo{year}{2023}.
+\newblock \bibinfo{title}{{An integrated cell atlas of the lung in health and disease}}.
+\newblock \bibinfo{journal}{Nature Medicine} \bibinfo{volume}{29}, \bibinfo{pages}{1563--1577}.
+\newblock \DOIprefix\doi{10.1038/s41591-023-02327-2}.
+%Type = Article
+\bibitem[{Singhal et~al.(2024)Singhal, Chou, Lee, Yue, Liu, Chock et~al.}]{singhal2024banksy}
+\bibinfo{author}{Singhal, V.}, \bibinfo{author}{Chou, N.}, \bibinfo{author}{Lee, J.}, \bibinfo{author}{Yue, Y.}, \bibinfo{author}{Liu, J.}, \bibinfo{author}{Chock, W.}, et~al., \bibinfo{year}{2024}.
+\newblock \bibinfo{title}{{BANKSY unifies cell typing and tissue domain segmentation for scalable spatial omics data analysis}}.
+\newblock \bibinfo{journal}{Nature Genetics} \bibinfo{volume}{56}, \bibinfo{pages}{431--441}.
+\newblock \DOIprefix\doi{10.1038/s41588-024-01664-3}.
+%Type = Article
+\bibitem[{Sinjab et~al.(2021)Sinjab, Han, Treekitkarnmongkol, Hara, Brennan, Dang et~al.}]{sinjab2021}
+\bibinfo{author}{Sinjab, A.}, \bibinfo{author}{Han, G.}, \bibinfo{author}{Treekitkarnmongkol, W.}, \bibinfo{author}{Hara, K.}, \bibinfo{author}{Brennan, P.}, \bibinfo{author}{Dang, M.}, et~al., \bibinfo{year}{2021}.
+\newblock \bibinfo{title}{{Resolving the Spatial and Cellular Architecture of Lung Adenocarcinoma by Multiregion Single-Cell Sequencing}}.
+\newblock \bibinfo{journal}{Cancer Discovery} \bibinfo{volume}{11}, \bibinfo{pages}{2506--2523}.
+\newblock \DOIprefix\doi{10.1158/2159-8290.CD-20-1285}.
+%Type = Article
+\bibitem[{St{\aa}hl et~al.(2016)St{\aa}hl, Salm{\'e}n, Vickovic, Lundmark, Navarro, Magnusson et~al.}]{stahl2016}
+\bibinfo{author}{St{\aa}hl, P.}, \bibinfo{author}{Salm{\'e}n, F.}, \bibinfo{author}{Vickovic, S.}, \bibinfo{author}{Lundmark, A.}, \bibinfo{author}{Navarro, J.}, \bibinfo{author}{Magnusson, J.}, et~al., \bibinfo{year}{2016}.
+\newblock \bibinfo{title}{{Visualization and analysis of gene expression in tissue sections by spatial transcriptomics}}.
+\newblock \bibinfo{journal}{Science} \bibinfo{volume}{353}, \bibinfo{pages}{78--82}.
+\newblock \DOIprefix\doi{10.1126/science.aaf2403}.
+%Type = Article
+\bibitem[{Subramanian et~al.(2017)Subramanian, Narayan, Corsello, Peck et~al.}]{subramanian2017}
+\bibinfo{author}{Subramanian, A.}, \bibinfo{author}{Narayan, R.}, \bibinfo{author}{Corsello, S.}, \bibinfo{author}{Peck, D.}, et~al., \bibinfo{year}{2017}.
+\newblock \bibinfo{title}{{A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles}}.
+\newblock \bibinfo{journal}{Cell} \bibinfo{volume}{171}, \bibinfo{pages}{1437--1452.e17}.
+\newblock \DOIprefix\doi{10.1016/j.cell.2017.10.049}.
+%Type = Article
+\bibitem[{Subramanian et~al.(2005)Subramanian, Tamayo, Mootha, Mukherjee, Ebert, Gillette et~al.}]{subramanian2005gsea}
+\bibinfo{author}{Subramanian, A.}, \bibinfo{author}{Tamayo, P.}, \bibinfo{author}{Mootha, V.}, \bibinfo{author}{Mukherjee, S.}, \bibinfo{author}{Ebert, B.}, \bibinfo{author}{Gillette, M.}, et~al., \bibinfo{year}{2005}.
+\newblock \bibinfo{title}{{Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles}}.
+\newblock \bibinfo{journal}{Proceedings of the National Academy of Sciences} \bibinfo{volume}{102}, \bibinfo{pages}{15545--15550}.
+\newblock \DOIprefix\doi{10.1073/pnas.0506580102}.
+%Type = Book
+\bibitem[{Therneau and Grambsch(2000)}]{therneau2000survival}
+\bibinfo{author}{Therneau, T.}, \bibinfo{author}{Grambsch, P.}, \bibinfo{year}{2000}.
+\newblock \bibinfo{title}{{Modeling Survival Data: Extending the Cox Model}}.
+\newblock \bibinfo{publisher}{Springer}, \bibinfo{address}{New York}.
+\newblock \bibinfo{note}{R \texttt{survival} package, version 3.4-0}.
+%Type = Article
+\bibitem[{Thommen et~al.(2018)Thommen, Koelzer, Herzig, Roller, Trefny, Dimeloe et~al.}]{thommen2018}
+\bibinfo{author}{Thommen, D.}, \bibinfo{author}{Koelzer, V.}, \bibinfo{author}{Herzig, P.}, \bibinfo{author}{Roller, A.}, \bibinfo{author}{Trefny, M.}, \bibinfo{author}{Dimeloe, S.}, et~al., \bibinfo{year}{2018}.
+\newblock \bibinfo{title}{{A transcriptionally and functionally distinct PD-1+ CD8+ T cell pool with predictive potential in non-small-cell lung cancer treated with PD-1 blockade}}.
+\newblock \bibinfo{journal}{Nature Medicine} \bibinfo{volume}{24}, \bibinfo{pages}{994--1004}.
+\newblock \DOIprefix\doi{10.1038/s41591-018-0057-z}.
+%Type = Article
+\bibitem[{Travaglini et~al.(2020)Travaglini, Nabhan, Penland et~al.}]{travaglini2020}
+\bibinfo{author}{Travaglini, K.}, \bibinfo{author}{Nabhan, A.}, \bibinfo{author}{Penland, L.}, et~al., \bibinfo{year}{2020}.
+\newblock \bibinfo{title}{{A molecular cell atlas of the human lung from single-cell RNA sequencing}}.
+\newblock \bibinfo{journal}{Nature} \bibinfo{volume}{587}, \bibinfo{pages}{619--625}.
+\newblock \DOIprefix\doi{10.1038/s41586-020-2922-4}.
+%Type = Article
+\bibitem[{Vieira~Braga et~al.(2019)Vieira~Braga, Kar, Berg et~al.}]{vieirabraga2019}
+\bibinfo{author}{Vieira~Braga, F.}, \bibinfo{author}{Kar, G.}, \bibinfo{author}{Berg, M.}, et~al., \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{A cellular census of human lungs identifies novel cell states in health and in asthma}}.
+\newblock \bibinfo{journal}{Nature Medicine} \bibinfo{volume}{25}, \bibinfo{pages}{1153--1163}.
+\newblock \DOIprefix\doi{10.1038/s41591-019-0468-5}.
+%Type = Article
+\bibitem[{Wherry and Kurachi(2015)}]{wherry2015exhaustion}
+\bibinfo{author}{Wherry, E.}, \bibinfo{author}{Kurachi, M.}, \bibinfo{year}{2015}.
+\newblock \bibinfo{title}{{Molecular and cellular insights into T cell exhaustion}}.
+\newblock \bibinfo{journal}{Nature Reviews Immunology} \bibinfo{volume}{15}, \bibinfo{pages}{486--499}.
+\newblock \DOIprefix\doi{10.1038/nri3862}.
+%Type = Article
+\bibitem[{Wolock et~al.(2019)Wolock, Lopez and Klein}]{wolock2019scrublet}
+\bibinfo{author}{Wolock, S.}, \bibinfo{author}{Lopez, R.}, \bibinfo{author}{Klein, A.}, \bibinfo{year}{2019}.
+\newblock \bibinfo{title}{{Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data}}.
+\newblock \bibinfo{journal}{Cell Systems} \bibinfo{volume}{8}, \bibinfo{pages}{281--291.e9}.
+\newblock \DOIprefix\doi{10.1016/j.cels.2018.11.005}.
+%Type = Article
+\bibitem[{Yu et~al.(2025)Yu, Li and Chen}]{scmalignantfinder2025}
+\bibinfo{author}{Yu, Q.}, \bibinfo{author}{Li, Y.}, \bibinfo{author}{Chen, Y.}, \bibinfo{year}{2025}.
+\newblock \bibinfo{title}{{scMalignantFinder distinguishes malignant cells in single-cell and spatial transcriptomics by leveraging cancer signatures}}.
+\newblock \bibinfo{journal}{Communications Biology} \bibinfo{volume}{8}, \bibinfo{pages}{504}.
+\newblock \DOIprefix\doi{10.1038/s42003-025-07942-y}.
+
+\end{thebibliography}

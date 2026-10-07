@@ -1,0 +1,116 @@
+\section{Discussion}
+
+The central difficulty of this study is that sequencing depth and tissue density are, in
+this cohort, the same measurement. A domain's marker stability, the apparent
+stage-dependence of the spatial programmes, the cohort-level copy-number difference and the
+prognostic weight of one domain's signature all vary with depth, and depth varies with the
+amount of tumour in a spot. Adjusting for depth is consequently not a neutral correction: it
+removes part of the biological effect together with the technical one. Adjusted estimates
+are conservative and may be over-corrected; unadjusted estimates are inflated. Where the
+choice is consequential, both are reported rather than one being nominated as correct.
+
+The coupling also accounts for the behaviour of the pathology model, which is the one
+result here obtained without any transcriptomic measurement. Its apparent discrimination
+was largely a measure of how much tissue a spot contained, and on the axis this study needs,
+the separation of precursor from invasive lesions, it failed outright. A model that reads
+tissue density will appear to succeed on this disease for as long as density and malignancy
+coincide, which is exactly the condition that makes the confound difficult to detect.
+
+This also accounts for the narrower scope of some results relative to the source study.
+Where a claim depends on comparing dense with sparse tissue, which in this disease means
+comparing invasive with precursor tissue, the design carries the confound in its structure.
+The only clean comparisons are those that hold depth fixed, either by pairing within a
+section or by matching across sections. That is why the one copy-number result retained is a
+within-section comparison, and why the disease-axis queries were constructed by pairing
+within patients.
+
+\subsection{What the positive results establish}
+
+Four findings survive the checks applied. First, the tissue resolves into seven recurring
+niche domains, six of which are ordinary lung structures and only one of which is confined
+to invasive disease. The lymphoid-aggregate domain is present in precursor stages, which
+argues against attributing immune aggregation to the onset of malignancy. Second, the
+ECM/interstitial programme that distinguishes the invasive domain is itself elevated in
+invasive disease within patients (20 of 22), and the result holds when the genes added by
+hand are removed and under every leave-one-out variant, so the domain label does not rest on
+a hand-picked panel. Third, the spatial copy-number signal lies in the AT2 compartment and
+is present before invasion, consistent with AT2 as the cell of origin and with an orthogonal
+expression-based classifier. Fourth, a query signature derived from a patient-internal
+disease axis and filtered on independent survival evidence returns a reproducible set of 34
+compounds, dominated by PI3K/mTOR inhibitors, which act on the ECM/interstitial and AT2
+domains rather than on the tissue as a whole.
+
+The candidate list should be read as a hypothesis about a compartment rather than as a
+therapy. Several caveats are structural. The compounds act in cancer cell lines and have not
+been tested in lung fibroblasts or in any primary tissue. The disease axis against which they
+were selected is a tissue-level average, so the candidates reverse the aggregate state and
+need not act on any single cell type. The 34 compounds are the intersection of three scoring
+schemes, but those schemes share a query and a library and their agreement is therefore a
+robustness check rather than three independent measurements. The split-half reproducibility
+of 0.962 describes the stability of the ranking under resampling of patients and says
+nothing about whether the ranking is biologically correct. No compound reported here has
+been tested experimentally.
+
+\subsection{Methodological observations}
+
+Several of the checks applied here are reusable, and the difficulties encountered carry
+lessons that are not specific to this dataset.
+
+A positive control with a known answer, run through the identical pipeline, distinguishes
+``the method found nothing'' from ``the data contain nothing detectable by this method''.
+Without such a control the negative results reported above would be uninterpretable. A
+related practice is to inspect the distribution of a summary statistic rather than the
+summary alone: an AUROC of exactly 0.5000 in this study was a degeneracy, all cells carrying
+one identical value, and not a true null.
+
+Control for a nuisance variable is better served by sensitivity analysis than by a single
+adjusted estimate. When a measurement is strongly coupled to such a variable, examining
+subsets of the measurement is more informative than adjusting once. In this study, showing
+that a result held when the eight hand-added genes of a marker panel were removed, and
+across all twenty-two leave-one-out variants, established that the finding did not depend on
+the panel's arbitrary members. A related caution applies to sub-clustering: because clusters
+are selected on the same data used to test them, per-subtype contrasts carry a
+selective-inference penalty that is not corrected here \citep{gao2024selective}, which is
+one reason the per-compartment gene list is reported as descriptive.
+
+Two further observations concern how criteria are constructed and reported. A gate that
+every configuration passes is not a gate. The spatial-coherence criterion applied here,
+which required a partition's coherence to exceed a label-permutation null on at least 90\%
+of sections, was passed by essentially every configuration tried, including one that uses no
+spatial information at all ($\lambda=0$; coherence 0.54--0.60 against a null 95th percentile
+of 0.13--0.18). Tissue expression carries spatial autocorrelation intrinsically, so a purely
+expression-based partition clears the null by a wide margin. The criterion can exclude a
+grossly anti-spatial partition but cannot demonstrate that spatial information was used;
+ranking was accordingly decided by cross-seed stability instead. In addition, a criterion
+introduced by the analysts must not be presented as though it carried external authority.
+The coherence gate is ours. The source study sets no spatial gate, and the BANKSY authors'
+recommendations \citep{singhal2024banksy} concern parameters ($\lambda$, $k_{\text{geom}}$,
+resolution) rather than validation criteria.
+
+Finally, a number produced by an optimiser's trajectory is not a measurement. One weighting
+parameter carried for a time in this work, $w_{\min}=(1/6)\times0.7^{k}$, is the path the
+solver took rather than a quantity estimated from the data, and should not be reported as
+though a fit had produced it.
+
+\subsection{Relation to the source study}
+
+This study set out to extend a published description of the disease sequence
+\citep{peng2026}. The results agree with it on the identity of the niche structures and on
+AT2 as the compartment carrying copy-number signal, and differ in emphasis on three points.
+The source study reports a pro-inflammatory niche that is enriched early and less frequent
+in invasive disease; our spatial arm does not reproduce that direction. Its developmental
+trajectory places the least differentiated state in precursor lesions, whereas ours runs the
+other way, although, as noted, the measurement is ambiguous and is not treated as a
+refutation. The source study also does not describe ambient-RNA correction, whereas one of
+its samples is, in our hands, dominated by ambient signal. These divergences are reported
+rather than adjudicated, since each is confounded by a design difference: different
+platforms, a stage axis rather than a subtype axis, and different approaches to quality
+control.
+
+\subsection{Priorities for further work}
+
+The comparison that would remove the dominant confound is within a single section, comparing
+the invasive front with regions of the same section distant from it and holding depth fixed
+by construction. That analysis was not performed and is the one we would prioritise next,
+together with testing the candidate compounds in primary lung fibroblasts or in organoids
+derived from the same patients.

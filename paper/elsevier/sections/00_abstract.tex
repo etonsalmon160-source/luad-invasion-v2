@@ -1,0 +1,25 @@
+Lung adenocarcinoma (LUAD) progresses from atypical adenomatous hyperplasia (AAH) through
+adenocarcinoma \emph{in situ} and minimally invasive adenocarcinoma to invasive disease.
+Most transcriptomic descriptions of this sequence use bulk tissue, or tumour tissue alone.
+We profiled paired single-nucleus RNA sequencing (413,697 nuclei, 23 patients) and Visium
+spatial transcriptomics (56 sections, 25 patients) across all five stages, asking how the
+transcriptional state of the tissue changes as invasion proceeds and whether it can be
+reversed \emph{in silico} by known perturbations.
+
+The tissue resolves into seven recurring niche-domain archetypes ($K^{*}=7$), six of them
+ordinary lung structures and only one restricted to invasive disease. A confound then shaped
+the analysis: sequencing depth and tissue density are the same measurement here, and domain
+identity, marker-gene stability, the stage-dependence of the spatial programmes, the
+cohort-level copy-number difference and one domain's prognostic weight all scale with it.
+Several apparently positive results did not survive depth matching. The invasive domain's
+ECM/interstitial identity did: the fibroblast ECM programme is higher in invasive disease in
+20 of 22 paired cases ($P=0.0033$).
+
+Querying a patient-paired disease axis against the LINCS library with three scoring schemes
+returned 34 compounds in common, dominated by PI3K/mTOR inhibitors (split-half
+$\rho=0.962$; cross-modality $\rho=0.735$). A positive control, recovery of the known
+regulators of an official benchmark (TBXT 1st of 8,450), confirms that the pipeline recovers
+true positives, so the negatives we report reflect the data rather than the method. Each is
+reported with its diagnosis: no usable single-cell malignant/non-malignant separator, a
+developmental trajectory running opposite to the source study, and no signal from gene-level
+prediction.

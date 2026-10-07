@@ -1,0 +1,39 @@
+\begin{table*}[!ht]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}>{\itshape\raggedright\arraybackslash}p{94pt}>{\raggedright\arraybackslash}p{152pt}X@{}}
+\toprule
+\tabheadfont Analysis & \tabheadfont What was observed & \tabheadfont Most likely reason, and the check behind it \\
+\midrule
+Single-cell copy number & no usable malignant/non-malignant separator across six tool families; the one AUROC of 0.5000 was a degeneracy (a single score value for all 19{,}748 cells) & the per-patient benign anchor is unstable: the same 3{,}890 normal cells gave aneuploid calls of 0\%, 13.6\% and 49.8\% in three runs. Not evidence that copy-number differences are absent. \\
+\addlinespace[2pt]
+Cohort-level spatial copy number & the invasive-vs-precursor difference shrank 71\% after depth matching ($p = 0.092$, CI including zero) & depth and tissue density are the same measurement here. A random subsample reproduced the pre-matching result index by index, so the original effect was depth-driven rather than a sample-size artefact. \\
+\addlinespace[2pt]
+Copy-number subdomain within AT2 & the score correlates with total UMI at $r = 0.755$, and a count-only split reproduces $\sim$75\% of the AT2 contrast & RNA content and copy-number score are not separable; a high-score subdomain cannot be called a tumour subdomain. \\
+\addlinespace[2pt]
+Developmental trajectory & the score is highest, not lowest, in invasive disease (0.453 vs 0.288--0.374), robust in 22 of 23 patients & we measure a stage axis, not a subtype axis (no AIC/KAC or tumour labels). The score is built from detected-gene counts, so the same numbers also fit ``more transcriptionally disordered''. \\
+\addlinespace[2pt]
+Transport-spectrum trajectory & the apparent spectral gap was set by a coupling-weight parameter & under a stage partition the coupling matrix is block upper triangular, so transport never enters the spectrum. A parameter was being read as biology. \\
+\addlinespace[2pt]
+Gene-level reversal, pooled axis & maximum causal score 0.083 against 1.279 for the official benchmark & the pooled axis has no detectable match in the library. The positive control passes, so this is a statement about the query. \\
+\addlinespace[2pt]
+Gene-level reversal, per compartment & only two perturbations reach the top 100 in $\geq$20 of 31 subtype axes, and one fails the direction check & ubiquity across compartments is not evidence of a target; the survivor list is a single entry and is reported as an observation. \\
+\addlinespace[2pt]
+Ligand layer & five ligands passed the expression and network gates; none produced a ligand--target link; best corrected AUPR 0.093 & the sender panel is too thin. The scoring is baseline-corrected, so this is not a scoring artefact. \\
+\addlinespace[2pt]
+Four spatial programmes by stage & after depth matching the ordering is identical across all ten deciles but does not follow disease progression & depth creates a spurious trend. Reported as a negative control, not as a result. \\
+\addlinespace[2pt]
+H\&E imaging & best correlation 0.729 across twelve configurations; the three precursor stages fall within 0.15--0.22 and interleave (AAH versus Normal AUC 0.28--0.32); the top-scoring prompt correlates with tissue density at $\rho=0.574$ and falls to 0.759 when that direction is projected out & architectural resolution (181\,$\mu$m per token against 5.670\,$\mu$m per pixel). At this scale the model's performance is not separable from tissue density and it cannot place a lesion on the precursor-to-invasive axis. Does not mean histological detail is uninformative in general. \\
+\addlinespace[2pt]
+Domain stability gate & cross-seed ARI never reached 0.90 (median 0.782) & the domain definition is method-sensitive (BANKSY 7, RCTD 6, marker-based 5; ARI 0.352). The partition is reported as exploratory. \\
+\addlinespace[2pt]
+Pooled cross-section clustering & a clean optimum that tracked section identity & pooling sections makes between-section variation the dominant axis; superseded by per-section clustering. \\
+\bottomrule
+\end{tabularx}
+\caption{\textbf{Negative results and the reason we believe each one failed.} The right-hand
+column is an assessment, not a measurement: it names the most likely explanation and, where
+we could test it, the check that separates an absent signal from a broken method. The
+distinction matters because a negative result with a passing positive control constrains the
+biology, whereas one without does not.}
+\label{tab:negatives}
+\end{table*}

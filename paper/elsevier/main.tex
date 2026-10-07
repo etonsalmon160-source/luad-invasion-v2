@@ -1,0 +1,159 @@
+%% Manuscript prepared for Computational Biology and Chemistry (Elsevier)
+%% Document class: elsarticle (official Elsevier class)
+%% Review layout: double-spaced with line numbers
+%%
+%% Sections are shared with the preprint version in ../tex/sections/ via symlink
+%% or copy; the content is identical, only the presentation differs.
+
+%% authoryear: elsarticle defaults to NUMERIC citations; this journal uses
+%% author-year, so the option must be given explicitly.
+\documentclass[review,12pt,authoryear]{elsarticle}
+
+\usepackage{amsmath,amssymb}
+%% elsarticle's review layout leaves very wide margins (text block only ~388 pt),
+%% which is narrower than the tables were designed for. Widen it to a normal
+%% manuscript measure while keeping the review line numbering.
+\usepackage[left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{etoolbox}
+\usepackage{placeins}
+\usepackage{url}
+
+\graphicspath{{figs/}}
+
+%% ── Shared table formatting, mirroring the preprint version ──────────────
+\newcommand{\tabfont}{\footnotesize}
+\newcommand{\tabheadfont}{\footnotesize\itshape}
+%% Note: these hooks deliberately do NOT set the font size. An earlier version
+%% forced \footnotesize here, which silently overrode the smaller size set
+%% inside individual tables and made three long tables too tall for a page.
+\AtBeginEnvironment{tabular}{%
+  \setlength{\tabcolsep}{4.5pt}%
+  \renewcommand{\arraystretch}{1.04}}
+\AtBeginEnvironment{tabularx}{%
+  \setlength{\tabcolsep}{4.5pt}%
+  \renewcommand{\arraystretch}{1.04}}
+\sisetup{detect-all, round-mode=places, round-precision=3,
+  table-format=-1.3, table-number-alignment=center, output-decimal-marker={.}}
+%% Group header inside a table; first argument is the column count
+\newcommand{\tabgroup}[2]{\addlinespace[2pt]\multicolumn{#1}{@{}l}{\itshape #2}\\}
+
+%% Bibliography: Elsevier numbered style. elsarticle loads natbib itself,
+%% so no separate \usepackage is needed (adding one causes an option clash).
+\bibliographystyle{elsarticle-harv}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Paired single-nucleus and spatial transcriptomics of the lung adenocarcinoma
+invasion sequence reveal niche domains and candidate reversal compounds}
+
+\author[gdmu]{Zhiyang Li\corref{cor1}}
+\ead{eto-1024@gdmu.edu.cn}
+\cortext[cor1]{Corresponding author}
+
+\author[monash]{Jiaxuan Yang}
+\ead{jyan0226@student.monash.edu}
+
+\affiliation[gdmu]{organization={Guangdong Medical University},
+  city={Zhanjiang}, state={Guangdong}, country={China}}
+
+\affiliation[monash]{organization={Monash University Malaysia},
+  city={Bandar Sunway}, state={Selangor}, country={Malaysia}}
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\begin{keyword}
+lung adenocarcinoma \sep atypical adenomatous hyperplasia \sep spatial transcriptomics
+\sep single-nucleus RNA sequencing \sep niche domains \sep in-silico drug reversal
+\end{keyword}
+
+\end{frontmatter}
+
+%% CBC section order: Introduction -> Material and methods -> Results -> Discussion
+%% -> Conclusions. (Methods precede Results; Limitations is folded into the
+%% Discussion as a subsection, since the journal has no separate Limitations section.)
+\input{sections/01_intro}
+\input{sections/05_methods}
+\input{sections/02_results}
+\input{sections/03_discussion}
+\input{sections/04_limitations}
+\input{sections/08_conclusions}
+
+\FloatBarrier
+
+%% ── Declarations (Elsevier house order) ──────────────────────────────────
+\section*{CRediT authorship contribution statement}
+
+\textbf{Zhiyang Li:} Conceptualization; Methodology; Software; Formal analysis;
+Investigation; Data curation; Visualization; Writing -- original draft; Writing -- review
+and editing. \textbf{Jiaxuan Yang:} Resources; Validation; Writing -- review and editing.
+
+\section*{Declaration of competing interest}
+
+The authors declare that they have no known competing financial interests or personal
+relationships that could have appeared to influence the work reported in this paper.
+
+The corresponding author is a reviewer for \emph{Computational Biology and Chemistry}.
+This is disclosed for transparency; the handling of the review process is left to the
+Editor.
+
+\section*{Data availability}
+
+The raw data analysed in this study are publicly available from the NCBI Gene Expression
+Omnibus under accessions GSE308103 (single-nucleus RNA sequencing) and GSE307534 (Visium
+spatial transcriptomics). All analysis code, including the scripts that generate every
+figure, together with a per-parameter provenance record, is openly available at
+\url{https://github.com/etonsalmon160-source/luad-invasion-v2}. Large intermediate objects
+are excluded from the repository because they are regenerable from that code; the
+exclusion list records, for each omitted object, the script that rebuilds it.
+
+\section*{Funding}
+
+This work received no specific grant from any funding agency in the public, commercial or
+not-for-profit sectors.
+
+\section*{Ethics statement}
+
+This work is a secondary analysis of publicly available, de-identified human data
+(GSE308103 and GSE307534), obtained from GEO. No new human specimens were collected, no
+participants were recruited and no identifiable private information was accessed; ethical
+approval and participant consent for the original data collection were obtained by the
+studies that generated these datasets. Under our institutional policy, secondary analysis
+of publicly available de-identified data does not constitute human-subjects research
+requiring review, and no new ethical approval was therefore sought. No animals were used.
+
+\section*{Acknowledgements}
+
+The authors thank the colleagues who supported this work despite the absence of dedicated
+funding; the senior academic who writes on Bilibili as ``Unshakeable Saury'', whose
+understanding and encouragement sustained the project; and fellow researchers at Shanghai
+Jiao Tong University and at Huazhong University of Science and Technology, whose ideas and
+technical assistance shaped it. They also thank the wider academic community for
+recognising this work and for maintaining the decentralised environment in which it was
+carried out.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+
+During the preparation of this work the authors used Claude Code (Anthropic) and DeepSeek
+to write the analysis code and to improve the language of the manuscript. The study was
+conceived and designed by the authors; the analytical strategy, the analysis gates and all
+thresholds were specified by the authors and were not determined by the AI tools. All
+results passed multi-stage review by the authors before being reported, and the authors
+take full responsibility for the content of the manuscript.
+
+\bibliography{refs}
+
+\clearpage
+\input{sections/07_supplementary}
+
+\end{document}

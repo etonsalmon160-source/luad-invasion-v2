@@ -1,0 +1,314 @@
+\section{Material and methods}
+
+\subsection{Data}
+
+\paragraph{Primary cohort.} Two modalities from the same patient series were used.
+Single-nucleus RNA sequencing (GSE308103) was generated with a fixed RNA-profiling probe
+panel rather than a standard 3$'$ or 5$'$ chemistry, so it quantifies a defined set of
+18{,}082 genes rather than the whole transcriptome; this is why housekeeping and
+mitochondrial transcripts such as \emph{GAPDH}, the ribosomal protein genes and
+\emph{MALAT1} are absent by design and are not used in any signature. The series contains
+75 samples from 25 patients; 798{,}100 nuclei were called, of which 767{,}839 passed
+quality control and 118{,}894 (15.48\%) were called as doublets, leaving
+\textbf{413{,}697 nuclei} profiled over 18{,}069 genes for analysis.
+Spatial transcriptomics (GSE307534) was generated on the Visium CytAssist platform in the
+11\,mm format, 55\,$\mu$m spots on a $128\times112$ grid with a nominal spot-to-spot
+distance of 100\,$\mu$m, giving 14{,}336 spots per section across \textbf{56 sections from
+25 patients}; the platform implements the spatial-transcriptomics method of
+\citet{stahl2016}. The two modalities share \textbf{23 patients}. The clinical sequence is
+Normal $\rightarrow$ AAH $\rightarrow$ AIS $\rightarrow$ MIA $\rightarrow$ IAC; the spatial
+annotations use the source study's token \texttt{LUAD} for the invasive stage, which we map
+to IAC throughout. Section counts per stage are Normal 1, AAH 11, AIS 14, MIA 4, IAC 26
+(Table~\ref{tab:cohort}).
+
+\paragraph{External statistics.} Prognostic filtering used TCGA-LUAD
+\citep{tcga2014luad} in its archived form: expression and clinical matrices only, giving
+\textbf{483 patients and 177 deaths} (36.6\%; 381 patients and 143 events for disease-free
+survival). The mutation archive in that distribution is a zero-byte file, so no
+mutation-derived quantity (TMB, driver status) enters any analysis.
+
+\paragraph{Perturbation resources.} Two libraries were queried. The compound library is
+LINCS L1000 Level 5 (GSE70138; 118{,}050 signatures $\times$ 12{,}328 genes, 1{,}826
+unique perturbagens across 41 cell lines) \citep{subramanian2017}; we rebuilt it locally
+as described below rather than querying the CLUE service. The gene-level library is SCMG
+\citep{pan2026scmg} (20{,}345 perturbations $\times$ 18{,}108 genes), used with the
+authors' \texttt{CausalGenePredictor} and their reference cell-state manifold.
+
+\paragraph{Annotation references.} Cell-type annotation was cross-checked against the
+CellTypist \texttt{Human\_Lung\_Atlas} model \citep{dominguezconde2022celltypist}, itself
+built on the HLCA \citep{sikkema2023}. Ligand analysis used the NicheNet human
+ligand--receptor network and ligand--target matrix \citep{browaeys2020nichenet}.
+
+\paragraph{Resources evaluated and not used.} Three external resources were assessed and
+rejected, and we record them so that their absence is not read as an oversight. An external
+normal-lung Visium series (GSE248082) was examined as a benign anchor for the copy-number
+arm; its two usable sections failed a two-way health check (the held-out section scored
+above threshold in both directions), so no external anchor is claimed. An external
+lymph-node-metastasis series initially earmarked for the spatial cohort proved, on
+inspection, to be breast rather than lung cancer and was removed. Three public single-cell
+cohorts considered in the study's first design were moved out of scope when the paired
+series became available, and were never analysed. No GWAS, eQTL, docking or structural data
+entered this work.
+
+\input{sections/_tab_cohort}
+
+% 参数表：与队列表相邻放在 Methods 前段，避免落到文末产生整页空白；
+% 编号仍按正文首次引用顺序为 Table 6。
+\input{sections/_tab_params}
+
+\subsection{Single-cell processing}
+
+After quality control and doublet removal 413,697 nuclei were retained. Contaminant and
+low-quality clusters were then excluded, leaving 399,579 nuclei in the six mutually
+exclusive lineage subsets that the atlas is built on. Expression was
+normalised to counts per 10,000 with a $\log(1+x)$ transform (CP10K+log1p) throughout. The
+atlas was built with Seurat \citep{hao2024seurat} using the regularised negative-binomial
+variance-stabilising transform \citep{hafemeister2019sctransform} with \texttt{glmGamPoi}
+\citep{ahlmanneltze2021glmgampoi} for parameter fitting, and integrated across samples with
+Harmony \citep{korsunsky2019harmony}. Doublets were called with scDblFinder
+\citep{germain2021scdblfinder}. An independent second caller was attempted but could not
+serve as a cross-check: Scrublet \citep{wolock2019scrublet} reached a maximum score of
+0.495 against its automatic threshold of 0.556 on these nuclei and therefore called zero
+doublets in all 75 samples, a consequence of how sparse these profiles are rather than
+evidence against the scDblFinder calls. The atlas was clustered per lineage, yielding 39
+second-level
+(L2) subtypes. Endothelial and myeloid marker panels were rebuilt before downstream
+analysis: the published table provided six canonical genes per endothelial subtype, which
+we expanded to as many as twenty genes per subtype across nine endothelial types; the
+myeloid panel was expanded analogously, drawing on the human lung atlases
+\citep{travaglini2020,habermann2020,vieirabraga2019,sikkema2023} and, for the epithelial
+subtypes, on the lung adenocarcinoma atlas \citep{han2024,sinjab2021}. Automated annotation
+against the HLCA reference used CellTypist \citep{dominguezconde2022celltypist}. All
+reported subtype compositions use the expanded panels.
+
+Ambient RNA was assessed in one precursor sample (P24) by three independent checks
+(patient-level rank of the suspect programme, comparison against a matched negative-control
+gene set, and an independent readout from a separate region of the same block). The sample
+was retained with an annotation and all B/plasma-dependent conclusions are reported with
+and without it.
+
+\subsection{Spatial domain identification}
+
+Spatial domains were identified with BANKSY \citep{singhal2024banksy} on each section
+independently. The main
+configuration was fixed at $\lambda=0.2$, $k_{\text{geom}}=18$ and resolution 0.5, chosen
+because the authors recommend $\lambda\approx0.2$ for domain segmentation on 55\,$\mu$m
+Visium and because higher $\lambda$ values, which the source study used, down-weight the
+cell's own expression towards zero. Cross-seed consensus over five seeds produced 434
+domain-level clusters across 56 sections; these were collapsed to archetypes by
+profile-based clustering, giving $K^{*}=7$ at a subsampling stability of 0.945 (re-clustering on a random 80\% of
+domains, 100 iterations); the cross-seed adjusted Rand index of the per-section domain
+calls is a separate quantity and is lower (median 0.782). Stability
+falls below 0.814 at $K=8$. A descriptive optimum exists at $K=6$ (0.966) but was not
+adopted, since the selection rule took the largest $K$ passing the stability threshold.
+Consensus stability was scored with the proportion-of-ambiguous-clustering statistic
+\citep{senbabaoglu2014pac}.
+
+A spatial-coherence criterion was also computed: per section, the mean coherence of the
+partition was required to exceed the 95th percentile of a label-permutation null, with at
+least 90\% of sections passing. This criterion is our own construction, not one recommended
+by the source study or by the BANKSY authors, and it is not used to select the
+configuration (see Discussion).
+
+\subsection{Spatial deconvolution}
+
+Spot composition was estimated with RCTD \citep{cable2022rctd} against a 39-subtype
+reference, using the
+full-section non-epithelial compartment as the reference for the copy-number arm (the
+arm using each patient's own benign anchor covers only 10 of 25 cases). Spots were called
+epithelial when the epithelial subtype had the highest weight; this criterion was fixed
+before the cohort run. A spot mask was applied at thresholds of 500 counts, 200 genes and
+0.15 mitochondrial fraction, removing 4.97\% of spots cohort-wide. This is higher than the
+1.05\% reported by the source study; the difference is attributable to uneven per-section
+depth rather than to the rule, and is recorded as a known discrepancy.
+
+Two consequences of the mask are guarded explicitly. Per-section removal rates range from
+0.02\% to 29.6\%, so a section in which a domain occupies little area may simply have had
+more of itself masked; coverage is therefore reported per section and a small domain area is
+never read as evidence that the niche is rare. And because the 56 sections come from 25
+patients, every cross-section summary is clustered by patient, since two or three sections from
+one patient are not independent samples.
+
+\subsection{Depth matching}
+
+Two independent estimators were used. In the first, spots were binned into per-slide deciles
+of nUMI and compared only within bins. In the second, each gene was regressed on
+$\log_{10}(\text{nUMI})$ per slide with a cubic term, and the domain-versus-rest ranking was
+recomputed on the residuals. A gene was counted as surviving if it remained in the domain's
+top 150 up-genes. The two estimators agree almost gene-for-gene.
+
+\subsection{Spatial copy-number inference}
+
+Copy-number scores were computed with fastCNV \citep{cabrejas2026fastcnv}. The engine
+discards chrY and chrM, and its classification
+output is a direction call rather than a malignancy determination; we use only the
+continuous per-spot score. Domain-level comparisons pair each spot's score against the
+median of the remaining spots in the same section, which removes depth by construction.
+Significance was assessed per domain by a two-sided sign test over sections, with
+Benjamini--Hochberg control where families of tests are reported
+\citep{benjamini1995fdr}. Spatial neighbourhood statistics used Squidpy
+\citep{palla2022squidpy}. Three further copy-number tools were evaluated and excluded
+because each requires aligned reads rather than an expression matrix (Numbat
+\citep{gao2023numbat}, HoneyBADGER \citep{fan2018honeybadger} and CaSpER
+\citep{serinharmanci2020caspER}), as was SCEVAN \citep{defalco2023scevan}, which was
+pre-registered but not run.
+
+\subsection{Prognostic analysis}
+
+Survival analysis used TCGA-LUAD \citep{tcga2014luad} (483 patients, 177 deaths;
+disease-free survival: 381 patients, 143 events, censored at last follow-up), with Cox
+proportional-hazards models fitted in R's \texttt{survival} package
+\citep{therneau2000survival}. For each domain, the top-30 marker genes
+were standardised across samples and averaged into a signature score. Univariate Cox models
+were fitted both continuously (hazard ratio per standard deviation) and on a median split
+(reference group: low). Hazard ratios for the adjusted models controlled for stage, age and
+sex.
+
+\subsection{Query signature construction}
+
+For each patient, the disease axis was computed as the mean expression of invasive cells
+minus that of precursor cells, and the median across patients was taken, giving an
+18,069-gene vector, of which 16,104 are represented in the SCMG library. This axis was
+filtered on independent survival evidence: a gene rising
+in disease was retained only if its adjusted hazard ratio exceeded 1, and a gene falling in
+disease only if it fell below 1; all others were set to zero. Of 18,069 genes, 8,799 were
+retained (51\% removed overall; 44\% of the 15,792 genes with survival annotation).
+A second, spatial query axis was constructed by comparing invasive and precursor spots
+within nUMI deciles per section, merging deciles weighted by the smaller group size, and
+removing immunoglobulin, mitochondrial and antibody-probe rows.
+
+\subsection{A local compound-perturbation database}
+
+The standard way to query a disease signature against LINCS is the CLUE service
+(clue.io). Its scoring service was retired on 2026-01-31: the site still serves data
+downloads, but it no longer accepts scoring jobs, and submission requests are refused
+(HTTP 401). Rather than depend on a service that can no longer do the work, we rebuilt the
+query resource locally, which has the further advantage that the exact library state is
+fixed, versioned and re-runnable rather than whatever the remote service happens to serve
+on a given day.
+
+The database is a \texttt{signatureSearch}-format HDF5 file built directly from the LINCS
+L1000 Level 5 Z-score matrix (GSE70138, release 2017-03-06). It stores the assay as a
+genes $\times$ signatures array of 12{,}328 Entrez genes by 118{,}050 signatures, with
+columns keyed by perturbagen, cell line and perturbation type; file size is 5.9\,GB.
+Building it through R (\texttt{build\_custom\_db}) was abandoned because the required
+compression and index handling failed and the per-column writer was prohibitively slow; the
+file used here is written directly with \texttt{h5py}, which takes 26\,s. The database
+itself is excluded from the repository, being 5.9\,GB and regenerable from the two tracked
+build scripts. The \texttt{padj} slot is deliberately omitted because the scoring functions
+used here do not read it.
+
+Two access paths exist over the same underlying LINCS data, and it matters which analysis
+used which. The disease-axis query, the spatial-axis query and the split-half stability
+check were run through this local database using the official \texttt{signatureSearch}
+package. The domain-signature query and all depth-matched sensitivity runs were run
+directly on the source matrix through our own implementation of the CMap statistic. Both
+paths are cross-validated against the official implementation (Table~\ref{tab:validation}).
+
+\subsection{Slide registration}
+
+The CytAssist images are the finer of the two available H\&E sources, but Space Ranger ships
+no transform between them and the spot coordinate frame, so the mapping had to be measured.
+We built a registration pipeline that places the high-resolution \texttt{hires} image into
+the CytAssist pixel frame under a similarity transform with an optional horizontal
+reflection,
+$\text{cytassist} = s \cdot R(\theta) \cdot M \cdot \text{hires} + t$.
+
+Three features make the search tractable rather than a blind optimisation. First, the scale
+is not searched: it is computed analytically for each section from the shipped
+scalefactors, $s_{\text{pred}} = (\text{fullres}\,\mu\text{m/px} \div \text{hires
+scalefactor}) \div \text{CytAssist}\,\mu\text{m/px}$, with the CytAssist constant
+4.6233\,$\mu$m/px; the search then only refines $\pm3\%$ around this value, and in the
+final solution all 56 sections land within 1\% of it. Second, the rotation resolves to
+essentially a binary choice: every section's fitted $\theta$ lies within 5$^\circ$ of
+0$^\circ$ or 180$^\circ$, and the reflection is applied to 53 of 56 sections. Third, the
+search is a coarse-to-fine pyramid over translation, obtained by phase correlation, scored
+by a masked normalised cross-correlation of high-pass-filtered greyscale content (search
+$\sigma = 12$, verification $\sigma = 4$).
+
+Registration quality was established by three independent checks rather than one. The
+adopted transform must score a fine-scale high-pass correlation of at least 0.10 and at
+least three times the score of the competing reflection branch; this gate separates, by a
+wide margin, the sections that the initial run failed on (the 52 passing sections have
+correlation $\geq 0.19$ and separation $\geq 7.0$, while the four failures had separation
+$\leq 1.4$ and were re-solved with a tissue-outline overlap metric). Second, the same
+physical spot was cropped from both sources and compared directly, with the coordinate grid
+propagated through the full transform; the fitted affine reproduces the grid to within
+0.18\,px everywhere. Third, the residual was measured on the final solution as a translation field: the
+residual translation is within one pixel on 46 of 56 sections, and three pixels or less on
+the remainder, and where the field could be fitted it shows no residual rotation
+($|\phi| < 0.1^\circ$) and no residual scale ($k$ within $\pm0.13\%$). At the CytAssist
+scale of 4.6233\,$\mu$m per pixel this places even the largest residual well inside a spot
+radius, so no spot is assigned to a neighbouring spot's tissue. All 56 sections pass. The
+pipeline was used to align the same spots across image sources for the H\&E audit reported
+in Results; it is retained in the repository.
+
+\subsection{Perturbation scoring}
+
+Compound scoring used the LINCS L1000 Level 5 library \citep{subramanian2017} (118,050
+signatures $\times$ 12,328 genes; 1,826 compounds) through \texttt{signatureSearch}
+\citep{duan2020signaturesearch} 1.12.0 with three schemes: the CMap weighted-KS statistic
+($\tau$; the statistic originates in GSEA \citep{subramanian2005gsea}) on top-150 up/down
+gene sets, and Spearman and Pearson correlation on the full numeric vector. Scores were
+aggregated per compound by the median across cell lines. Gene-level scoring used the SCMG
+library (20,345 gene perturbations)
+with the authors' \texttt{CausalGenePredictor}
+($\cos \times \text{perturbation sign} \times \text{gene-shift } z$), the authors' reference
+manifold and their gene standard deviations.
+
+\subsection{Positive control and numerical verification}
+
+The pipeline was verified in two ways before interpretation. Numerically, our weighted-KS
+implementation was compared against \texttt{signatureSearch} 1.12.0
+(maximum absolute difference $6.6\times10^{-14}$; signs agreeing for 2000/2000
+comparisons; the fast implementation used for the cross-check was \texttt{fgsea}
+\citep{korotkevich2016fgsea}), and our vectorised causal score against the authors' Python
+implementation
+(Spearman 1.00000000 over 19,819 entries). Biologically, the official
+epiblast-to-nascent-mesoderm benchmark was reproduced with the authors' own manifold and
+standard deviations; the known regulators rank 1st (TBXT, of 8,450), 2nd (MSGN1), 3rd
+(MIXL1), 7th (POU5F1), 9th (SNAI1), 11th (EOMES), 12th (NANOG) and 15th (EVX1).
+
+\subsection{Candidate gating and compartment decomposition}
+
+Gene-level candidates passed three additional gates. First, a specificity gate: each
+perturbation was scored on a K562 control axis, and an entry whose effect there was as
+strong as on the target axis was flagged as generalising and excluded; entries without
+K562 data are reported as untested. Second, a compartment decomposition: the disease axis
+was rebuilt independently for each of 31 subtypes (mean expression difference between
+invasive and precursor cells within the subtype, median across patients) and every
+perturbation was re-ranked within each axis; an entry was counted as top-100 for a subtype
+at that rank. Third, a survival-direction check: a knockdown was kept only for genes whose
+increased expression predicts worse outcome, and an overexpression only for the converse.
+
+\subsection{Ligand analysis}
+
+Ligand-level analysis used NicheNet \citep{browaeys2020nichenet} with the default human
+ligand--receptor network and
+ligand--target matrix. Fibroblasts were the receiver; the sender panel was the ten most
+abundant non-fibroblast subtypes of the ECM/interstitial domain. The target set was the
+top-200 up-genes of the data-derived disease axis, not a hand-written list. Candidate
+ligands were required to be expressed above $\log(1+\text{CP10K})>0.1$ in at least one
+sender and to be present in the ligand--receptor network.
+
+\subsection{Reproducibility checks}
+
+Split-half reproducibility used four random partitions of patients; each half was scored
+against LINCS independently, and the Spearman correlation between the two rankings was
+compared against a null formed by permuting one half's ranking (300 permutations).
+Cross-modality agreement compared the single-cell-axis and spatial-axis compound rankings
+by Spearman correlation and by top-$N$ overlap against a chance expectation of $N^2/118{,}050$.
+Scale bars in spatial figures were calibrated per section from the median centre-to-centre
+distance of adjacent in-tissue spots, which is nominally 100\,$\mu$m; this yields
+1\,pixel $=0.2513\,\mu$m and a full-panel width of 10.9\,mm, consistent with the 11\,mm
+capture format.
+
+\subsection{Software}
+
+Analyses used R 4.2.2 (Seurat, spacexr, BANKSY, Squidpy's R counterparts,
+\texttt{signatureSearch} 1.12.0, survival), Python 3.8 (numpy, scipy, scanpy, h5py) and the
+SCMG implementation \citep{pan2026scmg,xingjiepan_scmg}.
+All figure code is in the accompanying repository. Table~\ref{tab:params} lists every
+consequential parameter together with its provenance.
+
+

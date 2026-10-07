@@ -1,0 +1,35 @@
+\section{Conclusions}
+
+We have assembled paired single-nucleus and spatial transcriptomic profiles across the full
+lung adenocarcinoma invasion sequence and used them to ask what changes as invasion
+proceeds, and whether that change can be pushed back \emph{in silico}. Four conclusions
+survive the checks we applied.
+
+\begin{enumerate}\itemsep2pt
+\item The tissue resolves into seven recurring niche domains, six of them ordinary lung
+structures; only one is confined to invasive disease, while lymphoid aggregates are present
+in precursor stages.
+
+\item The ECM/interstitial programme that distinguishes the invasive domain is elevated in
+invasive disease within patients (20 of 22 paired cases), and the result does not depend on
+the genes we added by hand.
+
+\item The spatial copy-number signal lies in the alveolar type II compartment and is
+present before invasion, consistent with AT2 as the cell of origin.
+
+\item A query signature derived from a patient-internal disease axis and filtered on
+independent survival evidence returns a reproducible set of 34 candidate compounds,
+dominated by PI3K/mTOR inhibitors, acting on the ECM/interstitial and AT2 compartments
+rather than on the tissue as a whole.
+\end{enumerate}
+
+Two features of the work constrain how these should be read. First, sequencing depth and
+tissue density are the same measurement in this cohort, which is why several initially
+positive results did not survive depth matching and why the remaining claims are stated
+narrowly. Second, the candidate compounds are computational hypotheses: they act in cancer
+cell lines, we have not tested them in lung fibroblasts or in primary tissue, and their
+selection rests on a query whose two libraries share a common structure and therefore
+provide robustness rather than independent corroboration. The analysis we would prioritise
+next is a within-section comparison of the invasive front against distant regions of the
+same section, which holds depth fixed by construction and would remove the dominant
+confound from the design.
