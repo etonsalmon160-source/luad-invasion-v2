@@ -370,7 +370,9 @@
 > ② `results/08_spatial_deconv/reference_d.manifest.json` (signed by the user 2026-09-25, `lineage_layer` explicitly says "six-lineage reclustering subset",
 > `cell_type_counts` = **39 L2 subtypes**) ⇒ **M5's RCTD reference uses L2, not the first-level six lineages**.
 > ⚠️ **"Done" ≠ "signed off"**: the artifacts are complete, but the **gate column of both rows is still empty**, and the L2 result **still lacks a formal sign-off**.
-> ⚠️ The same stale text is also at `STARTUP_PROMPT.md:70` ("next step = GP8a epithelial subclustering") and **has not yet been synced**.
+> ⚠️ The same stale text was also carried in `STARTUP_PROMPT.md` ("next step = GP8a epithelial
+> subclustering"). That file was a session hand-off note rather than project documentation, and
+> has since been **removed**; its rules and environment constraints live in this file (§5b and §3).
 
 > **GP1 (CopyKAT smoke test) is merged into GP2** and no longer listed separately: it is an **execution detail** of GP2 (extrapolate from 3 points before scheduling), not an independent gate.
 > Reference: `results/03_cnv/smoke/P19_LUAD/` — that smoke test **failed to converge** (13h CPU, stalled at step 7),
