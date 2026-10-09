@@ -66,8 +66,10 @@ Chemistry*. We disclose this for transparency and leave the handling of the revi
 entirely to the Editor. The authors declare no competing interests. This work received no
 specific funding.
 
-This manuscript is a preprint (posted on Research Square) and has not been published
-elsewhere. All authors have approved the submission and agree to its content.
+This manuscript has been posted as a preprint on Research Square and on bioRxiv; it has
+not been published by a journal and is not under consideration elsewhere. Both postings are
+disclosed here for transparency. All authors have approved the submission and agree to its
+content.
 
 We hope the manuscript is suitable for *Computational Biology and Chemistry*, and we thank
 you for considering it.
